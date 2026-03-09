@@ -24,7 +24,7 @@ HRESULT CScene_TextEntry::Init_Commands()
 HRESULT CScene_TextEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	MapChildControls();
-	XuiTextInputParams *params = (XuiTextInputParams *)pInitData->pvInitData;
+	XuiTextInputParams *params = static_cast<XuiTextInputParams *>(pInitData->pvInitData);
 	m_iPad=params->iPad;
 	m_wchInitialChar=params->wch;
 	delete params;

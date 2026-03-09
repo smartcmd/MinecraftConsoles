@@ -10,7 +10,7 @@
 
 // 4J - removal of separate temperature & downfall layers brought forward from 1.2.3
 void BiomeSource::_init()
-{	
+{
 	layer = nullptr;
 	zoomedLayer = nullptr;
 
@@ -26,7 +26,7 @@ void BiomeSource::_init()
 	playerSpawnBiomes.push_back(Biome::jungleHills);
 }
 
-void BiomeSource::_init(__int64 seed, LevelType *generator)
+void BiomeSource::_init(int64_t seed, LevelType *generator)
 {
 	_init();
 
@@ -43,7 +43,7 @@ BiomeSource::BiomeSource()
 }
 
 // 4J added
-BiomeSource::BiomeSource(__int64 seed, LevelType *generator)
+BiomeSource::BiomeSource(int64_t seed, LevelType *generator)
 {
 	_init(seed, generator);
 }
@@ -87,17 +87,17 @@ floatArray BiomeSource::getDownfallBlock(int x, int z, int w, int h) const
 void BiomeSource::getDownfallBlock(floatArray &downfalls, int x, int z, int w, int h) const
 {
 	IntCache::releaseAll();
-	//if (downfalls == NULL || downfalls->length < w * h)
-	if (downfalls.data == NULL || downfalls.length < w * h)
+	//if (downfalls == nullptr || downfalls->length < w * h)
+	if (downfalls.data == nullptr || downfalls.length < w * h)
 	{
-		if(downfalls.data != NULL) delete [] downfalls.data;
+		if(downfalls.data != nullptr) delete [] downfalls.data;
 		downfalls = floatArray(w * h);
 	}
 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float d = (float) Biome::biomes[result[i]]->getDownfallInt() / 65536.0f;
+		float d = static_cast<float>(Biome::biomes[result[i]]->getDownfallInt()) / 65536.0f;
 		if (d > 1) d = 1;
 		downfalls[i] = d;
 	}
@@ -132,16 +132,16 @@ void BiomeSource::getTemperatureBlock(floatArray& temperatures, int x, int z, in
 {
 	IntCache::releaseAll();
 	//if (temperatures == null || temperatures.length < w * h) {
-	if (temperatures.data == NULL || temperatures.length < w * h)
+	if (temperatures.data == nullptr || temperatures.length < w * h)
 	{
-		if( temperatures.data != NULL ) delete [] temperatures.data;
+		if( temperatures.data != nullptr ) delete [] temperatures.data;
 		temperatures = floatArray(w * h);
 	}
 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float t = (float) Biome::biomes[result[i]]->getTemperatureInt() / 65536.0f;
+		float t = static_cast<float>(Biome::biomes[result[i]]->getTemperatureInt()) / 65536.0f;
 		if (t > 1) t = 1;
 		temperatures[i] = t;
 	}
@@ -170,9 +170,9 @@ void BiomeSource::getRawBiomeBlock(BiomeArray &biomes, int x, int z, int w, int 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomes.data == NULL || biomes.length < w * h)
+	if (biomes.data == nullptr || biomes.length < w * h)
 	{
-		if(biomes.data != NULL) delete [] biomes.data;
+		if(biomes.data != nullptr) delete [] biomes.data;
 		biomes = BiomeArray(w * h);
 	}
 
@@ -181,7 +181,7 @@ void BiomeSource::getRawBiomeBlock(BiomeArray &biomes, int x, int z, int w, int 
 	{
 		biomes[i] = Biome::biomes[result[i]];
 #ifndef _CONTENT_PACKAGE
-		if(biomes[i] == NULL)
+		if(biomes[i] == nullptr)
 		{
 			app.DebugPrintf("Tried to assign null biome %d\n", result[i]);
 			__debugbreak();
@@ -208,9 +208,9 @@ void BiomeSource::getBiomeBlock(BiomeArray& biomes, int x, int z, int w, int h, 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomes.data == NULL || biomes.length < w * h)
+	if (biomes.data == nullptr || biomes.length < w * h)
 	{
-		if(biomes.data != NULL) delete [] biomes.data;
+		if(biomes.data != nullptr) delete [] biomes.data;
 		biomes = BiomeArray(w * h);
 	}
 
@@ -248,9 +248,9 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomeIndices.data == NULL || biomeIndices.length < w * h)
+	if (biomeIndices.data == nullptr || biomeIndices.length < w * h)
 	{
-		if(biomeIndices.data != NULL) delete [] biomeIndices.data;
+		if(biomeIndices.data != nullptr) delete [] biomeIndices.data;
 		biomeIndices = byteArray(w * h);
 	}
 
@@ -264,14 +264,14 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		biomeIndices[i] = (byte)result[i];
+		biomeIndices[i] = static_cast<byte>(result[i]);
 	}
 }
 
 /**
 * Checks if an area around a block contains only the specified biomes.
 * Useful for placing elements like towns.
-* 
+*
 * This is a bit of a rough check, to make it as fast as possible. To ensure
 * NO other biomes, add a margin of at least four blocks to the radius
 */
@@ -299,7 +299,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, vector<Biome *> allowed)
 /**
 * Checks if an area around a block contains only the specified biome.
 * Useful for placing elements like towns.
-* 
+*
 * This is a bit of a rough check, to make it as fast as possible. To ensure
 * NO other biomes, add a margin of at least four blocks to the radius
 */
@@ -327,7 +327,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, Biome *allowed)
 /**
 * Finds the specified biome within the radius. This will return a random
 * position if several are found. This test is fairly rough.
-* 
+*
 * Returns null if the biome wasn't found
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *random)
@@ -341,7 +341,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 	int w = x1 - x0 + 1;
 	int h = z1 - z0 + 1;
 	intArray biomes = layer->getArea(x0, z0, w, h);
-	TilePos *res = NULL;
+	TilePos *res = nullptr;
 	int found = 0;
 	int biomesCount = w*h;
 	for (unsigned int i = 0; i < biomesCount; i++)
@@ -351,7 +351,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 		Biome *b = Biome::biomes[biomes[i]];
 		if (b == toFind)
 		{
-			if (res == NULL || random->nextInt(found + 1) == 0)
+			if (res == nullptr || random->nextInt(found + 1) == 0)
 			{
 				res = new TilePos(xx, 0, zz);
 				found++;
@@ -365,7 +365,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 /**
 * Finds one of the specified biomes within the radius. This will return a
 * random position if several are found. This test is fairly rough.
-* 
+*
 * Returns null if the biome wasn't found
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Random *random)
@@ -380,7 +380,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Ra
 	int h = z1 - z0 + 1;
 	MemSect(50);
 	intArray biomes = layer->getArea(x0, z0, w, h);
-	TilePos *res = NULL;
+	TilePos *res = nullptr;
 	int found = 0;
 	for (unsigned int i = 0; i < w * h; i++)
 	{
@@ -389,7 +389,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Ra
 		Biome *b = Biome::biomes[biomes[i]];
 		if (find(allowed.begin(), allowed.end(), b) != allowed.end())
 		{
-			if (res == NULL || random->nextInt(found + 1) == 0)
+			if (res == nullptr || random->nextInt(found + 1) == 0)
 			{
 				delete res;
 				res = new TilePos(xx, 0, zz);
@@ -411,13 +411,13 @@ void BiomeSource::update()
 
 // 4J added - find a seed for this biomesource that matches certain criteria
 #ifdef __PSVITA__
-__int64 BiomeSource::findSeed(LevelType *generator, bool* pServerRunning)	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs
+int64_t BiomeSource::findSeed(LevelType *generator, bool* pServerRunning)	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs
 #else
-__int64 BiomeSource::findSeed(LevelType *generator)	
+int64_t BiomeSource::findSeed(LevelType *generator)
 #endif
 {
 
-	__int64 bestSeed = 0;
+	int64_t bestSeed = 0;
 
 	ProgressRenderer *mcprogress = Minecraft::GetInstance()->progressRenderer;
 	mcprogress->progressStage(IDS_PROGRESS_NEW_WORLD_SEED);
@@ -455,7 +455,7 @@ __int64 BiomeSource::findSeed(LevelType *generator)
 			// Just keeping trying to generate seeds until we find one that matches our criteria
 			do
 			{
-				__int64 seed = pr->nextLong();
+				int64_t seed = pr->nextLong();
 				BiomeSource *biomeSource = new BiomeSource(seed,generator);
 
 				biomeSource->getRawBiomeIndices(indices, biomeOffset, biomeOffset, biomeWidth, biomeWidth);
@@ -487,7 +487,7 @@ __int64 BiomeSource::findSeed(LevelType *generator)
 
 			unsigned int *pixels = new unsigned int[54 * 16 * 54 * 16];
 			for(int i = 0; i < 54 * 16 * 54 * 16; i++ )
-			{			
+			{
 				int id = biomes[i]->id;
 
 				// Create following colours:
@@ -553,7 +553,7 @@ void BiomeSource::getFracs(intArray indices, float *fracs)
 
 	for( int i = 0; i < Biome::BIOME_COUNT; i++ )
 	{
-		fracs[i] /= (float)(indices.length);
+		fracs[i] /= static_cast<float>(indices.length);
 	}
 }
 
@@ -563,7 +563,7 @@ void BiomeSource::getFracs(intArray indices, float *fracs)
 bool BiomeSource::getIsMatch(float *frac)
 {
 	// A true for a particular biome type here marks it as one that *has* to be present
-	static const bool critical[Biome::BIOME_COUNT] = { 
+	static const bool critical[Biome::BIOME_COUNT] = {
 		true,	// ocean
 		true,	// plains
 		true,	// desert

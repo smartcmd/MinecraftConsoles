@@ -3,7 +3,7 @@
 
 HRESULT CXuiCtrl4JIcon::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 {
-	m_hBrush=NULL;
+	m_hBrush=nullptr;
 	return S_OK;
 }
 

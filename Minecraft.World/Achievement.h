@@ -9,7 +9,7 @@ class Achievement : public Stat
 {
 public:
 	const int x, y;
-	Achievement *requires;
+	Achievement *reqs;
 
 private: 
 	const wstring desc;
@@ -23,9 +23,9 @@ private:
 	void _init();
 
 public:
-	Achievement(int id, const wstring& name, int x, int y, Item *icon, Achievement *requires);
-    Achievement(int id, const wstring& name, int x, int y, Tile *icon, Achievement *requires);
-    Achievement(int id, const wstring& name, int x, int y, shared_ptr<ItemInstance> icon, Achievement *requires);
+	Achievement(int id, const wstring& name, int x, int y, Item *icon, Achievement *reqs);
+    Achievement(int id, const wstring& name, int x, int y, Tile *icon, Achievement *reqs);
+    Achievement(int id, const wstring& name, int x, int y, shared_ptr<ItemInstance> icon, Achievement *reqs);
 
 	Achievement *setAwardLocallyOnly();
 	Achievement *setGolden();

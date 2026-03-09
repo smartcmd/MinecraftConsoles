@@ -61,17 +61,17 @@ public:
 	// E.g. you can keep a component active while performing navigation with other scenes on this layer
 	void showComponent(int iPad, EUIScene scene, bool show);
 	bool isComponentVisible(EUIScene scene);
-	UIScene *addComponent(int iPad, EUIScene scene, void *initData = NULL);
+	UIScene *addComponent(int iPad, EUIScene scene, void *initData = nullptr);
 	void removeComponent(EUIScene scene);
 
 	// INPUT
 	void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
-#ifdef __PSVITA__	
+#ifdef __PSVITA__
 	// Current active scene
 	UIScene *getCurrentScene();
 #endif
 	// FOCUS
-	
+
 	bool updateFocusState(bool allowedFocus = false);
 
 public:
@@ -87,7 +87,7 @@ public:
 
 	void handleUnlockFullVersion();
 	UIScene *FindScene(EUIScene sceneType);
-	
-	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
+
+	void PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic);
 
 };

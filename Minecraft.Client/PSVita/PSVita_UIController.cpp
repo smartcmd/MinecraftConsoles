@@ -145,7 +145,7 @@ void ConsoleUIController::render()
 
 	/* End the GXM scene. Note that we pass "notify" (returned from
 	$gdraw_psp2_End) as the fragment notification. */
-	//sceGxmEndScene(gxm, NULL, &notify);
+	//sceGxmEndScene(gxm, nullptr, &notify);
 	RenderManager.setFragmentNotification(notify);
 #endif
 }

@@ -216,13 +216,13 @@ void IUIScene_BeaconMenu::handleOtherClicked(int iPad, ESceneSection eSection, i
 	{
 	case eSectionBeaconConfirm:
 		{
-			if( (m_beacon->getItem(0) == NULL) || (m_beacon->getPrimaryPower() <= 0) ) return;
+			if( (m_beacon->getItem(0) == nullptr) || (m_beacon->getPrimaryPower() <= 0) ) return;
 			ByteArrayOutputStream baos;
 			DataOutputStream dos(&baos);
 			dos.writeInt(m_beacon->getPrimaryPower());
 			dos.writeInt(m_beacon->getSecondaryPower());
 
-			Minecraft::GetInstance()->localplayers[getPad()]->connection->send(shared_ptr<CustomPayloadPacket>(new CustomPayloadPacket(CustomPayloadPacket::SET_BEACON_PACKET, baos.toByteArray())));
+			Minecraft::GetInstance()->localplayers[getPad()]->connection->send(std::make_shared<CustomPayloadPacket>(CustomPayloadPacket::SET_BEACON_PACKET, baos.toByteArray()));
 
 			if (m_beacon->getPrimaryPower() > 0)
 			{
@@ -286,7 +286,7 @@ void IUIScene_BeaconMenu::handleTick()
 
 			for (int c = 0; c < count; c++)
 			{
-				if(BeaconTileEntity::BEACON_EFFECTS[tier][c] == NULL) continue;
+				if(BeaconTileEntity::BEACON_EFFECTS[tier][c] == nullptr) continue;
 
 				int effectId = BeaconTileEntity::BEACON_EFFECTS[tier][c]->id;
 				int icon = BeaconTileEntity::BEACON_EFFECTS[tier][c]->getIcon();
@@ -315,7 +315,7 @@ void IUIScene_BeaconMenu::handleTick()
 
 			for (int c = 0; c < count - 1; c++)
 			{
-				if(BeaconTileEntity::BEACON_EFFECTS[tier][c] == NULL) continue;
+				if(BeaconTileEntity::BEACON_EFFECTS[tier][c] == nullptr) continue;
 
 				int effectId = BeaconTileEntity::BEACON_EFFECTS[tier][c]->id;
 				int icon = BeaconTileEntity::BEACON_EFFECTS[tier][c]->getIcon();
@@ -355,7 +355,7 @@ void IUIScene_BeaconMenu::handleTick()
 		}
 	}
 
-	SetConfirmButtonEnabled( (m_beacon->getItem(0) != NULL) && (m_beacon->getPrimaryPower() > 0) );
+	SetConfirmButtonEnabled( (m_beacon->getItem(0) != nullptr) && (m_beacon->getPrimaryPower() > 0) );
 }
 
 int IUIScene_BeaconMenu::GetId(int tier, int effectId)
@@ -365,7 +365,7 @@ int IUIScene_BeaconMenu::GetId(int tier, int effectId)
 
 vector<HtmlString> *IUIScene_BeaconMenu::GetSectionHoverText(ESceneSection eSection)
 {
-	vector<HtmlString> *desc = NULL;
+	vector<HtmlString> *desc = nullptr;
 	switch(eSection)
 	{
 	case eSectionBeaconSecondaryTwo:

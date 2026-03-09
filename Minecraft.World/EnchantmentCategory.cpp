@@ -16,25 +16,25 @@ bool EnchantmentCategory::canEnchant(Item *item) const
 {
 	if (this == all) return true;
 
-	if (dynamic_cast<ArmorItem *>( item ) != NULL)
+	if (dynamic_cast<ArmorItem *>( item ) != nullptr)
 	{
 		if (this == armor) return true;
-		ArmorItem *ai = (ArmorItem *) item;
+		ArmorItem *ai = static_cast<ArmorItem *>(item);
 		if (ai->slot == ArmorItem::SLOT_HEAD) return this == armor_head;
 		if (ai->slot == ArmorItem::SLOT_LEGS) return this == armor_legs;
 		if (ai->slot == ArmorItem::SLOT_TORSO) return this == armor_torso;
 		if (ai->slot == ArmorItem::SLOT_FEET) return this == armor_feet;
 		return false;
 	}
-	else if (dynamic_cast<WeaponItem *>(item) != NULL)
+	else if (dynamic_cast<WeaponItem *>(item) != nullptr)
 	{
 		return this == weapon;
 	}
-	else if (dynamic_cast<DiggerItem *>(item) != NULL)
+	else if (dynamic_cast<DiggerItem *>(item) != nullptr)
 	{
 		return this == digger;
 	}
-	else if (dynamic_cast<BowItem *>(item) != NULL)
+	else if (dynamic_cast<BowItem *>(item) != nullptr)
 	{
 		return this == bow;
 	}

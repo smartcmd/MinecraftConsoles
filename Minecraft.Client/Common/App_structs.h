@@ -65,8 +65,8 @@ typedef struct
 			// In-Menu sensitivity
 			unsigned char ucMenuSensitivity;
 			unsigned char ucInterfaceOpacity;
-			unsigned char ucPad02;//2 bytes of padding added here
-			unsigned char usPad03;
+			unsigned char ucPad02;  // 1 byte padding
+			unsigned char ucFov;
 
 			// Adding another bitmask flag for more settings for 1.8.2
 			unsigned int uiBitmaskValues;		// 0x00000001 - eGameSetting_Clouds - on

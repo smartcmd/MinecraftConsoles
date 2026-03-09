@@ -35,7 +35,7 @@ shared_ptr<ItemInstance> CarrotOnAStickItem::use(shared_ptr<ItemInstance> itemIn
 
 				if (itemInstance->count == 0)
 				{
-					shared_ptr<ItemInstance> replacement = shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
+					shared_ptr<ItemInstance> replacement = std::make_shared<ItemInstance>(Item::fishingRod);
 					replacement->setTag(itemInstance->tag);
 					return replacement;
 				}

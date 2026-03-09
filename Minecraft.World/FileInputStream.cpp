@@ -24,20 +24,20 @@ FileInputStream::FileInputStream(const File &file)
 		file.getPath().c_str(), // file name
 		GENERIC_READ, // access mode
 		0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-		NULL, // Unused
+		nullptr, // Unused
 		OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 		FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-		NULL // Unsupported
+		nullptr // Unsupported
 		);
 #else
 	m_fileHandle = CreateFile(
 		pchFilename, // file name
 		GENERIC_READ, // access mode
 		0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-		NULL, // Unused
+		nullptr, // Unused
 		OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 		FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-		NULL // Unsupported
+		nullptr // Unsupported
 		);
 #endif
 
@@ -68,7 +68,7 @@ int FileInputStream::read()
 		&byteRead, // data buffer
 		1, // number of bytes to read
 		&numberOfBytesRead, // number of bytes read
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( bSuccess==FALSE )
@@ -100,7 +100,7 @@ int FileInputStream::read(byteArray b)
 		b.data, // data buffer
 		b.length, // number of bytes to read
 		&numberOfBytesRead, // number of bytes read
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( bSuccess==FALSE )
@@ -138,7 +138,7 @@ int FileInputStream::read(byteArray b, unsigned int offset, unsigned int length)
 		&b[offset], // data buffer
 		length, // number of bytes to read
 		&numberOfBytesRead, // number of bytes read
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( bSuccess==FALSE )
@@ -164,8 +164,8 @@ void FileInputStream::close()
 	{
 		//printf("\n\nFileInputStream::close - TRYING TO CLOSE AN INVALID FILE HANDLE\n\n");
 		return;
-	}	
-	
+	}
+
 	BOOL result = CloseHandle( m_fileHandle );
 
 	if( result == 0 )
@@ -185,7 +185,7 @@ void FileInputStream::close()
 //n - the number of bytes to be skipped.
 //Returns:
 //the actual number of bytes skipped.
-__int64 FileInputStream::skip(__int64 n)
+int64_t FileInputStream::skip(int64_t n)
 {
 #ifdef _XBOX
 	LARGE_INTEGER li;

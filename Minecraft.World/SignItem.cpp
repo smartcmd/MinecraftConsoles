@@ -49,7 +49,7 @@ bool SignItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> playe
 
 		instance->count--;
 		shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>( level->getTileEntity(x, y, z) );
-		if (ste != NULL) player->openTextEdit(ste);
+		if (ste != nullptr) player->openTextEdit(ste);
 
 		// 4J-JEV: Hook for durango 'BlockPlaced' event.
 		player->awardStat(

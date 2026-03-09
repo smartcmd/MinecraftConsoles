@@ -91,7 +91,7 @@ int QuartzBlockTile::getSpawnResourcesAuxValue(int data)
 
 shared_ptr<ItemInstance> QuartzBlockTile::getSilkTouchItemInstance(int data)
 {
-	if (data == TYPE_LINES_X || data == TYPE_LINES_Z) return shared_ptr<ItemInstance>(new ItemInstance(id, 1, TYPE_LINES_Y));
+	if (data == TYPE_LINES_X || data == TYPE_LINES_Z) return std::make_shared<ItemInstance>(id, 1, TYPE_LINES_Y);
 	return Tile::getSilkTouchItemInstance(data);
 }
 

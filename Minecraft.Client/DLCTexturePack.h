@@ -50,7 +50,7 @@ public:
 	bool isTerrainUpdateCompatible();
 
 	// 4J Added
-	virtual wstring getPath(bool bTitleUpdateTexture = false, const char *pchBDPatchFilename=NULL);
+	virtual wstring getPath(bool bTitleUpdateTexture = false, const char *pchBDPatchFilename=nullptr);
 	virtual wstring getAnimationString(const wstring &textureName, const wstring &path);
 	virtual BufferedImage *getImageResource(const wstring& File, bool filenameHasExtension = false, bool bTitleUpdateTexture=false, const wstring &drive =L"");
 	virtual void loadColourTable();

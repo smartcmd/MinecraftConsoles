@@ -131,7 +131,7 @@ bool LiquidTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int f
 
 AABB *LiquidTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 int LiquidTile::getRenderShape()
@@ -317,7 +317,7 @@ void LiquidTile::animateTick(Level *level, int x, int y, int z, Random *random)
 		{
 			if (random->nextInt(100) == 0)
 			{
-				ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+				ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 				double xx = x + random->nextFloat();
 				double yy = y + tls->yy1;
 				double zz = z + random->nextFloat();
@@ -349,7 +349,7 @@ void LiquidTile::animateTick(Level *level, int x, int y, int z, Random *random)
 
 double LiquidTile::getSlopeAngle(LevelSource *level, int x, int y, int z, Material *m)
 {
-	Vec3 *flow = NULL;
+	Vec3 *flow = nullptr;
 	if (m == Material::water) flow = ((LiquidTile *) Tile::water)->getFlow(level, x, y, z);
 	if (m == Material::lava) flow = ((LiquidTile *) Tile::lava)->getFlow(level, x, y, z);
 	if (flow->x == 0 && flow->z == 0) return -1000;
@@ -425,5 +425,5 @@ Icon *LiquidTile::getTexture(const wstring &name)
 	if (name.compare(TEXTURE_WATER_FLOW)==0) return Tile::water->icons[1];
 	if (name.compare(TEXTURE_LAVA_STILL)==0) return Tile::lava->icons[0];
 	if (name.compare(TEXTURE_LAVA_FLOW)==0) return Tile::lava->icons[1];
-	return NULL;
+	return nullptr;
 }

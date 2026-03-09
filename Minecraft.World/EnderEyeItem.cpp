@@ -136,7 +136,7 @@ bool EnderEyeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> p
 bool EnderEyeItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, false);
-	if (hr != NULL && hr->type == HitResult::TILE)
+	if (hr != nullptr && hr->type == HitResult::TILE)
 	{
 		int tile = level->getTile(hr->x, hr->y, hr->z);
 		delete hr;
@@ -145,7 +145,7 @@ bool EnderEyeItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, 
 			return false;
 		}
 	}
-	else if( hr != NULL )
+	else if( hr != nullptr )
 	{
 		delete hr;
 	}
@@ -177,7 +177,7 @@ bool EnderEyeItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, 
 
 		}
 // 		TilePos *nearestMapFeature = level->findNearestMapFeature(LargeFeature::STRONGHOLD, (int) player->x, (int) player->y, (int) player->z);
-// 		if (nearestMapFeature != NULL)
+// 		if (nearestMapFeature != nullptr)
 // 		{
 // 			delete nearestMapFeature;
 // 			return true;
@@ -189,7 +189,7 @@ bool EnderEyeItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, 
 shared_ptr<ItemInstance> EnderEyeItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, false);
-	if (hr != NULL && hr->type == HitResult::TILE)
+	if (hr != nullptr && hr->type == HitResult::TILE)
 	{
 		int tile = level->getTile(hr->x, hr->y, hr->z);
 		delete hr;
@@ -198,7 +198,7 @@ shared_ptr<ItemInstance> EnderEyeItem::use(shared_ptr<ItemInstance> instance, Le
 			return instance;
 		}
 	}
-	else if( hr != NULL )
+	else if( hr != nullptr )
 	{
 		delete hr;
 	}
@@ -207,12 +207,12 @@ shared_ptr<ItemInstance> EnderEyeItem::use(shared_ptr<ItemInstance> instance, Le
 	{
 		if((level->dimension->id==LevelData::DIMENSION_OVERWORLD) && level->getLevelData()->getHasStronghold())
 		{
-			shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = shared_ptr<EyeOfEnderSignal>( new EyeOfEnderSignal(level, player->x, player->y + 1.62 - player->heightOffset, player->z) );
+			shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = std::make_shared<EyeOfEnderSignal>(level, player->x, player->y + 1.62 - player->heightOffset, player->z);
 			eyeOfEnderSignal->signalTo(level->getLevelData()->getXStronghold()<<4, player->y + 1.62 - player->heightOffset, level->getLevelData()->getZStronghold()<<4);
 			level->addEntity(eyeOfEnderSignal);
 
 			level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-			level->levelEvent(nullptr, LevelEvent::SOUND_LAUNCH, (int) player->x, (int) player->y, (int) player->z, 0);
+			level->levelEvent(nullptr, LevelEvent::SOUND_LAUNCH, static_cast<int>(player->x), static_cast<int>(player->y), static_cast<int>(player->z), 0);
 			if (!player->abilities.instabuild)
 			{
 				instance->count--;

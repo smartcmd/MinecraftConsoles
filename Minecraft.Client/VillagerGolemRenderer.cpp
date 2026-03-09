@@ -10,7 +10,7 @@ ResourceLocation VillagerGolemRenderer::GOLEM_LOCATION = ResourceLocation(TN_MOB
 
 VillagerGolemRenderer::VillagerGolemRenderer() : MobRenderer(new VillagerGolemModel(), 0.5f)
 {
-	golemModel = (VillagerGolemModel *) model;
+	golemModel = static_cast<VillagerGolemModel *>(model);
 }
 
 void VillagerGolemRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)

@@ -41,7 +41,7 @@ void NameEntryScreen::buttonClicked(Button button)
     if (button.id == 0 && trimString(name).length() > 1)
     {
         minecraft->saveSlot(slot, trimString(name));
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
 //        minecraft->grabMouse();	// 4J - removed
     }
     if (button.id == 1)

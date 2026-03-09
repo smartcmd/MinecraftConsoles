@@ -19,17 +19,17 @@ private:
 	ConsoleSchematicFile::ESchematicRotation m_rotation;
 	int m_dimension;
 
-	__int64 m_totalBlocksChanged;
-	__int64 m_totalBlocksChangedLighting;
+	int64_t m_totalBlocksChanged;
+	int64_t m_totalBlocksChangedLighting;
 	bool m_completed;
 
 	void updateLocationBox();
-public:	
+public:
 	ApplySchematicRuleDefinition(LevelGenerationOptions *levelGenOptions);
 	~ApplySchematicRuleDefinition();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType() { return ConsoleGameRules::eGameRuleType_ApplySchematic; }
-	
+
 	virtual void writeAttributes(DataOutputStream *dos, UINT numAttrs);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 

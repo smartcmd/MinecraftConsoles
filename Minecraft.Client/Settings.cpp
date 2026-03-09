@@ -21,7 +21,7 @@ static bool TryParseBoolean(const wstring &text, bool defaultValue)
 
 Settings::Settings(File *file)
 {
-	if (file != NULL)
+	if (file != nullptr)
 	{
 		filePath = file->getPath();
 	}
@@ -40,9 +40,9 @@ Settings::Settings(File *file)
 			line.erase(line.size() - 1);
 
 		if (line.size() >= 3 &&
-			(unsigned char)line[0] == 0xEF &&
-			(unsigned char)line[1] == 0xBB &&
-			(unsigned char)line[2] == 0xBF)
+			static_cast<unsigned char>(line[0]) == 0xEF &&
+			static_cast<unsigned char>(line[1]) == 0xBB &&
+			static_cast<unsigned char>(line[2]) == 0xBF)
 		{
 			line.erase(0, 3);
 		}

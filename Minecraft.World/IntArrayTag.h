@@ -57,8 +57,8 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			IntArrayTag *o = (IntArrayTag *) obj;
-			return ((data.data == NULL && o->data.data == NULL) || (data.data != NULL && data.length == o->data.length && memcmp(data.data, o->data.data, data.length * sizeof(int)) == 0) );
+			IntArrayTag *o = static_cast<IntArrayTag *>(obj);
+			return ((data.data == nullptr && o->data.data == nullptr) || (data.data != nullptr && data.length == o->data.length && memcmp(data.data, o->data.data, data.length * sizeof(int)) == 0) );
 		}
 		return false;
 	}

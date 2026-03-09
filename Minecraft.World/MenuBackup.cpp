@@ -15,7 +15,7 @@ MenuBackup::MenuBackup(shared_ptr<Inventory> inventory, AbstractContainerMenu *m
 
 void MenuBackup::save(short changeUid)
 {
-	ItemInstanceArray *backup = new ItemInstanceArray( (int)menu->slots.size() + 1 );
+	ItemInstanceArray *backup = new ItemInstanceArray( static_cast<int>(menu->slots.size()) + 1 );
 	(*backup)[0] = ItemInstance::clone(inventory->getCarried());
 	for (unsigned int i = 0; i < menu->slots.size(); i++)
 	{

@@ -5,7 +5,7 @@
 class IslandLayer : public Layer
 {
 public:
-	IslandLayer(__int64 seedMixup);
+	IslandLayer(int64_t seedMixup);
 
 	intArray getArea(int xo, int yo, int w, int h);
 };

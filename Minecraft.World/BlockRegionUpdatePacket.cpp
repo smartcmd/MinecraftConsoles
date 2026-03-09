@@ -48,7 +48,7 @@ BlockRegionUpdatePacket::BlockRegionUpdatePacket(int x, int y, int z, int xs, in
 	// TODO - we should be using compressed data directly here rather than decompressing first and then recompressing...
 	byteArray rawBuffer;
 
-	if( xs == 16 && ys == Level::maxBuildHeight && zs == 16 && ( ( x & 15 ) == 0 ) && ( y == 0 ) && ( ( z & 15 ) == 0 ) ) 
+	if( xs == 16 && ys == Level::maxBuildHeight && zs == 16 && ( ( x & 15 ) == 0 ) && ( y == 0 ) && ( ( z & 15 ) == 0 ) )
 	{
 		bIsFullChunk = true;
 
@@ -66,6 +66,8 @@ BlockRegionUpdatePacket::BlockRegionUpdatePacket(int x, int y, int z, int xs, in
 	{
 		size = 0;
 		buffer = byteArray();
+		app.DebugPrintf("[BRUP-SERVER] *** EMPTY BUFFER for chunk(%d,%d) ys=%d bIsFullChunk=%d\n",
+			x>>4, z>>4, this->ys, bIsFullChunk ? 1 : 0);
 	}
 	else
 	{
@@ -96,7 +98,7 @@ void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 	zs = dis->read() + 1;
 
 	bIsFullChunk = (chunkFlags & BLOCK_REGION_UPDATE_FULLCHUNK) ? true : false;
-	if(chunkFlags & BLOCK_REGION_UPDATE_ZEROHEIGHT)	
+	if(chunkFlags & BLOCK_REGION_UPDATE_ZEROHEIGHT)
 		ys = 0;
 
 	size = dis->readInt();
@@ -106,6 +108,10 @@ void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 	if(size == 0)
 	{
 		buffer = byteArray();
+		if(bIsFullChunk)
+		{
+			app.DebugPrintf("[BRUP-READ] *** ZERO-SIZE full chunk packet at (%d,%d)!\n", x>>4, z>>4);
+		}
 	}
 	else
 	{
@@ -131,6 +137,11 @@ void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 	
 
 		delete [] compressedBuffer.data;
+		if(buffer.length != outputSize)
+		{
+			app.DebugPrintf("*** BlockRegionUpdatePacket DECOMPRESS MISMATCH: expected=%d got=%d xs=%d ys=%d zs=%d fullChunk=%d compressedSize=%d levelIdx=%d\n",
+				buffer.length, outputSize, xs, ys, zs, bIsFullChunk ? 1 : 0, size, levelIdx);
+		}
 		assert(buffer.length == outputSize);
 	}
 }

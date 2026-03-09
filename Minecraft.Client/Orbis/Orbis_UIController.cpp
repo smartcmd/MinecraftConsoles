@@ -182,7 +182,7 @@ void ConsoleUIController::render()
 	throttle++;
 
 #else
-	gdraw_orbis_End(NULL);
+	gdraw_orbis_End(nullptr);
 #endif
 
 #endif
@@ -252,7 +252,7 @@ GDrawTexture *ConsoleUIController::getSubstitutionTexture(int textureId)
 	GDrawTexture *gdrawTex = gdraw_orbis_WrappedTextureCreate(tex);
 	return gdrawTex;
 
-	return NULL;
+	return nullptr;
 }
 
 void ConsoleUIController::destroySubstitutionTexture(void *destroyCallBackData, GDrawTexture *handle)

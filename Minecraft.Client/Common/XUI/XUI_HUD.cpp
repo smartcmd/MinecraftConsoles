@@ -10,7 +10,7 @@
 
 HRESULT CXuiSceneHud::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -33,7 +33,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_Splitscreenplayer(bool bJoining, BOOL& bHa
 HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return S_OK;
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return S_OK;
 
 	++m_tickCount;
 
@@ -145,7 +145,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 	if (pMinecraft->localgameModes[m_iPad]->canHurtPlayer())
 	{
 		int xpNeededForNextLevel = pMinecraft->localplayers[m_iPad]->getXpNeededForNextLevel();
-		int progress = (int)(pMinecraft->localplayers[m_iPad]->experienceProgress  *xpNeededForNextLevel);
+		int progress = static_cast<int>(pMinecraft->localplayers[m_iPad]->experienceProgress * xpNeededForNextLevel);
 
 		m_ExperienceProgress.SetShow(TRUE);
 		m_ExperienceProgress.SetRange(0,xpNeededForNextLevel);
@@ -196,11 +196,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Full
 					if(bHasPoison)
 					{
-						m_healthIcon[icon].PlayVisualRange(L"FullPoisonFlash",NULL,L"FullPoisonFlash");
+						m_healthIcon[icon].PlayVisualRange(L"FullPoisonFlash",nullptr,L"FullPoisonFlash");
 					}
 					else
 					{
-						m_healthIcon[icon].PlayVisualRange(L"FullFlash",NULL,L"FullFlash");
+						m_healthIcon[icon].PlayVisualRange(L"FullFlash",nullptr,L"FullFlash");
 					}
 				}
 				else if (icon * 2 + 1 == iLastHealth || icon * 2 + 1 == iHealth)
@@ -208,17 +208,17 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Half
 					if(bHasPoison)
 					{
-						m_healthIcon[icon].PlayVisualRange(L"HalfPoisonFlash",NULL,L"HalfPoisonFlash");
+						m_healthIcon[icon].PlayVisualRange(L"HalfPoisonFlash",nullptr,L"HalfPoisonFlash");
 					}
 					else
 					{
-						m_healthIcon[icon].PlayVisualRange(L"HalfFlash",NULL,L"HalfFlash");
+						m_healthIcon[icon].PlayVisualRange(L"HalfFlash",nullptr,L"HalfFlash");
 					}
 				}
 				else
 				{
 					// Empty
-					m_healthIcon[icon].PlayVisualRange(L"NormalFlash",NULL,L"NormalFlash");
+					m_healthIcon[icon].PlayVisualRange(L"NormalFlash",nullptr,L"NormalFlash");
 				}
 			}
 			else
@@ -228,11 +228,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Full
 					if(bHasPoison)
 					{
-						m_healthIcon[icon].PlayVisualRange(L"FullPoison",NULL,L"FullPoison");
+						m_healthIcon[icon].PlayVisualRange(L"FullPoison",nullptr,L"FullPoison");
 					}
 					else
 					{
-						m_healthIcon[icon].PlayVisualRange(L"Full",NULL,L"Full");
+						m_healthIcon[icon].PlayVisualRange(L"Full",nullptr,L"Full");
 					}
 				}
 				else if (icon * 2 + 1 == iHealth)
@@ -240,24 +240,24 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Half
 					if(bHasPoison)
 					{
-						m_healthIcon[icon].PlayVisualRange(L"HalfPoison",NULL,L"HalfPoison");
+						m_healthIcon[icon].PlayVisualRange(L"HalfPoison",nullptr,L"HalfPoison");
 					}
 					else
 					{
-						m_healthIcon[icon].PlayVisualRange(L"Half",NULL,L"Half");
+						m_healthIcon[icon].PlayVisualRange(L"Half",nullptr,L"Half");
 					}
 				}
 				else
 				{
 					// Empty
-					m_healthIcon[icon].PlayVisualRange(L"Normal",NULL,L"Normal");
+					m_healthIcon[icon].PlayVisualRange(L"Normal",nullptr,L"Normal");
 				}
 			}
 
 			float yo = 0;
 			if (iHealth <= 4)
 			{
-				yo = (float)m_random.nextInt(2) * (iGuiScale+1);
+				yo = static_cast<float>(m_random.nextInt(2)) * (iGuiScale+1);
 			}
 			if (icon == heartOffsetIndex)
 			{
@@ -288,11 +288,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Full
 					if(hasHungerEffect)
 					{
-						m_foodIcon[icon].PlayVisualRange(L"FullPoisonFlash",NULL,L"FullPoisonFlash");
+						m_foodIcon[icon].PlayVisualRange(L"FullPoisonFlash",nullptr,L"FullPoisonFlash");
 					}
 					else
 					{
-						m_foodIcon[icon].PlayVisualRange(L"FullFlash",NULL,L"FullFlash");
+						m_foodIcon[icon].PlayVisualRange(L"FullFlash",nullptr,L"FullFlash");
 					}
 				}
 				else if (icon * 2 + 1 == oldFood || icon * 2 + 1 == food)
@@ -300,17 +300,17 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Half
 					if(hasHungerEffect)
 					{
-						m_foodIcon[icon].PlayVisualRange(L"HalfPoisonFlash",NULL,L"HalfPoisonFlash");
+						m_foodIcon[icon].PlayVisualRange(L"HalfPoisonFlash",nullptr,L"HalfPoisonFlash");
 					}
 					else
 					{
-						m_foodIcon[icon].PlayVisualRange(L"HalfFlash",NULL,L"HalfFlash");
+						m_foodIcon[icon].PlayVisualRange(L"HalfFlash",nullptr,L"HalfFlash");
 					}
 				}
 				else
 				{
 					// Empty
-					m_foodIcon[icon].PlayVisualRange(L"NormalFlash",NULL,L"NormalFlash");
+					m_foodIcon[icon].PlayVisualRange(L"NormalFlash",nullptr,L"NormalFlash");
 				}
 			}
 			else
@@ -320,11 +320,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Full
 					if(hasHungerEffect)
 					{
-						m_foodIcon[icon].PlayVisualRange(L"FullPoison",NULL,L"FullPoison");
+						m_foodIcon[icon].PlayVisualRange(L"FullPoison",nullptr,L"FullPoison");
 					}
 					else
 					{
-						m_foodIcon[icon].PlayVisualRange(L"Full",NULL,L"Full");
+						m_foodIcon[icon].PlayVisualRange(L"Full",nullptr,L"Full");
 					}
 				}
 				else if (icon * 2 + 1 == food)
@@ -332,11 +332,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Half
 					if(hasHungerEffect)
 					{
-						m_foodIcon[icon].PlayVisualRange(L"HalfPoison",NULL,L"HalfPoison");
+						m_foodIcon[icon].PlayVisualRange(L"HalfPoison",nullptr,L"HalfPoison");
 					}
 					else
 					{
-						m_foodIcon[icon].PlayVisualRange(L"Half",NULL,L"Half");
+						m_foodIcon[icon].PlayVisualRange(L"Half",nullptr,L"Half");
 					}
 				}
 				else
@@ -344,11 +344,11 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 					// Empty
 					if(hasHungerEffect)
 					{
-						m_foodIcon[icon].PlayVisualRange(L"NormalPoison",NULL,L"NormalPoison");
+						m_foodIcon[icon].PlayVisualRange(L"NormalPoison",nullptr,L"NormalPoison");
 					}
 					else
 					{
-						m_foodIcon[icon].PlayVisualRange(L"Normal",NULL,L"Normal");
+						m_foodIcon[icon].PlayVisualRange(L"Normal",nullptr,L"Normal");
 					}
 				}
 			}
@@ -359,7 +359,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 			{
 				if ((m_tickCount % (food * 3 + 1)) == 0)
 				{
-					yo = (float)(m_random.nextInt(3) - 1) * (iGuiScale+1);
+					yo = static_cast<float>(m_random.nextInt(3) - 1) * (iGuiScale+1);
 				}
 			}
 
@@ -377,9 +377,9 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 			m_armourGroup.SetShow(TRUE);
 			for (int icon = 0; icon < 10; icon++)
 			{
-				if (icon * 2 + 1 < armor) m_armourIcon[icon].PlayVisualRange(L"Full",NULL,L"Full");
-				else if (icon * 2 + 1 == armor) m_armourIcon[icon].PlayVisualRange(L"Half",NULL,L"Half");
-				else if (icon * 2 + 1 > armor) m_armourIcon[icon].PlayVisualRange(L"Normal",NULL,L"Normal");
+				if (icon * 2 + 1 < armor) m_armourIcon[icon].PlayVisualRange(L"Full",nullptr,L"Full");
+				else if (icon * 2 + 1 == armor) m_armourIcon[icon].PlayVisualRange(L"Half",nullptr,L"Half");
+				else if (icon * 2 + 1 > armor) m_armourIcon[icon].PlayVisualRange(L"Normal",nullptr,L"Normal");
 			}
 		}
 		else
@@ -391,20 +391,20 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 		if (pMinecraft->localplayers[m_iPad]->isUnderLiquid(Material::water))
 		{
 			m_airGroup.SetShow(TRUE);
-			int count = (int) ceil((pMinecraft->localplayers[m_iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY);
-			int extra = (int) ceil((pMinecraft->localplayers[m_iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY) - count;
+			int count = static_cast<int>(ceil((pMinecraft->localplayers[m_iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY));
+			int extra = static_cast<int>(ceil((pMinecraft->localplayers[m_iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY)) - count;
 			for (int icon = 0; icon < 10; icon++)
 			{
 				// Air bubbles
 				if (icon < count)
 				{
 					m_airIcon[icon].SetShow(TRUE);
-					m_airIcon[icon].PlayVisualRange(L"Bubble",NULL,L"Bubble");
+					m_airIcon[icon].PlayVisualRange(L"Bubble",nullptr,L"Bubble");
 				}
 				else if(icon < count + extra)
 				{
 					m_airIcon[icon].SetShow(TRUE);
-					m_airIcon[icon].PlayVisualRange(L"Pop",NULL,L"Pop");
+					m_airIcon[icon].PlayVisualRange(L"Pop",nullptr,L"Pop");
 				}
 				else m_airIcon[icon].SetShow(FALSE);
 			}
@@ -428,7 +428,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_DLCInstalled()
 {
 	// mounted DLC may have changed
 	bool bPauseMenuDisplayed=false;
-	bool bInGame=(Minecraft::GetInstance()->level!=NULL);
+	bool bInGame=(Minecraft::GetInstance()->level!=nullptr);
 	// ignore this if we have menus up - they'll deal with it
 	for(int i=0;i<XUSER_MAX_COUNT;i++)
 	{

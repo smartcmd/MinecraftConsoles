@@ -8,8 +8,8 @@ void BlockReplacements::staticCtor()
 {
     for (int i = 0; i < 256; i++)
 	{
-        byte b = (byte) i;
-        if (b != 0 && Tile::tiles[b & 0xff] == NULL)
+        byte b = static_cast<byte>(i);
+        if (b != 0 && Tile::tiles[b & 0xff] == nullptr)
 		{
             b = 0;
         }

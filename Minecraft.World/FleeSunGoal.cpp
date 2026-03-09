@@ -18,10 +18,10 @@ bool FleeSunGoal::canUse()
 {
 	if (!level->isDay()) return false;
 	if (!mob->isOnFire()) return false;
-	if (!level->canSeeSky(Mth::floor(mob->x), (int) mob->bb->y0, Mth::floor(mob->z))) return false;
+	if (!level->canSeeSky(Mth::floor(mob->x), static_cast<int>(mob->bb->y0), Mth::floor(mob->z))) return false;
 
 	Vec3 *pos = getHidePos();
-	if (pos == NULL) return false;
+	if (pos == nullptr) return false;
 	wantedX = pos->x;
 	wantedY = pos->y;
 	wantedZ = pos->z;
@@ -48,5 +48,5 @@ Vec3 *FleeSunGoal::getHidePos()
 		int zt = Mth::floor(mob->z + random->nextInt(20) - 10);
 		if (!level->canSeeSky(xt, yt, zt) && mob->getWalkTargetValue(xt, yt, zt) < 0) return Vec3::newTemp(xt, yt, zt);
 	}
-	return NULL;
+	return nullptr;
 }

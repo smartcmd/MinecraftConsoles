@@ -15,12 +15,12 @@ PlayerCloudParticle::PlayerCloudParticle(Level *level, double x, double y, doubl
 	yd += ya;
 	zd += za;
 
-	rCol = gCol = bCol = 1 - (float) (Math::random() * 0.3f);
+	rCol = gCol = bCol = 1 - static_cast<float>(Math::random() * 0.3f);
 	size *= 0.75f;
 	size *= scale;
 	oSize = size;
 
-	lifetime = (int) (8 / (Math::random() * 0.8 + 0.3));
+	lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.3));
 	lifetime *= scale;
 	noPhysics = false;
 }
@@ -50,7 +50,7 @@ void PlayerCloudParticle::tick()
 	yd *= 0.96f;
 	zd *= 0.96f;
 	shared_ptr<Player> p = level->getNearestPlayer(shared_from_this(), 2);
-	if (p != NULL)
+	if (p != nullptr)
 	{
 		if (y > p->bb->y0)
 		{

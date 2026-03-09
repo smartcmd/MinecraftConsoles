@@ -12,7 +12,7 @@ UpdatePlayerRuleDefinition::UpdatePlayerRuleDefinition()
 	m_bUpdateHealth = m_bUpdateFood = m_bUpdateYRot = false;;
 	m_health = 0;
 	m_food = 0;
-	m_spawnPos = NULL;
+	m_spawnPos = nullptr;
 	m_yRot = 0.0f;
 }
 
@@ -65,11 +65,11 @@ void UpdatePlayerRuleDefinition::getChildren(vector<GameRuleDefinition *> *child
 
 GameRuleDefinition *UpdatePlayerRuleDefinition::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_AddItem)
 	{
 		rule = new AddItemRuleDefinition();
-		m_items.push_back((AddItemRuleDefinition *)rule);
+		m_items.push_back(static_cast<AddItemRuleDefinition *>(rule));
 	}
 	else
 	{
@@ -84,21 +84,21 @@ void UpdatePlayerRuleDefinition::addAttribute(const wstring &attributeName, cons
 {
 	if(attributeName.compare(L"spawnX") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->x = value;
 		app.DebugPrintf("UpdatePlayerRuleDefinition: Adding parameter spawnX=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnY") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->y = value;
 		app.DebugPrintf("UpdatePlayerRuleDefinition: Adding parameter spawnY=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnZ") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->z = value;
 		app.DebugPrintf("UpdatePlayerRuleDefinition: Adding parameter spawnZ=%d\n",value);
@@ -148,7 +148,7 @@ void UpdatePlayerRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 	double z = player->z;
 	float yRot = player->yRot;
 	float xRot = player->xRot;
-	if(m_spawnPos != NULL)
+	if(m_spawnPos != nullptr)
 	{
 		x = m_spawnPos->x;
 		y = m_spawnPos->y;
@@ -160,7 +160,7 @@ void UpdatePlayerRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 		yRot = m_yRot;
 	}
 
-	if(m_spawnPos != NULL || m_bUpdateYRot) player->absMoveTo(x,y,z,yRot,xRot);
+	if(m_spawnPos != nullptr || m_bUpdateYRot) player->absMoveTo(x,y,z,yRot,xRot);
 
 	for(auto& addItem : m_items)
 	{

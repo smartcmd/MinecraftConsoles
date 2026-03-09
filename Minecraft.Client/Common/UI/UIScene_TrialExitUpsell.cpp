@@ -50,7 +50,7 @@ void UIScene_TrialExitUpsell::handleInput(int iPad, int key, bool repeat, bool p
 			// 4J-PB - need to check this user can access the store
 #if defined(__PS3__) || defined(__PSVITA__)
 			bool bContentRestricted;
-			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),true,NULL,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),true,nullptr,&bContentRestricted,nullptr);
 			if(bContentRestricted)
 			{
 				UINT uiIDA[1];

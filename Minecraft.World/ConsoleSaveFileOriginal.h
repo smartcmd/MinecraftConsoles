@@ -35,7 +35,7 @@ public:
 #if (defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ || defined _DURANGO || defined _WINDOWS64)
 	static int SaveSaveDataCallback(LPVOID lpParam,bool bRes);
 #endif
-	ConsoleSaveFileOriginal(const wstring &fileName, LPVOID pvSaveData = NULL, DWORD fileSize = 0, bool forceCleanSave = false, ESavePlatform plat = SAVE_FILE_PLATFORM_LOCAL);
+	ConsoleSaveFileOriginal(const wstring &fileName, LPVOID pvSaveData = nullptr, DWORD fileSize = 0, bool forceCleanSave = false, ESavePlatform plat = SAVE_FILE_PLATFORM_LOCAL);
 	virtual ~ConsoleSaveFileOriginal();
 
 	// 4J Stu - Initial implementation is intended to have a similar interface to the standard Xbox file access functions
@@ -56,7 +56,7 @@ public:
 	virtual void Flush(bool autosave, bool updateThumbnail = true);
 
 #ifndef _CONTENT_PACKAGE
-	virtual void DebugFlushToFile(void *compressedData = NULL, unsigned int compressedDataSize = 0);
+	virtual void DebugFlushToFile(void *compressedData = nullptr, unsigned int compressedDataSize = 0);
 #endif
 	virtual unsigned int getSizeOnDisk();
 

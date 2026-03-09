@@ -243,7 +243,7 @@ public:
 	static C4JRender::eTextureFormat TEXTURE_FORMAT;
 
 private:
-	static wchar_t *preLoaded[TN_COUNT];
+	static const wchar_t *preLoaded[TN_COUNT];
 	static int preLoadedIdx[TN_COUNT];
 
 	unordered_map<wstring, int> idMap;

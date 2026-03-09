@@ -16,7 +16,7 @@
 HRESULT CScene_TransferToXboxOne::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	m_iX=-1;
-	m_params = (LoadMenuInitData *)pInitData->pvInitData;
+	m_params = static_cast<LoadMenuInitData *>(pInitData->pvInitData);
 
 	m_iPad=m_params->iPad;
 
@@ -26,9 +26,9 @@ HRESULT CScene_TransferToXboxOne::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	VOID *pObj;
 	XuiObjectFromHandle( m_SavesSlotList, &pObj );
-	m_pSavesSlotList = (CXuiCtrl4JList *)pObj;
+	m_pSavesSlotList = static_cast<CXuiCtrl4JList *>(pObj);
 
-	m_pbImageData=NULL;
+	m_pbImageData=nullptr;
 	m_dwImageBytes=0;
 
 	StorageManager.GetSaveCacheFileInfo(m_params->iSaveGameInfoIndex,m_XContentData);
@@ -48,7 +48,7 @@ HRESULT CScene_TransferToXboxOne::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	// saves will be called slot1 to slotx
 	// there will be a details file with the names and png of each slot
-	m_pbSlotListFile=NULL;
+	m_pbSlotListFile=nullptr;
 	m_uiSlotListFileBytes=0;
 
 	if(StorageManager.TMSPP_InFileList(C4JStorage::eGlobalStorage_TitleUser,m_iPad,L"XboxOne/SlotList"))
@@ -86,7 +86,7 @@ HRESULT CScene_TransferToXboxOne::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 //----------------------------------------------------------------------------------
 int CScene_TransferToXboxOne::TMSPPWriteReturned(LPVOID pParam,int iPad,int iUserData)
 {
-	CScene_TransferToXboxOne* pClass = (CScene_TransferToXboxOne *) pParam;
+	CScene_TransferToXboxOne* pClass = static_cast<CScene_TransferToXboxOne *>(pParam);
 	pClass->m_bWaitingForWrite=false;
 
 	return 0;
@@ -97,13 +97,13 @@ int CScene_TransferToXboxOne::TMSPPWriteReturned(LPVOID pParam,int iPad,int iUse
 //----------------------------------------------------------------------------------
 int CScene_TransferToXboxOne::TMSPPDeleteReturned(LPVOID pParam,int iPad,int iUserData)
 {
-	CScene_TransferToXboxOne* pClass = (CScene_TransferToXboxOne *) pParam;
+	CScene_TransferToXboxOne* pClass = static_cast<CScene_TransferToXboxOne *>(pParam);
 	pClass->m_SavesSlotListTimer.SetShow(FALSE);
 	pClass->m_bIgnoreInput=false;
 
 	// update the slots
 	delete pClass->m_pbSlotListFile;
-	pClass->m_pbSlotListFile=NULL;
+	pClass->m_pbSlotListFile=nullptr;
 	pClass->m_uiSlotListFileBytes=0;
 	pClass->m_pSavesSlotList->RemoveAllData();
 	CXuiCtrl4JList::LIST_ITEM_INFO ListInfo;
@@ -129,7 +129,7 @@ int CScene_TransferToXboxOne::TMSPPDeleteReturned(LPVOID pParam,int iPad,int iUs
 //----------------------------------------------------------------------------------
 int CScene_TransferToXboxOne::TMSPPSlotListReturned(LPVOID pParam,int iPad,int iUserData,C4JStorage::PTMSPP_FILEDATA pFileData, LPCSTR szFilename)
 {
-	CScene_TransferToXboxOne* pClass = (CScene_TransferToXboxOne *) pParam;
+	CScene_TransferToXboxOne* pClass = static_cast<CScene_TransferToXboxOne *>(pParam);
 	unsigned int uiSlotListFileSlots=*((unsigned int *)pFileData->pbData);
 	pClass->m_pbSlotListFile=pFileData->pbData;
 	pClass->m_uiSlotListFileBytes=pFileData->dwSize;
@@ -220,7 +220,7 @@ HRESULT CScene_TransferToXboxOne::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 		// check if there is a save there
 
 		CXuiCtrl4JList::LIST_ITEM_INFO info = m_pSavesSlotList->GetData(iIndex);
-		if(info.pwszImage!=NULL)
+		if(info.pwszImage!=nullptr)
 		{
 			// we have a save here
 			// Are you sure, etc.
@@ -252,10 +252,10 @@ HRESULT CScene_TransferToXboxOne::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 
 HRESULT CScene_TransferToXboxOne::BuildSlotFile(int iIndexBeingUpdated,PBYTE pbImageData,DWORD dwImageBytes )
 {
-	SLOTDATA *pCurrentSlotData=NULL;
-	PBYTE pbCurrentSlotDataPtr=NULL;
+	SLOTDATA *pCurrentSlotData=nullptr;
+	PBYTE pbCurrentSlotDataPtr=nullptr;
 	// there may be no slot file yet
-	if(m_pbSlotListFile!=NULL)
+	if(m_pbSlotListFile!=nullptr)
 	{
 		pCurrentSlotData=(SLOTDATA *)(m_pbSlotListFile+sizeof(unsigned int));
 		pbCurrentSlotDataPtr=m_pbSlotListFile + sizeof(unsigned int) + sizeof(SLOTDATA)*m_MaxSlotC;
@@ -298,7 +298,7 @@ HRESULT CScene_TransferToXboxOne::BuildSlotFile(int iIndexBeingUpdated,PBYTE pbI
 		}
 		else
 		{
-			if(pbCurrentSlotDataPtr!=NULL)
+			if(pbCurrentSlotDataPtr!=nullptr)
 			{
 				memcpy(pbNewSlotImageDataPtr,pbCurrentSlotDataPtr,pCurrentSlotData[i].uiImageLength);		
 				pbNewSlotImageDataPtr+=pCurrentSlotData[i].uiImageLength;
@@ -307,7 +307,7 @@ HRESULT CScene_TransferToXboxOne::BuildSlotFile(int iIndexBeingUpdated,PBYTE pbI
 		}
 
 		// move to the next image data in the current slot file
-		if(pbCurrentSlotDataPtr!=NULL)
+		if(pbCurrentSlotDataPtr!=nullptr)
 		{
 			pbCurrentSlotDataPtr+=pCurrentSlotData[i].uiImageLength;
 		}
@@ -323,7 +323,7 @@ HRESULT CScene_TransferToXboxOne::BuildSlotFile(int iIndexBeingUpdated,PBYTE pbI
 	
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CScene_TransferToXboxOne::UploadSaveForXboxOneThreadProc;
-	loadingParams->lpParam = (LPVOID)this;
+	loadingParams->lpParam = static_cast<LPVOID>(this);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -342,7 +342,7 @@ int CScene_TransferToXboxOne::UploadSaveForXboxOneThreadProc( LPVOID lpParameter
 {
 	HRESULT hr = S_OK;
 	char szFilename[32];
-	CScene_TransferToXboxOne* pClass = (CScene_TransferToXboxOne *) lpParameter;
+	CScene_TransferToXboxOne* pClass = static_cast<CScene_TransferToXboxOne *>(lpParameter);
 	Minecraft *pMinecraft = Minecraft::GetInstance();	
 	unsigned int uiComplete=0;
 	pClass->m_bWaitingForWrite=true;
@@ -415,7 +415,7 @@ int CScene_TransferToXboxOne::UploadSaveForXboxOneThreadProc( LPVOID lpParameter
 		for(int i=0;i<(pClass->m_uiStorageLength/uiChunkSize)+1;i++)
 		{
 			sprintf( szFilename, "XboxOne/Slot%.2d%.2d", pClass->m_uiSlotID,i );
-			PCHAR pchData=((PCHAR)pClass->m_pvSaveMem)+i*uiChunkSize;
+			PCHAR pchData=static_cast<PCHAR>(pClass->m_pvSaveMem)+i*uiChunkSize;
 		
 			pClass->m_bWaitingForWrite=true;
 			if(uiBytesLeft>=uiChunkSize)
@@ -461,7 +461,7 @@ int CScene_TransferToXboxOne::UploadSaveForXboxOneThreadProc( LPVOID lpParameter
 
 int CScene_TransferToXboxOne::LoadSaveDataReturned(void *pParam,bool bContinue)
 {
-	CScene_TransferToXboxOne* pClass = (CScene_TransferToXboxOne*)pParam;
+	CScene_TransferToXboxOne* pClass = static_cast<CScene_TransferToXboxOne *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -502,7 +502,7 @@ HRESULT CScene_TransferToXboxOne::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 		break;	
 	case VK_PAD_X:
 		// wipe the save slots
-		if(m_pbSlotListFile!=NULL)
+		if(m_pbSlotListFile!=nullptr)
 		{
 			m_SavesSlotListTimer.SetShow(TRUE);
 			m_bIgnoreInput=true;

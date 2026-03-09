@@ -11,7 +11,7 @@
 
 //FlatLevelSource::villageFeature = new VillageFeature(1);
 
-FlatLevelSource::FlatLevelSource(Level *level, __int64 seed, bool generateStructures) 
+FlatLevelSource::FlatLevelSource(Level *level, int64_t seed, bool generateStructures)
 {
 	m_XZSize = level->getLevelData()->getXZSize();
 
@@ -32,45 +32,45 @@ FlatLevelSource::~FlatLevelSource()
 	delete villageFeature;
 }
 
-void FlatLevelSource::prepareHeights(byteArray blocks) 
+void FlatLevelSource::prepareHeights(byteArray blocks)
 {
 	int height = blocks.length / (16 * 16);
 
-	for (int xc = 0; xc < 16; xc++) 
+	for (int xc = 0; xc < 16; xc++)
 	{
-		for (int zc = 0; zc < 16; zc++) 
+		for (int zc = 0; zc < 16; zc++)
 		{
-			for (int yc = 0; yc < height; yc++) 
+			for (int yc = 0; yc < height; yc++)
 			{
 				int block = 0;
-				if (yc == 0) 
+				if (yc == 0)
 				{
 					block = Tile::unbreakable_Id;
-				} 
-				else if (yc <= 2) 
+				}
+				else if (yc <= 2)
 				{
 					block = Tile::dirt_Id;
-				} 
-				else if (yc == 3) 
+				}
+				else if (yc == 3)
 				{
 					block = Tile::grass_Id;
 				}
-				blocks[xc << 11 | zc << 7 | yc] = (byte) block;
+				blocks[xc << 11 | zc << 7 | yc] = static_cast<byte>(block);
 			}
 		}
 	}
 }
 
-LevelChunk *FlatLevelSource::create(int x, int z) 
+LevelChunk *FlatLevelSource::create(int x, int z)
 {
 	return getChunk(x, z);
 }
 
-LevelChunk *FlatLevelSource::getChunk(int xOffs, int zOffs) 
+LevelChunk *FlatLevelSource::getChunk(int xOffs, int zOffs)
 {
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	int chunksSize = Level::genDepth * 16  * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	byte *tileData = static_cast<byte *>(XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 	XMemSet128(tileData,0,chunksSize);
 	byteArray blocks = byteArray(tileData,chunksSize);
 //	byteArray blocks = byteArray(16 * level->depth * 16);
@@ -80,7 +80,7 @@ LevelChunk *FlatLevelSource::getChunk(int xOffs, int zOffs)
 	//        double[] temperatures = level.getBiomeSource().temperatures;
 
 
-	if (generateStructures) 
+	if (generateStructures)
 	{
 		villageFeature->apply(this, level, xOffs, zOffs, blocks);
 	}
@@ -96,43 +96,43 @@ LevelChunk *FlatLevelSource::getChunk(int xOffs, int zOffs)
 }
 
 
-bool FlatLevelSource::hasChunk(int x, int y) 
+bool FlatLevelSource::hasChunk(int x, int y)
 {
 	return true;
 }
 
-void FlatLevelSource::postProcess(ChunkSource *parent, int xt, int zt) 
+void FlatLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 {
 	// 4J - changed from random to pprandom so we can run in parallel with getChunk etc.
 	pprandom->setSeed(level->getSeed());
-	__int64 xScale = pprandom->nextLong() / 2 * 2 + 1;
-	__int64 zScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t xScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t zScale = pprandom->nextLong() / 2 * 2 + 1;
 	pprandom->setSeed(((xt * xScale) + (zt * zScale)) ^ level->getSeed());
 
-	if (generateStructures) 
+	if (generateStructures)
 	{
 		villageFeature->postProcess(level, pprandom, xt, zt);
 	}
-	
+
 	app.processSchematics(parent->getChunk(xt,zt));
 }
 
-bool FlatLevelSource::save(bool force, ProgressListener *progressListener) 
+bool FlatLevelSource::save(bool force, ProgressListener *progressListener)
 {
 	return true;
 }
 
-bool FlatLevelSource::tick() 
+bool FlatLevelSource::tick()
 {
 	return false;
 }
 
-bool FlatLevelSource::shouldSave() 
+bool FlatLevelSource::shouldSave()
 {
 	return true;
 }
 
-wstring FlatLevelSource::gatherStats() 
+wstring FlatLevelSource::gatherStats()
 {
 	return L"FlatLevelSource";
 }
@@ -140,16 +140,16 @@ wstring FlatLevelSource::gatherStats()
 vector<Biome::MobSpawnerData *> *FlatLevelSource::getMobsAt(MobCategory *mobCategory, int x, int y, int z)
 {
  	Biome *biome = level->getBiome(x, z);
- 	if (biome == NULL) 
- 	{
- 		return NULL;
+ 	if (biome == NULL)
+	{
+ 		return nullptr;
  	}
  	return biome->getMobs(mobCategory);
 }
 
 TilePos *FlatLevelSource::findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 void FlatLevelSource::recreateLogicStructuresForChunk(int chunkX, int chunkZ)

@@ -67,7 +67,7 @@ void LoadPCMVoiceData()
 	{
 		char filename[64];
 		sprintf(filename, "voice%d.pcm", i+1);
-		HANDLE file = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		HANDLE file = CreateFile(filename, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 		DWORD dwHigh=0;
 		g_loadedPCMVoiceDataSizes[i] = GetFileSize(file,&dwHigh);
 
@@ -75,7 +75,7 @@ void LoadPCMVoiceData()
 		{
 			g_loadedPCMVoiceData[i] = new char[g_loadedPCMVoiceDataSizes[i]];
 			DWORD bytesRead;
-			BOOL bSuccess = ReadFile(file, g_loadedPCMVoiceData[i], g_loadedPCMVoiceDataSizes[i], &bytesRead, NULL);
+			BOOL bSuccess = ReadFile(file, g_loadedPCMVoiceData[i], g_loadedPCMVoiceDataSizes[i], &bytesRead, nullptr);
 			assert(bSuccess);
 		}
 		g_loadedPCMVoiceDataPos[i] = 0;
@@ -274,7 +274,7 @@ void SQRVoiceConnection::readRemoteData()
 	if( dataSize > 0 )
 	{
 		VoicePacket packet;
-		int bytesRead = sceRudpRead( m_rudpCtx, &packet, dataSize, 0, NULL );
+		int bytesRead = sceRudpRead( m_rudpCtx, &packet, dataSize, 0, nullptr );
 		unsigned int writeSize;
 		if( bytesRead > 0 )
 		{
@@ -468,7 +468,7 @@ void SonyVoiceChat_Orbis::sendAllVoiceData()
 		if(m_localVoiceDevices[i].isValid())
 		{
 			bool bChatRestricted = false;
-			ProfileManager.GetChatAndContentRestrictions(i,true,&bChatRestricted,NULL,NULL);
+			ProfileManager.GetChatAndContentRestrictions(i,true,&bChatRestricted,nullptr,nullptr);
 
 			if(bChatRestricted)
 			{
@@ -928,7 +928,7 @@ void SonyVoiceChat_Orbis::initLocalPlayer(int playerIndex)
 	if(m_localVoiceDevices[playerIndex].isValid() == false)
 	{
 		bool chatRestricted = false;
-		ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,NULL,NULL);
+		ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,nullptr,nullptr);
 
 		// create all device ports required
 		m_localVoiceDevices[playerIndex].init(ProfileManager.getUserID(playerIndex), chatRestricted);
@@ -965,7 +965,7 @@ SQRVoiceConnection* SonyVoiceChat_Orbis::GetVoiceConnectionFromRudpCtx( int Rudp
 		if(m_remoteConnections[i]->m_rudpCtx == RudpCtx)
 			return m_remoteConnections[i];
 	}
-	return NULL;
+	return nullptr;
 }
 
 void SonyVoiceChat_Orbis::connectPlayerToAll( int playerIndex )
@@ -990,7 +990,7 @@ SQRVoiceConnection* SonyVoiceChat_Orbis::getVoiceConnectionFromRoomMemberID( Sce
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void SonyVoiceChat_Orbis::disconnectLocalPlayer( int localIdx )

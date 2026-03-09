@@ -30,7 +30,7 @@ int SheepRenderer::prepareArmor(shared_ptr<LivingEntity> _sheep, int layer, floa
 			int value = (sheep->tickCount / colorDuration) + sheep->entityId;
 			int c1 = value % Sheep::COLOR_LENGTH;
 			int c2 = (value + 1) % Sheep::COLOR_LENGTH;
-			float subStep = ((sheep->tickCount % colorDuration) + a) / (float) colorDuration;
+			float subStep = ((sheep->tickCount % colorDuration) + a) / static_cast<float>(colorDuration);
 
 			glColor3f(Sheep::COLOR[c1][0] * (1.0f - subStep) + Sheep::COLOR[c2][0] * subStep, Sheep::COLOR[c1][1] * (1.0f - subStep) + Sheep::COLOR[c2][1] * subStep, Sheep::COLOR[c1][2]
 			* (1.0f - subStep) + Sheep::COLOR[c2][2] * subStep);

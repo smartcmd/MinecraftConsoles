@@ -51,7 +51,7 @@ int ByteArrayInputStream::read()
 //
 //The read(b) method for class InputStream has the same effect as:
 //
-// read(b, 0, b.length) 
+// read(b, 0, b.length)
 //Parameters:
 //b - the buffer into which the data is read.
 //Returns:
@@ -100,7 +100,7 @@ void ByteArrayInputStream::close()
 //n - the number of bytes to be skipped.
 //Returns:
 //the actual number of bytes skipped.
-__int64 ByteArrayInputStream::skip(__int64 n)
+int64_t ByteArrayInputStream::skip(int64_t n)
 {
 	int newPos = pos + n;
 
@@ -114,5 +114,5 @@ __int64 ByteArrayInputStream::skip(__int64 n)
 
 ByteArrayInputStream::~ByteArrayInputStream()
 {
-	if(buf.data != NULL) delete [] buf.data;
+	if(buf.data != nullptr) delete [] buf.data;
 }

@@ -3,8 +3,8 @@
 #include "FoodConstants.h"
 
 const int FoodConstants::MAX_FOOD = 20;
-const float FoodConstants::MAX_SATURATION = (float) FoodConstants::MAX_FOOD;
-const float FoodConstants::START_SATURATION = (float) FoodConstants::MAX_SATURATION / 4.0f;
+const float FoodConstants::MAX_SATURATION = static_cast<float>(FoodConstants::MAX_FOOD);
+const float FoodConstants::START_SATURATION = static_cast<float>(FoodConstants::MAX_SATURATION) / 4.0f;
 const float FoodConstants::SATURATION_FLOOR = FoodConstants::MAX_SATURATION / 8.0f;
 
 // this value modifies how quickly food is dropped

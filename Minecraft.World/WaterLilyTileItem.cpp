@@ -13,7 +13,7 @@ WaterLilyTileItem::WaterLilyTileItem(int id) : ColoredTileItem(id, false)
 bool WaterLilyTileItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
-	if (hr == NULL) return false;
+	if (hr == nullptr) return false;
 
 	if (hr->type == HitResult::TILE)
 	{
@@ -47,7 +47,7 @@ bool WaterLilyTileItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *le
 shared_ptr<ItemInstance> WaterLilyTileItem::use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
-	if (hr == NULL) return itemInstance;
+	if (hr == nullptr) return itemInstance;
 
 	if (hr->type == HitResult::TILE)
 	{

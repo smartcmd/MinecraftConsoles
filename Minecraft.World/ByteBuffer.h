@@ -28,7 +28,7 @@ public:
 	int getInt(unsigned int index);
 	void get(byteArray) {}	// 4J - TODO
 	byte get(int index);
-	__int64 getLong();
+	int64_t getLong();
 	short getShort();
 	void getShortArray(shortArray &s);
 	ByteBuffer *put(int index, byte b);
@@ -36,7 +36,7 @@ public:
 	ByteBuffer *putInt(unsigned int index, int value);
 	ByteBuffer *putShort(short value);
 	ByteBuffer *putShortArray(shortArray &s);
-	ByteBuffer *putLong(__int64 value);
+	ByteBuffer *putLong(int64_t value);
 	ByteBuffer *put(byteArray inputArray);
 	byteArray array();
 	IntBuffer *asIntBuffer();

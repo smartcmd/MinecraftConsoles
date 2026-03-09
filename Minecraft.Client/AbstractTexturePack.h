@@ -89,5 +89,5 @@ public:
 	virtual unsigned int getDLCParentPackId();
 	virtual unsigned char getDLCSubPackId();
 	virtual ColourTable *getColourTable() { return m_colourTable; }
-	virtual ArchiveFile *getArchiveFile() { return NULL; }
+	virtual ArchiveFile *getArchiveFile() { return nullptr; }
 };

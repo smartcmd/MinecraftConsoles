@@ -119,7 +119,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ChatPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<ChatPacket>(); }
 	virtual int getId() { return 3; }
 };
 

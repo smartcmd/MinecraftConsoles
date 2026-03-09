@@ -12,7 +12,7 @@ public:
 	virtual void StartReloadSkinThread() = 0;
 	virtual bool IsReloadingSkin() = 0;
 	virtual void CleanUpSkinReload() = 0;
-	virtual bool NavigateToScene(int iPad, EUIScene scene, void *initData = NULL, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD) = 0;
+	virtual bool NavigateToScene(int iPad, EUIScene scene, void *initData = nullptr, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD) = 0;
 	virtual bool NavigateBack(int iPad, bool forceUsePad = false, EUIScene eScene = eUIScene_COUNT, EUILayer eLayer = eUILayer_COUNT) = 0;
 	virtual void CloseUIScenes(int iPad, bool forceIPad = false) = 0;
 	virtual void CloseAllPlayersScenes() = 0;

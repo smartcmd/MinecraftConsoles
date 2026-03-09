@@ -29,7 +29,7 @@ class SQRNetworkManager_Orbis : public SQRNetworkManager
 public:
 	SQRNetworkManager_Orbis(ISQRNetworkManagerListener *listener);
 
-	// General 
+	// General
 	void											Tick();
 	void											Initialise();
 	void											Terminate();
@@ -111,7 +111,7 @@ private:
 	bool											m_offlineSQR;
 	int												m_resendExternalRoomDataCountdown;
 	bool											m_matching2initialised;
-	PresenceSyncInfo								m_inviteReceived[MAX_SIMULTANEOUS_INVITES];	
+	PresenceSyncInfo								m_inviteReceived[MAX_SIMULTANEOUS_INVITES];
 	int												m_inviteIndex;
 	static PresenceSyncInfo							*m_gameBootInvite;
 	static PresenceSyncInfo							m_gameBootInvite_data;
@@ -139,7 +139,7 @@ private:
 	void											LocalDataSend(SQRNetworkPlayer *playerFrom, SQRNetworkPlayer *playerTo, const void *data, unsigned int dataSize);
 	int												GetSessionIndex(SQRNetworkPlayer *player);
 
-	bool											AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull = NULL );
+	bool											AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull = nullptr );
 	void											RemoveRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int mask );
 	void											RemoveNetworkPlayers( int mask );
 	void											SetLocalPlayersAndSync();
@@ -222,9 +222,9 @@ private:
 	std::vector<FriendSearchResult>						m_aFriendSearchResults;
 
 	// Rudp management and local players
-	std::unordered_map<int,SQRNetworkPlayer	*>			m_RudpCtxToPlayerMap;	
+	std::unordered_map<int,SQRNetworkPlayer	*>			m_RudpCtxToPlayerMap;
 
-	std::unordered_map<SceNetInAddr_t, SQRVoiceConnection*>				m_NetAddrToVoiceConnectionMap;	
+	std::unordered_map<SceNetInAddr_t, SQRVoiceConnection*>				m_NetAddrToVoiceConnectionMap;
 
 	bool											CreateRudpConnections(SceNpMatching2RoomId roomId, SceNpMatching2RoomMemberId peerMemberId, int playerMask, SceNpMatching2RoomMemberId playersPeerMemberId);
 	bool											CreateVoiceRudpConnections(SceNpMatching2RoomId roomId, SceNpMatching2RoomMemberId peerMemberId, int playerMask);
@@ -325,8 +325,8 @@ private:
 	static sce::Toolkit::NP::PresenceDetails		s_lastPresenceInfo;
 
 	static const int								MIN_PRESENCE_RESEND_TIME = 30 * 1000;		// Minimum presence send rate - doesn't seem possible to find out what this actually should be
-	static __int64									s_lastPresenceTime;
-	static __int64									s_resendPresenceTime;	
+	static int64_t									s_lastPresenceTime;
+	static int64_t									s_resendPresenceTime;
 
 	static bool										s_presenceStatusDirty;
 	static bool										s_presenceDataDirty;
@@ -337,7 +337,7 @@ private:
 
 	// Debug
 	static long long								s_roomStartTime;
-	
+
 	// Error dialog
 	static bool										s_errorDialogRunning;
 

@@ -64,7 +64,7 @@ public:
 public:
 	PlayerList(MinecraftServer *server);
 	~PlayerList();
-	void placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet);
+	bool placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet);
 
 protected:
 	void updateEntireScoreboard(ServerScoreboard *scoreboard, shared_ptr<ServerPlayer> player);
@@ -133,6 +133,7 @@ public:
 	// 4J Added
 	void kickPlayerByShortId(BYTE networkSmallId);
 	void closePlayerConnectionBySmallId(BYTE networkSmallId);
+	void queueSmallIdForRecycle(BYTE smallId);
 	bool isXuidBanned(PlayerUID xuid);
 	// AP added for Vita so the range can be increased once the level starts
 	void setViewDistance(int newViewDistance);

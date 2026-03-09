@@ -74,8 +74,8 @@ int _wcsicmp( const wchar_t * dst, const wchar_t * src )
 	wchar_t f,l;
 
 	// validation section
-	// 	_VALIDATE_RETURN(dst != NULL, EINVAL, _NLSCMPERROR);
-	// 	_VALIDATE_RETURN(src != NULL, EINVAL, _NLSCMPERROR);
+	// 	_VALIDATE_RETURN(dst != nullptr, EINVAL, _NLSCMPERROR);
+	// 	_VALIDATE_RETURN(src != nullptr, EINVAL, _NLSCMPERROR);
 
 	do  {
 		f = towlower(*dst);
@@ -90,7 +90,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 {
     size_t n;
 
-//      Note that we do not check if s == NULL, because we do not
+//      Note that we do not check if s == nullptr, because we do not
 //      return errno_t...
 
     for (n = 0; n < maxsize && *wcs; n++, wcs++)
@@ -134,7 +134,7 @@ VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
 	lpSystemTime->wMilliseconds = cellRtcGetMicrosecond(&dateTime)/1000;
 }
 
-HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PS3_STUBBED; return NULL; }
+HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PS3_STUBBED; return nullptr; }
 VOID Sleep(DWORD dwMilliseconds)
 {
 	C4JThread::Sleep(dwMilliseconds);
@@ -267,8 +267,8 @@ BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) { return TLSStoragePS3::In
 LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
 	int err;
-	sys_addr_t newAddress = NULL;
-	if(lpAddress == NULL)
+	sys_addr_t newAddress = nullptr;
+	if(lpAddress == nullptr)
 	{
 		// reserve, and possibly commit also
 		int commitSize = 0;
@@ -382,7 +382,7 @@ BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHi
 	int fd = (int) hFile;
 	uint64_t pos = 0, bitsToMove = (int64_t) lDistanceToMove;
 
-	if (lpDistanceToMoveHigh != NULL)
+	if (lpDistanceToMoveHigh != nullptr)
 		bitsToMove |= ((uint64_t) (*lpDistanceToMoveHigh)) << 32;
 
 	int whence = 0;
@@ -490,7 +490,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	}
 	else
 	{
-		err = cellFsOpen(filePath, flags, &fd ,NULL, 0);
+		err = cellFsOpen(filePath, flags, &fd ,nullptr, 0);
 		iFilesOpen++;
 		//printf("\n\nFiles Open - %d\n\n",iFilesOpen);
 	}
@@ -671,11 +671,11 @@ HANDLE FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData) { PS3
 BOOL FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData) { PS3_STUBBED; return false;}
 
 errno_t _itoa_s(int _Value, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%d",_Value); else if(_Radix==16) sprintf(_DstBuf,"%lx",_Value); else return -1; return 0; }
-errno_t _i64toa_s(__int64 _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
+errno_t _i64toa_s(int64_t _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
 
 int _wtoi(const wchar_t *_Str)
 {
-	return wcstol(_Str, NULL, 10);
+	return wcstol(_Str, nullptr, 10);
 }
 
 

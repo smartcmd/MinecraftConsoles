@@ -26,7 +26,7 @@ MultiPlayerLevel::ResetInfo::ResetInfo(int x, int y, int z, int tile, int data)
 }
 
 MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *levelSettings, int dimension, int difficulty)
-	: Level(shared_ptr<MockedLevelStorage >(new MockedLevelStorage()), L"MpServer", Dimension::getNew(dimension), levelSettings, false)
+	: Level(std::make_shared<MockedLevelStorage>(), L"MpServer", Dimension::getNew(dimension), levelSettings, false)
 {
 	minecraft = Minecraft::GetInstance();
 
@@ -43,7 +43,7 @@ MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *
 		levelData->setInitialized(true);
 	}
 
-	if(connection !=NULL)
+	if(connection !=nullptr)
 	{
 		this->connections.push_back( connection );
 	}
@@ -54,7 +54,7 @@ MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *
 	//setSpawnPos(new Pos(8, 64, 8));
 	// The base ctor already has made some storage, so need to delete that
 	if( this->savedDataStorage ) delete savedDataStorage;
-	if(connection !=NULL)
+	if(connection !=nullptr)
 	{
 		savedDataStorage = connection->savedDataStorage;
 	}
@@ -70,7 +70,7 @@ MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *
 MultiPlayerLevel::~MultiPlayerLevel()
 {
 	// Don't let the base class delete this, it comes from the connection for multiplayerlevels, and we'll delete there
-	this->savedDataStorage = NULL;
+	this->savedDataStorage = nullptr;
 }
 
 void MultiPlayerLevel::unshareChunkAt(int x, int z)
@@ -465,7 +465,7 @@ void MultiPlayerLevel::entityRemoved(shared_ptr<Entity> e)
 void MultiPlayerLevel::putEntity(int id, shared_ptr<Entity> e)
 {
 	shared_ptr<Entity> old = getEntity(id);
-	if (old != NULL)
+	if (old != nullptr)
 	{
 		removeEntity(old);
 	}
@@ -618,7 +618,7 @@ void MultiPlayerLevel::disconnect(bool sendDisconnect /*= true*/)
         for (auto& it : connections )
         {
 			if ( it )
-				it->sendAndDisconnect( shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
+				it->sendAndDisconnect(std::make_shared<DisconnectPacket>(DisconnectPacket::eDisconnect_Quitting));
 		}
 	}
 	else
@@ -633,7 +633,7 @@ void MultiPlayerLevel::disconnect(bool sendDisconnect /*= true*/)
 
 Tickable *MultiPlayerLevel::makeSoundUpdater(shared_ptr<Minecart> minecart)
 {
-	return NULL; //new MinecartSoundUpdater(minecraft->soundEngine, minecart, minecraft->player);
+	return nullptr; //new MinecartSoundUpdater(minecraft->soundEngine, minecart, minecraft->player);
 }
 
 void MultiPlayerLevel::tickWeather()
@@ -732,7 +732,7 @@ void MultiPlayerLevel::animateTickDoWork()
 		}
 	}
 
-	Minecraft::GetInstance()->animateTickLevel = NULL;
+	Minecraft::GetInstance()->animateTickLevel = nullptr;
 	delete animateRandom;
 
 	chunksToAnimate.clear();
@@ -770,18 +770,18 @@ void MultiPlayerLevel::playLocalSound(double x, double y, double z, int iSound, 
 			// exhaggerate sound speed effect by making speed of sound ~=
 			// 40 m/s instead of 300 m/s
 			double delayInSeconds = sqrt(minDistSq) / 40.0;
-			minecraft->soundEngine->schedule(iSound, (float) x, (float) y, (float) z, volume, pitch, (int) Math::round(delayInSeconds * SharedConstants::TICKS_PER_SECOND));
+			minecraft->soundEngine->schedule(iSound, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), volume, pitch, static_cast<int>(Math::round(delayInSeconds * SharedConstants::TICKS_PER_SECOND)));
 		}
 		else
 		{
-			minecraft->soundEngine->play(iSound, (float) x, (float) y, (float) z, volume, pitch);
+			minecraft->soundEngine->play(iSound, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), volume, pitch);
 		}
 	}
 }
 
 void MultiPlayerLevel::createFireworks(double x, double y, double z, double xd, double yd, double zd, CompoundTag *infoTag)
 {
-	minecraft->particleEngine->add(shared_ptr<FireworksParticles::FireworksStarter>(new FireworksParticles::FireworksStarter(this, x, y, z, xd, yd, zd, minecraft->particleEngine, infoTag)));
+	minecraft->particleEngine->add(std::make_shared<FireworksParticles::FireworksStarter>(this, x, y, z, xd, yd, zd, minecraft->particleEngine, infoTag));
 }
 
 void MultiPlayerLevel::setScoreboard(Scoreboard *scoreboard)
@@ -789,7 +789,7 @@ void MultiPlayerLevel::setScoreboard(Scoreboard *scoreboard)
 	this->scoreboard = scoreboard;
 }
 
-void MultiPlayerLevel::setDayTime(__int64 newTime)
+void MultiPlayerLevel::setDayTime(int64_t newTime)
 {
 	// 4J: We send daylight cycle rule with host options so don't need this
 	/*if (newTime < 0)
@@ -860,7 +860,7 @@ void MultiPlayerLevel::removeAllPendingEntityRemovals()
 	{
 		shared_ptr<Entity> e = *it;//entities.at(i);
 
-		if (e->riding != NULL)
+		if (e->riding != nullptr)
 		{
 			if (e->riding->removed || e->riding->rider.lock() != e)
 			{
@@ -899,7 +899,7 @@ void MultiPlayerLevel::removeClientConnection(ClientConnection *c, bool sendDisc
 {
 	if( sendDisconnect )
 	{
-		c->sendAndDisconnect( shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
+		c->sendAndDisconnect(std::make_shared<DisconnectPacket>(DisconnectPacket::eDisconnect_Quitting));
 	}
 
     auto it = find(connections.begin(), connections.end(), c);
@@ -937,11 +937,11 @@ void MultiPlayerLevel::removeUnusedTileEntitiesInRegion(int x0, int y0, int z0, 
 		if (te->x >= x0 && te->y >= y0 && te->z >= z0 && te->x < x1 && te->y < y1 && te->z < z1)
 		{
 			LevelChunk *lc = getChunk(te->x >> 4, te->z >> 4);
-			if (lc != NULL)
+			if (lc != nullptr)
 			{
 				// Only remove tile entities where this is no longer a tile entity
 				int tileId = lc->getTile(te->x & 15, te->y, te->z & 15 );
-				if( Tile::tiles[tileId] == NULL || !Tile::tiles[tileId]->isEntityTile())
+				if( Tile::tiles[tileId] == nullptr || !Tile::tiles[tileId]->isEntityTile())
 				{
 					tileEntityList[i] = tileEntityList.back();
 					tileEntityList.pop_back();

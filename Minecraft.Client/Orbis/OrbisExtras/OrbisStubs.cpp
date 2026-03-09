@@ -24,9 +24,9 @@ int32_t hBGMAudio;
 //static char sc_loadPath[] = {"/app0/"};
 //const char* getConsoleHomePath() { return sc_loadPath; }
 
-char* getUsrDirPath() 
-{ 
-	return usrdirPath; 
+char* getUsrDirPath()
+{
+	return usrdirPath;
 }
 
 
@@ -51,7 +51,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 {
     size_t n;
 
-//      Note that we do not check if s == NULL, because we do not
+//      Note that we do not check if s == nullptr, because we do not
 //      return errno_t...
 
     for (n = 0; n < maxsize && *wcs; n++, wcs++)
@@ -61,7 +61,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 }
 
 
-VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime) 
+VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 {
 	SceRtcDateTime dateTime;
 	int err = sceRtcGetCurrentClock(&dateTime, 0);
@@ -78,8 +78,8 @@ VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 }
 BOOL FileTimeToSystemTime(CONST FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime) { ORBIS_STUBBED; return false; }
 BOOL SystemTimeToFileTime(CONST SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime) { ORBIS_STUBBED; return false; }
-VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) 
-{ 
+VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
+{
 	SceRtcDateTime dateTime;
 	int err = sceRtcGetCurrentClockLocalTime(&dateTime);
 	assert(err == SCE_OK );
@@ -103,13 +103,13 @@ VOID Sleep(DWORD dwMilliseconds)
 BOOL SetThreadPriority(HANDLE hThread, int nPriority) { ORBIS_STUBBED; return FALSE; }
 DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) { ORBIS_STUBBED; return false; }
 
-LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	) 
-{ 
+LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	)
+{
 	return sceAtomicCompareAndSwap32((int32_t*)Destination, (int32_t)Comperand, (int32_t)Exchange);
 }
 
-LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand) 
-{ 
+LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand)
+{
 	return sceAtomicCompareAndSwap64((int64_t*)Destination, (int64_t)Comperand, (int64_t)Exchange);
 }
 
@@ -135,10 +135,10 @@ VOID OrbisInit()
 	sceSysmoduleLoadModule(SCE_SYSMODULE_RUDP);
 	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_MATCHING2);
 	sceSysmoduleLoadModule(SCE_SYSMODULE_INVITATION_DIALOG);
-	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_PARTY ); 
-	sceSysmoduleLoadModule(SCE_SYSMODULE_GAME_CUSTOM_DATA_DIALOG ); 
-	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_SCORE_RANKING ); 
-	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_AUTH ); 
+	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_PARTY );
+	sceSysmoduleLoadModule(SCE_SYSMODULE_GAME_CUSTOM_DATA_DIALOG );
+	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_SCORE_RANKING );
+	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_AUTH );
 	sceSysmoduleLoadModule(SCE_SYSMODULE_NP_COMMERCE);
 	sceSysmoduleLoadModule(SCE_SYSMODULE_REMOTE_PLAY);
 	sceSysmoduleLoadModule(SCE_SYSMODULE_ERROR_DIALOG);
@@ -173,7 +173,7 @@ VOID OrbisInit()
 	hBGMAudio=sceAudioOutOpen(
 		SCE_USER_SERVICE_USER_ID_SYSTEM,
 		SCE_AUDIO_OUT_PORT_TYPE_BGM,0,
-		256, 
+		256,
 		48000,
 		2);
 
@@ -195,7 +195,7 @@ int32_t GetAudioBGMHandle()
 	return hBGMAudio;
 }
 
-VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	char name[1] = {0};
 
@@ -203,13 +203,13 @@ VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 	CriticalSection->m_cLock = 0;
 	assert(err == SCE_OK);
 #ifdef _DEBUG
-	CriticalSection->m_pOwnerThread = NULL;
+	CriticalSection->m_pOwnerThread = nullptr;
 #endif
 
 }
 
 
-VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount) 
+VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount)
 {
 	InitializeCriticalSection(CriticalSection);
 }
@@ -220,9 +220,9 @@ VOID DeleteCriticalSection(PCRITICAL_SECTION CriticalSection)
 	assert(err == SCE_OK);
 }
 
-extern CRITICAL_SECTION g_singleThreadCS; 
+extern CRITICAL_SECTION g_singleThreadCS;
 
-VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	int err = scePthreadMutexLock(&CriticalSection->mutex);
 	assert(err == SCE_OK || err == SCE_KERNEL_ERROR_EDEADLK );
@@ -240,14 +240,14 @@ VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 }
 
 
-VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	if(--CriticalSection->m_cLock == 0 )
 	{
 		int err = scePthreadMutexUnlock(&CriticalSection->mutex);
 		assert(err == SCE_OK );
 #ifdef _DEBUG
-		CriticalSection->m_pOwnerThread = NULL;
+		CriticalSection->m_pOwnerThread = nullptr;
 #endif
 
 	}
@@ -255,7 +255,7 @@ VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 
 ULONG TryEnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
-	int err = scePthreadMutexTrylock(&CriticalSection->mutex); 
+	int err = scePthreadMutexTrylock(&CriticalSection->mutex);
 	if((err == SCE_OK || err == SCE_KERNEL_ERROR_EDEADLK ))
 	{
 		CriticalSection->m_cLock++;
@@ -270,16 +270,16 @@ BOOL CloseHandle(HANDLE hObject)
 { 
 	sceFiosFHCloseSync(NULL,(SceFiosFH)((int64_t)hObject));
 	return true;
-// 	ORBIS_STUBBED; 
-// 	return false; 
+// 	ORBIS_STUBBED;
+// 	return false;
 }
 
 BOOL SetEvent(HANDLE hEvent) { ORBIS_STUBBED; return false; }
 
 HMODULE GetModuleHandle(LPCSTR lpModuleName) { ORBIS_STUBBED; return 0; }
 
-DWORD GetCurrentThreadId(VOID) 
-{ 
+DWORD GetCurrentThreadId(VOID)
+{
 	return 0; // TODO
 }
 DWORD WaitForMultipleObjectsEx(DWORD nCount,CONST HANDLE *lpHandles,BOOL bWaitAll,DWORD dwMilliseconds,BOOL bAlertable	) { ORBIS_STUBBED; return 0; }
@@ -302,10 +302,10 @@ public:
 		void*				m_virtualAddr;
 		uint64_t			m_size;
 
-		PageInfo(off_t physAddr, void* virtualAddr, uint64_t size) 
+		PageInfo(off_t physAddr, void* virtualAddr, uint64_t size)
 			: m_physAddr(physAddr)
 			, m_virtualAddr(virtualAddr)
-			, m_size(size) 
+			, m_size(size)
 		{}
 	};
 	void*					m_virtualAddr;
@@ -313,7 +313,7 @@ public:
 	std::vector<PageInfo>	m_pagesAllocated;
 	uint64_t				m_allocatedSize;
 
-	OrbisVAlloc(void* addr, uint64_t size) 
+	OrbisVAlloc(void* addr, uint64_t size)
 		: m_virtualAddr(addr)
 		, m_virtualSize(size)
 		, m_allocatedSize(0)
@@ -331,7 +331,7 @@ public:
 	{
 		uint64_t sizeToAdd = size - m_allocatedSize; // the extra memory size that we have to add on
 		assert(sizeToAdd >= 0);
-		
+
 		if(sizeToAdd == 0)
 			return m_virtualAddr; // nothing to add
 
@@ -342,7 +342,7 @@ public:
 		if(err != SCE_OK)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		// work out where the next page should be in virtual addr space, and pass that to the mapping function
 		void* pageVirtualAddr = ((char*)m_virtualAddr) + m_allocatedSize;
@@ -359,12 +359,12 @@ public:
 		if(inAddr != pageVirtualAddr) // make sure we actually get the virtual address that we requested
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		if(err != SCE_OK)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		m_pagesAllocated.push_back(PageInfo(physAddr, pageVirtualAddr, sizeToAdd));
 		m_allocatedSize += sizeToAdd;
@@ -402,7 +402,7 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 		if( err != SCE_OK )
 		{
 			app.DebugPrintf("sceKernelReserveVirtualRange failed: 0x%08X\n", err);
-			return NULL;
+			return nullptr;
 		}
 		s_orbisVAllocs.push_back(new OrbisVAlloc(pAddr, dwSize));
 		return (LPVOID)pAddr;
@@ -419,10 +419,10 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 				}
 			}
 			assert(0); // failed to find the virtual alloc in our table
-			return NULL;
+			return nullptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
@@ -446,14 +446,14 @@ BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 	else if(dwFreeType == MEM_RELEASE)
 	{
 		delete s_orbisVAllocs[idx];
-		s_orbisVAllocs.erase(s_orbisVAllocs.begin()+idx); 
+		s_orbisVAllocs.erase(s_orbisVAllocs.begin()+idx);
 	}
 
 	return TRUE;
 }
 
-DWORD GetFileSize( HANDLE hFile, LPDWORD lpFileSizeHigh	) 
-{ 
+DWORD GetFileSize( HANDLE hFile, LPDWORD lpFileSizeHigh	)
+{
 	SceFiosSize FileSize;
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	//DWORD FileSizeLow;
@@ -468,22 +468,22 @@ DWORD GetFileSize( HANDLE hFile, LPDWORD lpFileSizeHigh	)
 	return (DWORD)FileSize;
 }
 
-BOOL GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize ) 
-{ 
+BOOL GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize )
+{
 	SceFiosSize FileSize;
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 
 	FileSize=sceFiosFHGetSize(fh);
 	lpFileSize->QuadPart=FileSize;
 
-	return true; 
+	return true;
 }
 BOOL WriteFile(
 	HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPDWORD lpNumberOfBytesWritten, LPOVERLAPPED lpOverlapped )
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
-	SceFiosSize bytesRead = sceFiosFHWriteSync(NULL, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToWrite);
+	SceFiosSize bytesRead = sceFiosFHWriteSync(nullptr, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToWrite);
 	if(bytesRead < 0)
 	{
 		// error
@@ -496,11 +496,11 @@ BOOL WriteFile(
 	}
 }
 
-BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped ) 
+BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped )
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
-	SceFiosSize bytesRead = sceFiosFHReadSync(NULL, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
+	SceFiosSize bytesRead = sceFiosFHReadSync(nullptr, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
 	*lpNumberOfBytesRead = (DWORD)bytesRead;
 	if(bytesRead < 0)
 	{
@@ -520,7 +520,7 @@ BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHi
 	uint64_t bitsToMove = (int64_t) lDistanceToMove;
 	SceFiosOffset pos = 0;
 
-	if (lpDistanceToMoveHigh != NULL)
+	if (lpDistanceToMoveHigh != nullptr)
 		bitsToMove |= ((uint64_t) (*lpDistanceToMoveHigh)) << 32;
 
 	SceFiosWhence whence = SCE_FIOS_SEEK_SET;
@@ -537,7 +537,7 @@ BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHi
 }
 
 
-HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) 
+HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
 	char filePath[256];
 	std::string mountedPath = StorageManager.GetMountedPath(lpFileName);
@@ -549,7 +549,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 		strcpy(filePath, lpFileName );
 	else
 		sprintf(filePath,"%s/%s",getUsrDirPath(), lpFileName );
-	
+
 #ifndef _CONTENT_PACKAGE
 	app.DebugPrintf("*** Opening %s\n",filePath);
 #endif
@@ -557,9 +557,9 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	SceFiosFH fh;
 	SceFiosOpenParams openParams;
 	ZeroMemory(&openParams, sizeof(SceFiosOpenParams));
-	
+
 	switch(dwDesiredAccess)
-	{ 
+	{
 	case GENERIC_READ:
 		openParams.openFlags = SCE_FIOS_O_RDONLY;	break;
 	case GENERIC_WRITE:
@@ -581,28 +581,28 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	case TRUNCATE_EXISTING:
 		break;
 	}
-	int err = sceFiosFHOpenSync(NULL, &fh, filePath, &openParams);
+	int err = sceFiosFHOpenSync(nullptr, &fh, filePath, &openParams);
 
 	if(err != SCE_FIOS_OK)
 	{
 		return INVALID_HANDLE_VALUE;
 	}
 	//assert( err == SCE_FIOS_OK );
-	
+
 	return (void*)fh;
 }
 
 BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes){ ORBIS_STUBBED; return false; }
 BOOL DeleteFileA(LPCSTR lpFileName) { ORBIS_STUBBED; return false; }
 
-// BOOL XCloseHandle(HANDLE a) 
+// BOOL XCloseHandle(HANDLE a)
 // {
-// 	sceFiosFHCloseSync(NULL,(SceFiosFH)((int64_t)a));
+// 	sceFiosFHCloseSync(nullptr,(SceFiosFH)((int64_t)a));
 // 	return true;
 // }
 
 
-DWORD GetFileAttributesA(LPCSTR lpFileName) 
+DWORD GetFileAttributesA(LPCSTR lpFileName)
 {
 	char filePath[256];
 	std::string mountedPath = StorageManager.GetMountedPath(lpFileName);
@@ -617,7 +617,7 @@ DWORD GetFileAttributesA(LPCSTR lpFileName)
 
 	// check if the file exists first
 	SceFiosStat  statData;
-	if(sceFiosStatSync(NULL, filePath, &statData) != SCE_FIOS_OK)
+	if(sceFiosStatSync(nullptr, filePath, &statData) != SCE_FIOS_OK)
 	{
 		app.DebugPrintf("*** sceFiosStatSync Failed\n");
 		return -1;
@@ -633,7 +633,7 @@ BOOL MoveFileA(LPCSTR lpExistingFileName, LPCSTR lpNewFileName) { ORBIS_STUBBED;
 
 
 DWORD GetLastError(VOID) { ORBIS_STUBBED; return 0; }
-VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
+VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 {
 	SceLibcMallocManagedSize stat;
 	int err = malloc_stats(&stat);
@@ -647,20 +647,20 @@ VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 	lpBuffer->dwAvailVirtual = stat.maxSystemSize - stat.currentInuseSize;
 }
 
-DWORD GetTickCount() 
+DWORD GetTickCount()
 {
-	// This function returns the current system time at this function is called. 
+	// This function returns the current system time at this function is called.
 	// The system time is represented the time elapsed since the system starts up in microseconds.
 	uint64_t sysTime = sceKernelGetProcessTime();
-	return (DWORD)(sysTime / 1000); 
+	return (DWORD)(sysTime / 1000);
 }
 
 // we should really use libperf for this kind of thing, but this will do for now.
-BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) 
-{ 
+BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency)
+{
 	// microseconds
-	lpFrequency->QuadPart =  (1000 * 1000);		
-	return false; 
+	lpFrequency->QuadPart =  (1000 * 1000);
+	return false;
 }
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 {
@@ -671,24 +671,24 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 
 #ifndef _FINAL_BUILD
 
-VOID OutputDebugStringW(LPCWSTR lpOutputString) 
-{ 
-	wprintf(lpOutputString); 
+VOID OutputDebugStringW(LPCWSTR lpOutputString)
+{
+	wprintf(lpOutputString);
 }
 
-VOID OutputDebugStringA(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugStringA(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 
-VOID OutputDebugString(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugString(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 #endif // _CONTENT_PACKAGE
 
 BOOL GetFileAttributesExA(LPCSTR lpFileName,GET_FILEEX_INFO_LEVELS fInfoLevelId,LPVOID lpFileInformation)
-{ 
+{
 	ORBIS_STUBBED;
 	return false;
 }
@@ -696,15 +696,15 @@ HANDLE FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData) { ORB
 BOOL FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData) { ORBIS_STUBBED; return false;}
 
 errno_t _itoa_s(int _Value, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%d",_Value); else if(_Radix==16) sprintf(_DstBuf,"%lx",_Value); else return -1; return 0; }
-errno_t _i64toa_s(__int64 _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
+errno_t _i64toa_s(int64_t _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
 
-DWORD XGetLanguage() 
-{ 
+DWORD XGetLanguage()
+{
 	unsigned char ucLang = app.GetMinecraftLanguage(0);
 	int iLang;
 
 	// check if we should override the system language or not
-	if(ucLang==MINECRAFT_LANGUAGE_DEFAULT)	
+	if(ucLang==MINECRAFT_LANGUAGE_DEFAULT)
 	{
 		sceSystemServiceParamGetInt(SCE_SYSTEM_SERVICE_PARAM_ID_LANG,&iLang);
 	}
@@ -747,8 +747,8 @@ DWORD XGetLanguage()
 	}
 
 }
-DWORD XGetLocale() 
-{ 
+DWORD XGetLocale()
+{
 	int iLang;
 	sceSystemServiceParamGetInt(SCE_SYSTEM_SERVICE_PARAM_ID_LANG,&iLang);
 	switch(iLang)
@@ -784,7 +784,7 @@ DWORD XGetLocale()
 	}
 }
 
-DWORD XEnableGuestSignin(BOOL fEnable) 
-{ 
-	return 0; 
+DWORD XEnableGuestSignin(BOOL fEnable)
+{
+	return 0;
 }

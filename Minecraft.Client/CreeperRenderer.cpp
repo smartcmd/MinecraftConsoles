@@ -34,9 +34,9 @@ int CreeperRenderer::getOverlayColor(shared_ptr<LivingEntity> mob, float br, flo
 
     float step = creeper->getSwelling(a);
 
-    if ((int) (step * 10) % 2 == 0) return 0;
+    if (static_cast<int>(step * 10) % 2 == 0) return 0;
 
-    int _a = (int) (step * 0.2f * 255) + 25;	// 4J - added 25 here as our entities are rendered with alpha test still enabled, and so anything less is invisible
+    int _a = static_cast<int>(step * 0.2f * 255) + 25;	// 4J - added 25 here as our entities are rendered with alpha test still enabled, and so anything less is invisible
     if (_a < 0) _a = 0;
     if (_a > 255) _a = 255;
 

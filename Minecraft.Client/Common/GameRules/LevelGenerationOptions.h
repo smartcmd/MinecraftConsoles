@@ -19,7 +19,7 @@ class GrSource
 public:
 	// 4J-JEV:
 	// Moved all this here; I didn't like that all this header information
-	// was being mixed in with all the game information as they have 
+	// was being mixed in with all the game information as they have
 	// completely different lifespans.
 
 	virtual bool requiresTexturePack()=0;
@@ -146,7 +146,7 @@ public:
 
 private:
 	// This should match the "MapOptionsRule" definition in the XML schema
-	__int64 m_seed;
+	int64_t m_seed;
 	bool m_useFlatWorld;
 	Pos *m_spawnPos;
 	int m_bHasBeenInCreative;
@@ -167,17 +167,17 @@ private:
 	bool m_bLoadingData;
 
 public:
-	LevelGenerationOptions(DLCPack *parentPack = NULL);
+	LevelGenerationOptions(DLCPack *parentPack = nullptr);
 	~LevelGenerationOptions();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType();
-	
+
 	virtual void writeAttributes(DataOutputStream *dos, UINT numAttributes);
 	virtual void getChildren(vector<GameRuleDefinition *> *children);
 	virtual GameRuleDefinition *addChild(ConsoleGameRules::EGameRuleType ruleType);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
-	__int64 getLevelSeed();
+	int64_t getLevelSeed();
 	int getLevelHasBeenInCreative();
 	Pos *getSpawnPos();
 	bool getuseFlatWorld();
@@ -190,7 +190,7 @@ public:
 private:
 	void clearSchematics();
 
-public:	
+public:
 	ConsoleSchematicFile *loadSchematicFile(const wstring &filename, PBYTE pbData, DWORD dwLen);
 
 public:
@@ -202,7 +202,7 @@ public:
 	LevelRuleset *getRequiredGameRules();
 
 	void getBiomeOverride(int biomeId, BYTE &tile, BYTE &topTile);
-	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation = NULL);
+	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation = nullptr);
 
 	void loadStringTable(StringTable *table);
 	LPCWSTR getString(const wstring &key);
@@ -211,7 +211,7 @@ public:
 
 	void loadBaseSaveData();
 	static int packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask);
-	
+
 	// 4J-JEV:
 	// ApplySchematicRules contain limited state
 	// which needs to be reset BEFORE a new game starts.

@@ -277,4 +277,5 @@ public:
 	virtual int getPad() = 0;
 	virtual int getMovieWidth() = 0;
 	virtual int getMovieHeight() = 0;
+	virtual void getMouseToSWFScale(float &scaleX, float &scaleY) = 0;
 };

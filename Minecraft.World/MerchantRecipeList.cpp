@@ -21,35 +21,40 @@ MerchantRecipeList::~MerchantRecipeList()
 
 MerchantRecipe *MerchantRecipeList::getRecipeFor(shared_ptr<ItemInstance> buyA, shared_ptr<ItemInstance> buyB, int selectionHint)
 {
-	if (selectionHint > 0 && selectionHint < m_recipes.size())
+	if (buyA == nullptr)
+	{
+		return nullptr;
+	}
+
+	if (selectionHint > 0 && selectionHint < static_cast<int>(m_recipes.size()))
 	{
 		// attempt to match vs the hint
 		MerchantRecipe *r = m_recipes.at(selectionHint);
-		if (buyA->id == r->getBuyAItem()->id && ((buyB == NULL && !r->hasSecondaryBuyItem()) || (r->hasSecondaryBuyItem() && buyB != NULL && r->getBuyBItem()->id == buyB->id)))
+		if (buyA->id == r->getBuyAItem()->id && ((buyB == nullptr && !r->hasSecondaryBuyItem()) || (r->hasSecondaryBuyItem() && buyB != nullptr && r->getBuyBItem()->id == buyB->id)))
 		{
 			if (buyA->count >= r->getBuyAItem()->count && (!r->hasSecondaryBuyItem() || buyB->count >= r->getBuyBItem()->count))
 			{
 				return r;
 			}
 		}
-		return NULL;
+		return nullptr;
 	}
-	for (int i = 0; i < m_recipes.size(); i++)
+	for (size_t i = 0; i < m_recipes.size(); i++)
 	{
 		MerchantRecipe *r = m_recipes.at(i);
 		if (buyA->id == r->getBuyAItem()->id && buyA->count >= r->getBuyAItem()->count
-			&& ((!r->hasSecondaryBuyItem() && buyB == NULL) || (r->hasSecondaryBuyItem() && buyB != NULL && r->getBuyBItem()->id == buyB->id && buyB->count >= r->getBuyBItem()->count)))
+			&& ((!r->hasSecondaryBuyItem() && buyB == nullptr) || (r->hasSecondaryBuyItem() && buyB != nullptr && r->getBuyBItem()->id == buyB->id && buyB->count >= r->getBuyBItem()->count)))
 		{
 			return r;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool MerchantRecipeList::addIfNewOrBetter(MerchantRecipe *recipe)
 {
 	bool added = false;
-	for (int i = 0; i < m_recipes.size(); i++)
+	for (size_t i = 0; i < m_recipes.size(); i++)
 	{
 		MerchantRecipe *r = m_recipes.at(i);
 		if (recipe->isSame(r))
@@ -69,32 +74,32 @@ bool MerchantRecipeList::addIfNewOrBetter(MerchantRecipe *recipe)
 
 MerchantRecipe *MerchantRecipeList::getMatchingRecipeFor(shared_ptr<ItemInstance> buy, shared_ptr<ItemInstance> buyB, shared_ptr<ItemInstance> sell)
 {
-	for (int i = 0; i < m_recipes.size(); i++)
+	for (size_t i = 0; i < m_recipes.size(); i++)
 	{
 		MerchantRecipe *r = m_recipes.at(i);
 		if (buy->id == r->getBuyAItem()->id && buy->count >= r->getBuyAItem()->count && sell->id == r->getSellItem()->id)
 		{
-			if (!r->hasSecondaryBuyItem() || (buyB != NULL && buyB->id == r->getBuyBItem()->id && buyB->count >= r->getBuyBItem()->count))
+			if (!r->hasSecondaryBuyItem() || (buyB != nullptr && buyB->id == r->getBuyBItem()->id && buyB->count >= r->getBuyBItem()->count))
 			{
 				return r;
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void MerchantRecipeList::writeToStream(DataOutputStream *stream)
 {
-	stream->writeByte((byte) (m_recipes.size() & 0xff));
-	for (int i = 0; i < m_recipes.size(); i++)
+	stream->writeByte(static_cast<byte>(m_recipes.size() & 0xff));
+	for (size_t i = 0; i < m_recipes.size(); i++)
 	{
 		MerchantRecipe *r = m_recipes.at(i);
 		Packet::writeItem(r->getBuyAItem(), stream);
 		Packet::writeItem(r->getSellItem(), stream);
 
 		shared_ptr<ItemInstance> buyBItem = r->getBuyBItem();
-		stream->writeBoolean(buyBItem != NULL);
-		if (buyBItem != NULL)
+		stream->writeBoolean(buyBItem != nullptr);
+		if (buyBItem != nullptr)
 		{
 			Packet::writeItem(buyBItem, stream);
 		}
@@ -149,7 +154,7 @@ CompoundTag *MerchantRecipeList::createTag()
 	CompoundTag *tag = new CompoundTag();
 
 	ListTag<CompoundTag> *list = new ListTag<CompoundTag>(L"Recipes");
-	for (int i = 0; i < m_recipes.size(); i++)
+	for (size_t i = 0; i < m_recipes.size(); i++)
 	{
 		MerchantRecipe *merchantRecipe = m_recipes.at(i);
 		list->add(merchantRecipe->createTag());
@@ -166,6 +171,10 @@ void MerchantRecipeList::push_back(MerchantRecipe *recipe)
 
 MerchantRecipe *MerchantRecipeList::at(size_t index)
 {
+	if (index >= m_recipes.size())
+	{
+		return nullptr;
+	}
 	return m_recipes.at(index);
 }
 

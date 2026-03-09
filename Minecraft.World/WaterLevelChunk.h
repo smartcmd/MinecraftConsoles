@@ -40,7 +40,7 @@ public:
 	void setBlocks(byteArray newBlocks, int sub);
 	int setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting = true);	// 4J - added includeLighting parameter;
 	bool testSetBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p);
-	Random *getRandom(__int64 l);
+	Random *getRandom(int64_t l);
 	virtual Biome *getBiome(int x, int z, BiomeSource *biomeSource);
 	virtual void reSyncLighting() {};	// 4J added
 };

@@ -19,7 +19,7 @@ bool TreeFeature::place(Level *level, Random *random, int x, int y, int z)
 	if (y < 1 || y + treeHeight + 1 > Level::maxBuildHeight) return false;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		PIXBeginNamedEvent(0,"TreeFeature checking intersects");
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();

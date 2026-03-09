@@ -386,12 +386,12 @@ static const int gs_aNumTextElements[ eNumTextTypes ] =
 //----------------------------------------------------------------------------------
 HRESULT CScene_Credits::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	int iPad = *(int *)pInitData->pvInitData;
+	int iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
 	// if we're not in the game, we need to use basescene 0 
-	if(Minecraft::GetInstance()->level==NULL)
+	if(Minecraft::GetInstance()->level==nullptr)
 	{
 		iPad=0;
 	}
@@ -441,7 +441,7 @@ HRESULT CScene_Credits::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 			VOID* pTextObj;
 			XuiObjectFromHandle( text, &pTextObj );
-			m_aTextTypes[ i ].m_appTextElements[ j ] = (CXuiControl *)pTextObj;
+			m_aTextTypes[ i ].m_appTextElements[ j ] = static_cast<CXuiControl *>(pTextObj);
 			m_aTextTypes[ i ].m_appTextElements[ j ]->SetShow( false );
 		}
 	}

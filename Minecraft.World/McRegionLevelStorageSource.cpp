@@ -51,12 +51,12 @@ vector<LevelSummary *> *McRegionLevelStorageSource::getLevelList()
 		wstring levelId = file->getName();
 
 		LevelData *levelData = getDataTagFor(levelId);
-		if (levelData != NULL)
+		if (levelData != nullptr)
 		{
 			bool requiresConversion = levelData->getVersion() != McRegionLevelStorage::MCREGION_VERSION_ID;
 			wstring levelName = levelData->getLevelName();
 
-			if (levelName.empty()) // 4J Jev TODO: levelName can't be NULL? if (levelName == NULL || isEmpty(levelName))
+			if (levelName.empty()) // 4J Jev TODO: levelName can't be nullptr? if (levelName == nullptr || isEmpty(levelName))
 			{
 				levelName = levelId;
 			}
@@ -76,14 +76,14 @@ void McRegionLevelStorageSource::clearAll()
 shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir)
 {
 	//        return new LevelStorageProfilerDecorator(new McRegionLevelStorage(baseDir, levelId, createPlayerDir));
-	return shared_ptr<LevelStorage>(new McRegionLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
+	return std::make_shared<McRegionLevelStorage>(saveFile, baseDir, levelId, createPlayerDir);
 }
 
 bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId)
 {
 	// check if there is old file format level data
 	LevelData *levelData = getDataTagFor(saveFile, levelId);
-	if (levelData == NULL || levelData->getVersion() != 0)
+	if (levelData == nullptr || levelData->getVersion() != 0)
 	{
 		delete levelData;
 		return false;
@@ -96,7 +96,7 @@ bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const 
 bool McRegionLevelStorageSource::requiresConversion(ConsoleSaveFile *saveFile, const wstring& levelId)
 {
 	LevelData *levelData = getDataTagFor(saveFile, levelId);
-	if (levelData == NULL || levelData->getVersion() != 0)
+	if (levelData == nullptr || levelData->getVersion() != 0)
 	{
 		delete levelData;
 		return false;
@@ -275,7 +275,7 @@ void McRegionLevelStorageSource::eraseFolders(vector<File *> *folders, int curre
 		folder->_delete();
 
 		currentCount++;
-		int percent = (int) Math::round(100.0 * (double) currentCount / (double) totalCount);
+		int percent = static_cast<int>(Math::round(100.0 * (double)currentCount / (double)totalCount));
 		progress->progressStagePercentage(percent);
 	}
 }
