@@ -121,13 +121,11 @@ bool PortalTile::trySpawnPortal(Level* level, int x, int y, int z, bool actually
 	bool changedx = false; // changed x so it can be reverted if two portals are posible
 	if (level->getTile(x - xd, y, z) == 0)
 	{
-		level->setTileAndData(x, y + 6, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
 		changedx = true;
 		x--;
 	}
 	else if (level->getTile(x, y, z - zd) == 0)
 	{
-		level->setTileAndData(x, y + 7, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
 		z--;
 	}
 
@@ -141,10 +139,9 @@ bool PortalTile::trySpawnPortal(Level* level, int x, int y, int z, bool actually
 		{
 			if (level->getTile(x, y, z - zd) == 0)
 			{
-				level->setTileAndData(x, y + 7, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
 				z--;
 			}
-			if (changedx) x++;
+			if (changedx) x++; // revert x (this check wants to check z not x and z)
 			if (!PortalTile::validPortalFrame(level, x, y, z, 0, zd, actuallySpawn))
 			{
 				return false;
