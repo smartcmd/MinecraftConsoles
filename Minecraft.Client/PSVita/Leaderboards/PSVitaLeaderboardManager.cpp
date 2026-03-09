@@ -20,7 +20,7 @@ PSVitaLeaderboardManager::PSVitaLeaderboardManager() : SonyLeaderboardManager() 
 
 HRESULT PSVitaLeaderboardManager::initialiseScoreUtility() 
 {
-	return sceNpScoreInit( SCE_KERNEL_DEFAULT_PRIORITY_USER, SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT, NULL);
+	return sceNpScoreInit( SCE_KERNEL_DEFAULT_PRIORITY_USER, SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT, nullptr);
 }
 
 bool PSVitaLeaderboardManager::scoreUtilityAlreadyInitialised(HRESULT hr) 

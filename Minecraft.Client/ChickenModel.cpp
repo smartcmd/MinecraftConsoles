@@ -8,35 +8,35 @@ ChickenModel::ChickenModel() : Model()
     int yo = 16;
     head = new ModelPart(this, 0, 0);
     head->addBox(-2.0f, -6.0f, -2.0f, 4, 6, 3, 0.0f); // Head
-    head->setPos(0, (float)(-1 + yo), -4);
+    head->setPos(0, static_cast<float>(-1 + yo), -4);
 
     beak = new ModelPart(this, 14, 0);
     beak->addBox(-2.0f, -4.0f, -4.0f, 4, 2, 2, 0.0f); // Beak
-    beak->setPos(0, (float)(-1 + yo), -4);
+    beak->setPos(0, static_cast<float>(-1 + yo), -4);
 
     redThing = new ModelPart(this, 14, 4);
     redThing->addBox(-1.0f, -2.0f, -3.0f, 2, 2, 2, 0.0f); // Beak
-    redThing->setPos(0, (float)(-1 + yo), -4);
+    redThing->setPos(0, static_cast<float>(-1 + yo), -4);
 
     body = new ModelPart(this, 0, 9);
     body->addBox(-3.0f, -4.0f, -3.0f, 6, 8, 6, 0.0f); // Body
-    body->setPos(0, (float)(0 + yo), 0);
+    body->setPos(0, static_cast<float>(0 + yo), 0);
 
     leg0 = new ModelPart(this, 26, 0);
     leg0->addBox(-1.0f, 0.0f, -3.0f, 3, 5, 3); // Leg0
-    leg0->setPos(-2, (float)(3 + yo), 1);
+    leg0->setPos(-2, static_cast<float>(3 + yo), 1);
 
     leg1 = new ModelPart(this, 26, 0);
     leg1->addBox(-1.0f, 0.0f, -3.0f, 3, 5, 3); // Leg1
-    leg1->setPos(1, (float)(3 + yo), 1);
+    leg1->setPos(1, static_cast<float>(3 + yo), 1);
 
     wing0 = new ModelPart(this, 24, 13);
     wing0->addBox(0.0f, 0.0f, -3.0f, 1, 4, 6); // Wing0
-    wing0->setPos(-4, (float)(-3 + yo), 0);
+    wing0->setPos(-4, static_cast<float>(-3 + yo), 0);
 
     wing1 = new ModelPart(this, 24, 13);
     wing1->addBox(-1.0f, 0.0f, -3.0f, 1, 4, 6); // Wing1
-    wing1->setPos(4, (float)(-3 + yo), 0);
+    wing1->setPos(4, static_cast<float>(-3 + yo), 0);
 
 	// 4J added - compile now to avoid random performance hit first time cubes are rendered
     head->compile(1.0f/16.0f);

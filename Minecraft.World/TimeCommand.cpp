@@ -81,5 +81,5 @@ shared_ptr<GameCommandPacket> TimeCommand::preparePacket(bool night)
 
 	dos.writeBoolean(night);
 
-	return shared_ptr<GameCommandPacket>( new GameCommandPacket(eGameCommand_Time, baos.toByteArray() ));
+	return std::make_shared<GameCommandPacket>(eGameCommand_Time, baos.toByteArray());
 }

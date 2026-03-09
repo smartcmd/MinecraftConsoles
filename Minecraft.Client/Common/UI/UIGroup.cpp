@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "UIGroup.h"
 
+#include "UI.h"
+
 UIGroup::UIGroup(EUIGroup group, int iPad)
 {
 	m_group = group;
@@ -23,22 +25,22 @@ UIGroup::UIGroup(EUIGroup group, int iPad)
 #endif
 	}
 
-	m_tooltips = (UIComponent_Tooltips *)m_layers[(int)eUILayer_Tooltips]->addComponent(0, eUIComponent_Tooltips);
+	m_tooltips = (UIComponent_Tooltips *)m_layers[static_cast<int>(eUILayer_Tooltips)]->addComponent(0, eUIComponent_Tooltips);
 
-	m_tutorialPopup = NULL;
-	m_hud = NULL;
-	m_pressStartToPlay = NULL;
+	m_tutorialPopup = nullptr;
+	m_hud = nullptr;
+	m_pressStartToPlay = nullptr;
 	if(m_group != eUIGroup_Fullscreen)
 	{
-		m_tutorialPopup = (UIComponent_TutorialPopup *)m_layers[(int)eUILayer_Popup]->addComponent(m_iPad, eUIComponent_TutorialPopup);
+		m_tutorialPopup = (UIComponent_TutorialPopup *)m_layers[static_cast<int>(eUILayer_Popup)]->addComponent(m_iPad, eUIComponent_TutorialPopup);
 
-		m_hud = (UIScene_HUD *)m_layers[(int)eUILayer_HUD]->addComponent(m_iPad, eUIScene_HUD);
+		m_hud = (UIScene_HUD *)m_layers[static_cast<int>(eUILayer_HUD)]->addComponent(m_iPad, eUIScene_HUD);
 
 		//m_layers[(int)eUILayer_Chat]->addComponent(m_iPad, eUIComponent_Chat);
 	}
 	else
 	{
-		m_pressStartToPlay = (UIComponent_PressStartToPlay *)m_layers[(int)eUILayer_Tooltips]->addComponent(0, eUIComponent_PressStartToPlay);
+		m_pressStartToPlay = (UIComponent_PressStartToPlay *)m_layers[static_cast<int>(eUILayer_Tooltips)]->addComponent(0, eUIComponent_PressStartToPlay);
 	}
 
 	// 4J Stu - Pre-allocate this for cached rendering in scenes. It's horribly slow to do dynamically, but we should only need one
@@ -65,7 +67,7 @@ void UIGroup::ReloadAll()
 	if(highestRenderable < eUILayer_Fullscreen) highestRenderable = eUILayer_Fullscreen;
 	for(; highestRenderable >= 0; --highestRenderable)
 	{
-		if(highestRenderable < eUILayer_COUNT) m_layers[highestRenderable]->ReloadAll(highestRenderable != (int)eUILayer_Fullscreen);
+		if(highestRenderable < eUILayer_COUNT) m_layers[highestRenderable]->ReloadAll(highestRenderable != static_cast<int>(eUILayer_Fullscreen));
 	}
 }
 
@@ -127,7 +129,7 @@ void UIGroup::getRenderDimensions(S32 &width, S32 &height)
 // NAVIGATION
 bool UIGroup::NavigateToScene(int iPad, EUIScene scene, void *initData, EUILayer layer)
 {
-	bool succeeded = m_layers[(int)layer]->NavigateToScene(iPad, scene, initData);
+	bool succeeded = m_layers[static_cast<int>(layer)]->NavigateToScene(iPad, scene, initData);
 	updateStackStates();
 	return succeeded;
 }
@@ -151,9 +153,9 @@ void UIGroup::closeAllScenes()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( m_iPad >= 0 )
 	{
-		if(pMinecraft != NULL && pMinecraft->localgameModes[m_iPad] != NULL )
+		if(pMinecraft != nullptr && pMinecraft->localgameModes[m_iPad] != nullptr )
 		{
-			TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+			TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 
 			// This just allows it to be shown
 			gameMode->getTutorial()->showTutorialPopup(true);
@@ -163,14 +165,14 @@ void UIGroup::closeAllScenes()
 	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)
 	{
 		// Ignore the error layer
-		if(i != (int)eUILayer_Error) m_layers[i]->closeAllScenes();
+		if(i != static_cast<int>(eUILayer_Error)) m_layers[i]->closeAllScenes();
 	}
 	updateStackStates();
 }
 
 UIScene *UIGroup::GetTopScene(EUILayer layer)
 {
-	return m_layers[(int)layer]->GetTopScene();
+	return m_layers[static_cast<int>(layer)]->GetTopScene();
 }
 
 bool UIGroup::GetMenuDisplayed()
@@ -214,10 +216,10 @@ UIScene *UIGroup::getCurrentScene()
 	{
 		pScene=m_layers[i]->getCurrentScene();
 
-		if(pScene!=NULL) return pScene;
+		if(pScene!=nullptr) return pScene;
 	}
 
-	return NULL;
+	return nullptr;
 }
 #endif
 
@@ -412,16 +414,16 @@ int UIGroup::getCommandBufferList()
 	return m_commandBufferList;
 }
 
-// Returns the first scene of given type if it exists, NULL otherwise
+// Returns the first scene of given type if it exists, nullptr otherwise 
 UIScene *UIGroup::FindScene(EUIScene sceneType)
 {
-	UIScene *pScene = NULL;
+	UIScene *pScene = nullptr;
 
 	for (int i = 0; i < eUILayer_COUNT; i++)
 	{
 		pScene = m_layers[i]->FindScene(sceneType);
 #ifdef __PS3__
-		if (pScene != NULL) return pScene;
+		if (pScene != nullptr) return pScene;
 #else
 		if (pScene != nullptr) return pScene;
 #endif

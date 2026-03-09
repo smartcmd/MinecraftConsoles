@@ -49,7 +49,7 @@ SimplexNoise::~SimplexNoise()
 
 int SimplexNoise::fastfloor(double x)
 {
-	return x > 0 ? (int) x : (int) x - 1;
+	return x > 0 ? static_cast<int>(x) : static_cast<int>(x) - 1;
 }
 
 double SimplexNoise::dot(int *g, double x, double y)

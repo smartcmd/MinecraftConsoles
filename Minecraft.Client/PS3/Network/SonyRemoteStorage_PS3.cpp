@@ -35,7 +35,11 @@ void SonyRemoteStorage_PS3::npauthhandler(int event, int result, void *arg)
 	{
 		psnTicketSize = result;
 		psnTicket = malloc(psnTicketSize);
+<<<<<<< HEAD
+		if (psnTicket == nullptr) 
+=======
 		if (psnTicket == NULL)
+>>>>>>> origin/main
 		{
 			app.DebugPrintf("Failed to allocate for ticket\n");
 		}
@@ -78,7 +82,7 @@ int SonyRemoteStorage_PS3::initPreconditions()
 		cellSysutilCheckCallback();
 		sys_timer_usleep(50000); //50 milliseconds.
 	}
-	if(psnTicket == NULL)
+	if(psnTicket == nullptr)
 		return -1;
 
 	return 0;
@@ -86,7 +90,7 @@ int SonyRemoteStorage_PS3::initPreconditions()
 
 void SonyRemoteStorage_PS3::staticInternalCallback(const SceRemoteStorageEvent event, int32_t retCode, void * userData)
 {
-	((SonyRemoteStorage_PS3*)userData)->internalCallback(event, retCode);
+	static_cast<SonyRemoteStorage_PS3 *>(userData)->internalCallback(event, retCode);
 }
 
 void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, int32_t retCode)
@@ -239,7 +243,7 @@ bool SonyRemoteStorage_PS3::init(CallbackFunc cb, LPVOID lpParam)
 	params.timeout.receiveMs = 120 * 1000;	//120 seconds is the default
 	params.timeout.sendMs = 120 * 1000;		//120 seconds is the default
 	params.pool.memPoolSize = 7 * 1024 * 1024;
-	if(m_memPoolBuffer == NULL)
+	if(m_memPoolBuffer == nullptr)
 		m_memPoolBuffer = malloc(params.pool.memPoolSize);
 	params.pool.memPoolBuffer = m_memPoolBuffer;
 
@@ -343,9 +347,9 @@ bool SonyRemoteStorage_PS3::setDataInternal()
 		bool bHostOptionsRead;
 		DWORD uiTexturePack;
 		char seed[22];
-		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
+		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,reinterpret_cast<unsigned char *>(seed), uiHostOptions, bHostOptionsRead, uiTexturePack);
 
-		int64_t iSeed = strtoll(seed,NULL,10);
+		int64_t iSeed = strtoll(seed, nullptr,10);
 		char seedHex[17];
 		sprintf(seedHex,"%016llx",iSeed);
 		memcpy(descData.m_seed,seedHex,16); // Don't copy null
@@ -430,20 +434,20 @@ void SonyRemoteStorage_PS3::runCallback()
 
 int SonyRemoteStorage_PS3::SaveCompressCallback(LPVOID lpParam,bool bRes)
 {
-	SonyRemoteStorage_PS3* pRS = (SonyRemoteStorage_PS3*)lpParam;
+	SonyRemoteStorage_PS3* pRS = static_cast<SonyRemoteStorage_PS3 *>(lpParam);
 	pRS->m_compressedSaveState = e_state_Idle;
 	return 0;
 }
 
 int SonyRemoteStorage_PS3::LoadCompressCallback(void *pParam,bool bIsCorrupt, bool bIsOwner)
 {
-	SonyRemoteStorage_PS3* pRS = (SonyRemoteStorage_PS3*)pParam;
+	SonyRemoteStorage_PS3* pRS = static_cast<SonyRemoteStorage_PS3 *>(pParam);
 	int origFilesize = StorageManager.GetSaveSize();
 	void* pOrigSaveData = malloc(origFilesize);
 	unsigned int retFilesize;
 	StorageManager.GetSaveData( pOrigSaveData, &retFilesize );
 	// check if this save file is already compressed
-	if(*((int*)pOrigSaveData) != 0)
+	if(*static_cast<int *>(pOrigSaveData) != 0)
 	{
 		app.DebugPrintf("compressing save data\n");
 
@@ -451,7 +455,7 @@ int SonyRemoteStorage_PS3::LoadCompressCallback(void *pParam,bool bIsCorrupt, bo
 		// We add 4 bytes to the start so that we can signal compressed data
 		// And another 4 bytes to store the decompressed data size
 		unsigned int compLength = origFilesize+8;
-		byte *compData = (byte *)malloc( compLength );
+		byte *compData = static_cast<byte *>(malloc(compLength));
 		Compression::UseDefaultThreadStorage();
 		Compression::getCompression()->Compress(compData+8,&compLength,pOrigSaveData,origFilesize);
 		ZeroMemory(compData,8);

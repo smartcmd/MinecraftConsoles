@@ -18,9 +18,9 @@ DispenserTile::DispenserTile(int id) : BaseEntityTile(id, Material::stone)
 {
 	random = new Random();
 
-	iconTop = NULL;
-	iconFront = NULL;
-	iconFrontVertical = NULL;
+	iconTop = nullptr;
+	iconFront = nullptr;
+	iconFrontVertical = nullptr;
 }
 
 int DispenserTile::getTickDelay(Level *level)
@@ -115,7 +115,7 @@ void DispenserTile::dispenseFrom(Level *level, int x, int y, int z)
 {
 	BlockSourceImpl source(level, x, y, z);
 	shared_ptr<DispenserTileEntity> trap = dynamic_pointer_cast<DispenserTileEntity>( source.getEntity() );
-	if (trap == NULL) return;
+	if (trap == nullptr) return;
 
 	int slot = trap->getRandomSlot();
 	if (slot < 0)
@@ -168,7 +168,7 @@ void DispenserTile::tick(Level *level, int x, int y, int z, Random *random)
 
 shared_ptr<TileEntity> DispenserTile::newTileEntity(Level *level)
 {
-	return shared_ptr<DispenserTileEntity>( new DispenserTileEntity() );
+	return std::make_shared<DispenserTileEntity>();
 }
 
 void DispenserTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
@@ -186,12 +186,12 @@ void DispenserTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Li
 void DispenserTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 {
 	shared_ptr<Container> container = dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
-	if (container != NULL )
+	if (container != nullptr )
 	{
 		for (unsigned int i = 0; i < container->getContainerSize(); i++)
 		{
 			shared_ptr<ItemInstance> item = container->getItem(i);
-			if (item != NULL)
+			if (item != nullptr)
 			{
 				float xo = random->nextFloat() * 0.8f + 0.1f;
 				float yo = random->nextFloat() * 0.8f + 0.1f;
@@ -203,16 +203,16 @@ void DispenserTile::onRemove(Level *level, int x, int y, int z, int id, int data
 					if (count > item->count) count = item->count;
 					item->count -= count;
 
-					shared_ptr<ItemInstance> newItem = shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) );
+					shared_ptr<ItemInstance> newItem = std::make_shared<ItemInstance>(item->id, count, item->getAuxValue());
 					newItem->set4JData( item->get4JData() );
-					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, newItem ) );
+					shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x + xo, y + yo, z + zo, newItem);
 					float pow = 0.05f;
-					itemEntity->xd = (float) random->nextGaussian() * pow;
-					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random->nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 					level->addEntity(itemEntity);
 				}

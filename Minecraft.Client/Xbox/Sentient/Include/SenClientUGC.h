@@ -97,7 +97,7 @@ namespace Sentient
 	//   metadata for a lot of UGCs at once.
 	// Note: if a level has been uploaded with main data before, and the creator
 	//   wants to just modify the metadata, they can upload the metadata with the
-	//   maindatablobs being NULL.
+	//   maindatablobs being nullptr.
     // NOTE: for large items, use the SenUGCUploadMainData method with the SenUGCProgressInfo
     //   signature so you can get the running progress and a cancellation token 
     //   to abort the upload (allowing UI for the user, etc)
@@ -159,7 +159,7 @@ namespace Sentient
     //   be used to abort the upload. This is useful for large uploads where 
     //   you may want to allow the user to cancel.
     // NOTE: This call is asynchronous ONLY and will error for synchronous 
-    //   attempts with a NULL param for userCallback.
+    //   attempts with a nullptr param for userCallback.
     // There are multiple data blobs supported (the exact number is defined in 
 	//   SenUGCMainData_NrBlobs) on subsequent calls. Slot zero is to be used by a 
     //   game to store a preview thumbnail, which can then be downloaded without 
@@ -172,7 +172,7 @@ namespace Sentient
 	//   metadata for a lot of UGCs at once.
 	// NOTE: if a level has been uploaded with main data before, and the creator
 	//   wants to just modify the metadata, they can upload the metadata with the
-	//   main data blob being NULL. 
+	//   main data blob being nullptr. 
     // NOTE: If a creator uploads a data blob again, it will overwrite the previous
     //   stored blob with the new one.
 	//************************************
@@ -848,8 +848,8 @@ namespace Sentient
 	///
 	/// @param[in]      culture
 	///                 This is the result of a call to SenCultureFind() or SenCultureGet*().
-	///                 You may also pass NULL to use the culture set with SenCultureSetCurrent().
-	///					May be NULL for default culture.
+	///                 You may also pass nullptr to use the culture set with SenCultureSetCurrent().
+	///					May be nullptr for default culture.
 	///
 	/// @param[in]		maxResults
 	///					Used to indicate the number of items to be returned by @a out_feedInfo.

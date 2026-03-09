@@ -31,7 +31,7 @@ ThrownPotion::ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, int potio
 {
 	_init();
 
-	potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, potionValue));
+	potionItem = std::make_shared<ItemInstance>(Item::potion, 1, potionValue);
 }
 
 ThrownPotion::ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<ItemInstance> potion) : Throwable(level, mob)
@@ -45,7 +45,7 @@ ThrownPotion::ThrownPotion(Level *level, double x, double y, double z, int potio
 {
 	_init();
 
-	potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, potionValue));
+	potionItem = std::make_shared<ItemInstance>(Item::potion, 1, potionValue);
 }
 
 ThrownPotion::ThrownPotion(Level *level, double x, double y, double z, shared_ptr<ItemInstance> potion) : Throwable(level, x, y, z)
@@ -72,13 +72,13 @@ float ThrownPotion::getThrowUpAngleOffset()
 
 void ThrownPotion::setPotionValue(int potionValue)
 {
-	if (potionItem == NULL) potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, 0) );
+	if (potionItem == nullptr) potionItem = std::make_shared<ItemInstance>(Item::potion, 1, 0);
 	potionItem->setAuxValue(potionValue);
 }
 
 int ThrownPotion::getPotionValue()
 {
-	if (potionItem == NULL) potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, 0) );
+	if (potionItem == nullptr) potionItem = std::make_shared<ItemInstance>(Item::potion, 1, 0);
 	return potionItem->getAuxValue();
 }
 
@@ -88,12 +88,12 @@ void ThrownPotion::onHit(HitResult *res)
 	{
 		vector<MobEffectInstance *> *mobEffects = Item::potion->getMobEffects(potionItem);
 
-		if (mobEffects != NULL && !mobEffects->empty())
+		if (mobEffects != nullptr && !mobEffects->empty())
 		{
 			AABB *aoe = bb->grow(SPLASH_RANGE, SPLASH_RANGE / 2, SPLASH_RANGE);
 			vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(LivingEntity), aoe);
 
-			if (entitiesOfClass != NULL && !entitiesOfClass->empty())
+			if (entitiesOfClass != nullptr && !entitiesOfClass->empty())
 			{
 				for(auto & it : *entitiesOfClass)
 				{
@@ -117,7 +117,7 @@ void ThrownPotion::onHit(HitResult *res)
 							}
 							else
 							{
-								int duration = (int) (scale * (double) effect->getDuration() + .5);
+								int duration = static_cast<int>(scale * (double)effect->getDuration() + .5);
 								if (duration > SharedConstants::TICKS_PER_SECOND)
 								{
 									e->addEffect(new MobEffectInstance(id, duration, effect->getAmplifier()));
@@ -129,7 +129,7 @@ void ThrownPotion::onHit(HitResult *res)
 			}
 			delete entitiesOfClass;
 		}
-		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), getPotionValue() );
+		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, static_cast<int>(Math::round(x)), static_cast<int>(Math::round(y)), static_cast<int>(Math::round(z)), getPotionValue() );
 
 		remove();
 	}
@@ -148,12 +148,12 @@ void ThrownPotion::readAdditionalSaveData(CompoundTag *tag)
 		setPotionValue(tag->getInt(L"potionValue"));
 	}
 
-	if (potionItem == NULL) remove();
+	if (potionItem == nullptr) remove();
 }
 
 void ThrownPotion::addAdditonalSaveData(CompoundTag *tag)
 {
 	Throwable::addAdditonalSaveData(tag);
 
-	if (potionItem != NULL) tag->putCompound(L"Potion", potionItem->save(new CompoundTag()));
+	if (potionItem != nullptr) tag->putCompound(L"Potion", potionItem->save(new CompoundTag()));
 }

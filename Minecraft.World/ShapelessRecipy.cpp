@@ -73,11 +73,11 @@ shared_ptr<ItemInstance> ShapelessRecipy::assemble(shared_ptr<CraftingContainer>
 
 int ShapelessRecipy::size() 
 {
-	return (int)ingredients->size();
+	return static_cast<int>(ingredients->size());
 }
 
 // 4J-PB
-bool ShapelessRecipy::requires(int iRecipe) 
+bool ShapelessRecipy::reqs(int iRecipe) 
 {
 	vector <ItemInstance *> *tempList = new vector<ItemInstance *>;
 
@@ -97,7 +97,7 @@ bool ShapelessRecipy::requires(int iRecipe)
 	return false;
 }
 
-void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq) 
+void ShapelessRecipy::reqs(INGREDIENTS_REQUIRED *pIngReq) 
 {
 	int iCount=0;
 	bool bFound;

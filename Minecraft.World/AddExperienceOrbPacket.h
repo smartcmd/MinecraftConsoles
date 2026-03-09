@@ -19,6 +19,6 @@ public:
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddExperienceOrbPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AddExperienceOrbPacket>(); }
 	virtual int getId() { return 26; }
 };

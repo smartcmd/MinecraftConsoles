@@ -18,7 +18,7 @@ TitleScreen::TitleScreen()
 {
 	// 4J - added initialisers
 	vo = 0;
-	multiplayerButton = NULL;
+	multiplayerButton = nullptr;
 
     splash = L"missingno";
 //    try {	// 4J - removed try/catch
@@ -93,7 +93,7 @@ void TitleScreen::init()
         buttons.push_back(new Button(4, width / 2 + 2, topPos + spacing * 3 + 12, 98, 20, language->getElement(L"menu.quit")));
     }
 
-    if (minecraft->user == NULL)
+    if (minecraft->user == nullptr)
 	{
         multiplayerButton->active = false;
     }

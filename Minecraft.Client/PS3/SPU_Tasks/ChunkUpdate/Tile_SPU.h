@@ -242,7 +242,7 @@ public:
     Icon_SPU *getTexture(int face, int data);
     Icon_SPU *getTexture(int face);
 	public:
-    void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL);	// 4J added forceData, forceEntity param
+    void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr);	// 4J added forceData, forceEntity param
 	double getShapeX0();
 	double getShapeX1();
 	double getShapeY0();
@@ -465,7 +465,7 @@ public:
 	double getShapeZ1() { return ms_pTileData->zz1[id]; }
 	Material_SPU* getMaterial();
 
-	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL);	// 4J added forceData, forceEntity param
+	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr);	// 4J added forceData, forceEntity param
 	virtual void updateDefaultShape();
 	virtual void setShape(float x0, float y0, float z0, float x1, float y1, float z1);
 	virtual float getBrightness(ChunkRebuildData *level, int x, int y, int z);

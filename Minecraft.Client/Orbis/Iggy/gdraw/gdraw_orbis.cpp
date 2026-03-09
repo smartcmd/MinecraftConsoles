@@ -353,7 +353,7 @@ static void gdraw_defragment_cache(GDrawHandleCache *c, GDrawStats *stats)
 
    // synchronize
    compute_to_graphics_sync();
-   gdraw->gfxc->setCsShader(NULL);
+   gdraw->gfxc->setCsShader(nullptr);
    gdraw->gfxc->setShaderType(Gnm::kShaderTypeGraphics);
    
    // don't need to wait till GPU is done since we never access GPU memory from the
@@ -365,7 +365,7 @@ static void api_free_resource(GDrawHandle *r)
    if (!r->cache->is_vertex) {
       for (S32 i=0; i < MAX_SAMPLERS; i++)
          if (gdraw->active_tex[i] == (GDrawTexture *) r)
-            gdraw->active_tex[i] = NULL;
+            gdraw->active_tex[i] = nullptr;
    }
 }
 
@@ -410,7 +410,7 @@ static void track_staging_alloc_attempt(U32 size, U32 align)
 static void track_staging_alloc_failed()
 {
    if (gdraw->staging_stats.allocs_attempted == gdraw->staging_stats.allocs_succeeded + 1) { // warn the first time we run out of mem
-      IggyGDrawSendWarning(NULL, "GDraw out of staging memory");
+      IggyGDrawSendWarning(nullptr, "GDraw out of staging memory");
    }
 }
 
@@ -537,7 +537,7 @@ static void gpu_compute_memset(void *ptr, U32 value, U32 size_in_bytes)
    // through the regular caches.
    gfxc->flushShaderCachesAndWait(Gnm::kCacheActionWriteBackL2Volatile, 0, Gnm::kStallCommandBufferParserDisable);
    gfxc->setShaderType(Gnm::kShaderTypeGraphics);
-   gfxc->setCsShader(NULL);
+   gfxc->setCsShader(nullptr);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -549,8 +549,8 @@ GDrawTexture * RADLINK gdraw_orbis_WrappedTextureCreate(Gnm::Texture *tex)
 {
    GDrawStats stats = {};
    GDrawHandle *p = gdraw_res_alloc_begin(gdraw->texturecache, 0, &stats);
-   p->handle.tex.gnm_ptr = NULL;
-   gdraw_HandleCacheAllocateEnd(p, 0, NULL, GDRAW_HANDLE_STATE_user_owned);
+   p->handle.tex.gnm_ptr = nullptr;
+   gdraw_HandleCacheAllocateEnd(p, 0, nullptr, GDRAW_HANDLE_STATE_user_owned);
    gdraw_orbis_WrappedTextureChange((GDrawTexture *) p, tex);
    return (GDrawTexture *) p;
 }
@@ -583,13 +583,13 @@ static void RADLINK gdraw_SetTextureUniqueID(GDrawTexture *tex, void *old_id, vo
 static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height, gdraw_texture_format gformat, U32 flags, GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *stats)
 {
    S32 bytes_pixel = 4;
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    Gnm::Texture gt;
    Gnm::SizeAlign sa;
 
    Gnm::DataFormat format = Gnm::kDataFormatR8G8B8A8Unorm;
    if (width > MAX_TEXTURE2D_DIM || height > MAX_TEXTURE2D_DIM) {
-      IggyGDrawSendWarning(NULL, "GDraw %d x %d texture not supported by hardware (dimension limit %d)", width, height, MAX_TEXTURE2D_DIM);
+      IggyGDrawSendWarning(nullptr, "GDraw %d x %d texture not supported by hardware (dimension limit %d)", width, height, MAX_TEXTURE2D_DIM);
       return false;
    }
 
@@ -742,8 +742,8 @@ static void RADLINK gdraw_UpdateTextureEnd(GDrawTexture *t, void *unique_id, GDr
 static void RADLINK gdraw_FreeTexture(GDrawTexture *tt, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *t = (GDrawHandle *) tt;
-   assert(t != NULL);
-   if (t->owner == unique_id || unique_id == NULL) {
+   assert(t != nullptr);
+   if (t->owner == unique_id || unique_id == nullptr) {
       if (t->cache == &gdraw->rendertargets) {
          gdraw_HandleCacheUnlock(t);
          // cache it by simply not freeing it
@@ -863,7 +863,7 @@ static rrbool RADLINK gdraw_TryLockVertexBuffer(GDrawVertexBuffer *vb, void *uni
 static void RADLINK gdraw_FreeVertexBuffer(GDrawVertexBuffer *vb, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *h = (GDrawHandle *) vb;
-   assert(h != NULL); // @GDRAW_ASSERT
+   assert(h != nullptr); // @GDRAW_ASSERT
    if (h->owner == unique_id)
       gdraw_res_kill(h, stats);
 }
@@ -891,19 +891,19 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 
    t = gdraw_HandleCacheAllocateBegin(&gdraw->rendertargets);
    if (!t) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: hit handle limit");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: hit handle limit");
       return t;
    }
 
    U8 *ptr = (U8 *)gdraw_arena_alloc(&gdraw->rt_arena, gdraw->rt_colorbuffer_sa.m_size, gdraw->rt_colorbuffer_sa.m_align);
    if (!ptr) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: out of rendertarget texture memory");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: out of rendertarget texture memory");
       gdraw_HandleCacheAllocateFail(t);
-      return NULL;
+      return nullptr;
    }
 
    t->fence = get_next_fence();
-   t->raw_ptr = NULL;
+   t->raw_ptr = nullptr;
 
    t->handle.tex.gnm_ptr = ptr;
    t->handle.tex.gnm->initFromRenderTarget(&gdraw->rt_colorbuffer, false);
@@ -1065,7 +1065,7 @@ static void set_common_renderstate()
 
    // clear our state caching
    memset(gdraw->active_tex, 0, sizeof(gdraw->active_tex));
-   gdraw->cur_ps = NULL;
+   gdraw->cur_ps = nullptr;
    gdraw->scissor_state = ~0u;
    gdraw->blend_mode = -1;
    
@@ -1230,7 +1230,7 @@ static void eliminate_fast_clear()
    }
 
    gfxc->setCbControl(Gnm::kCbModeEliminateFastClear, Gnm::kRasterOpSrcCopy);
-   gfxc->setPsShader(NULL);
+   gfxc->setPsShader(nullptr);
    set_viewport_raw(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0);
    set_projection_raw(r.x0, r.x1, r.y1, r.y0);
    GDrawStats stats = {}; // we already counted these clears once, so don't add to main stats
@@ -1245,7 +1245,7 @@ static void eliminate_fast_clear()
    set_viewport();
    set_projection();
 
-   gdraw->cur_ps = NULL;
+   gdraw->cur_ps = nullptr;
    gdraw->cur->needs_clear_eliminate = false;
 }
 
@@ -1276,7 +1276,7 @@ static inline U32 pack_color_8888(F32 x, F32 y, F32 z, F32 w)
 
 void gdraw_orbis_ClearWholeRenderTarget(const F32 clear_color_rgba[4])
 {
-   assert(gdraw->gfxc != NULL); // call after gdraw_orbis_Begin
+   assert(gdraw->gfxc != nullptr); // call after gdraw_orbis_Begin
 
    gdraw->cur = gdraw->frame;
    set_common_renderstate();
@@ -1336,16 +1336,16 @@ static void RADLINK gdraw_SetViewSizeAndWorldScale(S32 w, S32 h, F32 scalex, F32
 // must include anything necessary for texture creation/update
 static void RADLINK gdraw_RenderingBegin(void)
 {
-   assert(gdraw->gfxc != NULL); // call after gdraw_orbis_Begin
+   assert(gdraw->gfxc != nullptr); // call after gdraw_orbis_Begin
 
    // unbind all shaders
    Gnmx::GfxContext *gfxc = gdraw->gfxc;
-   gfxc->setVsShader(NULL, 0, (void*)0);
-   gfxc->setPsShader(NULL);
-   gfxc->setCsShader(NULL);
-   gfxc->setLsHsShaders(NULL, 0, (void*)0, NULL, 0);
-   gfxc->setEsShader(NULL, 0, (void *) 0);
-   gfxc->setGsVsShaders(NULL);
+   gfxc->setVsShader(nullptr, 0, (void*)0);
+   gfxc->setPsShader(nullptr);
+   gfxc->setCsShader(nullptr);
+   gfxc->setLsHsShaders(nullptr, 0, (void*)0, nullptr, 0);
+   gfxc->setEsShader(nullptr, 0, (void *) 0);
+   gfxc->setGsVsShaders(nullptr);
 
    set_common_renderstate();
 }
@@ -1406,7 +1406,7 @@ GDRAW_MAYBE_UNUSED static bool mem_is_direct_and_write_combined_or_cached(const 
 
 void gdraw_orbis_Begin(sce::Gnmx::GfxContext *context, void *staging_buffer, U32 staging_buf_bytes)
 {
-   assert(gdraw->gfxc == NULL); // may not nest Begin calls
+   assert(gdraw->gfxc == nullptr); // may not nest Begin calls
 
    // make sure that the memory setup is sensible.
    // if any of these asserts fire, please relocate your command buffers
@@ -1426,13 +1426,13 @@ void gdraw_orbis_Begin(sce::Gnmx::GfxContext *context, void *staging_buffer, U32
 
 void gdraw_orbis_End(gdraw_orbis_staging_stats *stats)
 {
-   assert(gdraw->gfxc != NULL); // please keep Begin / End pairs properly matched
+   assert(gdraw->gfxc != nullptr); // please keep Begin / End pairs properly matched
 
    gdraw_HandleCacheTick(gdraw->texturecache, gdraw->tile_end_fence);
    gdraw_HandleCacheTick(gdraw->vbufcache, gdraw->tile_end_fence);
 
-   gdraw_arena_init(&gdraw->staging, NULL, 0);
-   gdraw->gfxc = NULL;
+   gdraw_arena_init(&gdraw->staging, nullptr, 0);
+   gdraw->gfxc = nullptr;
 
    if (stats)
       *stats = gdraw->staging_stats;
@@ -1440,7 +1440,7 @@ void gdraw_orbis_End(gdraw_orbis_staging_stats *stats)
 
 void gdraw_orbis_EliminateFastClears(void)
 {
-   assert(gdraw->gfxc != NULL); // call between gdraw_orbis_Begin and gdraw_orbis_End
+   assert(gdraw->gfxc != nullptr); // call between gdraw_orbis_Begin and gdraw_orbis_End
 
    eliminate_fast_clear();
 }
@@ -1469,18 +1469,18 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    GDrawFramebufferState *n = gdraw->cur+1;
    GDrawHandle *t;
    if (gdraw->tw == 0 || gdraw->th == 0) {
-      IggyGDrawSendWarning(NULL, "GDraw warning: w=0,h=0 rendertarget");
+      IggyGDrawSendWarning(nullptr, "GDraw warning: w=0,h=0 rendertarget");
       return false;
    }
 
    if (n >= &gdraw->frame[MAX_RENDER_STACK_DEPTH]) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
       return false;
    }
 
    if (owner) {
       // @TODO implement
-      t = NULL;
+      t = nullptr;
       assert(0); // nyi
    } else {
       t = get_color_rendertarget(stats);
@@ -1489,9 +1489,9 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    }
 
    n->color_buffer = t;
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
-   n->cached = owner != NULL;
+   n->cached = owner != nullptr;
    if (owner) {
       n->base_x = region->x0;
       n->base_y = region->y0;
@@ -1571,9 +1571,9 @@ static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *stats)
    assert(m >= gdraw->frame);  // bug in Iggy -- unbalanced
 
    if (m != gdraw->frame) {
-      assert(m->color_buffer != NULL); // @GDRAW_ASSERT
+      assert(m->color_buffer != nullptr); // @GDRAW_ASSERT
    }
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
    // sync on draw completion for this render target
    rtt_sync(n->color_buffer->handle.tex.gnm_ptr, gdraw->rt_colorbuffer_sa.m_size >> 8);
@@ -1615,7 +1615,7 @@ static void RADLINK gdraw_ClearID(void)
 static RADINLINE void set_texture(U32 texunit, GDrawTexture *tex)
 {
    assert(texunit < MAX_SAMPLERS);
-   assert(tex != NULL);
+   assert(tex != nullptr);
 
    if (gdraw->active_tex[texunit] != tex) {
       gdraw->active_tex[texunit] = tex;
@@ -1791,7 +1791,7 @@ static void set_vertex_buffer(const GDraw::VFormatDesc *fmtdesc, void *ptr, U32 
    gdraw->gfxc->setBuffers(Gnm::kShaderStageVs, 0, fmtdesc->num_attribs, bufs);
 }
 
-static RADINLINE void fence_resources(void *r1, void *r2=NULL, void *r3=NULL, void *r4=NULL)
+static RADINLINE void fence_resources(void *r1, void *r2=nullptr, void *r3=nullptr, void *r4=nullptr)
 {
    GDrawFence fence = get_next_fence();
    if (r1) ((GDrawHandle *) r1)->fence = fence;
@@ -1937,7 +1937,7 @@ static void set_clamp_constant(F32 *constant, GDrawTexture *tex)
 
 static void gdraw_Filter(GDrawRenderState *r, gswf_recti *s, float *tc, int isbevel, GDrawStats *stats)
 {
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, NULL, stats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, stats))
       return;
 
    set_texture(0, r->tex[0]);
@@ -2236,7 +2236,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_orbis_resourcetype type, U32 al
       cache->alloc = gfxalloc_create(gdraw_limits[type].ptr, num_bytes, align, num_handles);
       if (!cache->alloc) {
          IggyGDrawFree(cache);
-         cache = NULL;
+         cache = nullptr;
       }
    }
 
@@ -2302,12 +2302,12 @@ int gdraw_orbis_SetResourceMemory(gdraw_orbis_resourcetype type, S32 num_handles
       case GDRAW_ORBIS_RESOURCE_texture:
          free_handle_cache(gdraw->texturecache);
          gdraw->texturecache = make_handle_cache(GDRAW_ORBIS_RESOURCE_texture, GDRAW_ORBIS_TEXTURE_ALIGNMENT);
-         return gdraw->texturecache != NULL;
+         return gdraw->texturecache != nullptr;
 
       case GDRAW_ORBIS_RESOURCE_vertexbuffer:
          free_handle_cache(gdraw->vbufcache);
          gdraw->vbufcache = make_handle_cache(GDRAW_ORBIS_RESOURCE_vertexbuffer, GDRAW_ORBIS_VERTEXBUFFER_ALIGNMENT);
-         return gdraw->vbufcache != NULL;
+         return gdraw->vbufcache != nullptr;
 
       default:
          return 0;
@@ -2316,9 +2316,9 @@ int gdraw_orbis_SetResourceMemory(gdraw_orbis_resourcetype type, S32 num_handles
 
 void gdraw_orbis_ResetAllResourceMemory()
 {
-   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_rendertarget, 0, NULL, 0);
-   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_texture, 0, NULL, 0);
-   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_vertexbuffer, 0, NULL, 0);
+   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_rendertarget, 0, nullptr, 0);
+   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_texture, 0, nullptr, 0);
+   gdraw_orbis_SetResourceMemory(GDRAW_ORBIS_RESOURCE_vertexbuffer, 0, nullptr, 0);
 }
 
 GDrawFunctions *gdraw_orbis_CreateContext(S32 w, S32 h, void *context_shared_mem)
@@ -2326,7 +2326,7 @@ GDrawFunctions *gdraw_orbis_CreateContext(S32 w, S32 h, void *context_shared_mem
    U32 cpram_shadow_size = Gnmx::ConstantUpdateEngine::computeCpRamShadowSize();
 
    gdraw = (GDraw *) IggyGDrawMalloc(sizeof(*gdraw) + cpram_shadow_size);
-   if (!gdraw) return NULL;
+   if (!gdraw) return nullptr;
 
    memset(gdraw, 0, sizeof(*gdraw));
 
@@ -2349,7 +2349,7 @@ GDrawFunctions *gdraw_orbis_CreateContext(S32 w, S32 h, void *context_shared_mem
    Gnm::DataFormat rtFormat = Gnm::kDataFormatR8G8B8A8Unorm;
    Gnm::TileMode tileMode;
    GpuAddress::computeSurfaceTileMode(&tileMode, GpuAddress::kSurfaceTypeRwTextureFlat, rtFormat, 1);
-   gdraw->rt_colorbuffer_sa = gdraw->rt_colorbuffer.init(gdraw->frametex_width, gdraw->frametex_height, 1, rtFormat, tileMode, Gnm::kNumSamples1, Gnm::kNumFragments1, NULL, NULL);
+   gdraw->rt_colorbuffer_sa = gdraw->rt_colorbuffer.init(gdraw->frametex_width, gdraw->frametex_height, 1, rtFormat, tileMode, Gnm::kNumSamples1, Gnm::kNumFragments1, nullptr, nullptr);
    gdraw->rt_colorbuffer.setCmaskFastClearEnable(false);
 
    // shaders and state
@@ -2418,7 +2418,7 @@ void gdraw_orbis_DestroyContext(void)
       free_handle_cache(gdraw->texturecache);
       free_handle_cache(gdraw->vbufcache);
       IggyGDrawFree(gdraw);
-      gdraw = NULL;
+      gdraw = nullptr;
    }
 }
 

@@ -31,7 +31,7 @@ Snowball::Snowball(Level *level, double x, double y, double z) : Throwable(level
 
 void Snowball::onHit(HitResult *res)
 {
-	if (res->entity != NULL)
+	if (res->entity != nullptr)
 	{
 		int damage = 0;
 		if ( res->entity->instanceof(eTYPE_BLAZE) )

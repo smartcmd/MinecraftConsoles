@@ -28,7 +28,7 @@ void PortalTile::tick(Level *level, int x, int y, int z, Random *random)
 			// spawn a pig man here
 			int iResult = 0;
 			shared_ptr<Entity> entity = SpawnEggItem::spawnMobAt(level, 57, x + .5, y0 + 1.1, z + .5, &iResult);
-			if (entity != NULL)
+			if (entity != nullptr)
 			{
 				entity->changingDimensionDelay = entity->getDimensionChangingDelay();
 			}
@@ -38,7 +38,7 @@ void PortalTile::tick(Level *level, int x, int y, int z, Random *random)
 
 AABB *PortalTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 void PortalTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
@@ -201,7 +201,7 @@ void PortalTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Enti
 {
 	if (entity->GetType() == eTYPE_EXPERIENCEORB ) return;		// 4J added
 
-	if (entity->riding == NULL && entity->rider.lock() == NULL) entity->handleInsidePortal();
+	if (entity->riding == nullptr && entity->rider.lock() == nullptr) entity->handleInsidePortal();
 }
 
 void PortalTile::animateTick(Level *level, int xt, int yt, int zt, Random *random)

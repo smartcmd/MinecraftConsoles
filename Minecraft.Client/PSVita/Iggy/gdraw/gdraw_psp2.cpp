@@ -311,7 +311,7 @@ extern "C" void gdraw_psp2_wait(U64 fence_val)
    //     //   (once or several times) here
    //     SceGxmNotification notify = gdraw_psp2_End();
    //     // --- again, may issue rendering calls here (but not draw Iggys)
-   //     sceGxmEndScene(imm_ctx, NULL, &notify);
+   //     sceGxmEndScene(imm_ctx, nullptr, &notify);
    //   
    //   That is, exactly one gdraw_psp2_Begin/_End pair for that scene, and
    //   all IggyPlayerDraws must be inside that pair. That's it.
@@ -360,7 +360,7 @@ static void gdraw_gpu_memcpy(GDrawHandleCache *c, void *dst, void *src, U32 num_
                          0, 0, SCE_GXM_TRANSFER_COLORKEY_NONE,
                          SCE_GXM_TRANSFER_FORMAT_RAW128, SCE_GXM_TRANSFER_LINEAR, srcp + offs, 0, 0, row_size,
                          SCE_GXM_TRANSFER_FORMAT_RAW128, SCE_GXM_TRANSFER_LINEAR, dstp + offs, 0, 0, row_size,
-                         NULL, 0, NULL);
+                         nullptr, 0, nullptr);
 
       offs += num_rows * row_size;
    }
@@ -375,7 +375,7 @@ static void gdraw_gpu_memcpy(GDrawHandleCache *c, void *dst, void *src, U32 num_
                          0, 0, SCE_GXM_TRANSFER_COLORKEY_NONE,
                          SCE_GXM_TRANSFER_FORMAT_RAW128, SCE_GXM_TRANSFER_LINEAR, srcp + offs, 0, 0, row_size,
                          SCE_GXM_TRANSFER_FORMAT_RAW128, SCE_GXM_TRANSFER_LINEAR, dstp + offs, 0, 0, row_size,
-                         NULL, 0, NULL);
+                         nullptr, 0, nullptr);
    }
 
    if (c->is_vertex)
@@ -436,7 +436,7 @@ static void api_free_resource(GDrawHandle *r)
    if (!r->cache->is_vertex) {
       for (S32 i=0; i < MAX_SAMPLERS; i++)
          if (gdraw->active_tex[i] == (GDrawTexture *) r)
-            gdraw->active_tex[i] = NULL;
+            gdraw->active_tex[i] = nullptr;
    }
 }
 
@@ -462,7 +462,7 @@ static void track_dynamic_alloc_attempt(U32 size, U32 align)
 static void track_dynamic_alloc_failed()
 {
    if (gdraw->dynamic_stats.allocs_attempted == gdraw->dynamic_stats.allocs_succeeded + 1) { // warn the first time we run out of mem
-      IggyGDrawSendWarning(NULL, "GDraw out of dynamic memory");
+      IggyGDrawSendWarning(nullptr, "GDraw out of dynamic memory");
    }
 }
 
@@ -506,7 +506,7 @@ GDrawTexture * RADLINK gdraw_psp2_WrappedTextureCreate(SceGxmTexture *tex)
 {
    GDrawStats stats = {};
    GDrawHandle *p = gdraw_res_alloc_begin(gdraw->texturecache, 0, &stats);
-   gdraw_HandleCacheAllocateEnd(p, 0, NULL, GDRAW_HANDLE_STATE_user_owned);
+   gdraw_HandleCacheAllocateEnd(p, 0, nullptr, GDRAW_HANDLE_STATE_user_owned);
    gdraw_psp2_WrappedTextureChange((GDrawTexture *) p, tex);
    return (GDrawTexture *) p;
 }
@@ -561,11 +561,11 @@ static U32 tex_linear_stride(U32 width)
 static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height, gdraw_texture_format gformat, U32 flags, GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *stats)
 {
    S32 bytes_pixel = 4;
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
 
    SceGxmTextureFormat format = SCE_GXM_TEXTURE_FORMAT_U8U8U8U8_ABGR;
    if (width > MAX_TEXTURE2D_DIM || height > MAX_TEXTURE2D_DIM) {
-      IggyGDrawSendWarning(NULL, "GDraw %d x %d texture not supported by hardware (dimension limit %d)", width, height, MAX_TEXTURE2D_DIM);
+      IggyGDrawSendWarning(nullptr, "GDraw %d x %d texture not supported by hardware (dimension limit %d)", width, height, MAX_TEXTURE2D_DIM);
       return false;
    }
 
@@ -611,7 +611,7 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
    if (flags & GDRAW_MAKETEXTURE_FLAGS_mipmap) {
       rrbool ok;
 
-      assert(p->temp_buffer != NULL);
+      assert(p->temp_buffer != nullptr);
       ok = gdraw_MipmapBegin(&gdraw->mipmap, width, height, mipmaps,
          bytes_pixel, p->temp_buffer, p->temp_buffer_bytes);
       if (!ok)
@@ -626,7 +626,7 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
       p->i2 = height;
    } else {
       // non-mipmapped textures, we just upload straight to their destination
-      p->p1 = NULL;
+      p->p1 = nullptr;
       p->texture_data = (U8 *)t->raw_ptr;
       p->num_rows = height;
       p->stride_in_bytes = base_stride * bytes_pixel;
@@ -723,8 +723,8 @@ static void RADLINK gdraw_UpdateTextureEnd(GDrawTexture *t, void *unique_id, GDr
 static void RADLINK gdraw_FreeTexture(GDrawTexture *tt, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *t = (GDrawHandle *) tt;
-   assert(t != NULL);
-   if (t->owner == unique_id || unique_id == NULL) {
+   assert(t != nullptr);
+   if (t->owner == unique_id || unique_id == nullptr) {
       gdraw_res_kill(t, stats);
    }
 }
@@ -744,7 +744,7 @@ static void RADLINK gdraw_DescribeTexture(GDrawTexture *tex, GDraw_Texture_Descr
 
 static void RADLINK gdraw_SetAntialiasTexture(S32 width, U8 *rgba)
 {
-   if (sceGxmTextureGetData(&gdraw->aa_tex) != NULL)
+   if (sceGxmTextureGetData(&gdraw->aa_tex) != nullptr)
       return;
 
    assert(width <= MAX_AATEX_WIDTH);
@@ -801,7 +801,7 @@ static rrbool RADLINK gdraw_TryLockVertexBuffer(GDrawVertexBuffer *vb, void *uni
 static void RADLINK gdraw_FreeVertexBuffer(GDrawVertexBuffer *vb, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *h = (GDrawHandle *) vb;
-   assert(h != NULL); // @GDRAW_ASSERT
+   assert(h != nullptr); // @GDRAW_ASSERT
    if (h->owner == unique_id)
       gdraw_res_kill(h, stats);
 }
@@ -931,8 +931,8 @@ static void set_common_renderstate()
    // clear our state caching
    memset(gdraw->active_tex, 0, sizeof(gdraw->active_tex));
    gdraw->scissor_state = 0;
-   gdraw->cur_fp = NULL;
-   gdraw->cur_vp = NULL;
+   gdraw->cur_fp = nullptr;
+   gdraw->cur_vp = nullptr;
    
    // all the state we won't touch again until we're done rendering
    sceGxmSetCullMode(gxm, SCE_GXM_CULL_NONE);
@@ -1032,7 +1032,7 @@ static void RADLINK gdraw_SetViewSizeAndWorldScale(S32 w, S32 h, F32 scalex, F32
 // must include anything necessary for texture creation/update
 static void RADLINK gdraw_RenderingBegin(void)
 {
-   assert(gdraw->gxm != NULL); // call after gdraw_psp2_Begin
+   assert(gdraw->gxm != nullptr); // call after gdraw_psp2_Begin
    set_common_renderstate();
 }
 
@@ -1061,7 +1061,7 @@ static void RADLINK gdraw_RenderTileBegin(S32 x0, S32 y0, S32 x1, S32 y1, S32 pa
 
    // clear our depth/stencil buffers (and also color if requested)
    clear_whole_surf(true, true, gdraw->next_tile_clear, stats);
-   gdraw->next_tile_clear = NULL;
+   gdraw->next_tile_clear = nullptr;
 }
 
 static void RADLINK gdraw_RenderTileEnd(GDrawStats *stats)
@@ -1079,7 +1079,7 @@ void gdraw_psp2_Begin(SceGxmContext *context, const SceGxmColorSurface *color, c
 {
    U32 xmin, ymin, xmax, ymax;
 
-   assert(gdraw->gxm == NULL); // may not nest Begin calls
+   assert(gdraw->gxm == nullptr); // may not nest Begin calls
 
    // need to wait for the buffer to become idle before we can use it!
    gdraw_psp2_WaitForDynamicBufferIdle(dynamic_buf);
@@ -1106,7 +1106,7 @@ void gdraw_psp2_Begin(SceGxmContext *context, const SceGxmColorSurface *color, c
       // - We need the stencil buffer to support Flash masking operations.
       // - We need the mask bit to perform pixel-accurate scissor testing.
       // There's only one format that satisfies both requirements.
-      IggyGDrawSendWarning(NULL, "Iggy rendering will not work correctly unless a depth/stencil buffer in DF32M_S8 format is provided.");
+      IggyGDrawSendWarning(nullptr, "Iggy rendering will not work correctly unless a depth/stencil buffer in DF32M_S8 format is provided.");
    }
 
    // For immediate contexts, we need to flush pending vertex transfers before
@@ -1125,15 +1125,15 @@ SceGxmNotification gdraw_psp2_End()
    GDrawStats gdraw_stats = {};
    SceGxmNotification notify;
 
-   assert(gdraw->gxm != NULL); // please keep Begin / End pairs properly matched
+   assert(gdraw->gxm != nullptr); // please keep Begin / End pairs properly matched
 
    notify = scene_end_notification();
    gdraw->dyn_buf->sync = gdraw->scene_end_fence.value;
    gdraw->dyn_buf->stats = gdraw->dynamic_stats;
 
-   gdraw_arena_init(&gdraw->dynamic, NULL, 0);
-   gdraw->gxm = NULL;
-   gdraw->dyn_buf = NULL;
+   gdraw_arena_init(&gdraw->dynamic, nullptr, 0);
+   gdraw->gxm = nullptr;
+   gdraw->dyn_buf = nullptr;
 
    // NOTE: the stats from these go nowhere. That's a bit unfortunate, but the
    // GDrawStats model is that things can be accounted to something in the
@@ -1173,13 +1173,13 @@ static void RADLINK gdraw_GetInfo(GDrawInfo *d)
 
 static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_texture_format format, U32 flags, void *owner, GDrawStats *stats)
 {
-   IggyGDrawSendWarning(NULL, "GDraw no rendertarget support on PSP2");
+   IggyGDrawSendWarning(nullptr, "GDraw no rendertarget support on PSP2");
    return false;
 }
 
 static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *stats)
 {
-   return NULL;
+   return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1190,13 +1190,13 @@ static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *stats)
 static void RADLINK gdraw_ClearStencilBits(U32 bits)
 {
    GDrawStats stats = {};
-   clear_whole_surf(false, true, NULL, &stats);
+   clear_whole_surf(false, true, nullptr, &stats);
 }
 
 static void RADLINK gdraw_ClearID(void)
 {
    GDrawStats stats = {};
-   clear_whole_surf(true, false, NULL, &stats);
+   clear_whole_surf(true, false, nullptr, &stats);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1451,7 +1451,7 @@ static GDrawHandle *check_resource(void *ptr)
 #define check_resource(ptr) ((GDrawHandle *)(ptr))
 #endif
 
-static RADINLINE void fence_resources(void *r1, void *r2=NULL, void *r3=NULL)
+static RADINLINE void fence_resources(void *r1, void *r2=nullptr, void *r3=nullptr)
 {
    GDrawFence fence = get_next_fence();
    if (r1) check_resource(r1)->fence = fence;
@@ -1592,7 +1592,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
 
    // actual filter effects and special blends aren't supported on PSP2.
    if (r->blend_mode == GDRAW_BLEND_filter || r->blend_mode == GDRAW_BLEND_special) {
-      IggyGDrawSendWarning(NULL, "GDraw no filter or special blend support on PSP2");
+      IggyGDrawSendWarning(nullptr, "GDraw no filter or special blend support on PSP2");
       // just don't do anything.
    } else {
       // just a plain quad.
@@ -1614,7 +1614,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
 static bool gxm_check(SceGxmErrorCode err)
 {
    if (err != SCE_OK)
-      IggyGDrawSendWarning(NULL, "GXM error");
+      IggyGDrawSendWarning(nullptr, "GXM error");
 
    return err == SCE_OK;
 }
@@ -1643,9 +1643,9 @@ static bool register_and_create_vertex_prog(SceGxmVertexProgram **out_prog, SceG
    SceGxmVertexStream stream;
 
    if (!register_shader(patcher, shader))
-      return NULL;
+      return nullptr;
 
-   *out_prog = NULL;
+   *out_prog = nullptr;
 
    if (attr_bytes) {
       attr.streamIndex = 0;
@@ -1659,7 +1659,7 @@ static bool register_and_create_vertex_prog(SceGxmVertexProgram **out_prog, SceG
 
       return gxm_check(sceGxmShaderPatcherCreateVertexProgram(patcher, shader->id, &attr, 1, &stream, 1, out_prog));
    } else
-      return gxm_check(sceGxmShaderPatcherCreateVertexProgram(patcher, shader->id, NULL, 0, NULL, 0, out_prog));
+      return gxm_check(sceGxmShaderPatcherCreateVertexProgram(patcher, shader->id, nullptr, 0, nullptr, 0, out_prog));
 }
 
 static void destroy_vertex_prog(SceGxmShaderPatcher *patcher, SceGxmVertexProgram *prog)
@@ -1670,8 +1670,8 @@ static void destroy_vertex_prog(SceGxmShaderPatcher *patcher, SceGxmVertexProgra
 
 static bool create_fragment_prog(SceGxmFragmentProgram **out_prog, SceGxmShaderPatcher *patcher, ShaderCode *shader, const SceGxmBlendInfo *blend, SceGxmOutputRegisterFormat out_fmt)
 {
-   *out_prog = NULL;
-   return gxm_check(sceGxmShaderPatcherCreateFragmentProgram(patcher, shader->id, out_fmt, SCE_GXM_MULTISAMPLE_NONE, blend, NULL, out_prog));
+   *out_prog = nullptr;
+   return gxm_check(sceGxmShaderPatcherCreateFragmentProgram(patcher, shader->id, out_fmt, SCE_GXM_MULTISAMPLE_NONE, blend, nullptr, out_prog));
 }
 
 static void destroy_fragment_prog(SceGxmShaderPatcher *patcher, SceGxmFragmentProgram *prog)
@@ -1731,10 +1731,10 @@ static bool create_all_programs(SceGxmOutputRegisterFormat reg_format)
    }
 
    if (!register_shader(patcher, pshader_manual_clear_arr) ||
-       !create_fragment_prog(&gdraw->clear_fp, patcher, pshader_manual_clear_arr, NULL, reg_format))
+       !create_fragment_prog(&gdraw->clear_fp, patcher, pshader_manual_clear_arr, nullptr, reg_format))
       return false;
 
-   gdraw->mask_update_fp = NULL;
+   gdraw->mask_update_fp = nullptr;
    return gxm_check(sceGxmShaderPatcherCreateMaskUpdateFragmentProgram(patcher, &gdraw->mask_update_fp));
 }
 
@@ -1786,7 +1786,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_psp2_resourcetype type, U32 ali
       one_pool_bytes = align_down(one_pool_bytes / 2, align);
 
    if (one_pool_bytes < (S32)align)
-      return NULL;
+      return nullptr;
 
    cache = (GDrawHandleCache *) IggyGDrawMalloc(cache_size + header_size);
    if (cache) {
@@ -1805,7 +1805,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_psp2_resourcetype type, U32 ali
       cache->alloc = gfxalloc_create(gdraw_limits[type].ptr, one_pool_bytes, align, num_handles);
       if (!cache->alloc) {
          IggyGDrawFree(cache);
-         return NULL;
+         return nullptr;
       }
 
       if (use_twopool) {
@@ -1813,7 +1813,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_psp2_resourcetype type, U32 ali
          if (!cache->alloc_other) {
             IggyGDrawFree(cache->alloc);
             IggyGDrawFree(cache);
-            return NULL;
+            return nullptr;
          }
 
          // two dummy copies to make sure we have gpu read/write access
@@ -1898,12 +1898,12 @@ int gdraw_psp2_SetResourceMemory(gdraw_psp2_resourcetype type, S32 num_handles, 
       case GDRAW_PSP2_RESOURCE_texture:
          free_handle_cache(gdraw->texturecache);
          gdraw->texturecache = make_handle_cache(GDRAW_PSP2_RESOURCE_texture, GDRAW_PSP2_TEXTURE_ALIGNMENT, true);
-         return gdraw->texturecache != NULL;
+         return gdraw->texturecache != nullptr;
 
       case GDRAW_PSP2_RESOURCE_vertexbuffer:
          free_handle_cache(gdraw->vbufcache);
          gdraw->vbufcache = make_handle_cache(GDRAW_PSP2_RESOURCE_vertexbuffer, GDRAW_PSP2_VERTEXBUFFER_ALIGNMENT, true);
-         return gdraw->vbufcache != NULL;
+         return gdraw->vbufcache != nullptr;
 
       default:
          return 0;
@@ -1912,8 +1912,8 @@ int gdraw_psp2_SetResourceMemory(gdraw_psp2_resourcetype type, S32 num_handles, 
 
 void gdraw_psp2_ResetAllResourceMemory()
 {
-   gdraw_psp2_SetResourceMemory(GDRAW_PSP2_RESOURCE_texture, 0, NULL, 0);
-   gdraw_psp2_SetResourceMemory(GDRAW_PSP2_RESOURCE_vertexbuffer, 0, NULL, 0);
+   gdraw_psp2_SetResourceMemory(GDRAW_PSP2_RESOURCE_texture, 0, nullptr, 0);
+   gdraw_psp2_SetResourceMemory(GDRAW_PSP2_RESOURCE_vertexbuffer, 0, nullptr, 0);
 }
 
 GDrawFunctions *gdraw_psp2_CreateContext(SceGxmShaderPatcher *shader_patcher, void *context_mem, volatile U32 *notification, SceGxmOutputRegisterFormat reg_format)
@@ -1935,7 +1935,7 @@ GDrawFunctions *gdraw_psp2_CreateContext(SceGxmShaderPatcher *shader_patcher, vo
    };
 
    gdraw = (GDraw *) IggyGDrawMalloc(sizeof(*gdraw));
-   if (!gdraw) return NULL;
+   if (!gdraw) return nullptr;
 
    memset(gdraw, 0, sizeof(*gdraw));
 
@@ -1961,7 +1961,7 @@ GDrawFunctions *gdraw_psp2_CreateContext(SceGxmShaderPatcher *shader_patcher, vo
 
    if (!gdraw->quad_ib || !gdraw->mask_ib || !create_all_programs(reg_format)) {
       gdraw_psp2_DestroyContext();
-      return NULL;
+      return nullptr;
    }
 
    // init quad index buffer
@@ -1977,7 +1977,7 @@ GDrawFunctions *gdraw_psp2_CreateContext(SceGxmShaderPatcher *shader_patcher, vo
    gdraw->mask_draw_gpu = gdraw_arena_alloc(&gdraw->context_arena, sceGxmGetPrecomputedDrawSize(gdraw->mask_vp), SCE_GXM_PRECOMPUTED_ALIGNMENT);
    if (!gdraw->mask_draw_gpu) {
       gdraw_psp2_DestroyContext();
-      return NULL;
+      return nullptr;
    }
 
    memcpy(gdraw->mask_ib, mask_ib_data, sizeof(mask_ib_data));
@@ -2048,7 +2048,7 @@ void gdraw_psp2_DestroyContext(void)
       free_handle_cache(gdraw->vbufcache);
       destroy_all_programs();
       IggyGDrawFree(gdraw);
-      gdraw = NULL;
+      gdraw = nullptr;
    }
 }
 
@@ -2070,7 +2070,7 @@ void RADLINK gdraw_psp2_EndCustomDraw(IggyCustomDrawCallbackRegion *region)
 
 GDrawTexture * RADLINK gdraw_psp2_MakeTextureFromResource(U8 *file_in_memory, S32 len, IggyFileTexturePSP2 *tex)
 {
-   SceGxmErrorCode (*init_func)(SceGxmTexture *texture, const void *data, SceGxmTextureFormat texFormat, uint32_t width, uint32_t height, uint32_t mipCount) = NULL;
+   SceGxmErrorCode (*init_func)(SceGxmTexture *texture, const void *data, SceGxmTextureFormat texFormat, uint32_t width, uint32_t height, uint32_t mipCount) = nullptr;
 
    switch (tex->texture.type) {
       case SCE_GXM_TEXTURE_SWIZZLED:            init_func = sceGxmTextureInitSwizzled;          break;
@@ -2080,15 +2080,15 @@ GDrawTexture * RADLINK gdraw_psp2_MakeTextureFromResource(U8 *file_in_memory, S3
    }
 
    if (!init_func) {
-      IggyGDrawSendWarning(NULL, "Unsupported texture type in MakeTextureFromResource");
-      return NULL;
+      IggyGDrawSendWarning(nullptr, "Unsupported texture type in MakeTextureFromResource");
+      return nullptr;
    }
 
    SceGxmTexture gxm;
    SceGxmErrorCode err = init_func(&gxm, file_in_memory + tex->file_offset, (SceGxmTextureFormat)tex->texture.format, tex->texture.width, tex->texture.height, tex->texture.mip_count);
    if (err != SCE_OK) {
-      IggyGDrawSendWarning(NULL, "Texture init failed in MakeTextureFromResource (bad data?)");
-      return NULL;
+      IggyGDrawSendWarning(nullptr, "Texture init failed in MakeTextureFromResource (bad data?)");
+      return nullptr;
    }
 
    return gdraw_psp2_WrappedTextureCreate(&gxm);

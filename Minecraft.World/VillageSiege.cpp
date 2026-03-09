@@ -80,10 +80,10 @@ bool VillageSiege::tryToSetupSiege()
 	vector<shared_ptr<Player> > *players = &level->players;
 	for(auto& player : *players)
 	{
-		shared_ptr<Village> _village = level->villages->getClosestVillage((int) player->x, (int) player->y, (int) player->z, 1);
+		shared_ptr<Village> _village = level->villages->getClosestVillage(static_cast<int>(player->x), static_cast<int>(player->y), static_cast<int>(player->z), 1);
 		village = _village;
 
-		if (_village == NULL) continue;
+		if (_village == nullptr) continue;
 		if (_village->getDoorCount() < 10) continue;
 		if (_village->getStableAge() < 20) continue;
 		if (_village->getPopulationSize() < 20) continue;
@@ -95,9 +95,9 @@ bool VillageSiege::tryToSetupSiege()
 		bool overlaps = false;
 		for (int i = 0; i < 10; ++i)
 		{
-			spawnX = center->x + (int) (Mth::cos(level->random->nextFloat() * PI * 2.f) * radius * 0.9);
+			spawnX = center->x + static_cast<int>(Mth::cos(level->random->nextFloat() * PI * 2.f) * radius * 0.9);
 			spawnY = center->y;
-			spawnZ = center->z + (int) (Mth::sin(level->random->nextFloat() * PI * 2.f) * radius * 0.9);
+			spawnZ = center->z + static_cast<int>(Mth::sin(level->random->nextFloat() * PI * 2.f) * radius * 0.9);
 			overlaps = false;
 			vector<shared_ptr<Village> > *villages = level->villages->getVillages();
 			//for (Village v : level.villages.getVillages())
@@ -115,7 +115,7 @@ bool VillageSiege::tryToSetupSiege()
 		if (overlaps) return false;
 
 		Vec3 *spawnPos = findRandomSpawnPos(spawnX, spawnY, spawnZ);
-		if (spawnPos == NULL) continue;
+		if (spawnPos == nullptr) continue;
 
 		nextSpawnTime = 0;
 		siegeCount = 20;
@@ -127,17 +127,17 @@ bool VillageSiege::tryToSetupSiege()
 bool VillageSiege::trySpawn()
 {
 	Vec3 *spawnPos = findRandomSpawnPos(spawnX, spawnY, spawnZ);
-	if (spawnPos == NULL) return false;
+	if (spawnPos == nullptr) return false;
 	shared_ptr<Zombie> mob;
 	{
-		mob = shared_ptr<Zombie>( new Zombie(level) );
-		mob->finalizeMobSpawn(NULL);
+		mob = std::make_shared<Zombie>(level);
+		mob->finalizeMobSpawn(nullptr);
 		mob->setVillager(false);
 	}
 	mob->moveTo(spawnPos->x, spawnPos->y, spawnPos->z, level->random->nextFloat() * 360, 0);
 	level->addEntity(mob);
 	shared_ptr<Village> _village = village.lock();
-	if( _village == NULL ) return false;
+	if( _village == nullptr ) return false;
 
 	Pos *center = _village->getCenter();
 	mob->restrictTo(center->x, center->y, center->z, _village->getRadius());
@@ -147,7 +147,7 @@ bool VillageSiege::trySpawn()
 Vec3 *VillageSiege::findRandomSpawnPos(int x, int y, int z)
 {
 	shared_ptr<Village> _village = village.lock();
-	if( _village == NULL ) return NULL;
+	if( _village == nullptr ) return nullptr;
 
 	for (int i = 0; i < 10; ++i)
 	{
@@ -157,5 +157,5 @@ Vec3 *VillageSiege::findRandomSpawnPos(int x, int y, int z)
 		if (!_village->isInside(xx, yy, zz)) continue;
 		if (MobSpawner::isSpawnPositionOk(MobCategory::monster, level, xx, yy, zz)) return Vec3::newTemp(xx, yy, zz);
 	}
-	return NULL;
+	return nullptr;
 }

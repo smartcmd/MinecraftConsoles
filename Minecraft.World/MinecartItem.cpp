@@ -47,7 +47,7 @@ shared_ptr<ItemInstance> MinecartItem::MinecartDispenseBehavior::execute(BlockSo
 
 	outcome = ACTIVATED_ITEM;
 
-	shared_ptr<Minecart> minecart = Minecart::createMinecart(world, spawnX, spawnY + yOffset, spawnZ, ((MinecartItem *) dispensed->getItem())->type);
+	shared_ptr<Minecart> minecart = Minecart::createMinecart(world, spawnX, spawnY + yOffset, spawnZ, static_cast<MinecartItem *>(dispensed->getItem())->type);
 	if (dispensed->hasCustomHoverName())
 	{
 		minecart->setCustomName(dispensed->getHoverName());

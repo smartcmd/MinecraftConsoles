@@ -22,7 +22,7 @@ void FallingTileRenderer::render(shared_ptr<Entity> _tile, double x, double y, d
     if (level->getTile(floor(tile->x), floor(tile->y), floor(tile->z)) != tile->tile)
 	{
 		glPushMatrix();
-		glTranslatef((float) x, (float) y, (float) z);
+		glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 		bindTexture(tile);	// 4J was L"/terrain.png"
 		Tile *tt = Tile::tiles[tile->tile];
@@ -37,7 +37,7 @@ void FallingTileRenderer::render(shared_ptr<Entity> _tile, double x, double y, d
 			Tesselator *t = Tesselator::getInstance();
 			t->begin();
 			t->offset(-Mth::floor(tile->x) - 0.5f, -Mth::floor(tile->y) - 0.5f, -Mth::floor(tile->z) - 0.5f);
-			tileRenderer->tesselateAnvilInWorld((AnvilTile *) tt, Mth::floor(tile->x), Mth::floor(tile->y), Mth::floor(tile->z), tile->data);
+			tileRenderer->tesselateAnvilInWorld(static_cast<AnvilTile *>(tt), Mth::floor(tile->x), Mth::floor(tile->y), Mth::floor(tile->z), tile->data);
 			t->offset(0, 0, 0);
 			t->end();
 		}
@@ -51,7 +51,7 @@ void FallingTileRenderer::render(shared_ptr<Entity> _tile, double x, double y, d
 			t->offset(0, 0, 0);
 			t->end();
 		}
-		else if( tt != NULL )
+		else if( tt != nullptr )
 		{
 			tileRenderer->setShape(tt);
 			tileRenderer->renderBlock(tt, level, Mth::floor(tile->x), Mth::floor(tile->y), Mth::floor(tile->z), tile->data);

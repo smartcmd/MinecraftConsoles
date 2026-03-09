@@ -5,7 +5,7 @@
 
 DLCLocalisationFile::DLCLocalisationFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_LocalisationData,path)
 {	
-	m_strings = NULL;
+	m_strings = nullptr;
 }
 
 void DLCLocalisationFile::addData(PBYTE pbData, DWORD dwBytes)

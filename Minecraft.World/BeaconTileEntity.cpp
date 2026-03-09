@@ -10,7 +10,7 @@
 
 shared_ptr<TileEntity> BeaconTileEntity::clone()
 {
-	shared_ptr<BeaconTileEntity> result = shared_ptr<BeaconTileEntity>( new BeaconTileEntity() );
+	shared_ptr<BeaconTileEntity> result = std::make_shared<BeaconTileEntity>();
 	TileEntity::clone(result);
 
 	result->primaryPower = primaryPower;
@@ -28,7 +28,7 @@ void BeaconTileEntity::staticCtor()
 	{
 		for(unsigned int effect = 0; effect < BEACON_EFFECTS_EFFECTS; ++effect)
 		{
-			BEACON_EFFECTS[tier][effect] = NULL;
+			BEACON_EFFECTS[tier][effect] = nullptr;
 		}
 	}
 	BEACON_EFFECTS[0][0] = MobEffect::movementSpeed;
@@ -163,18 +163,18 @@ float BeaconTileEntity::getAndUpdateClientSideScale()
 		return 0;
 	}
 
-	int renderDelta = (int) (level->getGameTime() - clientSideRenderTick);
+	int renderDelta = static_cast<int>(level->getGameTime() - clientSideRenderTick);
 	clientSideRenderTick = level->getGameTime();
 	if (renderDelta > 1)
 	{
-		clientSideRenderScale -= ((float) renderDelta / (float) SCALE_TIME);
+		clientSideRenderScale -= (static_cast<float>(renderDelta) / static_cast<float>(SCALE_TIME));
 
 		if (clientSideRenderScale < 0)
 		{
 			clientSideRenderScale = 0;
 		}
 	}
-	clientSideRenderScale += (1.0f / (float) SCALE_TIME);
+	clientSideRenderScale += (1.0f / static_cast<float>(SCALE_TIME));
 	if (clientSideRenderScale > 1)
 	{
 		clientSideRenderScale = 1;
@@ -213,7 +213,7 @@ void BeaconTileEntity::setPrimaryPower(int primaryPower)
 		for(unsigned int e = 0; e < BEACON_EFFECTS_EFFECTS; ++e)
 		{
 			MobEffect *effect = BEACON_EFFECTS[tier][e];
-			if(effect == NULL) break;
+			if(effect == nullptr) break;
 
 			if (effect->id == primaryPower)
 			{
@@ -236,7 +236,7 @@ void BeaconTileEntity::setSecondaryPower(int secondaryPower)
 			for(unsigned int e = 0; e < BEACON_EFFECTS_EFFECTS; ++e)
 			{
 				MobEffect *effect = BEACON_EFFECTS[tier][e];
-				if(effect == NULL) break;
+				if(effect == nullptr) break;
 
 				if (effect->id == secondaryPower)
 				{
@@ -252,7 +252,7 @@ shared_ptr<Packet> BeaconTileEntity::getUpdatePacket()
 {
 	CompoundTag *tag = new CompoundTag();
 	save(tag);
-	return shared_ptr<TileEntityDataPacket>( new TileEntityDataPacket(x, y, z, TileEntityDataPacket::TYPE_BEACON, tag) );
+	return std::make_shared<TileEntityDataPacket>(x, y, z, TileEntityDataPacket::TYPE_BEACON, tag);
 }
 
 double BeaconTileEntity::getViewDistance()
@@ -295,7 +295,7 @@ shared_ptr<ItemInstance> BeaconTileEntity::getItem(unsigned int slot)
 
 shared_ptr<ItemInstance> BeaconTileEntity::removeItem(unsigned int slot, int count)
 {
-	if (slot == 0 && paymentItem != NULL)
+	if (slot == 0 && paymentItem != nullptr)
 	{
 		if (count >= paymentItem->count)
 		{
@@ -306,7 +306,7 @@ shared_ptr<ItemInstance> BeaconTileEntity::removeItem(unsigned int slot, int cou
 		else
 		{
 			paymentItem->count -= count;
-			return shared_ptr<ItemInstance>( new ItemInstance(paymentItem->id, count, paymentItem->getAuxValue()) );
+			return std::make_shared<ItemInstance>(paymentItem->id, count, paymentItem->getAuxValue());
 		}
 	}
 	return nullptr;
@@ -314,7 +314,7 @@ shared_ptr<ItemInstance> BeaconTileEntity::removeItem(unsigned int slot, int cou
 
 shared_ptr<ItemInstance> BeaconTileEntity::removeItemNoUpdate(int slot)
 {
-	if (slot == 0 && paymentItem != NULL)
+	if (slot == 0 && paymentItem != nullptr)
 	{
 		shared_ptr<ItemInstance> returnItem = paymentItem;
 		paymentItem = nullptr;

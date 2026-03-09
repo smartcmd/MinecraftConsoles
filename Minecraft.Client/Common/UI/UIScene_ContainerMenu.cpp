@@ -13,7 +13,7 @@
 
 UIScene_ContainerMenu::UIScene_ContainerMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene_AbstractContainerMenu(iPad, parentLayer)
 {
-	ContainerScreenInput *initData = (ContainerScreenInput *)_initData;
+	ContainerScreenInput *initData = static_cast<ContainerScreenInput *>(_initData);
 	m_bLargeChest = (initData->container->getContainerSize() > 3*9)?true:false;
 
 	// Setup all the Iggy references we need for this scene
@@ -24,9 +24,9 @@ UIScene_ContainerMenu::UIScene_ContainerMenu(int iPad, void *_initData, UILayer 
 	ContainerMenu* menu = new ContainerMenu( initData->inventory, initData->container );
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[iPad] != NULL )
+	if( pMinecraft->localgameModes[iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Container_Menu, this);
 	}
@@ -181,7 +181,7 @@ void UIScene_ContainerMenu::setSectionSelectedSlot(ESceneSection eSection, int x
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionContainerChest:
@@ -203,7 +203,7 @@ void UIScene_ContainerMenu::setSectionSelectedSlot(ESceneSection eSection, int x
 
 UIControl *UIScene_ContainerMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionContainerChest:

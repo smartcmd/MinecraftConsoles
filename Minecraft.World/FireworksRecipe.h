@@ -37,8 +37,8 @@ public:
 	virtual const int getGroup() { return 0; }		
 
 	// 4J-PB
-	virtual bool requires(int iRecipe) { return false; };
-	virtual void requires(INGREDIENTS_REQUIRED *pIngReq) {};
+	virtual bool reqs(int iRecipe) { return false; };
+	virtual void reqs(INGREDIENTS_REQUIRED *pIngReq) {};
 
 	// 4J Added
 	static void updatePossibleRecipes(shared_ptr<CraftingContainer> craftSlots, bool *firework, bool *charge, bool *fade);

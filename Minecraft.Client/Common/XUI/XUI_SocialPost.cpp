@@ -21,7 +21,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_SocialPost::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 	
@@ -48,8 +48,8 @@ HRESULT CScene_SocialPost::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	wstring wDesc = m_EditDesc.GetText();
 
 	// set the caret to the end of the default text
-	m_EditCaption.SetCaretPosition((int)wCaption.length());
-	m_EditDesc.SetCaretPosition((int)wDesc.length());
+	m_EditCaption.SetCaretPosition(static_cast<int>(wCaption.length()));
+	m_EditDesc.SetCaretPosition(static_cast<int>(wDesc.length()));
 	
 	BOOL bHasAllText = /*( wTitle.length()!=0) && */(wCaption.length()!=0) && (wDesc.length()!=0);
 
@@ -89,7 +89,7 @@ HRESULT CScene_SocialPost::OnControlNavigate(XUIMessageControlNavigate *pControl
 {
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest==NULL)
+	if(pControlNavigateData->hObjDest==nullptr)
 	{
 		pControlNavigateData->hObjDest=pControlNavigateData->hObjSource;
 	}

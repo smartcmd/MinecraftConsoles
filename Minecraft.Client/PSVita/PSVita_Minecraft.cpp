@@ -46,6 +46,7 @@
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\Common\Console_Awards_enum.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -288,7 +289,7 @@ void MemSect(int sect)
 void debugSaveGameDirect()
 {
 
-	C4JThread* thread = new C4JThread(&IUIScene_PauseMenu::SaveWorldThreadProc, NULL, "debugSaveGameDirect");
+	C4JThread* thread = new C4JThread(&IUIScene_PauseMenu::SaveWorldThreadProc, nullptr, "debugSaveGameDirect");
 	thread->Run();
 	thread->WaitForCompletion(1000);
 }
@@ -520,7 +521,7 @@ int main()
 	PSVitaNPToolkit::init();
 
 	// initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
-	StorageManager.Init( 0, L"savegame.dat", "savePackName", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, NULL);
+	StorageManager.Init( 0, L"savegame.dat", "savePackName", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, nullptr);
 	StorageManager.SetDLCProductCode(app.GetProductCode());
 	StorageManager.SetProductUpgradeKey(app.GetUpgradeKey());
 	ProfileManager.SetServiceID(app.GetCommerceCategory());
@@ -624,9 +625,9 @@ int main()
 
 	StorageManager.SetDefaultImages((PBYTE)baOptionsIcon.data, baOptionsIcon.length,(PBYTE)baSaveImage.data, baSaveImage.length,(PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
 
-	if(baOptionsIcon.data!=NULL){ delete [] baOptionsIcon.data;	}
-	if(baSaveThumbnail.data!=NULL){	delete [] baSaveThumbnail.data; }
-	if(baSaveImage.data!=NULL){	delete [] baSaveImage.data;	}
+	if(baOptionsIcon.data!=nullptr){ delete [] baOptionsIcon.data;	}
+	if(baSaveThumbnail.data!=nullptr){	delete [] baSaveThumbnail.data; }
+	if(baSaveImage.data!=nullptr){	delete [] baSaveImage.data;	}
 
 	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, (LPVOID)&app);
 
@@ -655,7 +656,7 @@ int main()
 #endif
 
 	StorageManager.SetDLCInfoMap(app.GetSonyDLCMap());
-	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
+	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't nullptr
 
 	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
@@ -856,7 +857,7 @@ int main()
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();
@@ -904,6 +905,9 @@ int main()
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 
@@ -1064,7 +1068,7 @@ vector<uint8_t *> vRichPresenceStrings;
 uint8_t * AddRichPresenceString(int iID)
 {
 	uint8_t *strUtf8 = mallocAndCreateUTF8ArrayFromString(iID);
-	if( strUtf8 != NULL )
+	if( strUtf8 != nullptr )
 	{
 		vRichPresenceStrings.push_back(strUtf8);
 	}
@@ -1074,7 +1078,7 @@ uint8_t * AddRichPresenceString(int iID)
 void FreeRichPresenceStrings()
 {
 	uint8_t *strUtf8;
-	for(int i=0;i<vRichPresenceStrings.size();i++)
+	for(size_t i=0;i<vRichPresenceStrings.size();i++)
 	{
 		strUtf8=vRichPresenceStrings.at(i);
 		free(strUtf8);

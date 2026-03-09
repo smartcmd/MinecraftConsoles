@@ -84,7 +84,7 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 	vector<FileEntry *> *playerFiles = sourceSave->getFilesWithPrefix( DirectoryLevelStorage::getPlayerDir() );
 #endif
 
-	if(playerFiles != NULL)
+	if(playerFiles != nullptr)
 	{
 		for(int fileIdx = 0; fileIdx < playerFiles->size();fileIdx++)
 		{

@@ -52,7 +52,7 @@ void AchievementScreen::buttonClicked(Button *button)
 {
     if (button->id == 1)
 	{
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
 //        minecraft->grabMouse();	// 4J removed
     }
     Screen::buttonClicked(button);
@@ -62,7 +62,7 @@ void AchievementScreen::keyPressed(char eventCharacter, int eventKey)
 {
     if (eventKey == minecraft->options->keyBuild->key)
 	{
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
 //        minecraft->grabMouse();	// 4J removed
     }
 	else
@@ -286,7 +286,7 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
         vLine(x2, y1, y2, color);
     }
 
-    Achievement *hoveredAchievement = NULL;
+    Achievement *hoveredAchievement = nullptr;
     ItemRenderer *ir = new ItemRenderer();
 
     glPushMatrix();
@@ -372,7 +372,7 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
     glEnable(GL_TEXTURE_2D);
     Screen::render(xm, ym, a);
 
-    if (hoveredAchievement != NULL)
+    if (hoveredAchievement != nullptr)
 	{
         Achievement *ach = hoveredAchievement;
         wstring name = ach->name;

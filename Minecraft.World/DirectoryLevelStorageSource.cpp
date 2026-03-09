@@ -32,7 +32,7 @@ vector<LevelSummary *> *DirectoryLevelStorageSource::getLevelList()
 		wstring levelId = wstring(L"World").append( std::to_wstring( (i+1) ) );
 
 		LevelData *levelData = getDataTagFor(saveFile, levelId);
-		if (levelData != NULL)
+		if (levelData != nullptr)
 		{
 			levels->push_back(new LevelSummary(levelId, L"", levelData->getLastPlayed(), levelData->getSizeOnDisk(), levelData.getGameType(), false, levelData->isHardcore()));
 		}
@@ -59,7 +59,7 @@ LevelData *DirectoryLevelStorageSource::getDataTagFor(ConsoleSaveFile *saveFile,
 		return ret;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void DirectoryLevelStorageSource::renameLevel(const wstring& levelId, const wstring& newLevelName)
@@ -121,7 +121,7 @@ void DirectoryLevelStorageSource::deleteRecursive(vector<File *> *files)
 
 shared_ptr<LevelStorage> DirectoryLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir)
 {
-	return shared_ptr<LevelStorage> (new DirectoryLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
+	return std::make_shared<DirectoryLevelStorage>(saveFile, baseDir, levelId, createPlayerDir);
 }
 
 bool DirectoryLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId)

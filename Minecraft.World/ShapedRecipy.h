@@ -26,7 +26,7 @@ public:
 	ShapedRecipy *keepTag();
 
 	// 4J-PB - to return the items required to make a recipe
-	virtual bool requires(int iRecipe);
-	virtual void requires(INGREDIENTS_REQUIRED *pIngReq);
+	virtual bool reqs(int iRecipe);
+	virtual void reqs(INGREDIENTS_REQUIRED *pIngReq);
 };
 

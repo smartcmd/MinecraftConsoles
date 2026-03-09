@@ -60,7 +60,7 @@ void UIControl_CheckBox::init(UIString label, int id, bool checked)
 bool UIControl_CheckBox::IsChecked()
 {
 	rrbool checked = false;
-	IggyResult result = IggyValueGetBooleanRS ( &m_iggyPath , m_checkedProp, NULL, &checked );
+	IggyResult result = IggyValueGetBooleanRS ( &m_iggyPath , m_checkedProp, nullptr, &checked );
 	m_bChecked = checked;
 	return checked;
 }

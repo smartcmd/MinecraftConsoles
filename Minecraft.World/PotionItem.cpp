@@ -26,26 +26,26 @@ PotionItem::PotionItem(int id) : Item(id)
 	setStackedByData(true);
 	setMaxDamage(0);
 
-	iconThrowable = NULL;
-	iconDrinkable = NULL;
-	iconOverlay = NULL;
+	iconThrowable = nullptr;
+	iconDrinkable = nullptr;
+	iconOverlay = nullptr;
 }
 
 vector<MobEffectInstance *> *PotionItem::getMobEffects(shared_ptr<ItemInstance> potion)
 {
 	if (!potion->hasTag() || !potion->getTag()->contains(L"CustomPotionEffects"))
 	{
-		vector<MobEffectInstance *> *effects = NULL;
+		vector<MobEffectInstance *> *effects = nullptr;
         auto it = cachedMobEffects.find(potion->getAuxValue());
         if(it != cachedMobEffects.end()) effects = it->second;
-		if (effects == NULL)
+		if (effects == nullptr)
 		{
 			effects = PotionBrewing::getEffects(potion->getAuxValue(), false);
 			cachedMobEffects[potion->getAuxValue()] = effects;
 		}
 
 		// Result should be a new (unmanaged) vector, so create a new one
-		return effects == NULL ? NULL : new vector<MobEffectInstance *>(*effects);
+		return effects == nullptr ? nullptr : new vector<MobEffectInstance *>(*effects);
 	}
 	else
 	{
@@ -64,13 +64,13 @@ vector<MobEffectInstance *> *PotionItem::getMobEffects(shared_ptr<ItemInstance> 
 
 vector<MobEffectInstance *> *PotionItem::getMobEffects(int auxValue)
 {
-	vector<MobEffectInstance *> *effects = NULL;
+	vector<MobEffectInstance *> *effects = nullptr;
     auto it = cachedMobEffects.find(auxValue);
     if(it != cachedMobEffects.end()) effects = it->second;
-	if (effects == NULL)
+	if (effects == nullptr)
 	{
 		effects = PotionBrewing::getEffects(auxValue, false);
-		if(effects != NULL) cachedMobEffects.insert( std::pair<int, vector<MobEffectInstance *> *>(auxValue, effects) );
+		if(effects != nullptr) cachedMobEffects.insert( std::pair<int, vector<MobEffectInstance *> *>(auxValue, effects) );
 	}
 	return effects;
 }
@@ -82,7 +82,7 @@ shared_ptr<ItemInstance> PotionItem::useTimeDepleted(shared_ptr<ItemInstance> in
 	if (!level->isClientSide)
 	{
 		vector<MobEffectInstance *> *effects = getMobEffects(instance);
-		if (effects != NULL)
+		if (effects != nullptr)
 		{
 			for(auto& effect : *effects)
 			{
@@ -94,11 +94,11 @@ shared_ptr<ItemInstance> PotionItem::useTimeDepleted(shared_ptr<ItemInstance> in
 	{
 		if (instance->count <= 0)
 		{
-			return shared_ptr<ItemInstance>( new ItemInstance(Item::glassBottle) );
+			return std::make_shared<ItemInstance>(Item::glassBottle);
 		}
 		else
 		{
-			player->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(Item::glassBottle) ) );
+			player->inventory->add(std::make_shared<ItemInstance>(Item::glassBottle));
 		}
 	}
 
@@ -126,7 +126,7 @@ shared_ptr<ItemInstance> PotionItem::use(shared_ptr<ItemInstance> instance, Leve
 	{
 		if (!player->abilities.instabuild) instance->count--;
 		level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-		if (!level->isClientSide) level->addEntity(shared_ptr<ThrownPotion>( new ThrownPotion(level, player, instance->getAuxValue()) ));
+		if (!level->isClientSide) level->addEntity(std::make_shared<ThrownPotion>(level, player, instance->getAuxValue()));
 		return instance;
 	}
 	player->startUsingItem(instance, getUseDuration(instance));
@@ -183,7 +183,7 @@ bool PotionItem::hasMultipleSpriteLayers()
 bool PotionItem::hasInstantenousEffects(int itemAuxValue)
 {
 	vector<MobEffectInstance *> *mobEffects = getMobEffects(itemAuxValue);
-	if (mobEffects == NULL || mobEffects->empty())
+	if (mobEffects == nullptr || mobEffects->empty())
 	{
 		return false;
 	}
@@ -216,7 +216,7 @@ wstring PotionItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 	}
 
 	vector<MobEffectInstance *> *effects = ((PotionItem *) Item::potion)->getMobEffects(itemInstance);
-	if (effects != NULL && !effects->empty())
+	if (effects != nullptr && !effects->empty())
 	{
 		//String postfixString = effects.get(0).getDescriptionId();
 		//postfixString += ".postfix";
@@ -244,7 +244,7 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 	}
 	vector<MobEffectInstance *> *effects = ((PotionItem *) Item::potion)->getMobEffects(itemInstance);
 	attrAttrModMap modifiers;
-	if (effects != NULL && !effects->empty())
+	if (effects != nullptr && !effects->empty())
 	{
 		//for (MobEffectInstance effect : effects)
 		for(auto& effect : *effects)
@@ -254,7 +254,7 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 			MobEffect *mobEffect = MobEffect::effects[effect->getId()];
 			unordered_map<Attribute*, AttributeModifier*> *effectModifiers = mobEffect->getAttributeModifiers();
 
-			if (effectModifiers != NULL && effectModifiers->size() > 0)
+			if (effectModifiers != nullptr && effectModifiers->size() > 0)
 			{
 				for(auto& it : *effectModifiers)
 				{
@@ -335,7 +335,7 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 bool PotionItem::isFoil(shared_ptr<ItemInstance> itemInstance)
 {
 	vector<MobEffectInstance *> *mobEffects = getMobEffects(itemInstance);
-	return mobEffects != NULL && !mobEffects->empty();
+	return mobEffects != nullptr && !mobEffects->empty();
 }
 
 unsigned int PotionItem::getUseDescriptionId(shared_ptr<ItemInstance> instance)
@@ -368,7 +368,7 @@ Icon *PotionItem::getTexture(const wstring &name)
 	if (name.compare(DEFAULT_ICON) == 0) return Item::potion->iconDrinkable;
 	if (name.compare(THROWABLE_ICON) == 0) return Item::potion->iconThrowable;
 	if (name.compare(CONTENTS_ICON) == 0) return Item::potion->iconOverlay;
-	return NULL;
+	return nullptr;
 }
 
 
@@ -381,7 +381,7 @@ vector<pair<int, int> > *PotionItem::getUniquePotionValues()
 		{
 			vector<MobEffectInstance *> *effects = PotionBrewing::getEffects(brew, false);
 
-			if (effects != NULL)
+			if (effects != nullptr)
 			{
 				if(!effects->empty())
 				{

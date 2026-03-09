@@ -19,6 +19,6 @@ public:
 	int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetDisplayObjectivePacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetDisplayObjectivePacket>(); }
 	virtual int getId() { return 208; }
 };

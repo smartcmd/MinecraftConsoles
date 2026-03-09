@@ -196,8 +196,8 @@ typedef struct _ConnectionProgressParams
 		showTooltips = false;
 		setFailTimer = false;
 		timerTime = 0;
-		cancelFunc = NULL;
-		cancelFuncParam = NULL;
+		cancelFunc = nullptr;
+		cancelFuncParam = nullptr;
 	}
 } ConnectionProgressParams;
 
@@ -250,7 +250,7 @@ typedef struct _SaveListDetails
 	_SaveListDetails()
 	{
 		saveId = 0;
-		pbThumbnailData = NULL;
+		pbThumbnailData = nullptr;
 		dwThumbnailSize = 0;
 #ifdef _DURANGO
 		ZeroMemory(UTF16SaveName,sizeof(wchar_t)*128);
@@ -280,6 +280,9 @@ typedef struct _JoinMenuInitData
 {
 	FriendSessionInfo *selectedSession;
 	int iPad;
+#ifdef _WINDOWS64
+	int serverIndex; // Index of the server in servers.db, -1 if not a saved server
+#endif
 } JoinMenuInitData;
 
 // Native keyboard (Windows64 replacement for InputManager.RequestKeyboard WinAPI dialog)
@@ -403,15 +406,15 @@ typedef struct _LoadingInputParams
 
 	_LoadingInputParams()
 	{
-		func = NULL;
-		lpParam = NULL;
-		completionData = NULL;
+		func = nullptr;
+		lpParam = nullptr;
+		completionData = nullptr;
 
 		cancelText = -1;
-		cancelFunc = NULL;
-		completeFunc = NULL;
-		m_cancelFuncParam = NULL;
-		m_completeFuncParam = NULL;
+		cancelFunc = nullptr;
+		completeFunc = nullptr;
+		m_cancelFuncParam = nullptr;
+		m_completeFuncParam = nullptr;
 		waitForThreadToDelete = false;
 	}
 } LoadingInputParams;
@@ -439,7 +442,7 @@ typedef struct _TutorialPopupInfo
 
 	_TutorialPopupInfo()
 	{
-		interactScene = NULL;
+		interactScene = nullptr;
 		desc = L"";
 		title = L"";
 		icon = -1;
@@ -447,7 +450,7 @@ typedef struct _TutorialPopupInfo
 		isFoil = false;
 		allowFade = true;
 		isReminder = false;
-		tutorial = NULL;
+		tutorial = nullptr;
 	}
 
 } TutorialPopupInfo;

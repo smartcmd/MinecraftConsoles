@@ -56,7 +56,7 @@ bool Ghast::hurt(DamageSource *source, float dmg)
 	if (isInvulnerable()) return false;
 	if (source->getMsgId() == ChatPacket::e_ChatDeathFireball)
 	{
-		if ( (source->getEntity() != NULL) && source->getEntity()->instanceof(eTYPE_PLAYER) )
+		if ( (source->getEntity() != nullptr) && source->getEntity()->instanceof(eTYPE_PLAYER) )
 		{
 			// reflected fireball, kill the ghast
 			FlyingMob::hurt(source, 1000);
@@ -72,7 +72,7 @@ void Ghast::defineSynchedData()
 {
 	FlyingMob::defineSynchedData();
 
-	entityData->define(DATA_IS_CHARGING, (byte) 0);
+	entityData->define(DATA_IS_CHARGING, static_cast<byte>(0));
 }
 
 void Ghast::registerAttributes()
@@ -121,37 +121,37 @@ void Ghast::serverAiStep()
 		}
 	}
 
-	if (target != NULL && target->removed) target = nullptr;
-	if (target == NULL || retargetTime-- <= 0)
+	if (target != nullptr && target->removed) target = nullptr;
+	if (target == nullptr || retargetTime-- <= 0)
 	{
 		target = level->getNearestAttackablePlayer(shared_from_this(), 100);
-		if (target != NULL) 
+		if (target != nullptr) 
 		{
 			retargetTime = 20;
 		}
 	}
 
 	double maxDist = 64.0f;
-	if (target != NULL && target->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
+	if (target != nullptr && target->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
 	{
 		double xdd = target->x - x;
 		double ydd = (target->bb->y0 + target->bbHeight / 2) - (y + bbHeight / 2);
 		double zdd = target->z - z;
-		yBodyRot = yRot = -(float) atan2(xdd, zdd) * 180 / PI;
+		yBodyRot = yRot = -static_cast<float>(atan2(xdd, zdd)) * 180 / PI;
 
 		if (canSee(target))
 		{
 			if (charge == 10)
 			{
 				// 4J - change brought forward from 1.2.3
-				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_WARNING, (int) x, (int) y, (int) z, 0);
+				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_WARNING, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 			}
 			charge++;
 			if (charge == 20)
 			{
 				// 4J - change brought forward from 1.2.3
-				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, (int) x, (int) y, (int) z, 0);
-				shared_ptr<LargeFireball> ie = shared_ptr<LargeFireball>( new LargeFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
+				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
+				shared_ptr<LargeFireball> ie = std::make_shared<LargeFireball>(level, dynamic_pointer_cast<Mob>(shared_from_this()), xdd, ydd, zdd);
 				ie->explosionPower = explosionPower;
 				double d = 4;
 				Vec3 *v = getViewVector(1);
@@ -169,14 +169,14 @@ void Ghast::serverAiStep()
 	}
 	else
 	{
-		yBodyRot = yRot = -(float) atan2(this->xd, this->zd) * 180 / PI;
+		yBodyRot = yRot = -static_cast<float>(atan2(this->xd, this->zd)) * 180 / PI;
 		if (charge > 0) charge--;
 	}
 
 	if (!level->isClientSide) 
 	{
 		byte old = entityData->getByte(DATA_IS_CHARGING);
-		byte current = (byte) (charge > 10 ? 1 : 0);
+		byte current = static_cast<byte>(charge > 10 ? 1 : 0);
 		if (old != current)
 		{
 			entityData->set(DATA_IS_CHARGING, current);

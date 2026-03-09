@@ -59,7 +59,7 @@ private:
 #ifdef __PS3__
 	ByteBuffer_IO *data[10];
 #else
-	ByteBuffer *data[10];	// Arrays for mipmaps - NULL if not used
+	ByteBuffer *data[10];	// Arrays for mipmaps - nullptr if not used
 #endif
 
 public:

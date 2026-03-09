@@ -25,8 +25,8 @@ namespace Sentient
 	///
 	/// @param[in]      culture
 	///                 This is the result of a call to SenCultureFind() or SenCultureGet*().
-	///                 You may also pass NULL to use the culture set with SenCultureSetCurrent().
-	///					May be NULL for default culture.
+	///                 You may also pass nullptr to use the culture set with SenCultureSetCurrent().
+	///					May be nullptr for default culture.
 	///
 	/// @param[in]		maxResults
 	///					Used to indicate the number of items to be returned by @a out_feedInfo.

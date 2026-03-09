@@ -46,9 +46,9 @@ double ImprovedNoise::noise(double _x, double _y, double _z)
         double y = _y + yo;
         double z = _z + zo;
 
-        int xf = (int) x;
-        int yf = (int) y;
-        int zf = (int) z;
+        int xf = static_cast<int>(x);
+        int yf = static_cast<int>(y);
+        int zf = static_cast<int>(z);
 
         if (x < xf) xf--;
         if (y < yf) yf--;
@@ -125,7 +125,7 @@ void ImprovedNoise::add(doubleArray buffer, double _x, double _y, double _z, int
         for (int xx = 0; xx < xSize; xx++)
 		{
             double x = _x + (xx) * xs + xo;
-            int xf = (int) x;
+            int xf = static_cast<int>(x);
             if (x < xf) xf--;
             int X = xf & 255;
             x -= xf;
@@ -134,7 +134,7 @@ void ImprovedNoise::add(doubleArray buffer, double _x, double _y, double _z, int
             for (int zz = 0; zz < zSize; zz++)
 			{
                 double z = _z + (zz) * zs + zo;
-                int zf = (int) z;
+                int zf = static_cast<int>(z);
                 if (z < zf) zf--;
                 int Z = zf & 255;
                 z -= zf;
@@ -163,7 +163,7 @@ void ImprovedNoise::add(doubleArray buffer, double _x, double _y, double _z, int
     for (int xx = 0; xx < xSize; xx++)
 	{
         double x = _x + (xx) * xs + xo;
-        int xf = (int) x;
+        int xf = static_cast<int>(x);
         if (x < xf) xf--;
         int X = xf & 255;
         x -= xf;
@@ -173,7 +173,7 @@ void ImprovedNoise::add(doubleArray buffer, double _x, double _y, double _z, int
         for (int zz = 0; zz < zSize; zz++)
 		{
             double z = _z + (zz) * zs + zo;
-            int zf = (int) z;
+            int zf = static_cast<int>(z);
             if (z < zf) zf--;
             int Z = zf & 255;
             z -= zf;
@@ -183,7 +183,7 @@ void ImprovedNoise::add(doubleArray buffer, double _x, double _y, double _z, int
             for (int yy = 0; yy < ySize; yy++)
 			{
                 double y = _y + (yy) * ys + yo;
-                int yf = (int) y;
+                int yf = static_cast<int>(y);
                 if (y < yf) yf--;
                 int Y = yf & 255;
                 y -= yf;

@@ -238,7 +238,7 @@ private:
         __in ChatPacketType chatPacketType
         );
     Concurrency::critical_section m_chatPacketStatsLock;
-    int m_chatVoicePacketsStatistic[2][(int)Microsoft::Xbox::GameChat::ChatMessageType::InvalidMessage+1];
+    int m_chatVoicePacketsStatistic[2][static_cast<int>(Microsoft::Xbox::GameChat::ChatMessageType::InvalidMessage)+1];
 };
 
 std::shared_ptr<ChatIntegrationLayer> GetChatIntegrationLayer();

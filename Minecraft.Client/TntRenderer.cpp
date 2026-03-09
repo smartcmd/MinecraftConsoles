@@ -17,7 +17,7 @@ void TntRenderer::render(shared_ptr<Entity> _tnt, double x, double y, double z, 
 	shared_ptr<PrimedTnt> tnt = dynamic_pointer_cast<PrimedTnt>(_tnt);
 
 	glPushMatrix();
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     if (tnt->life - a + 1 < 10)
 	{
         float g = 1 - ((tnt->life - a + 1) / 10.0f);

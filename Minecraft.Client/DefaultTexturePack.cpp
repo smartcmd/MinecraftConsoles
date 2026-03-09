@@ -4,7 +4,7 @@
 #include "..\Minecraft.World\StringHelpers.h"
 
 
-DefaultTexturePack::DefaultTexturePack() : AbstractTexturePack(0, NULL, L"Minecraft", NULL)
+DefaultTexturePack::DefaultTexturePack() : AbstractTexturePack(0, nullptr, L"Minecraft", nullptr)
 {
 	// 4J Stu - These calls need to be in the most derived version of the class
 	loadIcon();
@@ -20,7 +20,7 @@ void DefaultTexturePack::loadIcon()
 	const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
 	WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 	swprintf(szResourceLocator, LOCATOR_SIZE ,L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/Graphics/TexturePackIcon.png");
 
 	UINT size = 0;
@@ -102,7 +102,7 @@ InputStream *DefaultTexturePack::getResourceImplementation(const wstring &name)/
 #endif
 	InputStream *resource = InputStream::getResourceAsStream(wDrive + name);
 	//InputStream *stream = DefaultTexturePack::class->getResourceAsStream(name);
-	//if (stream == NULL)
+	//if (stream == nullptr)
 	//{
 	//	throw new FileNotFoundException(name);
 	//}
