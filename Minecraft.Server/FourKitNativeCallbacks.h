@@ -3,11 +3,11 @@
 
 #include <map>
 #include <string>
-#include "..\Minecraft.Server.PluginBridge\PluginBridgeInterop.h"
+#include "..\Minecraft.Server.FourKit\FourKitInterop.h"
 
 class ServerPlayer;
 
-namespace PluginBridge
+namespace FourKit
 {
 	extern std::map<std::string, ServerPlayer*> g_nativePlayerMap;
 

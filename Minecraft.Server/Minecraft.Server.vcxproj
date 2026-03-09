@@ -83,7 +83,7 @@
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.PluginBridge.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Debug\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.FourKit.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Debug\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)Windows64\postbuild_server.ps1" -OutDir "$(OutDir)." -ProjectRoot "$(ProjectDir).." -Configuration "$(Configuration)"</Command>
@@ -117,7 +117,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.PluginBridge.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Release\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.FourKit.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Release\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)Windows64\postbuild_server.ps1" -OutDir "$(OutDir)." -ProjectRoot "$(ProjectDir).." -Configuration "$(Configuration)"</Command>
@@ -126,7 +126,7 @@
   <ItemGroup>
     <ClCompile Include="Access\Access.cpp" />
     <ClCompile Include="Access\BanManager.cpp" />
-    <ClCompile Include="PluginBridgeNative.cpp" />
+    <ClCompile Include="FourKitNative.cpp" />
     <ClCompile Include="ServerLogManager.cpp" />
     <ClCompile Include="..\Minecraft.Client\AbstractTexturePack.cpp" />
     <ClCompile Include="..\Minecraft.Client\AchievementPopup.cpp" />
@@ -703,8 +703,9 @@
     <ClInclude Include="Console\ServerCliRegistry.h" />
     <ClInclude Include="Common\FileUtils.h" />
     <ClInclude Include="Common\StringUtils.h" />
-    <ClInclude Include="PluginBridgeNative.h" />
-    <ClInclude Include="PluginBridgeNativeCallbacks.h" />
+    <ClInclude Include="FourKitNative.h" />
+    <ClInclude Include="FourKitNativeCallbacks.h" />
+    <ClInclude Include="FourKitImports.h" />
     <ClInclude Include="ServerLogger.h" />
     <ClInclude Include="ServerLogManager.h" />
     <ClInclude Include="ServerProperties.h" />

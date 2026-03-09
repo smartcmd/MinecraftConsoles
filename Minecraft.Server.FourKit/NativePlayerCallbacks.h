@@ -1,6 +1,6 @@
 #pragma once
 // todo: this sucks
-#include "PluginBridgeInterop.h"
+#include "FourKitInterop.h"
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -17,7 +17,7 @@ public:
 
 private:
 #define PB_DECLARE_PLAYER_DLLIMPORT(Name, Ret, Sig) \
-	[DllImport("Minecraft.Server.PluginBridge.dll", EntryPoint = "NativeCallback_" #Name, CallingConvention = CallingConvention::Cdecl)] \
+	[DllImport("Minecraft.Server.FourKit.dll", EntryPoint = "NativeCallback_" #Name, CallingConvention = CallingConvention::Cdecl)] \
 	static Ret NativeCallback_##Name Sig;
 	PB_PLAYER_CALLBACK_LIST(PB_DECLARE_PLAYER_DLLIMPORT)
 #undef PB_DECLARE_PLAYER_DLLIMPORT

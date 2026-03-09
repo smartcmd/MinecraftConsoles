@@ -19,7 +19,7 @@
     <Filter Include="Server\Vendor">
       <UniqueIdentifier>{3E4D5A41-CAB8-4A10-82B5-8B2AE2E25CB2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Server\PluginBridge">
+    <Filter Include="Server\FourKit">
       <UniqueIdentifier>{05d2e3ca-ea8e-4041-8640-5b81f455953d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -591,8 +591,8 @@
     <ClCompile Include="Console\commands\CliCommandTp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="PluginBridgeNative.cpp">
-      <Filter>Server\PluginBridge</Filter>
+    <ClCompile Include="FourKitNative.cpp">
+      <Filter>Server\FourKit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -669,11 +669,14 @@
     <ClInclude Include="Console\commands\IServerCliCommand.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="PluginBridgeNative.h">
-      <Filter>Server\PluginBridge</Filter>
+    <ClInclude Include="FourKitNative.h">
+      <Filter>Server\FourKit</Filter>
     </ClInclude>
-    <ClInclude Include="PluginBridgeNativeCallbacks.h">
-      <Filter>Server\PluginBridge</Filter>
+    <ClInclude Include="FourKitNativeCallbacks.h">
+      <Filter>Server\FourKit</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitImports.h">
+      <Filter>Server\FourKit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

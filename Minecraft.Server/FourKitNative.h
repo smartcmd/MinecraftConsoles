@@ -7,7 +7,7 @@
 class ServerPlayer;
 class PlayerConnection;
 
-namespace PluginBridge
+namespace FourKit
 {
 	void CreateAndBindManagedPlayer(ServerPlayer* nativePlayer, PlayerConnection* connection);
 	bool EmitPlayerChatEvent(ServerPlayer* nativePlayer, const std::wstring& message);

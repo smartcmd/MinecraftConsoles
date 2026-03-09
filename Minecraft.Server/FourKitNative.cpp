@@ -1,21 +1,21 @@
 #include "stdafx.h"
 
-#include "PluginBridgeNative.h"
-#include "PluginBridgeNativeCallbacks.h"
+#include "FourKitNative.h"
+#include "FourKitNativeCallbacks.h"
 #include "..\Minecraft.Client\ServerLevel.h"
 #include "..\Minecraft.Client\ServerPlayer.h"
 #include "..\Minecraft.Client\PlayerConnection.h"
 #include "..\Minecraft.Client\MinecraftServer.h"
 #include "..\Minecraft.Client\PlayerList.h"
-#include "..\Minecraft.Server.PluginBridge\PluginBridgeStructs.h"
-#include "..\Minecraft.Server.PluginBridge\PluginBridgeInterop.h"
+#include "..\Minecraft.Server.FourKit\FourKitStructs.h"
+#include "..\Minecraft.Server.FourKit\FourKitInterop.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 #include "../Minecraft.World/Dimension.h"
 #include "../Minecraft.World/TileUpdatePacket.h"
 #include "..\Minecraft.World\StringHelpers.h"
 #include "../Minecraft.Server/Common/StringUtils.h"
 
-namespace PluginBridge
+namespace FourKit
 {
 	std::map<std::string, ServerPlayer*> g_nativePlayerMap;
 	static bool g_callbacksRegistered = false;
@@ -229,7 +229,7 @@ namespace PluginBridge
 		chatData.message = messageUtf8.c_str();
 
 		bool cancelled = false;
-		PluginBridge_FireOnChat(chatData, &cancelled);
+		FourKit_FireOnChat(chatData, &cancelled);
 		return cancelled;
 	}
 
@@ -250,7 +250,7 @@ namespace PluginBridge
 		breakData.blockData = blockData;
 
 		bool cancelled = false;
-		PluginBridge_FireOnBlockBreak(breakData, &cancelled);
+		FourKit_FireOnBlockBreak(breakData, &cancelled);
 		return cancelled;
 	}
 
@@ -271,7 +271,7 @@ namespace PluginBridge
 		placeData.blockData = blockData;
 
 		bool cancelled = false;
-		PluginBridge_FireOnBlockPlace(placeData, &cancelled);
+		FourKit_FireOnBlockPlace(placeData, &cancelled);
 		return cancelled;
 	}
 
@@ -293,7 +293,7 @@ namespace PluginBridge
 		moveData.toZ = toZ;
 
 		bool cancelled = false;
-		PluginBridge_FireOnPlayerMove(moveData, &cancelled);
+		FourKit_FireOnPlayerMove(moveData, &cancelled);
 		return cancelled;
 	}
 
@@ -308,7 +308,7 @@ namespace PluginBridge
 		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
 		leaveData.playerName = nameUtf8.c_str();
 
-		PluginBridge_FireOnPlayerLeave(leaveData);
+		FourKit_FireOnPlayerLeave(leaveData);
 		
 		UnregisterNativePlayer(nameUtf8.c_str());
 	}
@@ -321,7 +321,7 @@ namespace PluginBridge
 		{
 			if (!g_callbacksRegistered)
 			{
-				PluginBridge_SetNativeCallbacks(
+				FourKit_SetNativeCallbacks(
 					&NativeCallback_SetFallDistance,
 					&NativeCallback_SetHealth,
 					&NativeCallback_SetFood,
@@ -355,11 +355,11 @@ namespace PluginBridge
 			playerData.z = nativePlayer->z;
 			playerData.dimension = nativePlayer->dimension;
 			
-			PluginBridge_FireOnPlayerJoin(playerData);
+			FourKit_FireOnPlayerJoin(playerData);
 		}
 		catch (...)
 		{
-			app.DebugPrintf("[PluginBridge] Error creating managed player binding\n");
+			app.DebugPrintf("[FourKit] Error creating managed player binding\n");
 		}
 	}
 }

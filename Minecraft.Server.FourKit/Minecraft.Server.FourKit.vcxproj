@@ -22,7 +22,7 @@
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{5a36ab02-6c2e-4272-86f8-3dcab976564c}</ProjectGuid>
-    <RootNamespace>MinecraftServerPluginBridge</RootNamespace>
+    <RootNamespace>MinecraftServerFourKit</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <TargetFramework>net8.0</TargetFramework>
     <WindowsTargetPlatformMinVersion>7.0</WindowsTargetPlatformMinVersion>
@@ -164,7 +164,7 @@
     <ClCompile Include="NativeBlockCallbacks.cpp" />
     <ClCompile Include="NativePlayerCallbacks.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PluginBridge.cpp" />
+    <ClCompile Include="FourKit.cpp" />
     <ClCompile Include="PluginLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,9 +175,9 @@
     <ClInclude Include="NativeBlockCallbacks.h" />
     <ClInclude Include="NativePlayerCallbacks.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PluginBridge.h" />
-    <ClInclude Include="PluginBridgeInterop.h" />
-    <ClInclude Include="PluginBridgeStructs.h" />
+    <ClInclude Include="FourKit.h" />
+    <ClInclude Include="FourKitInterop.h" />
+    <ClInclude Include="FourKitStructs.h" />
     <ClInclude Include="PluginLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

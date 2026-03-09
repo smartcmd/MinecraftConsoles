@@ -27,7 +27,7 @@
 #include "../../Minecraft.World/compression.h"
 #include "../../Minecraft.World/OldChunkStorage.h"
 #include "../../Minecraft.World/net.minecraft.world.level.tile.h"
-#include "../PluginBridgeImports.h"
+#include "../FourKitImports.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
 
 	
 	LogStartupStep("initializing plugin system");
-    PluginBridge_Initialize();
+    FourKit_Initialize();
 
 	Tesselator::CreateNewThreadStorage(1024 * 1024);
 	AABB::CreateNewThreadStorage();
@@ -587,7 +587,7 @@ int main(int argc, char **argv)
 	LogInfof("startup", "Dedicated server listening on %s:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
 
 	LogStartupStep("firing plugin OnLoad event");
-    PluginBridge_FireOnLoad();
+    FourKit_FireOnLoad();
 
 	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !IsShutdownRequested() && !app.m_bShutdown)
 	{
@@ -657,7 +657,7 @@ int main(int argc, char **argv)
 
 	LogInfof("shutdown", "Dedicated server stopped");
 
-    PluginBridge_FireOnExit();
+    FourKit_FireOnExit();
 
 	MinecraftServer *server = MinecraftServer::getInstance();
 	if (server != NULL)
@@ -687,7 +687,7 @@ int main(int argc, char **argv)
 	ServerRuntime::ServerLogManager::Shutdown();
 	
 	LogStartupStep("shutting down plugin system");
-    PluginBridge_Shutdown();
+    FourKit_Shutdown();
 
 	CleanupDevice();
 	

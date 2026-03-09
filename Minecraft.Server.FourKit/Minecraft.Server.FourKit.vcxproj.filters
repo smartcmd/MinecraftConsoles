@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PluginBridge.cpp">
+    <ClCompile Include="FourKit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
@@ -38,10 +38,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PluginBridge.h">
+    <ClInclude Include="FourKit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PluginBridgeInterop.h">
+    <ClInclude Include="FourKitInterop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events.h">
@@ -56,7 +56,7 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PluginBridgeStructs.h">
+    <ClInclude Include="FourKitStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NativePlayerCallbacks.h">

@@ -1,6 +1,6 @@
 #pragma once
 // todo: improve just like nativeplayercallbacks
-#include "PluginBridgeInterop.h"
+#include "FourKitInterop.h"
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -16,7 +16,7 @@ public:
 
 private:
 #define PB_DECLARE_BLOCK_DLLIMPORT(Name, Ret, Sig) \
-	[DllImport("Minecraft.Server.PluginBridge.dll", EntryPoint = "NativeCallback_" #Name, CallingConvention = CallingConvention::Cdecl)] \
+	[DllImport("Minecraft.Server.FourKit.dll", EntryPoint = "NativeCallback_" #Name, CallingConvention = CallingConvention::Cdecl)] \
 	static Ret NativeCallback_##Name Sig;
 	PB_BLOCK_CALLBACK_LIST(PB_DECLARE_BLOCK_DLLIMPORT)
 #undef PB_DECLARE_BLOCK_DLLIMPORT

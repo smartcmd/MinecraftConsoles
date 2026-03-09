@@ -20,22 +20,6 @@ public:
 	double getZ() { return m_z; }
 	int getDimension() { return m_dimension; }
 	
-	property String^ name
-	{
-		String^ get() { return m_name; }
-	}
-	
-	property float health { float get() { return m_health; } }
-	property int food { int get() { return m_food; } }
-	property float fallDistance { float get() { return m_fallDistance; } }
-	property float yRot { float get() { return m_yRot; } }
-	property float xRot { float get() { return m_xRot; } }
-	
-	property double x { double get() { return m_x; } }
-	property double y { double get() { return m_y; } }
-	property double z { double get() { return m_z; } }
-	property int dimension { int get() { return m_dimension; } }
-	
 	void setFallDistance(float distance);
 	void setHealth(float health);
 	void setFood(int food);
@@ -44,6 +28,75 @@ public:
 	void teleport(double x, double y, double z);
 
 internal:
+    property String ^
+        name {
+            String ^ get() { return m_name; }
+        }
+
+    property float health
+    {
+        float get()
+        {
+            return m_health;
+        }
+    }
+    property int food
+    {
+        int get()
+        {
+            return m_food;
+        }
+    }
+    property float fallDistance
+    {
+        float get()
+        {
+            return m_fallDistance;
+        }
+    }
+    property float yRot
+    {
+        float get()
+        {
+            return m_yRot;
+        }
+    }
+    property float xRot
+    {
+        float get()
+        {
+            return m_xRot;
+        }
+    }
+
+    property double x
+    {
+        double get()
+        {
+            return m_x;
+        }
+    }
+    property double y
+    {
+        double get()
+        {
+            return m_y;
+        }
+    }
+    property double z
+    {
+        double get()
+        {
+            return m_z;
+        }
+    }
+    property int dimension
+    {
+        int get()
+        {
+            return m_dimension;
+        }
+    }
 	void SetPlayerData(float health, int food, float fallDistance, float yRot, float xRot, 
 	                   double x, double y, double z, int dimension);
 

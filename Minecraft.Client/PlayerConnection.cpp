@@ -36,7 +36,7 @@
 #include "Options.h"
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\ServerLogManager.h"
-#include "..\Minecraft.Server\PluginBridgeNative.h"
+#include "..\Minecraft.Server\FourKitNative.h"
 #endif
 
 Random PlayerConnection::random;
@@ -106,7 +106,7 @@ void PlayerConnection::tick()
     if (!hasDoneFirstTick)
     {
         hasDoneFirstTick = true;
-        PluginBridge::CreateAndBindManagedPlayer(player.get(), this);
+        FourKit::CreateAndBindManagedPlayer(player.get(), this);
     }
 #endif
 	if( done ) return;
@@ -156,7 +156,7 @@ void PlayerConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 		reason,
 		true);
 	
-	PluginBridge::EmitPlayerLeaveEvent(player.get());
+	FourKit::EmitPlayerLeaveEvent(player.get());
 #endif
 	app.DebugPrintf("PlayerConnection disconect reason: %d\n", reason );
 	player->disconnect();
@@ -217,7 +217,7 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 		if (currentX != toX || currentY != toY || currentZ != toZ)
 		{
-			moveCancelled = PluginBridge::EmitPlayerMoveEvent(player.get(), currentX, currentY, currentZ, toX, toY, toZ);
+			moveCancelled = FourKit::EmitPlayerMoveEvent(player.get(), currentX, currentY, currentZ, toX, toY, toZ);
 		}
 #endif
 		if (player->riding != NULL)
@@ -516,7 +516,7 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 		{
 			int blockId = level->getTile(x, y, z);
 			int blockData = level->getData(x, y, z);
-			if (PluginBridge::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+			if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
 			{
 				player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
 				return;
@@ -537,7 +537,7 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 			if (blockId != 0)
 			{
 				int blockData = level->getData(x, y, z);
-				if (PluginBridge::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+				if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
 				{
 					player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
 					return;
@@ -627,7 +627,7 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 					{
 						int blockId = item->id;
 						int blockData = item->getAuxValue();
-						blockPlaceCancelled = PluginBridge::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
+						blockPlaceCancelled = FourKit::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
 					}
 				}
 
@@ -720,7 +720,7 @@ void PlayerConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, 
 		reason,
 		false);
 	
-	PluginBridge::EmitPlayerLeaveEvent(player.get());
+	FourKit::EmitPlayerLeaveEvent(player.get());
 #endif
 	//    logger.info(player.name + " lost connection: " + reason);
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
@@ -807,7 +807,7 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 	}
 
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
-	if (PluginBridge::EmitPlayerChatEvent(player.get(), message))
+	if (FourKit::EmitPlayerChatEvent(player.get(), message))
 	{
 		return;
 	}

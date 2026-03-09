@@ -1,9 +1,9 @@
 // 100% better way of doing this. i just kind adumb
 // todo: redo this
 
-#include "PluginBridge.h"
-#include "PluginBridgeInterop.h"
-#include "PluginBridgeStructs.h"
+#include "FourKit.h"
+#include "FourKitInterop.h"
+#include "FourKitStructs.h"
 #include "PluginLogger.h"
 #include "NativeBlockCallbacks.h"
 
@@ -16,7 +16,7 @@ using namespace System::Runtime::InteropServices;
 
 namespace
 {
-#define PB_DECLARE_STORAGE(Name, Ret, Sig) PluginBridge##Name##Callback g_##Name = nullptr;
+#define PB_DECLARE_STORAGE(Name, Ret, Sig) FourKit##Name##Callback g_##Name = nullptr;
 	PB_NATIVE_CALLBACK_LIST(PB_DECLARE_STORAGE)
 #undef PB_DECLARE_STORAGE
 
@@ -48,7 +48,7 @@ namespace
 	}
 }
 
-bool PluginBridge::Initialize()
+bool FourKit::Initialize()
 {
     String ^ pluginsFolderPath = "plugins";
 
@@ -56,7 +56,7 @@ bool PluginBridge::Initialize()
     {
         if (!Directory::Exists(pluginsFolderPath))
         {
-            PluginLogger::LogInfo("pluginbridge", "Plugins folder does not exist, creating...");
+            PluginLogger::LogInfo("fourkit", "Plugins folder does not exist, creating...");
             Directory::CreateDirectory(pluginsFolderPath);
         }
 
@@ -64,42 +64,42 @@ bool PluginBridge::Initialize()
 
         cli::array<String ^> ^ dllFiles = Directory::GetFiles(pluginsFolderPath, "*.dll");
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Found {0} plugin DLL files", dllFiles->Length));
+        PluginLogger::LogInfo("fourkit", String::Format("Found {0} plugin DLL files", dllFiles->Length));
 
         for each (String ^ dllFile in dllFiles)
         {
             if (!LoadPlugin(dllFile))
             {
-                PluginLogger::LogWarn("pluginbridge", String::Format("Failed to load plugin: {0}", dllFile));
+                PluginLogger::LogWarn("fourkit", String::Format("Failed to load plugin: {0}", dllFile));
             }
         }
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Loaded {0} plugins successfully", pluginList->Count));
+        PluginLogger::LogInfo("fourkit", String::Format("Loaded {0} plugins successfully", pluginList->Count));
 
         return true;
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error during initialization: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error during initialization: {0}", ex->Message));
         return false;
     }
 }
 
-void PluginBridge::Shutdown()
+void FourKit::Shutdown()
 {
     try
     {
         FireEventOnExit();
         pluginList->Clear();
-        PluginLogger::LogInfo("pluginbridge", "Plugin system shut down");
+        PluginLogger::LogInfo("fourkit", "Plugin system shut down");
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error during shutdown: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error during shutdown: {0}", ex->Message));
     }
 }
 
-bool PluginBridge::LoadPlugin(String ^ pluginPath)
+bool FourKit::LoadPlugin(String ^ pluginPath)
 {
     try
     {
@@ -107,11 +107,11 @@ bool PluginBridge::LoadPlugin(String ^ pluginPath)
 
         if (pluginAssembly == nullptr)
         {
-            PluginLogger::LogError("pluginbridge", String::Format("Failed to load assembly: {0}", pluginPath));
+            PluginLogger::LogError("fourkit", String::Format("Failed to load assembly: {0}", pluginPath));
             return false;
         }
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Loaded assembly: {0}", pluginAssembly->FullName));
+        PluginLogger::LogInfo("fourkit", String::Format("Loaded assembly: {0}", pluginAssembly->FullName));
 
         cli::array<Type ^> ^ types = pluginAssembly->GetTypes();
 
@@ -130,7 +130,7 @@ bool PluginBridge::LoadPlugin(String ^ pluginPath)
                     if (plugin != nullptr)
                     {
                         pluginList->Add(plugin);
-                        PluginLogger::LogInfo("pluginbridge", 
+                        PluginLogger::LogInfo("fourkit", 
                             String::Format("Loaded plugin: {0} v{1} by {2}",
                                 plugin->GetName(), plugin->GetVersion(), plugin->GetAuthor()));
                         pluginFound = true;
@@ -138,7 +138,7 @@ bool PluginBridge::LoadPlugin(String ^ pluginPath)
                 }
                 catch (Exception ^ ex)
                 {
-                    PluginLogger::LogError("pluginbridge",
+                    PluginLogger::LogError("fourkit",
                         String::Format("Failed to instantiate plugin {0}: {1}",
                             type->FullName, ex->Message));
                 }
@@ -147,7 +147,7 @@ bool PluginBridge::LoadPlugin(String ^ pluginPath)
 
         if (!pluginFound)
         {
-            PluginLogger::LogWarn("pluginbridge", 
+            PluginLogger::LogWarn("fourkit", 
                 String::Format("No ServerPlugin implementations found in assembly: {0}", pluginPath));
         }
 
@@ -155,22 +155,22 @@ bool PluginBridge::LoadPlugin(String ^ pluginPath)
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error loading plugin: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error loading plugin: {0}", ex->Message));
         return false;
     }
 }
 
-List<ServerPlugin ^> ^ PluginBridge::GetLoadedPlugins()
+List<ServerPlugin ^> ^ FourKit::GetLoadedPlugins()
 {
     return pluginList;
 }
 
-void PluginBridge::LogPlugin(String ^ pluginName, String ^ message)
+void FourKit::LogPlugin(String ^ pluginName, String ^ message)
 {
     PluginLogger::LogPluginInfo(pluginName, message);
 }
 
-void PluginBridge::FireEventOnLoad()
+void FourKit::FireEventOnLoad()
 {
     try
     {
@@ -178,7 +178,7 @@ void PluginBridge::FireEventOnLoad()
         event->ServerName = "Minecraft Dedicated Server";
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Calling OnEnable to {0} plugins", pluginList->Count));
+        PluginLogger::LogInfo("fourkit", String::Format("Calling OnEnable to {0} plugins", pluginList->Count));
         for each (ServerPlugin ^ plugin in pluginList)
         {
             try
@@ -191,7 +191,7 @@ void PluginBridge::FireEventOnLoad()
             }
             catch (Exception ^ ex)
             {
-                PluginLogger::LogError("pluginbridge",
+                PluginLogger::LogError("fourkit",
                     String::Format("Error in OnEnable for plugin {0}: {1}",
                         plugin->GetName(), ex->Message));
                 EventManager::ClearCurrentPlugin();
@@ -200,11 +200,11 @@ void PluginBridge::FireEventOnLoad()
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnLoad event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnLoad event: {0}", ex->Message));
     }
 }
 
-void PluginBridge::FireEventOnExit()
+void FourKit::FireEventOnExit()
 {
     try
     {
@@ -212,7 +212,7 @@ void PluginBridge::FireEventOnExit()
         event->Reason = "Server shutdown";
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Calling OnDisable to {0} plugins", pluginList->Count));
+        PluginLogger::LogInfo("fourkit", String::Format("Calling OnDisable to {0} plugins", pluginList->Count));
         for each (ServerPlugin ^ plugin in pluginList)
         {
             try
@@ -221,7 +221,7 @@ void PluginBridge::FireEventOnExit()
             }
             catch (Exception ^ ex)
             {
-                PluginLogger::LogError("pluginbridge",
+                PluginLogger::LogError("fourkit",
                     String::Format("Error in OnDisable for plugin {0}: {1}",
                         plugin->GetName(), ex->Message));
             }
@@ -229,11 +229,11 @@ void PluginBridge::FireEventOnExit()
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnExit event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnExit event: {0}", ex->Message));
     }
 }
 
-void PluginBridge::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
+void FourKit::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
 {
     try
     {
@@ -248,15 +248,15 @@ void PluginBridge::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
         event->PlayerObject = player;
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Firing OnPlayerJoin event to {0} listeners", pluginList->Count));
+        PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerJoin event to {0} listeners", pluginList->Count));
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnPlayerJoin event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerJoin event: {0}", ex->Message));
     }
 }
 
-void PluginBridge::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
+void FourKit::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
 {
     try
     {
@@ -272,15 +272,15 @@ void PluginBridge::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
         event->PlayerObject = player;
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("pluginbridge", String::Format("Firing OnPlayerLeave event for {0}", name));
+        PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerLeave event for {0}", name));
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnPlayerLeave event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerLeave event: {0}", ex->Message));
     }
 }
 
-void PluginBridge::FireEventOnPlayerChat(const PlayerChatData &chatData, bool* cancelled)
+void FourKit::FireEventOnPlayerChat(const PlayerChatData &chatData, bool *cancelled)
 {
     try
     {
@@ -307,7 +307,7 @@ void PluginBridge::FireEventOnPlayerChat(const PlayerChatData &chatData, bool* c
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnPlayerChat event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerChat event: {0}", ex->Message));
         if (cancelled != nullptr)
         {
             *cancelled = false;
@@ -315,7 +315,7 @@ void PluginBridge::FireEventOnPlayerChat(const PlayerChatData &chatData, bool* c
     }
 }
 
-void PluginBridge::FireEventOnBlockBreak(const BlockBreakData &blockBreakData, bool* cancelled)
+void FourKit::FireEventOnBlockBreak(const BlockBreakData &blockBreakData, bool *cancelled)
 {
     try
     {
@@ -349,7 +349,7 @@ void PluginBridge::FireEventOnBlockBreak(const BlockBreakData &blockBreakData, b
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnBlockBreak event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnBlockBreak event: {0}", ex->Message));
         if (cancelled != nullptr)
         {
             *cancelled = false;
@@ -357,7 +357,7 @@ void PluginBridge::FireEventOnBlockBreak(const BlockBreakData &blockBreakData, b
     }
 }
 
-void PluginBridge::FireEventOnBlockPlace(const BlockPlaceData &blockPlaceData, bool* cancelled)
+void FourKit::FireEventOnBlockPlace(const BlockPlaceData &blockPlaceData, bool *cancelled)
 {
     try
     {
@@ -391,7 +391,7 @@ void PluginBridge::FireEventOnBlockPlace(const BlockPlaceData &blockPlaceData, b
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnBlockPlace event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnBlockPlace event: {0}", ex->Message));
         if (cancelled != nullptr)
         {
             *cancelled = false;
@@ -399,7 +399,7 @@ void PluginBridge::FireEventOnBlockPlace(const BlockPlaceData &blockPlaceData, b
     }
 }
 
-void PluginBridge::FireEventOnPlayerMove(const PlayerMoveData &moveData, bool* cancelled)
+void FourKit::FireEventOnPlayerMove(const PlayerMoveData &moveData, bool *cancelled)
 {
     try
     {
@@ -426,7 +426,7 @@ void PluginBridge::FireEventOnPlayerMove(const PlayerMoveData &moveData, bool* c
     }
     catch (Exception ^ ex)
     {
-        PluginLogger::LogError("pluginbridge", String::Format("Error firing OnPlayerMove event: {0}", ex->Message));
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerMove event: {0}", ex->Message));
         if (cancelled != nullptr)
         {
             *cancelled = false;
@@ -434,12 +434,12 @@ void PluginBridge::FireEventOnPlayerMove(const PlayerMoveData &moveData, bool* c
     }
 }
 
-void PluginBridge::addListener(Listener ^ listener)
+void FourKit::addListener(Listener ^ listener)
 {
     EventManager::RegisterListener(listener);
 }
 
-Block^ PluginBridge::getBlockAt(double x, double y, double z)
+Block ^ FourKit::getBlockAt(double x, double y, double z)
 {
     int bx = (int)Math::Floor(x);
     int by = (int)Math::Floor(y);
@@ -452,7 +452,7 @@ Block^ PluginBridge::getBlockAt(double x, double y, double z)
     return gcnew Block(bx, by, bz, dimension, blockType, blockData);
 }
 
-Player^ PluginBridge::getPlayer(String^ name)
+Player ^ FourKit::getPlayer(String ^ name)
 {
     return ResolvePlayerByName(name);
 }
@@ -463,19 +463,19 @@ Player^ PluginBridge::getPlayer(String^ name)
 
 extern "C"
 {
-	__declspec(dllexport) void PluginBridge_SetNativeCallbacks(
-		PluginBridgeSetFallDistanceCallback SetFallDistance,
-		PluginBridgeSetHealthCallback SetHealth,
-		PluginBridgeSetFoodCallback SetFood,
-		PluginBridgeSendMessageCallback SendMessage,
-		PluginBridgeTeleportToCallback TeleportTo,
-		PluginBridgeKickCallback Kick,
-		PluginBridgeBlockBreakNaturallyCallback BlockBreakNaturally,
-		PluginBridgeGetBlockTypeCallback GetBlockType,
-		PluginBridgeSetBlockTypeCallback SetBlockType,
-		PluginBridgeGetBlockDataCallback GetBlockData,
-		PluginBridgeSetBlockDataCallback SetBlockData,
-		PluginBridgeGetPlayerSnapshotCallback GetPlayerSnapshot)
+	__declspec(dllexport) void FourKit_SetNativeCallbacks(
+		FourKitSetFallDistanceCallback SetFallDistance,
+		FourKitSetHealthCallback SetHealth,
+		FourKitSetFoodCallback SetFood,
+		FourKitSendMessageCallback SendMessage,
+		FourKitTeleportToCallback TeleportTo,
+		FourKitKickCallback Kick,
+		FourKitBlockBreakNaturallyCallback BlockBreakNaturally,
+		FourKitGetBlockTypeCallback GetBlockType,
+		FourKitSetBlockTypeCallback SetBlockType,
+		FourKitGetBlockDataCallback GetBlockData,
+		FourKitSetBlockDataCallback SetBlockData,
+		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot)
 	{
 #define PB_ASSIGN_STORAGE(Name, Ret, Sig) g_##Name = Name;
 		PB_NATIVE_CALLBACK_LIST(PB_ASSIGN_STORAGE)
@@ -581,53 +581,53 @@ extern "C"
 		return false;
 	}
 
-    __declspec(dllexport) void PluginBridge_Initialize()
+    __declspec(dllexport) void FourKit_Initialize()
     {
-        PluginBridge::Initialize();
+        FourKit::Initialize();
     }
 
-    __declspec(dllexport) void PluginBridge_Shutdown()
+    __declspec(dllexport) void FourKit_Shutdown()
     {
-        PluginBridge::Shutdown();
+        FourKit::Shutdown();
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnPlayerJoin(const PlayerJoinData &playerData)
+    __declspec(dllexport) void FourKit_FireOnPlayerJoin(const PlayerJoinData &playerData)
     {
-        PluginBridge::FireEventOnPlayerJoin(playerData);
+        FourKit::FireEventOnPlayerJoin(playerData);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnPlayerLeave(const PlayerLeaveData &playerData)
+    __declspec(dllexport) void FourKit_FireOnPlayerLeave(const PlayerLeaveData &playerData)
     {
-        PluginBridge::FireEventOnPlayerLeave(playerData);
+        FourKit::FireEventOnPlayerLeave(playerData);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnChat(const PlayerChatData &chatData, bool* cancelled)
+    __declspec(dllexport) void FourKit_FireOnChat(const PlayerChatData &chatData, bool* cancelled)
     {
-        PluginBridge::FireEventOnPlayerChat(chatData, cancelled);
+        FourKit::FireEventOnPlayerChat(chatData, cancelled);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnBlockBreak(const BlockBreakData &blockBreakData, bool* cancelled)
+    __declspec(dllexport) void FourKit_FireOnBlockBreak(const BlockBreakData &blockBreakData, bool* cancelled)
     {
-        PluginBridge::FireEventOnBlockBreak(blockBreakData, cancelled);
+        FourKit::FireEventOnBlockBreak(blockBreakData, cancelled);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnBlockPlace(const BlockPlaceData &blockPlaceData, bool* cancelled)
+    __declspec(dllexport) void FourKit_FireOnBlockPlace(const BlockPlaceData &blockPlaceData, bool* cancelled)
     {
-        PluginBridge::FireEventOnBlockPlace(blockPlaceData, cancelled);
+        FourKit::FireEventOnBlockPlace(blockPlaceData, cancelled);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnPlayerMove(const PlayerMoveData &moveData, bool* cancelled)
+    __declspec(dllexport) void FourKit_FireOnPlayerMove(const PlayerMoveData &moveData, bool* cancelled)
     {
-        PluginBridge::FireEventOnPlayerMove(moveData, cancelled);
+        FourKit::FireEventOnPlayerMove(moveData, cancelled);
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnLoad()
+    __declspec(dllexport) void FourKit_FireOnLoad()
     {
-        PluginBridge::FireEventOnLoad();
+        FourKit::FireEventOnLoad();
     }
 
-    __declspec(dllexport) void PluginBridge_FireOnExit()
+    __declspec(dllexport) void FourKit_FireOnExit()
     {
-        PluginBridge::FireEventOnExit();
+        FourKit::FireEventOnExit();
     }
 }
