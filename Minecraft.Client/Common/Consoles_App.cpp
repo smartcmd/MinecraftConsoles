@@ -8064,7 +8064,7 @@ void CMinecraftApp::SetGameHostOption(unsigned int &uiHostSettings, eGameHostOpt
 		uiHostSettings|=(GAME_HOST_OPTION_BITMASK_WORLDSIZE & (uiVal<<GAME_HOST_OPTION_BITMASK_WORLDSIZE_BITSHIFT));
 		break;
 	case eGameHostOption_NoMobCap:
-		if(uiVal!=1)
+		if(uiVal!=0)
 		{
 			uiHostSettings |= GAME_HOST_OPTION_BITMASK_NOMOBCAP;
 		}
