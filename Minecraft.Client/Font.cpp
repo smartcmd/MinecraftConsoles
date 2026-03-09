@@ -338,7 +338,9 @@ void Font::draw(const wstring &str, bool dropShadow)
 				if (colorN < 0 || colorN > 15) colorN = 15;
 				if (dropShadow) colorN += 16;
 				int color = colors[colorN];
+				t->end();
 				glColor3f((color >> 16) / 255.0F, ((color >> 8) & 255) / 255.0F, (color & 255) / 255.0F);
+				t->begin();
 			}
 			i += 1;
 			continue;
