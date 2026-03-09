@@ -838,8 +838,8 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
 	
-	// jvnpr -- FOV setting is stored as 0-100 but mapped to 0-80 (offset from 30-110).
-	SetGameSettings(iPad,eGameSetting_FOV,75); // jvnpr -- new default is fov of 90 because legacy console edition default is 90
+	// jvnpr -- FOV setting is stored as 101-201 but mapped to 0-80 (offset from 30-110).
+	SetGameSettings(iPad,eGameSetting_FOV,151); 
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==nullptr)
