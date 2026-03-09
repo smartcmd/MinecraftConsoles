@@ -64,28 +64,34 @@ void MinecartTNT::destroy(DamageSource *source)
 
 	double speedSqr = xd * xd + zd * zd;
 
-	if (!source->isExplosion())
+	if (!app.GetGameHostOption(eGameHostOption_TNT) || !source->isExplosion())
 	{
-		spawnAtLocation(std::make_shared<ItemInstance>(Tile::tnt, 1), 0);
+		spawnAtLocation( shared_ptr<ItemInstance>( new ItemInstance(Tile::tnt, 1) ), 0);
 	}
 
-	if (source->isFire() || source->isExplosion() || speedSqr >= 0.01f)
+	if (app.GetGameHostOption(eGameHostOption_TNT))
 	{
-		explode(speedSqr);
+		if (source->isFire() || source->isExplosion() || speedSqr >= 0.01f)
+		{
+			explode(speedSqr);
+		}
 	}
 }
 
 void MinecartTNT::explode(double speedSqr)
 {
+	if (!app.GetGameHostOption(eGameHostOption_TNT))
+	{
+		remove();
+		return;
+	}
+
 	if (!level->isClientSide)
 	{
 		double speed = sqrt(speedSqr);
-		if (speed > 5.0) speed = 5.0;
-		if (app.GetGameHostOption(eGameHostOption_TNT))
-		{
-			level->explode(shared_from_this(), x, y, z, static_cast<float>(4 + random->nextDouble() * 1.5f * speed), true);
-			remove();
-		}
+		if (speed > 5) speed = 5;
+		level->explode(shared_from_this(), x, y, z, (float) (4 + random->nextDouble() * 1.5f * speed), true);
+		remove();
 	}
 }
 
@@ -122,12 +128,15 @@ void MinecartTNT::handleEntityEvent(byte eventId)
 
 void MinecartTNT::primeFuse()
 {
-	fuse = 80;
-
-	if (!level->isClientSide)
+	if (app.GetGameHostOption(eGameHostOption_TNT))
 	{
-		level->broadcastEntityEvent(shared_from_this(), EVENT_PRIME);
-		level->playEntitySound(shared_from_this(), eSoundType_RANDOM_FUSE, 1, 1.0f);
+		fuse = 80;
+
+		if (!level->isClientSide)
+		{
+			level->broadcastEntityEvent(shared_from_this(), EVENT_PRIME);
+			level->playEntitySound(shared_from_this(), eSoundType_RANDOM_FUSE, 1, 1.0f);
+		}
 	}
 }
 
