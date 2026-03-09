@@ -33,7 +33,7 @@ ThrownEgg::ThrownEgg(Level *level, double x, double y, double z) : Throwable(lev
 
 void ThrownEgg::onHit(HitResult *res)
 {
-	if (res->entity != NULL)
+	if (res->entity != nullptr)
 	{
 		DamageSource *damageSource = DamageSource::thrown(shared_from_this(), owner);
 		res->entity->hurt(damageSource, 0);
@@ -47,7 +47,7 @@ void ThrownEgg::onHit(HitResult *res)
 			if (random->nextInt(32) == 0) count = 4;
 			for (int i = 0; i < count; i++)
 			{
-				shared_ptr<Chicken> chicken = shared_ptr<Chicken>( new Chicken(level) );
+				shared_ptr<Chicken> chicken = std::make_shared<Chicken>(level);
 				chicken->setAge(-20 * 60 * 20);
 
 				chicken->moveTo(x, y, z, yRot, 0);

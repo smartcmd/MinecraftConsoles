@@ -44,7 +44,7 @@ void Minecart::_init()
 	blocksBuilding = true;
 	setSize(0.98f, 0.7f);
 	heightOffset = bbHeight / 2.0f;
-	soundUpdater = NULL;
+	soundUpdater = nullptr;
 	name = L"";
 	//
 
@@ -56,7 +56,7 @@ Minecart::Minecart(Level *level) : Entity( level )
 {
 	_init();
 
-	//soundUpdater = level != NULL ? level->makeSoundUpdater(this) : NULL;
+	//soundUpdater = level != nullptr ? level->makeSoundUpdater(this) : nullptr;
 }
 
 Minecart::~Minecart()
@@ -69,17 +69,17 @@ shared_ptr<Minecart> Minecart::createMinecart(Level *level, double x, double y, 
 	switch (type)
 	{
 	case TYPE_CHEST:
-		return shared_ptr<MinecartChest>( new MinecartChest(level, x, y, z) );
+		return std::make_shared<MinecartChest>(level, x, y, z);
 	case TYPE_FURNACE:
-		return shared_ptr<MinecartFurnace>( new MinecartFurnace(level, x, y, z) );
+		return std::make_shared<MinecartFurnace>(level, x, y, z);
 	case TYPE_TNT:
-		return shared_ptr<MinecartTNT>( new MinecartTNT(level, x, y, z) );
+		return std::make_shared<MinecartTNT>(level, x, y, z);
 	case TYPE_SPAWNER:
-		return shared_ptr<MinecartSpawner>( new MinecartSpawner(level, x, y, z) );
+		return std::make_shared<MinecartSpawner>(level, x, y, z);
 	case TYPE_HOPPER:
-		return shared_ptr<MinecartHopper>( new MinecartHopper(level, x, y, z) );
+		return std::make_shared<MinecartHopper>(level, x, y, z);
 	default:
-		return shared_ptr<MinecartRideable>( new MinecartRideable(level, x, y, z) );
+		return std::make_shared<MinecartRideable>(level, x, y, z);
 	}
 }
 
@@ -95,7 +95,7 @@ void Minecart::defineSynchedData()
 	entityData->define(DATA_ID_DAMAGE, 0.0f);
 	entityData->define(DATA_ID_DISPLAY_TILE, 0);
 	entityData->define(DATA_ID_DISPLAY_OFFSET, 6);
-	entityData->define(DATA_ID_CUSTOM_DISPLAY, (byte) 0);
+	entityData->define(DATA_ID_CUSTOM_DISPLAY, static_cast<byte>(0));
 }
 
 
@@ -105,12 +105,12 @@ AABB *Minecart::getCollideAgainstBox(shared_ptr<Entity> entity)
 	{
 		return entity->bb;
 	}
-	return NULL;
+	return nullptr;
 }
 
 AABB *Minecart::getCollideBox()
 {
-	return NULL;
+	return nullptr;
 }
 
 bool Minecart::isPushable()
@@ -145,7 +145,7 @@ bool Minecart::hurt(DamageSource *source, float hurtDamage)
 
 	// 4J-JEV: Fix for #88212,
 	// Untrusted players shouldn't be able to damage minecarts or boats.
-	if (dynamic_cast<EntityDamageSource *>(source) != NULL)
+	if (dynamic_cast<EntityDamageSource *>(source) != nullptr)
 	{
 		shared_ptr<Entity> attacker = source->getDirectEntity();
 
@@ -163,14 +163,14 @@ bool Minecart::hurt(DamageSource *source, float hurtDamage)
 	// 4J Stu - If someone is riding in this, then it can tick multiple times which causes the damage to
 	// decrease too quickly. So just make the damage a bit higher to start with for similar behaviour
 	// to an unridden one. Only do this change if the riding player is attacking it.
-	if( rider.lock() != NULL && rider.lock() == source->getEntity() ) hurtDamage += 1;
+	if( rider.lock() != nullptr && rider.lock() == source->getEntity() ) hurtDamage += 1;
 
-	bool creativePlayer = source->getEntity() != NULL && source->getEntity()->instanceof(eTYPE_PLAYER) && dynamic_pointer_cast<Player>(source->getEntity())->abilities.instabuild;
+	bool creativePlayer = source->getEntity() != nullptr && source->getEntity()->instanceof(eTYPE_PLAYER) && dynamic_pointer_cast<Player>(source->getEntity())->abilities.instabuild;
 
 	if (creativePlayer || getDamage() > 20 * 2)
 	{
 		// 4J HEG - Fixed issue with player falling through the ground on destroying a minecart while riding (issue #160607)
-		if (rider.lock() != NULL) rider.lock()->ride(nullptr);
+		if (rider.lock() != nullptr) rider.lock()->ride(nullptr);
 
 		if (!creativePlayer || hasCustomName())
 		{
@@ -187,7 +187,7 @@ bool Minecart::hurt(DamageSource *source, float hurtDamage)
 void Minecart::destroy(DamageSource *source)
 {
 	remove();
-	shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>( new ItemInstance(Item::minecart, 1) );
+	shared_ptr<ItemInstance> item = std::make_shared<ItemInstance>(Item::minecart, 1);
 	if (!name.empty()) item->setHoverName(name);
 	spawnAtLocation(item, 0);
 }
@@ -207,12 +207,12 @@ bool Minecart::isPickable()
 void Minecart::remove()
 {
 	Entity::remove();
-	//if (soundUpdater != NULL) soundUpdater->tick();
+	//if (soundUpdater != nullptr) soundUpdater->tick();
 }
 
 void Minecart::tick()
 {
-	//if (soundUpdater != NULL) soundUpdater->tick();
+	//if (soundUpdater != nullptr) soundUpdater->tick();
 	// 4J - make minecarts (server-side) tick twice, to put things back to how they were when we were accidently ticking them twice
 	for( int i = 0; i < 2; i++ )
 	{
@@ -223,16 +223,16 @@ void Minecart::tick()
 			outOfWorld();
 		}
 
-		if (!level->isClientSide && dynamic_cast<ServerLevel *>(level) != NULL)
+		if (!level->isClientSide && dynamic_cast<ServerLevel *>(level) != nullptr)
 		{
-			MinecraftServer *server = ((ServerLevel *) level)->getServer();
+			MinecraftServer *server = static_cast<ServerLevel *>(level)->getServer();
 			int waitTime = getPortalWaitTime();
 
 			if (isInsidePortal)
 			{
 				if (server->isNetherEnabled())
 				{
-					if (riding == NULL)
+					if (riding == nullptr)
 					{
 						if (portalTime++ >= waitTime)
 						{
@@ -275,8 +275,8 @@ void Minecart::tick()
 
 				double yrd = Mth::wrapDegrees(lyr - yRot);
 
-				yRot += (float) ( (yrd) / lSteps );
-				xRot += (float) ( (lxr - xRot) / lSteps );
+				yRot += static_cast<float>((yrd) / lSteps);
+				xRot += static_cast<float>((lxr - xRot) / lSteps);
 
 				lSteps--;
 				setPos(xt, yt, zt);
@@ -330,7 +330,7 @@ void Minecart::tick()
 		double zDiff = zo - z;
 		if (xDiff * xDiff + zDiff * zDiff > 0.001)
 		{
-			yRot = (float) (atan2(zDiff, xDiff) * 180 / PI);
+			yRot = static_cast<float>(atan2(zDiff, xDiff) * 180 / PI);
 			if (flipped) yRot += 180;
 		}
 
@@ -344,7 +344,7 @@ void Minecart::tick()
 		setRot(yRot, xRot);
 
 		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
-		if (entities != NULL && !entities->empty())
+		if (entities != nullptr && !entities->empty())
 		{
 			for (auto& e : *entities)
 			{
@@ -361,7 +361,7 @@ void Minecart::tick()
 			}
 		}
 
-		if (rider.lock() != NULL)
+		if (rider.lock() != nullptr)
 		{
 			if (rider.lock()->removed)
 			{
@@ -415,7 +415,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 		powerTrack = (data & BaseRailTile::RAIL_DATA_BIT) != 0;
 		haltTrack = !powerTrack;
 	}
-	if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+	if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 	{
 		data &= BaseRailTile::RAIL_DIRECTION_MASK;
 	}
@@ -454,7 +454,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 	zd = pow * zD / dd;
 
 
-	if ( rider.lock() != NULL && rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
+	if ( rider.lock() != nullptr && rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(rider.lock());
 
@@ -530,7 +530,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 
 	double xdd = xd;
 	double zdd = zd;
-	if (rider.lock() != NULL)
+	if (rider.lock() != nullptr)
 	{
 		xdd *= 0.75;
 		zdd *= 0.75;
@@ -554,7 +554,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 	applyNaturalSlowdown();
 
 	Vec3 *newPos = getPos(x, y, z);
-	if (newPos != NULL && oldPos != NULL)
+	if (newPos != nullptr && oldPos != nullptr)
 	{
 		double speed = (oldPos->y - newPos->y) * 0.05;
 
@@ -619,7 +619,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 
 void Minecart::applyNaturalSlowdown()
 {
-	if (rider.lock() != NULL)
+	if (rider.lock() != nullptr)
 	{
 		xd *= 0.997f;
 		yd *= 0;
@@ -648,7 +648,7 @@ Vec3 *Minecart::getPosOffs(double x, double y, double z, double offs)
 	{
 		int data = level->getData(xt, yt, zt);
 
-		if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+		if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 		{
 			data &= BaseRailTile::RAIL_DIRECTION_MASK;
 		}
@@ -684,7 +684,7 @@ Vec3 *Minecart::getPosOffs(double x, double y, double z, double offs)
 
 		return getPos(x, y, z);
 	}
-	return NULL;
+	return nullptr;
 }
 
 Vec3 *Minecart::getPos(double x, double y, double z)
@@ -703,7 +703,7 @@ Vec3 *Minecart::getPos(double x, double y, double z)
 		int data = level->getData(xt, yt, zt);
 		y = yt;
 
-		if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+		if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 		{
 			data &= BaseRailTile::RAIL_DIRECTION_MASK;
 		}
@@ -756,7 +756,7 @@ Vec3 *Minecart::getPos(double x, double y, double z)
 		if (yD > 0) y += 0.5;
 		return Vec3::newTemp(x, y, z);
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Minecart::readAdditionalSaveData(CompoundTag *tag)
@@ -776,7 +776,7 @@ void Minecart::addAdditonalSaveData(CompoundTag *tag)
 	if (hasCustomDisplay())
 	{
 		tag->putBoolean(L"CustomDisplayTile", true);
-		tag->putInt(L"DisplayTile", getDisplayTile() == NULL ? 0 : getDisplayTile()->id);
+		tag->putInt(L"DisplayTile", getDisplayTile() == nullptr ? 0 : getDisplayTile()->id);
 		tag->putInt(L"DisplayData", getDisplayData());
 		tag->putInt(L"DisplayOffset", getDisplayOffset());
 	}
@@ -796,7 +796,7 @@ void Minecart::push(shared_ptr<Entity> e)
 	if (e == rider.lock()) return;
 	if ( e->instanceof(eTYPE_LIVINGENTITY) && !e->instanceof(eTYPE_PLAYER) && !e->instanceof(eTYPE_VILLAGERGOLEM) && (getType() == TYPE_RIDEABLE) && (xd * xd + zd * zd > 0.01) )
 	{
-		if ( (rider.lock() == NULL) && (e->riding == NULL) )
+		if ( (rider.lock() == nullptr) && (e->riding == nullptr) )
 		{
 			e->ride( shared_from_this() );
 		}
@@ -844,7 +844,7 @@ void Minecart::push(shared_ptr<Entity> e)
 			double zdd = (e->zd + zd);
 
 			shared_ptr<Minecart> cart = dynamic_pointer_cast<Minecart>(e);
-			if (cart != NULL && cart->getType() == TYPE_FURNACE && getType() != TYPE_FURNACE)
+			if (cart != nullptr && cart->getType() == TYPE_FURNACE && getType() != TYPE_FURNACE)
 			{
 				xd *= 0.2f;
 				zd *= 0.2f;
@@ -853,7 +853,7 @@ void Minecart::push(shared_ptr<Entity> e)
 				e->zd *= 0.95f;
 				m_bHasPushedCartThisTick = true;
 			}
-			else if (cart != NULL && cart->getType() != TYPE_FURNACE && getType() == TYPE_FURNACE)
+			else if (cart != nullptr && cart->getType() != TYPE_FURNACE && getType() == TYPE_FURNACE)
 			{
 				e->xd *= 0.2f;
 				e->zd *= 0.2f;
@@ -957,12 +957,12 @@ Tile *Minecart::getDisplayTile()
 {
 	if (!hasCustomDisplay()) return getDefaultDisplayTile();
 	int id = getEntityData()->getInteger(DATA_ID_DISPLAY_TILE) & 0xFFFF;
-	return id > 0 && id < Tile::TILE_NUM_COUNT ? Tile::tiles[id] : NULL;
+	return id > 0 && id < Tile::TILE_NUM_COUNT ? Tile::tiles[id] : nullptr;
 }
 
 Tile *Minecart::getDefaultDisplayTile()
 {
-	return NULL;
+	return nullptr;
 }
 
 int Minecart::getDisplayData()
@@ -996,7 +996,7 @@ void Minecart::setDisplayTile(int id)
 void Minecart::setDisplayData(int data)
 {
 	Tile *tile = getDisplayTile();
-	int id = tile == NULL ? 0 : tile->id;
+	int id = tile == nullptr ? 0 : tile->id;
 
 	getEntityData()->set(DATA_ID_DISPLAY_TILE, (id & 0xFFFF) | (data << 16));
 	setCustomDisplay(true);
@@ -1015,7 +1015,7 @@ bool Minecart::hasCustomDisplay()
 
 void Minecart::setCustomDisplay(bool value)
 {
-	getEntityData()->set(DATA_ID_CUSTOM_DISPLAY, (byte) (value ? 1 : 0));
+	getEntityData()->set(DATA_ID_CUSTOM_DISPLAY, static_cast<byte>(value ? 1 : 0));
 }
 
 void Minecart::setCustomName(const wstring &name)

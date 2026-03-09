@@ -29,7 +29,7 @@ void MemoryLevelStorageSource::clearAll()
 
 LevelData *MemoryLevelStorageSource::getDataTagFor(const wstring&  levelId)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool MemoryLevelStorageSource::isNewLevelIdAcceptable(const wstring&  levelId) 

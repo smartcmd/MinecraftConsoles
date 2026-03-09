@@ -24,7 +24,7 @@ bool BedItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> pl
 	// place on top of tile
 	y = y + 1;
 
-	BedTile *tile = (BedTile *) Tile::bed;
+	BedTile *tile = static_cast<BedTile *>(Tile::bed);
 
 	int dir = ( Mth::floor(player->yRot * 4 / (360) + 0.5f) ) & 3;
 	int xra = 0;

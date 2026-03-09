@@ -66,7 +66,7 @@ void StairTile::setBaseShape(LevelSource *level, int x, int y, int z)
 bool StairTile::isStairs(int id)
 {
 	StairTile *st = dynamic_cast<StairTile *>(Tile::tiles[id]);
-	return id > 0 && st != NULL; //Tile::tiles[id] instanceof StairTile;
+	return id > 0 && st != nullptr; //Tile::tiles[id] instanceof StairTile;
 }
 
 bool StairTile::isLockAttached(LevelSource *level, int x, int y, int z, int data)
@@ -476,7 +476,7 @@ HitResult *StairTile::clip(Level *level, int xt, int yt, int zt, Vec3 *a, Vec3 *
 	HitResult *results[8];
 	for(unsigned int i = 0; i < 8; ++i)
 	{
-		results[i] = NULL;
+		results[i] = nullptr;
 	}
 	int data = level->getData(xt, yt, zt);
 	int dir = data & 0x3;
@@ -498,16 +498,16 @@ HitResult *StairTile::clip(Level *level, int xt, int yt, int zt, Vec3 *a, Vec3 *
 
 	for(unsigned int j = 0; j < DEAD_SPACE_COLUMN_COUNT; ++j)
 	{
-		results[deadSpaces[j]] = NULL;
+		results[deadSpaces[j]] = nullptr;
 	}
 
-	HitResult *closest = NULL;
+	HitResult *closest = nullptr;
 	double closestDist = 0;
 
 	for (unsigned int i = 0; i < 8; ++i)
 	{
 		HitResult *result = results[i];
-		if (result != NULL)
+		if (result != nullptr)
 		{
 			double dist = result->pos->distanceToSqr(b);
 

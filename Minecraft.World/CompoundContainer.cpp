@@ -6,8 +6,8 @@
 CompoundContainer::CompoundContainer(int name, shared_ptr<Container> c1, shared_ptr<Container> c2)
 {
 	this->name = name;
-	if (c1 == NULL) c1 = c2;
-	if (c2 == NULL) c2 = c1;
+	if (c1 == nullptr) c1 = c2;
+	if (c2 == nullptr) c2 = c1;
 	this->c1 = c1;
 	this->c2 = c2;
 }

@@ -3,7 +3,7 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 
 CraftTask::CraftTask( int itemId, int auxValue, int  quantity,
-	Tutorial *tutorial, int descriptionId, bool enablePreCompletion /*= true*/, vector<TutorialConstraint *> *inConstraints /*= NULL*/,
+	Tutorial *tutorial, int descriptionId, bool enablePreCompletion /*= true*/, vector<TutorialConstraint *> *inConstraints /*= nullptr*/,
 	bool bShowMinimumTime /*=false*/,  bool bAllowFade /*=true*/, bool m_bTaskReminders /*=true*/ )
 	: TutorialTask(tutorial, descriptionId, enablePreCompletion, inConstraints, bShowMinimumTime,  bAllowFade, m_bTaskReminders ),
 	m_quantity( quantity ),
@@ -17,7 +17,7 @@ CraftTask::CraftTask( int itemId, int auxValue, int  quantity,
 }
 
 CraftTask::CraftTask( int *items, int *auxValues, int numItems, int  quantity,
-	Tutorial *tutorial, int descriptionId, bool enablePreCompletion /*= true*/, vector<TutorialConstraint *> *inConstraints /*= NULL*/,
+	Tutorial *tutorial, int descriptionId, bool enablePreCompletion /*= true*/, vector<TutorialConstraint *> *inConstraints /*= nullptr*/,
 	bool bShowMinimumTime /*=false*/,  bool bAllowFade /*=true*/, bool m_bTaskReminders /*=true*/ )
 	: TutorialTask(tutorial, descriptionId, enablePreCompletion, inConstraints, bShowMinimumTime,  bAllowFade, m_bTaskReminders ),
 	m_quantity( quantity ),

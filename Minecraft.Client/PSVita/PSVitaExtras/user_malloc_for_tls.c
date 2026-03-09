@@ -27,7 +27,7 @@ void user_free_for_tls(void *ptr);
 void user_malloc_for_tls_init(void)
 {
 	int res;
-	void *base = NULL;
+	void *base = nullptr;
 
 	/**E Allocate a memory block from the kernel */
 	/**J カーネルからメモリブロックを確保する */
@@ -48,7 +48,7 @@ void user_malloc_for_tls_init(void)
 			/**E Generate mspace */
 			/**J mspace を生成する */
 			s_mspace = mspace_create(base, HEAP_SIZE);
-			if (s_mspace == NULL) {
+			if (s_mspace == nullptr) {
 				/**E Error handling */
 				/**J エラー処理 */
 				sceLibcSetHeapInitError(HEAP_ERROR3);
@@ -63,7 +63,7 @@ void user_malloc_for_tls_finalize(void)
 {
 	int res;
 
-	if (s_mspace != NULL) {
+	if (s_mspace != nullptr) {
 		/**E Free mspace */
 		/**J mspace を解放する */
 		res = mspace_destroy(s_mspace);

@@ -50,7 +50,7 @@ UIScene_EndPoem::UIScene_EndPoem(int iPad, void *initData, UILayer *parentLayer)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	wstring playerName = L"";
-	if(pMinecraft->localplayers[ui.GetWinUserIndex()] != NULL)
+	if(pMinecraft->localplayers[ui.GetWinUserIndex()] != nullptr)
 	{
 		playerName = escapeXML( pMinecraft->localplayers[ui.GetWinUserIndex()]->getDisplayName() );
 	}
@@ -159,14 +159,14 @@ void UIScene_EndPoem::handleInput(int iPad, int key, bool repeat, bool pressed, 
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 			{
-				if(pMinecraft->localplayers[i] != NULL)
+				if(pMinecraft->localplayers[i] != nullptr)
 				{
 					app.SetAction(i,eAppAction_Respawn);
 				}
 			}
 
 			// This just allows it to be shown
-			if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
+			if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
 
 			updateTooltips();
 			navigateBack();
@@ -191,7 +191,7 @@ void UIScene_EndPoem::handleDestroy()
 
 void UIScene_EndPoem::handleRequestMoreData(F64 startIndex, bool up)
 {
-	m_requestedLabel = (int)startIndex;
+	m_requestedLabel = static_cast<int>(startIndex);
 }
 
 void UIScene_EndPoem::updateNoise()
@@ -221,13 +221,13 @@ void UIScene_EndPoem::updateNoise()
 		{
 			if (ui.UsingBitmapFont())
 			{
-				randomChar = SharedConstants::acceptableLetters[random->nextInt((int)SharedConstants::acceptableLetters.length())];
+				randomChar = SharedConstants::acceptableLetters[random->nextInt(static_cast<int>(SharedConstants::acceptableLetters.length()))];
 			}
 			else
 			{
 				// 4J-JEV: It'd be nice to avoid null characters when using asian languages.
 				static wstring acceptableLetters = L"!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_'|}~";
-				randomChar = acceptableLetters[ random->nextInt((int)acceptableLetters.length()) ];
+				randomChar = acceptableLetters[ random->nextInt(static_cast<int>(acceptableLetters.length())) ];
 			}
 
 			wstring randomCharStr = L"";

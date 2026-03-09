@@ -29,9 +29,9 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", fovDeg);
 	m_sliderFov.init(TempString,eControl_FOV,0,80,fovSliderVal);
 
-	float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
-	swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", (int)currentTime);
-	m_sliderTime.init(TempString,eControl_Time,0,240,currentTime/100);
+	const float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
+	swprintf( tempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
+	m_sliderTime.init(tempString,eControl_Time,0,240,currentTime/100);
 
 	m_buttonRain.init(L"Toggle Rain",eControl_Rain);
 	m_buttonThunder.init(L"Toggle Thunder",eControl_Thunder);
@@ -47,7 +47,7 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
     std::vector<std::pair<std::wstring, unsigned int>> sortedItems;
     for (size_t i = 0; i < Item::items.length; ++i)
     {
-        if (Item::items[i] != NULL)
+        if (Item::items[i] != nullptr)
         {
 			sortedItems.emplace_back(std::wstring(app.GetString(Item::items[i]->getDescriptionId())), i);
         }
@@ -139,19 +139,19 @@ wstring UIScene_DebugOverlay::getMoviePath()
 
 void UIScene_DebugOverlay::customDraw(IggyCustomDrawCallbackRegion *region)
 {
-	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
+	const Minecraft *pMinecraft = Minecraft::GetInstance();
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return;
 
 	int itemId = -1;
-	swscanf((wchar_t*)region->name,L"item_%d",&itemId);
-	if (itemId == -1 || itemId > Item::ITEM_NUM_COUNT || Item::items[itemId] == NULL)
+	swscanf(static_cast<wchar_t *>(region->name),L"item_%d",&itemId);
+	if (itemId == -1 || itemId > Item::ITEM_NUM_COUNT || Item::items[itemId] == nullptr)
 	{
 		app.DebugPrintf("This is not the control we are looking for\n");
 	}
 	else
 	{
-		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>( new ItemInstance(itemId,1,0) );
-		if(item != NULL) customDrawSlotControl(region,m_iPad,item,1.0f,false,false);
+		const auto item = std::make_shared<ItemInstance>(itemId, 1, 0);
+		if(item != nullptr) customDrawSlotControl(region,m_iPad,item,1.0f,false,false);
 	}
 }
 
@@ -184,7 +184,7 @@ void UIScene_DebugOverlay::handleInput(int iPad, int key, bool repeat, bool pres
 
 void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Items:
 		{
@@ -214,14 +214,14 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 	case eControl_Schematic:
 		{
 #ifndef _CONTENT_PACKAGE
-			ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugCreateSchematic,NULL,eUILayer_Debug);
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugCreateSchematic,nullptr,eUILayer_Debug);
 #endif
 		}
 		break;
 	case eControl_SetCamera:
 		{
 #ifndef _CONTENT_PACKAGE
-			ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugSetCamera,NULL,eUILayer_Debug);
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugSetCamera,nullptr,eUILayer_Debug);
 #endif
 		}
 		break;
@@ -255,7 +255,7 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 
 void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	switch((int)sliderId)
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Time:
 		{
@@ -267,10 +267,10 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 			MinecraftServer::SetTime(currentValue * 100);
 			pMinecraft->level->getLevelData()->setGameTime(currentValue * 100);
 
-			WCHAR TempString[256];
+			WCHAR tempString[256];
 			float currentTime = currentValue * 100;
-			swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", (int)currentTime);
-			m_sliderTime.setLabel(TempString);
+			swprintf( tempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
+			m_sliderTime.setLabel(tempString);
 		}
 		break;
 	case eControl_FOV:

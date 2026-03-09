@@ -8,7 +8,7 @@
 
 DLCAudioFile::DLCAudioFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_Audio,path)
 {	
-	m_pbData = NULL;
+	m_pbData = nullptr;
 	m_dwBytes = 0;
 }
 
@@ -40,7 +40,7 @@ DLCAudioFile::EAudioParameterType DLCAudioFile::getParameterType(const wstring &
 	{
 		if(paramName.compare(wchTypeNamesA[i]) == 0)
 		{
-			type = (EAudioParameterType)i;
+			type = static_cast<EAudioParameterType>(i);
 			break;
 		}
 	}
@@ -87,7 +87,7 @@ void DLCAudioFile::addParameter(EAudioType type, EAudioParameterType ptype, cons
 					{
 						i++;
 					}
-					int iLast=(int)creditValue.find_last_of(L" ",i);
+					size_t iLast=creditValue.find_last_of(L" ", i);
 					switch(XGetLanguage())
 					{
 					case XC_LANGUAGE_JAPANESE:
@@ -96,7 +96,7 @@ void DLCAudioFile::addParameter(EAudioType type, EAudioParameterType ptype, cons
 						iLast = maximumChars;
 						break;
 					default:
-						iLast=(int)creditValue.find_last_of(L" ",i);
+						iLast=creditValue.find_last_of(L" ", i);
 						break;
 					}
 
@@ -133,7 +133,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 
 	if(uiVersion < CURRENT_AUDIO_VERSION_NUM)
 	{
-		if(pbData!=NULL) delete [] pbData;
+		if(pbData!=nullptr) delete [] pbData;
 		app.DebugPrintf("DLC version of %d is too old to be read\n", uiVersion);
 		return false;
 	}
@@ -145,7 +145,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 	for(unsigned int i=0;i<uiParameterTypeCount;i++)
 	{
 		// Map DLC strings to application strings, then store the DLC index mapping to application index
-		wstring parameterName((WCHAR *)pParams->wchData);
+		wstring parameterName(static_cast<WCHAR *>(pParams->wchData));
 		EAudioParameterType type = getParameterType(parameterName);
 		if( type != e_AudioParamType_Invalid )
 		{
@@ -169,7 +169,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 
 	for(unsigned int i=0;i<uiFileCount;i++)
 	{
-		EAudioType type = (EAudioType)pFile->dwType;
+		EAudioType type = static_cast<EAudioType>(pFile->dwType);
 		// Params
 		unsigned int uiParameterCount=*(unsigned int *)pbTemp;
 		pbTemp+=sizeof(int);
@@ -182,7 +182,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 
 			if(it != parameterMapping.end() )
 			{
- 				addParameter(type,(EAudioParameterType)pParams->dwType,(WCHAR *)pParams->wchData);
+ 				addParameter(type,static_cast<EAudioParameterType>(pParams->dwType),(WCHAR *)pParams->wchData);
 			}
 			pbTemp+=sizeof(C4JStorage::DLC_FILE_PARAM)+(sizeof(WCHAR)*pParams->dwWchCount);
 			pParams = (C4JStorage::DLC_FILE_PARAM *)pbTemp;
@@ -198,7 +198,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 	return true;
 }
 
-int DLCAudioFile::GetCountofType(DLCAudioFile::EAudioType eType)
+int DLCAudioFile::GetCountofType(EAudioType eType)
 {
 	return m_parameters[eType].size();
 }

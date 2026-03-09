@@ -12,7 +12,7 @@ TripWireSourceTile::TripWireSourceTile(int id) : Tile(id, Material::decoration, 
 
 AABB *TripWireSourceTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool TripWireSourceTile::blocksLight()

@@ -15,7 +15,7 @@ Slot::Slot(shared_ptr<Container> container, int slot, int x, int y) : container(
 
 void Slot::onQuickCraft(shared_ptr<ItemInstance> picked, shared_ptr<ItemInstance> original)
 {
-	if (picked == NULL || original == NULL)
+	if (picked == nullptr || original == nullptr)
 	{
 		return;
 	}
@@ -44,14 +44,14 @@ void Slot::swap(Slot *other)
 	shared_ptr<ItemInstance> item1 = container->getItem(slot);
 	shared_ptr<ItemInstance> item2 = other->container->getItem(other->slot);
 
-	if (item1 != NULL && item1->count > other->getMaxStackSize())
+	if (item1 != nullptr && item1->count > other->getMaxStackSize())
 	{
-		if (item2 != NULL) return;
+		if (item2 != nullptr) return;
 		item2 = item1->remove(item1->count - other->getMaxStackSize());
 	}
-	if (item2 != NULL && item2->count > getMaxStackSize())
+	if (item2 != nullptr && item2->count > getMaxStackSize())
 	{
-		if (item1 != NULL) return;
+		if (item1 != nullptr) return;
 		item1 = item2->remove(item2->count - getMaxStackSize());
 	}
 	other->container->setItem(other->slot, item1);
@@ -77,7 +77,7 @@ shared_ptr<ItemInstance> Slot::getItem()
 
 bool Slot::hasItem()
 {
-	return getItem() != NULL;
+	return getItem() != nullptr;
 }
 
 void Slot::set(shared_ptr<ItemInstance> item)
@@ -98,7 +98,7 @@ int Slot::getMaxStackSize() const
 
 Icon *Slot::getNoItemIcon()
 {
-	return NULL;
+	return nullptr;
 }
 
 shared_ptr<ItemInstance> Slot::remove(int c)
@@ -125,7 +125,7 @@ bool Slot::mayCombine(shared_ptr<ItemInstance> second)
 {
 	shared_ptr<ItemInstance> first = getItem();
 
-	if(first == NULL || second == NULL) return false;
+	if(first == nullptr || second == nullptr) return false;
 
 	ArmorItem *thisItem = dynamic_cast<ArmorItem *>(first->getItem());
 	if(thisItem)
@@ -135,7 +135,7 @@ bool Slot::mayCombine(shared_ptr<ItemInstance> second)
 		return thisIsDyableArmor && itemIsDye;
 	}
 	// 4J Stu - This condition taken from Recipes::getItemFor to repair items, but added the damaged check to skip when the result is pointless
-	else if (first != NULL && second != NULL && first->id == second->id && first->count == 1 && second->count == 1 && Item::items[first->id]->canBeDepleted() && (first->isDamaged() || second->isDamaged()) )
+	else if (first != nullptr && second != nullptr && first->id == second->id && first->count == 1 && second->count == 1 && Item::items[first->id]->canBeDepleted() && (first->isDamaged() || second->isDamaged()) )
 	{
 		// 4J Stu - Don't allow combinining enchanted items, the enchantment will be lost. They can use the anvil for this
 		return !first->isEnchanted() && !second->isEnchanted();
@@ -148,7 +148,7 @@ shared_ptr<ItemInstance> Slot::combine(shared_ptr<ItemInstance> item)
 	shared_ptr<ItemInstance> result = nullptr;
 	shared_ptr<ItemInstance> first = getItem();
 
-	shared_ptr<CraftingContainer> craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
+	shared_ptr<CraftingContainer> craftSlots = std::make_shared<CraftingContainer>(nullptr, 2, 2);
 	craftSlots->setItem(0, item);
 	craftSlots->setItem(1, first);
 
@@ -159,7 +159,7 @@ shared_ptr<ItemInstance> Slot::combine(shared_ptr<ItemInstance> item)
 	}
 	else
 	{
-		result = Recipes::getInstance()->getItemFor(craftSlots, NULL);
+		result = Recipes::getInstance()->getItemFor(craftSlots, nullptr);
 	}
 
 	craftSlots->setItem(0, nullptr);

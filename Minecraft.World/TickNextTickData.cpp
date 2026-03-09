@@ -21,7 +21,7 @@ bool TickNextTickData::equals(const TickNextTickData *o) const
 {
 	// TODO 4J Is this safe to cast it before we do a dynamic_cast? Will the dynamic_cast still fail?
 	// We cannot dynamic_cast a void*
-	if ( o != NULL)
+	if ( o != nullptr)
 	{
 		TickNextTickData *t = (TickNextTickData *) o;
 		return x == t->x && y == t->y && z == t->z && Tile::isMatching(tileId, t->tileId);

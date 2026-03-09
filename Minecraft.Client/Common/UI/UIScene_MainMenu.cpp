@@ -13,7 +13,7 @@
 
 Random *UIScene_MainMenu::random = new Random();
 
-EUIScene UIScene_MainMenu::eNavigateWhenReady = (EUIScene) -1;
+EUIScene UIScene_MainMenu::eNavigateWhenReady = static_cast<EUIScene>(-1);
 
 UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
@@ -46,29 +46,29 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 		pMinecraft->options->fov = (newFov / 40.0f) - 1;
 	}
 
-	m_buttons[(int)eControl_PlayGame].init(IDS_PLAY_GAME,eControl_PlayGame);
+	m_buttons[static_cast<int>(eControl_PlayGame)].init(IDS_PLAY_GAME,eControl_PlayGame);
 
 #ifdef _XBOX_ONE
 	if(!ProfileManager.IsFullVersion()) m_buttons[(int)eControl_PlayGame].setLabel(IDS_PLAY_TRIAL_GAME);
 	app.SetReachedMainMenu();
 #endif
 
-	m_buttons[(int)eControl_Leaderboards].init(IDS_LEADERBOARDS,eControl_Leaderboards);
-	m_buttons[(int)eControl_Achievements].init( (UIString)IDS_ACHIEVEMENTS,eControl_Achievements);
-	m_buttons[(int)eControl_HelpAndOptions].init(IDS_HELP_AND_OPTIONS,eControl_HelpAndOptions);
+	m_buttons[static_cast<int>(eControl_Leaderboards)].init(IDS_LEADERBOARDS,eControl_Leaderboards);
+	m_buttons[static_cast<int>(eControl_Achievements)].init( (UIString)IDS_ACHIEVEMENTS,eControl_Achievements);
+	m_buttons[static_cast<int>(eControl_HelpAndOptions)].init(IDS_HELP_AND_OPTIONS,eControl_HelpAndOptions);
 	if(ProfileManager.IsFullVersion())
 	{
 		m_bTrialVersion=false;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
 	}
 	else
 	{
 		m_bTrialVersion=true;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_UNLOCK_FULL_GAME,eControl_UnlockOrDLC);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].init(IDS_UNLOCK_FULL_GAME,eControl_UnlockOrDLC);
 	}
 
 #ifndef _DURANGO
-	m_buttons[(int)eControl_Exit].init(app.GetString(IDS_EXIT_GAME),eControl_Exit);
+	m_buttons[static_cast<int>(eControl_Exit)].init(app.GetString(IDS_EXIT_GAME),eControl_Exit);
 #else
 	m_buttons[(int)eControl_XboxHelp].init(IDS_XBOX_HELP_APP, eControl_XboxHelp);
 #endif
@@ -117,7 +117,7 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 	m_bLoadTrialOnNetworkManagerReady = false;
 
 	// 4J Stu - Clear out any loaded game rules
-	app.setLevelGenerationOptions(NULL);
+	app.setLevelGenerationOptions(nullptr);
 
 	// 4J Stu - Reset the leaving game flag so that we correctly handle signouts while in the menus
 	g_NetworkManager.ResetLeavingGame();
@@ -195,7 +195,7 @@ void UIScene_MainMenu::handleGainFocus(bool navBack)
 	if(navBack && ProfileManager.IsFullVersion())
 	{
 		// Replace the Unlock Full Game with Downloadable Content
-		m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].setLabel(IDS_DOWNLOADABLECONTENT);
 	}
 
 #if TO_BE_IMPLEMENTED
@@ -209,7 +209,7 @@ void UIScene_MainMenu::handleGainFocus(bool navBack)
 #ifdef __PSVITA__
 	int splashIndex = eSplashRandomStart + 2 + random->nextInt( (int)m_splashes.size() - (eSplashRandomStart + 2) ); 
 #else
-	int splashIndex = eSplashRandomStart + 1 + random->nextInt( (int)m_splashes.size() - (eSplashRandomStart + 1) );
+	int splashIndex = eSplashRandomStart + 1 + random->nextInt( static_cast<int>(m_splashes.size()) - (eSplashRandomStart + 1) );
 #endif
 
 	// Override splash text on certain dates
@@ -316,12 +316,12 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 	int primaryPad = ProfileManager.GetPrimaryPad();
 	
 #ifdef _XBOX_ONE
-	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad, const int iController) = NULL;
+	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad, const int iController) = nullptr;
 #else
-	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = NULL;
+	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = nullptr;
 #endif
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_PlayGame:
 #ifdef __ORBIS__
@@ -409,7 +409,7 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 	bool confirmUser = false;
 
 	// Note: if no sign in returned func, assume this isn't required
-	if (signInReturnedFunc != NULL)
+	if (signInReturnedFunc != nullptr)
 	{
 		if(ProfileManager.IsSignedIn(primaryPad))
 		{
@@ -479,10 +479,10 @@ void UIScene_MainMenu::customDrawSplash(IggyCustomDrawCallbackRegion *region)
 
 	// 4J Stu - Move this to the ctor when the main menu is not the first scene we navigate to
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
 
 	// Setup GDraw, normal game render states and matrices
@@ -526,7 +526,7 @@ void UIScene_MainMenu::customDrawSplash(IggyCustomDrawCallbackRegion *region)
 
 int UIScene_MainMenu::MustSignInReturned(void *pParam, int iPad, C4JStorage::EMessageResult result)
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -656,7 +656,7 @@ int UIScene_MainMenu::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,
 int UIScene_MainMenu::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(bContinue)
 	{
@@ -727,7 +727,7 @@ int UIScene_MainMenu::CreateLoad_SignInReturned(void *pParam, bool bContinue, in
 int UIScene_MainMenu::CreateLoad_SignInReturned(void *pParam, bool bContinue, int iPad)
 #endif
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 	
 	if(bContinue)
 	{
@@ -929,7 +929,7 @@ int UIScene_MainMenu::Leaderboards_SignInReturned(void *pParam,bool bContinue,in
 int UIScene_MainMenu::Leaderboards_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(bContinue)
 	{
@@ -953,7 +953,7 @@ int UIScene_MainMenu::Leaderboards_SignInReturned(void *pParam,bool bContinue,in
 		{
 			bool bContentRestricted=false;
 #if defined(__PS3__) || defined(__PSVITA__)
-			ProfileManager.GetChatAndContentRestrictions(iPad,true,NULL,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(iPad,true,nullptr,&bContentRestricted,nullptr);
 #endif
 			if(bContentRestricted)
 			{				
@@ -999,7 +999,7 @@ int UIScene_MainMenu::Achievements_SignInReturned(void *pParam,bool bContinue,in
 int UIScene_MainMenu::Achievements_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if (bContinue)
 	{
@@ -1033,7 +1033,7 @@ int UIScene_MainMenu::UnlockFullGame_SignInReturned(void *pParam,bool bContinue,
 int UIScene_MainMenu::UnlockFullGame_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if (bContinue)
 	{
@@ -1111,7 +1111,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_PlayGame(void *
 
 	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
 
-	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = NULL;
+	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = nullptr;
 
 	// 4J-PB - Check if there is a patch for the game
 	pClass->m_errorCode = ProfileManager.getNPAvailability(ProfileManager.GetPrimaryPad());
@@ -1154,7 +1154,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_PlayGame(void *
 
 // 		UINT uiIDA[1];
 // 		uiIDA[0]=IDS_OK;
-// 		ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,NULL,pClass);
+// 		ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,nullptr,pClass);
 	}
 
 	// Check if PSN is unavailable because of age restriction
@@ -1170,7 +1170,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_PlayGame(void *
 	bool confirmUser = false;
 
 	// Note: if no sign in returned func, assume this isn't required
-	if (signInReturnedFunc != NULL)
+	if (signInReturnedFunc != nullptr)
 	{
 		if(ProfileManager.IsSignedIn(primaryPad))
 		{
@@ -1200,7 +1200,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_Leaderboards(vo
 
 	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
 
-	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = NULL;
+	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = nullptr;
 
 	// 4J-PB - Check if there is a patch for the game
 	pClass->m_errorCode = ProfileManager.getNPAvailability(ProfileManager.GetPrimaryPad());
@@ -1241,7 +1241,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_Leaderboards(vo
 
 // 		UINT uiIDA[1];
 // 		uiIDA[0]=IDS_OK;
-// 		ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,NULL,pClass);
+// 		ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,nullptr,pClass);
 	}
 
 	bool confirmUser = false;
@@ -1260,7 +1260,7 @@ void UIScene_MainMenu::RefreshChatAndContentRestrictionsReturned_Leaderboards(vo
 	}
 
 	// Note: if no sign in returned func, assume this isn't required
-	if (signInReturnedFunc != NULL)
+	if (signInReturnedFunc != nullptr)
 	{
 		if(ProfileManager.IsSignedIn(primaryPad))
 		{
@@ -1613,7 +1613,7 @@ void UIScene_MainMenu::RunLeaderboards(int iPad)
 
 		bool bContentRestricted=false;
 #if defined(__PS3__) || defined(__PSVITA__)
-		ProfileManager.GetChatAndContentRestrictions(iPad,true,NULL,&bContentRestricted,NULL);
+		ProfileManager.GetChatAndContentRestrictions(iPad,true,nullptr,&bContentRestricted,nullptr);
 #endif
 		if(bContentRestricted)
 		{
@@ -1621,7 +1621,7 @@ void UIScene_MainMenu::RunLeaderboards(int iPad)
 			// you can't see leaderboards
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, ProfileManager.GetPrimaryPad(),NULL,this);
+			ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, ProfileManager.GetPrimaryPad(),nullptr,this);
 #endif
 		}
 		else
@@ -1682,7 +1682,7 @@ void UIScene_MainMenu::RunUnlockOrDLC(int iPad)
 
 // 			UINT uiIDA[1];
 // 			uiIDA[0]=IDS_OK;
-// 			ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,NULL,this);
+// 			ui.RequestMessageBox(IDS_PATCH_AVAILABLE_TITLE, IDS_PATCH_AVAILABLE_TEXT, uiIDA, 1, XUSER_INDEX_ANY,nullptr,this);
 			return;
 		}
 
@@ -1717,7 +1717,7 @@ void UIScene_MainMenu::RunUnlockOrDLC(int iPad)
 				{
 					bool bContentRestricted=false;
 #if defined(__PS3__) || defined(__PSVITA__)
-					ProfileManager.GetChatAndContentRestrictions(iPad,true,NULL,&bContentRestricted,NULL);
+					ProfileManager.GetChatAndContentRestrictions(iPad,true,nullptr,&bContentRestricted,nullptr);
 #endif
 					if(bContentRestricted)
 					{
@@ -1726,7 +1726,7 @@ void UIScene_MainMenu::RunUnlockOrDLC(int iPad)
 						// you can't see the store
 						UINT uiIDA[1];
 						uiIDA[0]=IDS_CONFIRM_OK;
-						ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, ProfileManager.GetPrimaryPad(),NULL,this);
+						ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, ProfileManager.GetPrimaryPad(),nullptr,this);
 #endif
 					}
 					else
@@ -1911,7 +1911,7 @@ void UIScene_MainMenu::tick()
 		{
 			app.DebugPrintf("[MainMenu] Navigating away from MainMenu.\n");
 			ui.NavigateToScene(lockedProfile, eNavigateWhenReady);
-			eNavigateWhenReady = (EUIScene) -1;
+			eNavigateWhenReady = static_cast<EUIScene>(-1);
 		}
 #ifdef _DURANGO
 		else
@@ -1938,7 +1938,7 @@ void UIScene_MainMenu::tick()
 
 			// 4J-PB - need to check this user can access the store
 			bool bContentRestricted=false;
-			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),true,NULL,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),true,nullptr,&bContentRestricted,nullptr);
 			if(bContentRestricted)
 			{
 				UINT uiIDA[1];
@@ -2115,7 +2115,7 @@ void UIScene_MainMenu::LoadTrial(void)
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = 0;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 	param->settings = app.GetGameHostOption( eGameHostOption_Tutorial ) | app.GetGameHostOption(eGameHostOption_DisableSaving);
 
 	vector<LevelGenerationOptions *> *generators = app.getLevelGenerators();
@@ -2123,7 +2123,7 @@ void UIScene_MainMenu::LoadTrial(void)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -2142,7 +2142,7 @@ void UIScene_MainMenu::LoadTrial(void)
 
 void UIScene_MainMenu::handleUnlockFullVersion()
 {
-	m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT,true);
+	m_buttons[static_cast<int>(eControl_UnlockOrDLC)].setLabel(IDS_DOWNLOADABLECONTENT,true);
 }
 
 

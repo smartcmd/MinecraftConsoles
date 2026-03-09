@@ -34,7 +34,7 @@ Font::Font(Options *options, const wstring& name, Textures* textures, bool enfor
 	m_textureLocation = textureLocation;
 
 	// Build character map
-	if (charMap != NULL)
+	if (charMap != nullptr)
 	{
 		for(int i = 0; i < charC; i++)
 		{
@@ -383,7 +383,7 @@ int Font::width(const wstring& str)
 {
 	wstring cleanStr = sanitize(str);
 
-	if (cleanStr == L"") return 0;	// 4J - was NULL comparison
+	if (cleanStr == L"") return 0;	// 4J - was nullptr comparison
 	int len = 0;
 
 	for (int i = 0; i < cleanStr.length(); ++i)
@@ -602,7 +602,7 @@ bool Font::AllCharactersValid(const wstring &str)
 			continue;
 		}
 
-		int index = SharedConstants::acceptableLetters.find(c);
+		size_t index = SharedConstants::acceptableLetters.find(c);
 
 		if ((c != ' ') && !(index > 0 && !enforceUnicodeSheet))
 		{

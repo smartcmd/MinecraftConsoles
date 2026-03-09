@@ -31,7 +31,7 @@
 HRESULT UIScene_PauseMenu::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	m_bIgnoreInput=true;
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 	bool bUserisClientSide = ProfileManager.IsSignedInLive(m_iPad);
 
 	app.DebugPrintf("PAUSE PRESS PROCESSING - ipad = %d, UIScene_PauseMenu::OnInit\n",m_iPad);
@@ -247,7 +247,7 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 			if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 			{
 				TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 				
 				m_pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 
@@ -256,7 +256,7 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 					// upsell
 					ULONGLONG ullOfferID_Full;
 					// get the dlc texture pack
-					DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+					DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 					
 					app.GetDLCFullOfferIDForPackID(pDLCTexPack->getDLCParentPackId(),&ullOfferID_Full);
 
@@ -317,9 +317,9 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 				if(pNotifyPressData->UserIndex==ProfileManager.GetPrimaryPad())
 				{
 					int playTime = -1;
-					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
+					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}
 					
 					if(StorageManager.GetSaveDisabled())
@@ -357,9 +357,9 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 				else
 				{
 					int playTime = -1;
-					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
+					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}
 
 					TelemetryManager->RecordLevelExit(pNotifyPressData->UserIndex, eSen_LevelExitStatus_Exited);
@@ -375,9 +375,9 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 				if(pNotifyPressData->UserIndex==ProfileManager.GetPrimaryPad())
 				{		
 					int playTime = -1;
-					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
+					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}	
 					
 					// adjust the trial time played
@@ -392,9 +392,9 @@ HRESULT UIScene_PauseMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 				else
 				{
 					int playTime = -1;
-					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
+					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}
 
 					TelemetryManager->RecordLevelExit(pNotifyPressData->UserIndex, eSen_LevelExitStatus_Exited);
@@ -596,7 +596,7 @@ HRESULT UIScene_PauseMenu::OnControlNavigate(XUIMessageControlNavigate *pControl
 {
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 	
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -623,7 +623,7 @@ int UIScene_PauseMenu::DeviceSelectReturned(void *pParam,bool bContinue)
 		return 0;
 	}
 
-	UIScene_PauseMenu* pClass = (UIScene_PauseMenu*)pParam;
+	UIScene_PauseMenu* pClass = static_cast<UIScene_PauseMenu *>(pParam);
 	bool bIsisPrimaryHost=g_NetworkManager.IsHost() && (ProfileManager.GetPrimaryPad()==pClass->m_iPad);
 	bool bDisplayBanTip = !g_NetworkManager.IsLocalGame() && !bIsisPrimaryHost && !ProfileManager.IsGuest(pClass->m_iPad);
 	bool bUserisClientSide = ProfileManager.IsSignedInLive(pClass->m_iPad);
@@ -721,7 +721,7 @@ int UIScene_PauseMenu::DeviceRemovedDialogReturned(void *pParam,int iPad,C4JStor
 		// Has someone pulled the ethernet cable and caused the pause menu to be closed before this callback returns?
 		if(app.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()))
 		{
-			UIScene_PauseMenu* pClass = (UIScene_PauseMenu*)pParam;
+			UIScene_PauseMenu* pClass = static_cast<UIScene_PauseMenu *>(pParam);
 		
 			// use the device select returned function to wipe the saves list and change the tooltip
 			pClass->DeviceSelectReturned(pClass,true);
@@ -732,7 +732,7 @@ int UIScene_PauseMenu::DeviceRemovedDialogReturned(void *pParam,int iPad,C4JStor
 		// Change device
 		if(app.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()))
 		{
-			UIScene_PauseMenu* pClass = (UIScene_PauseMenu*)pParam;
+			UIScene_PauseMenu* pClass = static_cast<UIScene_PauseMenu *>(pParam);
 			StorageManager.SetSaveDevice(&UIScene_PauseMenu::DeviceSelectReturned,pClass,true);
 		}
 	}
@@ -770,7 +770,7 @@ void UIScene_PauseMenu::ShowScene(bool show)
 
 int UIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_PauseMenu* pScene = (UIScene_PauseMenu*)pParam;
+	UIScene_PauseMenu* pScene = static_cast<UIScene_PauseMenu *>(pParam);
 
 	//pScene->m_bIgnoreInput = false;
 	pScene->ShowScene( true );
@@ -782,7 +782,7 @@ int UIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4J
 
 			TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
 			// get the dlc texture pack
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 			// Need to get the parent packs id, since this may be one of many child packs with their own ids
 			app.GetDLCFullOfferIDForPackID(pDLCTexPack->getDLCParentPackId(),&ullIndexA[0]);
@@ -790,7 +790,7 @@ int UIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4J
 			// need to allow downloads here, or the player would need to quit the game to let the download of a texture pack happen. This might affect the network traffic, since the download could take all the bandwidth...
 			XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_ALWAYS_ALLOW);
 
-			StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+			StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 		}
 	}
 	else
@@ -804,7 +804,7 @@ int UIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4J
 
 int UIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_PauseMenu *pClass = (UIScene_PauseMenu *)pParam;
+	UIScene_PauseMenu *pClass = static_cast<UIScene_PauseMenu *>(pParam);
 	// Exit with or without saving
 	// Decline means save in this dialog
 	if(result==C4JStorage::EMessage_ResultDecline || result==C4JStorage::EMessage_ResultThirdOption) 
@@ -815,7 +815,7 @@ int UIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStora
 			if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 			{
 				TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 				DLCPack *pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 				if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))
@@ -890,7 +890,7 @@ int UIScene_PauseMenu::ExitGameDeclineSaveReturned(void *pParam,int iPad,C4JStor
 		// has someone disconnected the ethernet here, causing the pause menu to shut?
 		if(ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()))
 		{
-			IUIScene_PauseMenu* pClass = (IUIScene_PauseMenu*)pParam;
+			IUIScene_PauseMenu* pClass = static_cast<IUIScene_PauseMenu *>(pParam);
 			UINT uiIDA[3];
 			// you cancelled the save on exit after choosing exit and save? You go back to the Exit choices then.
 			uiIDA[0]=IDS_CONFIRM_CANCEL;
@@ -927,7 +927,7 @@ int UIScene_PauseMenu::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage:
 		// has someone disconnected the ethernet here, causing the pause menu to shut?
 		if(ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()))
 		{
-			UIScene_PauseMenu* pClass = (UIScene_PauseMenu*)pParam;
+			UIScene_PauseMenu* pClass = static_cast<UIScene_PauseMenu *>(pParam);
 			UINT uiIDA[3];
 			// you cancelled the save on exit after choosing exit and save? You go back to the Exit choices then.
 			uiIDA[0]=IDS_CONFIRM_CANCEL;
@@ -971,7 +971,7 @@ int UIScene_PauseMenu::ExitGameDialogReturned(void *pParam,int iPad,C4JStorage::
 
 int UIScene_PauseMenu::SaveWorldThreadProc( LPVOID lpParameter )
 {
-	bool bAutosave=(bool)lpParameter;
+	bool bAutosave=static_cast<bool>(lpParameter);
 	if(bAutosave)
 	{
 		app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_AutoSaveGame);
@@ -1036,7 +1036,7 @@ void UIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 	bool saveStats = true;
 	if (pMinecraft->isClientSide() || g_NetworkManager.IsInSession())
 	{
-		if(lpParameter != NULL )
+		if(lpParameter != nullptr )
 		{
 			// 4J-PB - check if we have lost connection to Live
 			if(ProfileManager.GetLiveConnectionStatus()!=XONLINE_S_LOGON_CONNECTION_ESTABLISHED )
@@ -1104,21 +1104,21 @@ void UIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 			uiIDA[0]=IDS_CONFIRM_OK;
 			// 4J Stu - Fix for #48669 - TU5: Code: Compliance: TCR #15: Incorrect/misleading messages after signing out a profile during online game session.
 			// If the primary player is signed out, then that is most likely the cause of the disconnection so don't display a message box. This will allow the message box requested by the libraries to be brought up
-			if( ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad())) ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			if( ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad())) ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 			exitReasonStringId = -1;
 
 			// 4J - Force a disconnection, this handles the situation that the server has already disconnected
-			if( pMinecraft->levels[0] != NULL ) pMinecraft->levels[0]->disconnect(false);
-			if( pMinecraft->levels[1] != NULL ) pMinecraft->levels[1]->disconnect(false);
-			if( pMinecraft->levels[2] != NULL ) pMinecraft->levels[2]->disconnect(false);
+			if( pMinecraft->levels[0] != nullptr ) pMinecraft->levels[0]->disconnect(false);
+			if( pMinecraft->levels[1] != nullptr ) pMinecraft->levels[1]->disconnect(false);
+			if( pMinecraft->levels[2] != nullptr ) pMinecraft->levels[2]->disconnect(false);
 		}
 		else
 		{
 			exitReasonStringId = IDS_EXITING_GAME;
 			pMinecraft->progressRenderer->progressStartNoAbort( IDS_EXITING_GAME );
-			if( pMinecraft->levels[0] != NULL ) pMinecraft->levels[0]->disconnect();
-			if( pMinecraft->levels[1] != NULL ) pMinecraft->levels[1]->disconnect();
-			if( pMinecraft->levels[2] != NULL ) pMinecraft->levels[2]->disconnect();
+			if( pMinecraft->levels[0] != nullptr ) pMinecraft->levels[0]->disconnect();
+			if( pMinecraft->levels[1] != nullptr ) pMinecraft->levels[1]->disconnect();
+			if( pMinecraft->levels[2] != nullptr ) pMinecraft->levels[2]->disconnect();
 		}
 
 		// 4J Stu - This only does something if we actually have a server, so don't need to do any other checks
@@ -1134,7 +1134,7 @@ void UIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 	}
 	else
 	{
-		if(lpParameter != NULL && ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad()) )
+		if(lpParameter != nullptr && ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad()) )
 		{
 			switch( app.GetDisconnectReason() )
 			{
@@ -1180,7 +1180,7 @@ void UIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 			exitReasonStringId = -1;
 		}
 	}
@@ -1189,7 +1189,7 @@ void UIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 	{
 		Sleep(1);
 	}
-	pMinecraft->setLevel(NULL,exitReasonStringId,nullptr,saveStats);
+	pMinecraft->setLevel(nullptr,exitReasonStringId,nullptr,saveStats);
 
 	TelemetryManager->Flush();
 

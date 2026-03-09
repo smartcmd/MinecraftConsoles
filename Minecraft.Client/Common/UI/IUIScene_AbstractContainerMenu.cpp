@@ -2,6 +2,7 @@
 
 #include "IUIScene_AbstractContainerMenu.h"
 
+#include "UI.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.crafting.h"
@@ -21,9 +22,9 @@ SavedInventoryCursorPos g_savedInventoryCursorPos = { 0.0f, 0.0f, false };
 
 IUIScene_AbstractContainerMenu::IUIScene_AbstractContainerMenu()
 {
-	m_menu = NULL;
+	m_menu = nullptr;
 	m_autoDeleteMenu = false;
-	m_lastPointerLabelSlot = NULL;
+	m_lastPointerLabelSlot = nullptr;
 
 	m_pointerPos.x = 0.0f;
 	m_pointerPos.y = 0.0f;
@@ -41,7 +42,7 @@ IUIScene_AbstractContainerMenu::~IUIScene_AbstractContainerMenu()
 
 void IUIScene_AbstractContainerMenu::Initialize(int iPad, AbstractContainerMenu* menu, bool autoDeleteMenu, int startIndex,ESceneSection firstSection,ESceneSection maxSection, bool bNavigateBack)
 {
-	assert( menu != NULL );
+	assert( menu != nullptr );
 
 	m_menu = menu;
 	m_autoDeleteMenu = autoDeleteMenu;
@@ -267,10 +268,10 @@ void IUIScene_AbstractContainerMenu::UpdateTooltips()
 void IUIScene_AbstractContainerMenu::onMouseTick()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[getPad()] != NULL)
+	if( pMinecraft->localgameModes[getPad()] != nullptr)
 	{
 		Tutorial *tutorial = pMinecraft->localgameModes[getPad()]->getTutorial();
-		if(tutorial != NULL)
+		if(tutorial != nullptr)
 		{
 			if(ui.IsTutorialVisible(getPad()) && !tutorial->isInputAllowed(ACTION_MENU_UP))
 			{
@@ -296,8 +297,8 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	int iPad = getPad();
 
 	bool bStickInput = false;
-	float fInputX = InputManager.GetJoypadStick_LX( iPad, false )*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f); // apply the sensitivity
-	float fInputY = InputManager.GetJoypadStick_LY( iPad, false )*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f); // apply the sensitivity
+	float fInputX = InputManager.GetJoypadStick_LX( iPad, false )*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InMenu))/100.0f); // apply the sensitivity
+	float fInputY = InputManager.GetJoypadStick_LY( iPad, false )*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InMenu))/100.0f); // apply the sensitivity
 
 #ifdef __ORBIS__
 	// should have sensitivity for the touchpad
@@ -406,7 +407,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_SCALING )
 		{
 			++m_iConsectiveInputTicks;
-			fInputScale = ( (float)( m_iConsectiveInputTicks) / (float)(MAX_INPUT_TICKS_FOR_SCALING) );
+			fInputScale = ( static_cast<float>(m_iConsectiveInputTicks) / static_cast<float>((MAX_INPUT_TICKS_FOR_SCALING)) );
 		}
 #ifdef TAP_DETECTION
 		else if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_TAPPING )
@@ -485,11 +486,10 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	{
 		int deltaX = g_KBMInput.GetMouseDeltaX();
 		int deltaY = g_KBMInput.GetMouseDeltaY();
-
 		float scaleX, scaleY;
 		getMouseToSWFScale(scaleX, scaleY);
-		vPointerPos.x += (float)deltaX * scaleX;
-		vPointerPos.y += (float)deltaY * scaleY;
+		vPointerPos.x += static_cast<float>(deltaX) * scaleX;
+		vPointerPos.y += static_cast<float>(deltaY) * scaleY;
 
 		if (deltaX != 0 || deltaY != 0)
 		{
@@ -517,7 +517,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		}
 		else if ( eSectionUnderPointer == eSectionNone )
 		{
-			ESceneSection eSection = ( ESceneSection )( iSection );
+			ESceneSection eSection = static_cast<ESceneSection>(iSection);
 
 			// Get position of this section.
 			UIVec2D sectionPos;
@@ -748,17 +748,17 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	// What are we carrying on pointer.
 	shared_ptr<LocalPlayer> player = Minecraft::GetInstance()->localplayers[getPad()];
 	shared_ptr<ItemInstance> carriedItem = nullptr;
-	if(player != NULL) carriedItem = player->inventory->getCarried();
+	if(player != nullptr) carriedItem = player->inventory->getCarried();
 
 	shared_ptr<ItemInstance> slotItem = nullptr;
-	Slot *slot = NULL;
+	Slot *slot = nullptr;
 	int slotIndex = 0;
 	if(bPointerIsOverSlot)
 	{
 		slotIndex = iNewSlotIndex + getSectionStartOffset( eSectionUnderPointer );
 		slot = m_menu->getSlot(slotIndex);
 	}
-	bool bIsItemCarried = carriedItem != NULL;
+	bool bIsItemCarried = carriedItem != nullptr;
 	int iCarriedCount = 0;
 	bool bCarriedIsSameAsSlot = false;	// Indicates if same item is carried on pointer as is in slot under pointer.
 	if ( bIsItemCarried )
@@ -778,7 +778,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	if ( bPointerIsOverSlot )
 	{
 		slotItem = slot->getItem();
-		bSlotHasItem = slotItem != NULL;
+		bSlotHasItem = slotItem != nullptr;
 		if ( bSlotHasItem )
 		{
 			iSlotCount = slotItem->GetCount();
@@ -819,13 +819,13 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	{
 		vector<HtmlString> *desc = GetSectionHoverText(eSectionUnderPointer);
 		SetPointerText(desc, false);
-		m_lastPointerLabelSlot = NULL;
+		m_lastPointerLabelSlot = nullptr;
 		delete desc;
 	}
 	else
 	{
-		SetPointerText(NULL, false);
-		m_lastPointerLabelSlot = NULL;
+		SetPointerText(nullptr, false);
+		m_lastPointerLabelSlot = nullptr;
 	}
 
 	EToolTipItem buttonA, buttonX, buttonY, buttonRT, buttonBack;
@@ -1011,7 +1011,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 				// Get the info on this item.
 				shared_ptr<ItemInstance> item = getSlotItem(eSectionUnderPointer, iNewSlotIndex);
 				bool bValidFuel = FurnaceTileEntity::isFuel(item);
-				bool bValidIngredient = FurnaceRecipes::getInstance()->getResult(item->getItem()->id) != NULL;
+				bool bValidIngredient = FurnaceRecipes::getInstance()->getResult(item->getItem()->id) != nullptr;
 
 				if(bValidIngredient)
 				{
@@ -1026,7 +1026,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 						}
 						else
 						{
-							if(FurnaceRecipes::getInstance()->getResult(item->id)==NULL)
+							if(FurnaceRecipes::getInstance()->getResult(item->id)==nullptr)
 							{
 								buttonY = eToolTipQuickMove;
 							}
@@ -1066,7 +1066,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 								}
 								else
 								{
-									if(FurnaceRecipes::getInstance()->getResult(item->id)==NULL)
+									if(FurnaceRecipes::getInstance()->getResult(item->id)==nullptr)
 									{
 										buttonY = eToolTipQuickMove;
 									}
@@ -1299,9 +1299,9 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 
 	vPointerPos.x = floor(vPointerPos.x);
-	vPointerPos.x += ( (int)vPointerPos.x%2);
+	vPointerPos.x += ( static_cast<int>(vPointerPos.x)%2);
 	vPointerPos.y = floor(vPointerPos.y);
-	vPointerPos.y += ( (int)vPointerPos.y%2);
+	vPointerPos.y += ( static_cast<int>(vPointerPos.y)%2);
 	m_pointerPos = vPointerPos;
 
 	adjustPointerForSafeZone();
@@ -1312,10 +1312,10 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 	bool bHandled = false;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[getPad()] != NULL )
+	if( pMinecraft->localgameModes[getPad()] != nullptr )
 	{
 		Tutorial *tutorial = pMinecraft->localgameModes[getPad()]->getTutorial();
-		if(tutorial != NULL)
+		if(tutorial != nullptr)
 		{
 			tutorial->handleUIInput(iAction);
 			if(ui.IsTutorialVisible(getPad()) && !tutorial->isInputAllowed(iAction))
@@ -1517,20 +1517,20 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 				if ( bSlotHasItem )
 				{
 					shared_ptr<ItemInstance> item = getSlotItem(m_eCurrSection, currentIndex);
-					if( Minecraft::GetInstance()->localgameModes[iPad] != NULL )
+					if( Minecraft::GetInstance()->localgameModes[iPad] != nullptr )
 					{
 						Tutorial::PopupMessageDetails *message = new Tutorial::PopupMessageDetails;
 						message->m_messageId = item->getUseDescriptionId();
 
-						if(Item::items[item->id] != NULL) message->m_titleString = Item::items[item->id]->getHoverName(item);
+						if(Item::items[item->id] != nullptr) message->m_titleString = Item::items[item->id]->getHoverName(item);
 						message->m_titleId = item->getDescriptionId();
 
 						message->m_icon = item->id;
 						message->m_iAuxVal = item->getAuxValue();
 						message->m_forceDisplay = true;
 
-						TutorialMode *gameMode = (TutorialMode *)Minecraft::GetInstance()->localgameModes[iPad];
-						gameMode->getTutorial()->setMessage(NULL, message);
+						TutorialMode *gameMode = static_cast<TutorialMode *>(Minecraft::GetInstance()->localgameModes[iPad]);
+						gameMode->getTutorial()->setMessage(nullptr, message);
 						ui.PlayUISFX(eSFX_Press);
 					}
 				}
@@ -1632,7 +1632,7 @@ void IUIScene_AbstractContainerMenu::handleSlotListClicked(ESceneSection eSectio
 void IUIScene_AbstractContainerMenu::slotClicked(int slotId, int buttonNum, bool quickKey)
 {
 	// 4J Stu - Removed this line as unused
-	//if (slot != NULL) slotId = slot->index;
+	//if (slot != nullptr) slotId = slot->index;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	pMinecraft->localgameModes[getPad()]->handleInventoryMouseClick(m_menu->containerId, slotId, buttonNum, quickKey, pMinecraft->localplayers[getPad()] );
@@ -1649,7 +1649,7 @@ int IUIScene_AbstractContainerMenu::getCurrentIndex(ESceneSection eSection)
 
 bool IUIScene_AbstractContainerMenu::IsSameItemAs(shared_ptr<ItemInstance> itemA, shared_ptr<ItemInstance> itemB)
 {
-	if(itemA == NULL || itemB == NULL) return false;
+	if(itemA == nullptr || itemB == nullptr) return false;
 
 	return (itemA->id == itemB->id && (!itemB->isStackedByData() || itemB->getAuxValue() == itemA->getAuxValue()) && ItemInstance::tagMatches(itemB, itemA) );
 }
@@ -1658,7 +1658,7 @@ int IUIScene_AbstractContainerMenu::GetEmptyStackSpace(Slot *slot)
 {
 	int iResult = 0;
 
-	if(slot != NULL && slot->hasItem())
+	if(slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> item = slot->getItem();
 		if ( item->isStackable() )
@@ -1677,7 +1677,7 @@ int IUIScene_AbstractContainerMenu::GetEmptyStackSpace(Slot *slot)
 
 vector<HtmlString> *IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slot)
 {
-	if(slot == NULL) return NULL;
+	if(slot == nullptr) return nullptr;
 
 	vector<HtmlString> *lines = slot->getItem()->getHoverText(nullptr, false);
 
@@ -1697,5 +1697,5 @@ vector<HtmlString> *IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slo
 
 vector<HtmlString> *IUIScene_AbstractContainerMenu::GetSectionHoverText(ESceneSection eSection)
 {
-	return NULL;
+	return nullptr;
 }

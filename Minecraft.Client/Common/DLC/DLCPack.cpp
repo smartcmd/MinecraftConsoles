@@ -24,14 +24,14 @@ DLCPack::DLCPack(const wstring &name,DWORD dwLicenseMask)
 	m_isCorrupt = false;
 	m_packId = 0;
 	m_packVersion = 0;
-	m_parentPack = NULL;
+	m_parentPack = nullptr;
 	m_dlcMountIndex = -1;
 #ifdef _XBOX
 	m_dlcDeviceID = XCONTENTDEVICE_ANY;
 #endif
 	
 	// This pointer is for all the data used for this pack, so deleting it invalidates ALL of it's children.
-	m_data = NULL;
+	m_data = nullptr;
 }
 
 #ifdef _XBOX_ONE
@@ -44,11 +44,11 @@ DLCPack::DLCPack(const wstring &name,const wstring &productID,DWORD dwLicenseMas
 	m_isCorrupt = false;
 	m_packId = 0;
 	m_packVersion = 0;
-	m_parentPack = NULL;
+	m_parentPack = nullptr;
 	m_dlcMountIndex = -1;
 
 	// This pointer is for all the data used for this pack, so deleting it invalidates ALL of it's children.
-	m_data = NULL;
+	m_data = nullptr;
 }
 #endif
 
@@ -76,7 +76,7 @@ DLCPack::~DLCPack()
 		wprintf(L"Deleting data for DLC pack %ls\n", m_packName.c_str());
 #endif
 		// For the same reason, don't delete data pointer for any child pack as it just points to a region within the parent pack that has already been freed
-		if( m_parentPack == NULL )
+		if( m_parentPack == nullptr )
 		{
 			delete [] m_data;
 		}
@@ -85,7 +85,7 @@ DLCPack::~DLCPack()
 
 DWORD DLCPack::GetDLCMountIndex()
 {
-	if(m_parentPack != NULL)
+	if(m_parentPack != nullptr)
 	{
 		return m_parentPack->GetDLCMountIndex();
 	}
@@ -94,7 +94,7 @@ DWORD DLCPack::GetDLCMountIndex()
 
 XCONTENTDEVICEID DLCPack::GetDLCDeviceID()
 {
-	if(m_parentPack != NULL )
+	if(m_parentPack != nullptr )
 	{
 		return m_parentPack->GetDLCDeviceID();
 	}
@@ -156,7 +156,7 @@ void DLCPack::addParameter(DLCManager::EDLCParameterType type, const wstring &va
 		m_dataPath = value;
 		break;
 	default:
-		m_parameters[(int)type] = value;
+		m_parameters[static_cast<int>(type)] = value;
 		break;
 	}
 }
@@ -187,7 +187,7 @@ bool DLCPack::getParameterAsUInt(DLCManager::EDLCParameterType type, unsigned in
 
 DLCFile *DLCPack::addFile(DLCManager::EDLCType type, const wstring &path)
 {
-	DLCFile *newFile = NULL;
+	DLCFile *newFile = nullptr;
 
 	switch(type)
 	{
@@ -243,7 +243,7 @@ DLCFile *DLCPack::addFile(DLCManager::EDLCType type, const wstring &path)
 		break;
 	};
 
-	if( newFile != NULL )
+	if( newFile != nullptr )
 	{
 		m_files[newFile->getType()].push_back(newFile);
 	}
@@ -252,7 +252,7 @@ DLCFile *DLCPack::addFile(DLCManager::EDLCType type, const wstring &path)
 }
 
 // MGH - added this comp func, as the embedded func in find_if was confusing the PS3 compiler
-static const wstring *g_pathCmpString = NULL;
+static const wstring *g_pathCmpString = nullptr;
 static bool pathCmp(DLCFile *val)
 {
 	return (g_pathCmpString->compare(val->getPath()) == 0); 
@@ -263,7 +263,7 @@ bool DLCPack::doesPackContainFile(DLCManager::EDLCType type, const wstring &path
 	bool hasFile = false;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			hasFile = doesPackContainFile(currentType,path);
 			if(hasFile) break;
@@ -284,13 +284,13 @@ bool DLCPack::doesPackContainFile(DLCManager::EDLCType type, const wstring &path
 
 DLCFile *DLCPack::getFile(DLCManager::EDLCType type, DWORD index)
 {
-	DLCFile *file = NULL;
+	DLCFile *file = nullptr;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			file = getFile(currentType,index);
-			if(file != NULL) break;
+			if(file != nullptr) break;
 		}
 	}
 	else
@@ -306,13 +306,13 @@ DLCFile *DLCPack::getFile(DLCManager::EDLCType type, DWORD index)
 
 DLCFile *DLCPack::getFile(DLCManager::EDLCType type, const wstring &path)
 {
-	DLCFile *file = NULL;
+	DLCFile *file = nullptr;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			file = getFile(currentType,path);
-			if(file != NULL) break;
+			if(file != nullptr) break;
 		}
 	}
 	else
@@ -323,7 +323,7 @@ DLCFile *DLCPack::getFile(DLCManager::EDLCType type, const wstring &path)
 		if(it == m_files[type].end())
 		{
 			// Not found
-			file = NULL; 
+			file = nullptr; 
 		}
 		else
 		{
@@ -346,11 +346,11 @@ DWORD DLCPack::getDLCItemsCount(DLCManager::EDLCType type /*= DLCManager::e_DLCT
 	case DLCManager::e_DLCType_All:
 		for(int i = 0; i < DLCManager::e_DLCType_Max; ++i)
 		{
-			count += getDLCItemsCount((DLCManager::EDLCType)i);
+			count += getDLCItemsCount(static_cast<DLCManager::EDLCType>(i));
 		}
 		break;
 	default:
-		count = (DWORD)m_files[(int)type].size();
+		count = static_cast<DWORD>(m_files[(int)type].size());
 		break;
 	};
 	return count;
@@ -420,12 +420,12 @@ void  DLCPack::UpdateLanguage()
 {
 	// find the language file
 	DLCManager::e_DLCType_LocalisationData;
-	DLCFile *file = NULL;
+	DLCFile *file = nullptr;
 
 	if(m_files[DLCManager::e_DLCType_LocalisationData].size() > 0)
 	{
 		file = m_files[DLCManager::e_DLCType_LocalisationData][0];
-		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		DLCLocalisationFile *localisationFile = static_cast<DLCLocalisationFile *>(getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"));
 		StringTable *strTable = localisationFile->getStringTable();
 		strTable->ReloadStringTable();
 	}

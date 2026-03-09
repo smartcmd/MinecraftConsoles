@@ -138,7 +138,7 @@ void LargeHellCaveFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArr
 						int block = blocks[p];
 						if (block == Tile::netherRack_Id || block == Tile::dirt_Id || block == Tile::grass_Id)
 						{
-							blocks[p] = (byte) 0;
+							blocks[p] = static_cast<byte>(0);
 						}
 					}
 					p--;

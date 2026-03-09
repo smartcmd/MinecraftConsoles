@@ -172,8 +172,8 @@ bool MobEffectInstance::equals(MobEffectInstance *instance)
 
 CompoundTag *MobEffectInstance::save(CompoundTag *tag)
 {
-	tag->putByte(L"Id", (byte) getId());
-	tag->putByte(L"Amplifier", (byte) getAmplifier());
+	tag->putByte(L"Id", static_cast<byte>(getId()));
+	tag->putByte(L"Amplifier", static_cast<byte>(getAmplifier()));
 	tag->putInt(L"Duration", getDuration());
 	tag->putBoolean(L"Ambient", isAmbient());
 	return tag;

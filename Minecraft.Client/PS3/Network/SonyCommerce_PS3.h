@@ -114,14 +114,14 @@ class SonyCommerce_PS3 : public SonyCommerce
 	{
 		assert(m_callbackFunc);
 		CallbackFunc func = m_callbackFunc;
-		m_callbackFunc = NULL;
+		m_callbackFunc = nullptr;
 		if(func)
 			func(m_callbackParam, m_errorCode);
 		m_errorCode = CELL_OK;
 	}
 	static void setCallback(CallbackFunc cb,LPVOID lpParam)
 	{
-		assert(m_callbackFunc == NULL);
+		assert(m_callbackFunc == nullptr);
 		m_callbackFunc = cb;
 		m_callbackParam = lpParam;
 	}

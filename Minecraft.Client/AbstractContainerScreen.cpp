@@ -51,7 +51,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
     glColor4f(1, 1, 1, 1);
     glEnable(GL_RESCALE_NORMAL);
 
-    Slot *hoveredSlot = NULL;
+    Slot *hoveredSlot = nullptr;
 
 	for ( Slot *slot : *menu->slots )
 	{
@@ -73,7 +73,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
     }
 
     shared_ptr<Inventory> inventory = minecraft->player->inventory;
-    if (inventory->getCarried() != NULL)
+    if (inventory->getCarried() != nullptr)
 	{
         glTranslatef(0, 0, 32);
         // Slot old = carriedSlot;
@@ -90,7 +90,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
 
     renderLabels();
 
-    if (inventory->getCarried() == NULL && hoveredSlot != NULL && hoveredSlot->hasItem())
+    if (inventory->getCarried() == nullptr && hoveredSlot != nullptr && hoveredSlot->hasItem())
 	{
 
         wstring elementName = trimString(Language::getInstance()->getElementName(hoveredSlot->getItem()->getDescriptionId()));
@@ -127,7 +127,7 @@ void AbstractContainerScreen::renderSlot(Slot *slot)
     int y = slot->y;
     shared_ptr<ItemInstance> item = slot->getItem();
 
-    if (item == NULL)
+    if (item == nullptr)
 	{
         int icon = slot->getNoItemIcon();
         if (icon >= 0)
@@ -151,7 +151,7 @@ Slot *AbstractContainerScreen::findSlot(int x, int y)
 	{
         if (isHovering(slot, x, y)) return slot;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool AbstractContainerScreen::isHovering(Slot *slot, int xm, int ym)
@@ -177,7 +177,7 @@ void AbstractContainerScreen::mouseClicked(int x, int y, int buttonNum)
         bool clickedOutside = (x < xo || y < yo || x >= xo + imageWidth || y >= yo + imageHeight);
 
         int slotId = -1;
-        if (slot != NULL) slotId = slot->index;
+        if (slot != nullptr) slotId = slot->index;
 
         if (clickedOutside)
 		{
@@ -210,7 +210,7 @@ void AbstractContainerScreen::keyPressed(wchar_t eventCharacter, int eventKey)
 
 void AbstractContainerScreen::removed()
 {
-    if (minecraft->player == NULL) return;
+    if (minecraft->player == nullptr) return;
 }
 
 void AbstractContainerScreen::slotsChanged(shared_ptr<Container> container)

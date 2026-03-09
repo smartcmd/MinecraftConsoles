@@ -356,13 +356,13 @@ IDOC typedef struct GDrawPrimitive
 IDOC typedef void RADLINK gdraw_draw_indexed_triangles(GDrawRenderState *r, GDrawPrimitive *prim, GDrawVertexBuffer *buf, GDrawStats *stats);
 /* Draws a collection of indexed triangles, ignoring special filters or blend modes.
 
-   If buf is NULL, then the pointers in 'prim' are machine pointers, and
+   If buf is nullptr, then the pointers in 'prim' are machine pointers, and
    you need to make a copy of the data (note currently all triangles
    implementing strokes (wide lines) go this path).
    
-   If buf is non-NULL, then use the appropriate vertex buffer, and the
+   If buf is non-nullptr, then use the appropriate vertex buffer, and the
    pointers in prim are actually offsets from the beginning of the
-   vertex buffer -- i.e. offset = (char*) prim->whatever - (char*) NULL;
+   vertex buffer -- i.e. offset = (char*) prim->whatever - (char*) nullptr;
    (note there are separate spaces for vertices and indices; e.g. the
    first mesh in a given vertex buffer will normally have a 0 offset
    for the vertices and a 0 offset for the indices)
@@ -455,7 +455,7 @@ IDOC typedef GDrawTexture * RADLINK gdraw_make_texture_end(GDraw_MakeTexture_Pro
 /* Ends specification of a new texture.
    
    $:info The same handle initially passed to $gdraw_make_texture_begin
-   $:return Handle for the newly created texture, or NULL if an error occured
+   $:return Handle for the newly created texture, or nullptr if an error occured
 */
 
 IDOC typedef rrbool RADLINK gdraw_update_texture_begin(GDrawTexture *tex, void *unique_id, GDrawStats *stats);

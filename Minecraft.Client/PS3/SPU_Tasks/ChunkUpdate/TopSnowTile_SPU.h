@@ -14,7 +14,7 @@ public:
 	bool blocksLight() { return false; }
 	bool isSolidRender(bool isServerLevel = false) { return false; }
 	bool isCubeShaped() { return false; }
-	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		int height = level->getData(x, y, z) & HEIGHT_MASK;
 		float o = 2 * (1 + height) / 16.0f;

@@ -11,7 +11,7 @@ public:
 	virtual void StartReloadSkinThread();
 	virtual bool IsReloadingSkin();
 	virtual void CleanUpSkinReload();
-	virtual bool NavigateToScene(int iPad, EUIScene scene, void *initData = NULL, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD);
+	virtual bool NavigateToScene(int iPad, EUIScene scene, void *initData = nullptr, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD);
 	virtual bool NavigateBack(int iPad, bool forceUsePad = false, EUIScene eScene = eUIScene_COUNT, EUILayer eLayer = eUILayer_COUNT);
 	virtual void NavigateToHomeMenu();
 	virtual void CloseUIScenes(int iPad, bool forceIPad = false);
@@ -71,9 +71,9 @@ public:
 	virtual void SetWinUserIndex(unsigned int iPad);
 
 	virtual C4JStorage::EMessageResult RequestMessageBox(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY,
-						int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=NULL,LPVOID lpParam=NULL, CXuiStringTable *pStringTable=NULL, WCHAR *pwchFormatString=NULL,DWORD dwFocusButton=0, bool bIsError = true);
+						int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=nullptr,LPVOID lpParam=nullptr, CXuiStringTable *pStringTable=nullptr, WCHAR *pwchFormatString=nullptr,DWORD dwFocusButton=0, bool bIsError = true);
 
-	C4JStorage::EMessageResult RequestUGCMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = NULL, LPVOID lpParam = NULL);
+	C4JStorage::EMessageResult RequestUGCMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = nullptr, LPVOID lpParam = nullptr);
 };
 
 extern ConsoleUIController ui;

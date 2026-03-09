@@ -55,7 +55,7 @@ void UIControl_EnchantmentButton::tick()
 
 void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
 {
-	UIScene_EnchantingMenu *enchantingScene = (UIScene_EnchantingMenu *)m_parentScene;
+	UIScene_EnchantingMenu *enchantingScene = static_cast<UIScene_EnchantingMenu *>(m_parentScene);
 	EnchantmentMenu *menu = enchantingScene->getMenu();
 
 	float width = region->x1 - region->x0;
@@ -108,7 +108,7 @@ void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
 		if (pMinecraft->localplayers[enchantingScene->getPad()]->experienceLevel < cost && !pMinecraft->localplayers[enchantingScene->getPad()]->abilities.instabuild)
 		{
 			col = m_textDisabledColour;
-			font->drawWordWrap(m_enchantmentString, 0, 0, (float)m_width/ss, col, (float)m_height/ss);
+			font->drawWordWrap(m_enchantmentString, 0, 0, static_cast<float>(m_width)/ss, col, static_cast<float>(m_height)/ss);
 			font = pMinecraft->font;
 			//col = (0x80ff20 & 0xfefefe) >> 1;
 			//font->drawShadow(line, (bwidth - font->width(line))/ss, 7, col);
@@ -120,7 +120,7 @@ void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
 				//col = 0xffff80;
 				col = m_textFocusColour;
 			}
-			font->drawWordWrap(m_enchantmentString, 0, 0, (float)m_width/ss, col, (float)m_height/ss);
+			font->drawWordWrap(m_enchantmentString, 0, 0, static_cast<float>(m_width)/ss, col, static_cast<float>(m_height)/ss);
 			font = pMinecraft->font;
 			//col = 0x80ff20;
 			//font->drawShadow(line, (bwidth - font->width(line))/ss, 7, col);
@@ -137,7 +137,7 @@ void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
 
 void UIControl_EnchantmentButton::updateState()
 {
-	UIScene_EnchantingMenu *enchantingScene = (UIScene_EnchantingMenu *)m_parentScene;
+	UIScene_EnchantingMenu *enchantingScene = static_cast<UIScene_EnchantingMenu *>(m_parentScene);
 	EnchantmentMenu *menu = enchantingScene->getMenu();
 
 	EState state = eState_Inactive;
@@ -182,7 +182,7 @@ void UIControl_EnchantmentButton::updateState()
 		IggyDataValue value[1];
 
 		value[0].type = IGGY_DATATYPE_number;
-		value[0].number = (int)state;
+		value[0].number = static_cast<int>(state);
 		IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_funcChangeState , 1 , value );
 
 		if(out == IGGY_RESULT_SUCCESS) m_lastState = state;

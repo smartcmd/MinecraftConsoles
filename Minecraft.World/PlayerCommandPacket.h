@@ -36,6 +36,6 @@ public:
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new PlayerCommandPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<PlayerCommandPacket>(); }
 	virtual int getId() { return 19; }
 };

@@ -32,7 +32,7 @@ DWORD XGetLanguage()
 
 	WCHAR wchLocaleName[LOCALE_NAME_MAX_LENGTH];
 	GetUserDefaultLocaleName(wchLocaleName,LOCALE_NAME_MAX_LENGTH);
-	eMCLang eLang=(eMCLang)app.get_eMCLang(wchLocaleName);
+	eMCLang eLang=static_cast<eMCLang>(app.get_eMCLang(wchLocaleName));
 	
 #ifdef _DEBUG
 	app.DebugPrintf("XGetLanguage() ==> '%ls'\n", wchLocaleName);

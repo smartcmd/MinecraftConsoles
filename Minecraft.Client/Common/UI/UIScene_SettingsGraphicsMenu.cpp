@@ -28,8 +28,8 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 	Minecraft* pMinecraft = Minecraft::GetInstance();
-
-	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	
+	m_bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	m_checkboxClouds.init(app.GetString(IDS_CHECKBOX_RENDER_CLOUDS),eControl_Clouds,(app.GetGameSettings(m_iPad,eGameSetting_Clouds)!=0));
 	m_checkboxBedrockFog.init(app.GetString(IDS_CHECKBOX_RENDER_BEDROCKFOG),eControl_BedrockFog,(app.GetGameSettings(m_iPad,eGameSetting_BedrockFog)!=0));
@@ -38,10 +38,10 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 
 	WCHAR TempString[256];
 
-	swprintf((WCHAR*)TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
+	swprintf(TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
 	m_sliderRenderDistance.init(TempString,eControl_RenderDistance,0,5,DistanceToLevel(app.GetGameSettings(m_iPad,eGameSetting_RenderDistance)));
 	
-	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
+	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
 	if ((int)(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f) == 90)
@@ -54,13 +54,13 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	}
 	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, ((app.GetGameSettings(m_iPad, eGameSetting_FOV)) - 101) * 80.0f / 100.0f);
 	
-	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
+	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 
-	doHorizontalResizeCheck(); 
+	doHorizontalResizeCheck();
 
-	bool bInGame=(Minecraft::GetInstance()->level!=NULL);
-	bool bIsPrimaryPad=(ProfileManager.GetPrimaryPad()==m_iPad);
+	const bool bInGame=(Minecraft::GetInstance()->level!=nullptr);
+	const bool bIsPrimaryPad=(ProfileManager.GetPrimaryPad()==m_iPad);
 	// if we're not in the game, we need to use basescene 0 
 	if(bInGame)
 	{
@@ -114,7 +114,7 @@ void UIScene_SettingsGraphicsMenu::updateTooltips()
 
 void UIScene_SettingsGraphicsMenu::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	const bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -165,20 +165,20 @@ void UIScene_SettingsGraphicsMenu::handleInput(int iPad, int key, bool repeat, b
 void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	const int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_RenderDistance:
 		{
 			m_sliderRenderDistance.handleSliderMove(value);
 
-			int dist = LevelToDistance(value);
+			const int dist = LevelToDistance(value);
 
 			app.SetGameSettings(m_iPad,eGameSetting_RenderDistance,dist);
 
-			Minecraft* mc = Minecraft::GetInstance();
+			const Minecraft* mc = Minecraft::GetInstance();
 			mc->options->viewDistance = 3 - value;
-			swprintf((WCHAR*)TempString,256,L"Render Distance: %d",dist);
+			swprintf(TempString,256,L"Render Distance: %d",dist);
 			m_sliderRenderDistance.setLabel(TempString);
 		}
 		break;
@@ -187,7 +187,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		m_sliderGamma.handleSliderMove(value);
 		
 		app.SetGameSettings(m_iPad,eGameSetting_Gamma,value);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),value);
+		swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),value);
 		m_sliderGamma.setLabel(TempString);
 
 		break;
@@ -223,7 +223,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		m_sliderInterfaceOpacity.handleSliderMove(value);
 		
 		app.SetGameSettings(m_iPad,eGameSetting_InterfaceOpacity,value);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),value);	
+		swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),value);	
 		m_sliderInterfaceOpacity.setLabel(TempString);
 
 		break;

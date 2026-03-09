@@ -28,5 +28,3 @@ public:
 public:
 	void shutdown();
 };
-
-extern ConsoleUIController ui;

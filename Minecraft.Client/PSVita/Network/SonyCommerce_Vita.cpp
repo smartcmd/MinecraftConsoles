@@ -10,22 +10,22 @@ bool											SonyCommerce_Vita::m_bCommerceInitialised = false;
 // SceNpCommerce2SessionInfo					SonyCommerce_Vita::m_sessionInfo;
 SonyCommerce_Vita::State						SonyCommerce_Vita::m_state = e_state_noSession;
 int												SonyCommerce_Vita::m_errorCode = 0;
-LPVOID											SonyCommerce_Vita::m_callbackParam = NULL;
+LPVOID											SonyCommerce_Vita::m_callbackParam = nullptr;
 
-void*											SonyCommerce_Vita::m_receiveBuffer = NULL;
+void*											SonyCommerce_Vita::m_receiveBuffer = nullptr;
 SonyCommerce_Vita::Event						SonyCommerce_Vita::m_event;
 std::queue<SonyCommerce_Vita::Message>			SonyCommerce_Vita::m_messageQueue;
-std::vector<SonyCommerce_Vita::ProductInfo>*	SonyCommerce_Vita::m_pProductInfoList = NULL;
-SonyCommerce_Vita::ProductInfoDetailed*		SonyCommerce_Vita::m_pProductInfoDetailed = NULL;
-SonyCommerce_Vita::ProductInfo*				SonyCommerce_Vita::m_pProductInfo = NULL;
+std::vector<SonyCommerce_Vita::ProductInfo>*	SonyCommerce_Vita::m_pProductInfoList = nullptr;
+SonyCommerce_Vita::ProductInfoDetailed*		SonyCommerce_Vita::m_pProductInfoDetailed = nullptr;
+SonyCommerce_Vita::ProductInfo*				SonyCommerce_Vita::m_pProductInfo = nullptr;
 
-SonyCommerce_Vita::CategoryInfo*				SonyCommerce_Vita::m_pCategoryInfo = NULL;
-const char*										SonyCommerce_Vita::m_pProductID = NULL;
-char*											SonyCommerce_Vita::m_pCategoryID = NULL;
+SonyCommerce_Vita::CategoryInfo*				SonyCommerce_Vita::m_pCategoryInfo = nullptr;
+const char*										SonyCommerce_Vita::m_pProductID = nullptr;
+char*											SonyCommerce_Vita::m_pCategoryID = nullptr;
 SonyCommerce_Vita::CheckoutInputParams			SonyCommerce_Vita::m_checkoutInputParams;
 SonyCommerce_Vita::DownloadListInputParams		SonyCommerce_Vita::m_downloadInputParams;
 
-SonyCommerce_Vita::CallbackFunc				SonyCommerce_Vita::m_callbackFunc = NULL;
+SonyCommerce_Vita::CallbackFunc				SonyCommerce_Vita::m_callbackFunc = nullptr;
 // sys_memory_container_t						SonyCommerce_Vita::m_memContainer = SYS_MEMORY_CONTAINER_ID_INVALID;
 bool											SonyCommerce_Vita::m_bUpgradingTrial = false;
 
@@ -39,7 +39,7 @@ bool											SonyCommerce_Vita::m_contextCreated=false;	///< npcommerce2 conte
 SonyCommerce_Vita::Phase						SonyCommerce_Vita::m_currentPhase = e_phase_stopped;		///< Current commerce2 util
 // char											SonyCommerce_Vita::m_commercebuffer[SCE_NP_COMMERCE2_RECV_BUF_SIZE];
 
-C4JThread*										SonyCommerce_Vita::m_tickThread = NULL;
+C4JThread*										SonyCommerce_Vita::m_tickThread = nullptr;
 bool											SonyCommerce_Vita::m_bLicenseChecked=false;	 // Check the trial/full license for the game
 bool											SonyCommerce_Vita::m_bLicenseInstalled=false;	// set to true when the licence has been downloaded and installed (but maybe not checked yet)
 bool											SonyCommerce_Vita::m_bDownloadsPending=false;	// set to true if there are any downloads happening in the background, so we check for them completing, and install when finished
@@ -60,12 +60,12 @@ static bool s_showingPSStoreIcon = false;
 SonyCommerce_Vita::ProductInfoDetailed s_trialUpgradeProductInfoDetailed;
 void SonyCommerce_Vita::Delete()
 {
-	m_pProductInfoList=NULL;
-	m_pProductInfoDetailed=NULL;
-	m_pProductInfo=NULL;
-	m_pCategoryInfo = NULL;
-	m_pProductID = NULL;
-	m_pCategoryID = NULL;
+	m_pProductInfoList=nullptr;
+	m_pProductInfoDetailed=nullptr;
+	m_pProductInfo=nullptr;
+	m_pCategoryInfo = nullptr;
+	m_pProductID = nullptr;
+	m_pCategoryID = nullptr;
 }
 
 void SonyCommerce_Vita::Init()
@@ -108,7 +108,7 @@ bool SonyCommerce_Vita::LicenseChecked()
 
 void SonyCommerce_Vita::CheckForTrialUpgradeKey()
 {
-	StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, NULL);
+	StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, nullptr);
 }
 
 int SonyCommerce_Vita::Shutdown()
@@ -163,7 +163,7 @@ void SonyCommerce_Vita::checkBackgroundDownloadStatus()
 		// install the content
 		if(bInstallContent)
 		{
-			InstallContent(InstallContentCallback, NULL);
+			InstallContent(InstallContentCallback, nullptr);
 		}
 	}
 }
@@ -665,7 +665,7 @@ int SonyCommerce_Vita::createContext()
 	// 	}
 	// 
 	// 	// Create commerce2 context
-	// 	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, NULL, &m_contextId);
+	// 	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, nullptr, &m_contextId);
 	// 	if (ret < 0) 
 	// 	{
 	// 		app.DebugPrintf(4,"createContext sceNpCommerce2CreateCtx problem\n");
@@ -771,7 +771,7 @@ void SonyCommerce_Vita::commerce2Handler( const sce::Toolkit::NP::Event& event)
 			// 		if(ret == SCE_OK)
 			// 		{
 			copyCategoryInfo(m_pCategoryInfo, g_categoryInfo.get());
-			m_pCategoryInfo = NULL;
+			m_pCategoryInfo = nullptr;
 			m_event = e_event_commerceGotCategoryInfo;
 			// 		}
 
@@ -781,7 +781,7 @@ void SonyCommerce_Vita::commerce2Handler( const sce::Toolkit::NP::Event& event)
 	case sce::Toolkit::NP::Event::UserEvent::commerceGotProductList:
 		{
 			copyProductList(m_pProductInfoList, g_productList.get());
-			m_pProductInfoDetailed = NULL;
+			m_pProductInfoDetailed = nullptr;
 			m_event = e_event_commerceGotProductList;
 			break;
 		}
@@ -791,12 +791,12 @@ void SonyCommerce_Vita::commerce2Handler( const sce::Toolkit::NP::Event& event)
 			if(m_pProductInfoDetailed)
 			{
 				copyDetailedProductInfo(m_pProductInfoDetailed, g_detailedProductInfo.get());
-				m_pProductInfoDetailed = NULL;
+				m_pProductInfoDetailed = nullptr;
 			}
 			else
 			{
 				copyAddDetailedProductInfo(m_pProductInfo, g_detailedProductInfo.get());
-				m_pProductInfo = NULL;
+				m_pProductInfo = nullptr;
 			}
 			m_event = e_event_commerceGotDetailedProductInfo;
 			break;
@@ -1180,7 +1180,7 @@ void SonyCommerce_Vita::processEvent()
 		break;
 	case e_event_commerceProductBrowseFinished:
 		app.DebugPrintf(4,"e_event_commerceProductBrowseFinished succeeded: 0x%x\n", m_errorCode);
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1232,7 +1232,7 @@ void SonyCommerce_Vita::processEvent()
 		ProfileManager.SetSysUIShowing(false);
 
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			// get the detailed product info again, to see if the purchase has happened or not
  			EnterCriticalSection(&m_queueLock);
@@ -1260,7 +1260,7 @@ void SonyCommerce_Vita::processEvent()
 		ProfileManager.SetSysUIShowing(false);
 
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1328,10 +1328,10 @@ void SonyCommerce_Vita::CreateSession( CallbackFunc cb, LPVOID lpParam )
 	if(m_tickThread && (m_tickThread->isRunning() == false))
 	{
 		delete m_tickThread;
-		m_tickThread = NULL;
+		m_tickThread = nullptr;
 	}
-	if(m_tickThread == NULL)
-		m_tickThread = new C4JThread(TickLoop, NULL, "SonyCommerce_Vita tick");
+	if(m_tickThread == nullptr)
+		m_tickThread = new C4JThread(TickLoop, nullptr, "SonyCommerce_Vita tick");
 	if(m_tickThread->isRunning() == false)
 	{
 		m_currentPhase = e_phase_idle;
@@ -1439,7 +1439,7 @@ void SonyCommerce_Vita::DownloadAlreadyPurchased_Game( CallbackFunc cb, LPVOID l
 
 void SonyCommerce_Vita::InstallContent( CallbackFunc cb, LPVOID lpParam )
 {
-	if(m_callbackFunc == NULL && m_messageQueue.size() == 0)		// wait till other processes have finished
+	if(m_callbackFunc == nullptr && m_messageQueue.size() == 0)		// wait till other processes have finished
 	{
 		EnterCriticalSection(&m_queueLock);
 		m_bInstallingContent = true;

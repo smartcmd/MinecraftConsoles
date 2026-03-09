@@ -45,7 +45,7 @@ void UIComponent_Panorama::tick()
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	EnterCriticalSection(&pMinecraft->m_setLevelCS);
-	if(pMinecraft->level!=NULL)
+	if(pMinecraft->level!=nullptr)
 	{
 		int64_t i64TimeOfDay =0;
 		// are we in the Nether? - Leave the time as 0 if we are, so we show daylight
@@ -85,10 +85,10 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -100,20 +100,20 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 
 		if((viewport == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT) || (viewport == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT))
 		{
-			tileHeight = (S32)(ui.getScreenHeight());
+			tileHeight = static_cast<S32>(ui.getScreenHeight());
 		}
 		else
 		{
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(ui.getScreenHeight() / 2);
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
+			tileYStart = static_cast<S32>(ui.getScreenHeight() / 2);
 		}
 
-		F32 scaleW = (F32)(tileXStart + tileWidth) / (F32)m_movieWidth;
-		F32 scaleH = (F32)(tileYStart + tileHeight) / (F32)m_movieHeight;
+		F32 scaleW = static_cast<F32>(tileXStart + tileWidth) / static_cast<F32>(m_movieWidth);
+		F32 scaleH = static_cast<F32>(tileYStart + tileHeight) / static_cast<F32>(m_movieHeight);
 		F32 scale = (scaleW > scaleH) ? scaleW : scaleH;
 		if(scale < 1.0f) scale = 1.0f;
 
-		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+		IggyPlayerSetDisplaySize( getMovie(), static_cast<S32>(m_movieWidth * scale), static_cast<S32>(m_movieHeight * scale) );
 
 		IggyPlayerDrawTilesStart ( getMovie() );
 
@@ -132,7 +132,7 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 		if(m_bIsReloading) return;
 		if(!m_hasTickedOnce || !getMovie()) return;
 		ui.setupRenderPosition(0, 0);
-		IggyPlayerSetDisplaySize( getMovie(), (S32)ui.getScreenWidth(), (S32)ui.getScreenHeight() );
+		IggyPlayerSetDisplaySize( getMovie(), static_cast<S32>(ui.getScreenWidth()), static_cast<S32>(ui.getScreenHeight()) );
 		IggyPlayerDraw( getMovie() );
 	}
 }

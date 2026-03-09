@@ -23,8 +23,8 @@ public:
 	virtual void render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) {}
 	virtual void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim=0) {}
 	virtual void prepareMobModel(shared_ptr<LivingEntity> mob, float time, float r, float a) {}
-	virtual ModelPart *getRandomModelPart(Random random) {return cubes.at(random.nextInt((int)cubes.size()));}
-	virtual ModelPart * AddOrRetrievePart(SKIN_BOX *pBox) { return NULL;}
+	virtual ModelPart *getRandomModelPart(Random random) {return cubes.at(random.nextInt(static_cast<int>(cubes.size())));}
+	virtual ModelPart * AddOrRetrievePart(SKIN_BOX *pBox) { return nullptr;}
 
 	void setMapTex(wstring id, int x, int y);
 	TexOffs *getMapTex(wstring id);

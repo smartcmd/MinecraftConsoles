@@ -58,7 +58,7 @@ bool	CSocialManager::IsTitleAllowedToPostImages() { return false; }
 
 bool	CSocialManager::PostLinkToSocialNetwork(ESocialNetwork eSocialNetwork, DWORD dwUserIndex, bool bUsingKinect) { return false; }
 bool	CSocialManager::PostImageToSocialNetwork(ESocialNetwork eSocialNetwork, DWORD dwUserIndex, bool bUsingKinect) { return false; }
-CSocialManager* CSocialManager::Instance() { return NULL; }
+CSocialManager* CSocialManager::Instance() { return nullptr; }
 void CSocialManager::SetSocialPostText(LPCWSTR Title, LPCWSTR Caption, LPCWSTR Desc) {};
 
 DWORD XShowPartyUI(DWORD dwUserIndex) { return 0; }
@@ -68,7 +68,7 @@ DWORD XContentGetThumbnail(DWORD dwUserIndex, const XCONTENT_DATA* pContentData,
 void XShowAchievementsUI(int i) {}
 DWORD XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE Mode) { return 0; }
 
-#ifndef _DURANGO
+#if !defined(_DURANGO) && !defined(_WIN64)
 void PIXAddNamedCounter(int a, const char* b, ...) {}
 //#define PS3_USE_PIX_EVENTS 
 //#define PS4_USE_PIX_EVENTS 
@@ -126,7 +126,9 @@ void PIXEndNamedEvent()
 #endif
 }
 void PIXSetMarkerDeprecated(int a, const char* b, ...) {}
-#else
+#endif
+
+#if 0//__PSVITA__
 // 4J Stu - Removed this implementation in favour of a macro that will convert our string format
 // conversion at compile time rather than at runtime
 //void PIXBeginNamedEvent(int a, char *b, ...)
@@ -159,7 +161,7 @@ void PIXSetMarkerDeprecated(int a, const char* b, ...) {}
 //}
 #endif
 
-// void *D3DXBUFFER::GetBufferPointer() { return NULL; }
+// void *D3DXBUFFER::GetBufferPointer() { return nullptr; }
 // int D3DXBUFFER::GetBufferSize() { return 0; }
 // void D3DXBUFFER::Release() {}
 
@@ -275,7 +277,7 @@ IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 			!m_player[dwUserIndex].m_isRemote &&
 			Win64_IsActivePlayer(&m_player[dwUserIndex], dwUserIndex))
 			return &m_player[dwUserIndex];
-		return NULL;
+		return nullptr;
 	}
 	if (dwUserIndex == 0)
 	{
@@ -287,7 +289,7 @@ IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 				!m_player[idx].m_isRemote &&
 				Win64_IsActivePlayer(&m_player[idx], idx))
 				return &m_player[idx];
-			return NULL;
+			return nullptr;
 		}
 		// Offline: scan for first local player
 		for (DWORD i = 0; i < s_playerCount; i++)
@@ -295,14 +297,14 @@ IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 			if (!m_player[i].m_isRemote && Win64_IsActivePlayer(&m_player[i], i))
 				return &m_player[i];
 		}
-		return NULL;
+		return nullptr;
 	}
 	// Split-screen pads 1-3: the player is at m_player[dwUserIndex] with isRemote=false
 	if (dwUserIndex < MINECRAFT_NET_MAX_PLAYERS &&
 		!m_player[dwUserIndex].m_isRemote &&
 		Win64_IsActivePlayer(&m_player[dwUserIndex], dwUserIndex))
 		return &m_player[dwUserIndex];
-	return NULL;
+	return nullptr;
 }
 static bool Win64_IsActivePlayer(IQNetPlayer * p, DWORD index)
 {
@@ -329,7 +331,7 @@ IQNetPlayer* IQNet::GetPlayerBySmallId(BYTE SmallId)
 	{
 		if (m_player[i].m_smallId == SmallId && Win64_IsActivePlayer(&m_player[i], i)) return &m_player[i];
 	}
-	return NULL;
+	return nullptr;
 }
 IQNetPlayer* IQNet::GetPlayerByXuid(PlayerUID xuid)
 {
@@ -341,7 +343,7 @@ IQNetPlayer* IQNet::GetPlayerByXuid(PlayerUID xuid)
 		if (m_player[i].GetXuid() == xuid)
 			return &m_player[i];
 	}
-	// Keep existing stub behavior: return host slot instead of NULL on miss.
+	// Keep existing stub behavior: return host slot instead of nullptr on miss.
 	return &m_player[0];
 }
 DWORD IQNet::GetPlayerCount()
@@ -370,7 +372,7 @@ void IQNet::ClientJoinGame()
 
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		m_player[i].m_smallId = (BYTE)i;
+		m_player[i].m_smallId = static_cast<BYTE>(i);
 		m_player[i].m_isRemote = true;
 		m_player[i].m_isHostPlayer = false;
 		m_player[i].m_resolvedXuid = INVALID_XUID;
@@ -385,7 +387,7 @@ void IQNet::EndGame()
 	s_playerCount = 1;
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		m_player[i].m_smallId = (BYTE)i;
+		m_player[i].m_smallId = static_cast<BYTE>(i);
 		m_player[i].m_isRemote = false;
 		m_player[i].m_isHostPlayer = false;
 		m_player[i].m_resolvedXuid = INVALID_XUID;
@@ -493,11 +495,11 @@ HRESULT XMemCreateCompressionContext(
 )
 {
 	/*
-	COMPRESSOR_HANDLE Compressor    = NULL;
+	COMPRESSOR_HANDLE Compressor    = nullptr;
 
 	HRESULT hr = CreateCompressor(
 		COMPRESS_ALGORITHM_XPRESS_HUFF, //  Compression Algorithm
-		NULL,                           //  Optional allocation routine
+		nullptr,                           //  Optional allocation routine
 		&Compressor);                   //  Handle
 
 	pContext = (XMEMDECOMPRESSION_CONTEXT *)Compressor;
@@ -514,11 +516,11 @@ HRESULT XMemCreateDecompressionContext(
 )
 {
 	/*
-	DECOMPRESSOR_HANDLE  Decompressor    = NULL;
+	DECOMPRESSOR_HANDLE  Decompressor    = nullptr;
 
 	HRESULT hr = CreateDecompressor(
 		COMPRESS_ALGORITHM_XPRESS_HUFF, //  Compression Algorithm
-		NULL,                           //  Optional allocation routine
+		nullptr,                           //  Optional allocation routine
 		&Decompressor);                   //  Handle
 
 	pContext = (XMEMDECOMPRESSION_CONTEXT *)Decompressor;
@@ -568,7 +570,7 @@ void				C_4JProfile::Initialise(DWORD dwTitleID,
 		ZeroMemory(profileData[i], sizeof(byte) * iGameDefinedDataSizeX4 / 4);
 
 		// Set some sane initial values!
-		GAME_SETTINGS* pGameSettings = (GAME_SETTINGS*)profileData[i];
+		GAME_SETTINGS* pGameSettings = static_cast<GAME_SETTINGS *>(profileData[i]);
 		pGameSettings->ucMenuSensitivity = 100; //eGameSetting_Sensitivity_InMenu
 		pGameSettings->ucInterfaceOpacity = 80; //eGameSetting_Sensitivity_InMenu
 		pGameSettings->usBitmaskValues |= 0x0200; //eGameSetting_DisplaySplitscreenGamertags - on
@@ -672,7 +674,7 @@ char* C_4JProfile::GetGamertag(int iPad) {
 		!IQNet::m_player[iPad].m_isRemote)
 	{
 		static char s_padGamertag[XUSER_MAX_COUNT][17];
-		WideCharToMultiByte(CP_ACP, 0, IQNet::m_player[iPad].m_gamertag, -1, s_padGamertag[iPad], 17, NULL, NULL);
+		WideCharToMultiByte(CP_ACP, 0, IQNet::m_player[iPad].m_gamertag, -1, s_padGamertag[iPad], 17, nullptr, nullptr);
 		return s_padGamertag[iPad];
 	}
 	return g_Win64Username;
@@ -693,8 +695,8 @@ bool				C_4JProfile::LocaleIsUSorCanada(void) { return false; }
 HRESULT				C_4JProfile::GetLiveConnectionStatus() { return S_OK; }
 bool				C_4JProfile::IsSystemUIDisplayed() { return false; }
 void				C_4JProfile::SetProfileReadErrorCallback(void (*Func)(LPVOID), LPVOID lpParam) {}
-int(*defaultOptionsCallback)(LPVOID, C_4JProfile::PROFILESETTINGS*, const int iPad) = NULL;
-LPVOID lpProfileParam = NULL;
+int(*defaultOptionsCallback)(LPVOID, C_4JProfile::PROFILESETTINGS*, const int iPad) = nullptr;
+LPVOID lpProfileParam = nullptr;
 int					C_4JProfile::SetDefaultOptionsCallback(int(*Func)(LPVOID, PROFILESETTINGS*, const int iPad), LPVOID lpParam)
 {
 	defaultOptionsCallback = Func;
@@ -772,7 +774,7 @@ void								C4JStorage::GetSaveCacheFileInfo(DWORD dwFile, XCONTENT_DATA & xCont
 void								C4JStorage::GetSaveCacheFileInfo(DWORD dwFile, PBYTE * ppbImageData, DWORD * pdwImageBytes) {}
 C4JStorage::ESaveGameState			C4JStorage::LoadSaveData(PSAVE_INFO pSaveInfo, int(*Func)(LPVOID lpParam, const bool, const bool), LPVOID lpParam) { return C4JStorage::ESaveGame_Idle; }
 C4JStorage::EDeleteGameStatus		C4JStorage::DeleteSaveData(PSAVE_INFO pSaveInfo, int(*Func)(LPVOID lpParam, const bool), LPVOID lpParam) { return C4JStorage::EDeleteGame_Idle; }
-PSAVE_DETAILS						C4JStorage::ReturnSavesInfo() { return NULL; }
+PSAVE_DETAILS						C4JStorage::ReturnSavesInfo() { return nullptr; }
 
 void								C4JStorage::RegisterMarketplaceCountsCallback(int (*Func)(LPVOID lpParam, C4JStorage::DLC_TMS_DETAILS*, int), LPVOID lpParam) {}
 void								C4JStorage::SetDLCPackageRoot(char* pszDLCRoot) {}
@@ -794,7 +796,7 @@ void								C4JStorage::StoreTMSPathName(WCHAR * pwchName) {}
 unsigned int						C4JStorage::CRC(unsigned char* buf, int len) { return 0; }
 
 struct PTMSPP_FILEDATA;
-C4JStorage::ETMSStatus				C4JStorage::TMSPP_ReadFile(int iPad, C4JStorage::eGlobalStorage eStorageFacility, C4JStorage::eTMS_FILETYPEVAL eFileTypeVal, LPCSTR szFilename, int(*Func)(LPVOID, int, int, PTMSPP_FILEDATA, LPCSTR)/*=NULL*/, LPVOID lpParam/*=NULL*/, int iUserData/*=0*/) { return C4JStorage::ETMSStatus_Idle; }
+C4JStorage::ETMSStatus				C4JStorage::TMSPP_ReadFile(int iPad, C4JStorage::eGlobalStorage eStorageFacility, C4JStorage::eTMS_FILETYPEVAL eFileTypeVal, LPCSTR szFilename, int(*Func)(LPVOID, int, int, PTMSPP_FILEDATA, LPCSTR)/*=nullptr*/, LPVOID lpParam/*=nullptr*/, int iUserData/*=0*/) { return C4JStorage::ETMSStatus_Idle; }
 #endif // _WINDOWS64
 
 #endif // __PS3__

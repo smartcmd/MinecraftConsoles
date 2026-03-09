@@ -185,7 +185,7 @@ bool HouseFeature::place(Level *level, Random *random, int x, int y, int z)
 		}
 	}
 
-	shared_ptr<PigZombie>(pz) = shared_ptr<PigZombie>(new PigZombie(level));
+	shared_ptr<PigZombie>(pz) = std::make_shared<PigZombie>(level);
 	pz->moveTo(x0 + w / 2.0 + 0.5, y0 + 0.5, z0 + d / 2.0 + 0.5, 0, 0);
 	level->addEntity(pz);
 

@@ -29,7 +29,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			DoubleTag *o = (DoubleTag *) obj;
+			DoubleTag *o = static_cast<DoubleTag *>(obj);
 			return data == o->data;
 		}
 		return false;

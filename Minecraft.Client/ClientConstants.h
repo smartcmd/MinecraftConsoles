@@ -13,6 +13,7 @@ class ClientConstants
 	// INTERNAL DEVELOPMENT SETTINGS
 public:
 	static const wstring VERSION_STRING;
+	static const wstring BRANCH_STRING;
 
 	static const bool DEADMAU5_CAMERA_CHEATS = false;
 };

@@ -72,7 +72,7 @@ void ScrolledSelectionList::renderDecorations(int mouseX, int mouseY)
     int x0 = width / 2 - (92 + 16 + 2);
     int x1 = width / 2 + (92 + 16 + 2);
 
-    int clickSlotPos = (y - y0 - headerHeight + (int) yo - 4);
+    int clickSlotPos = (y - y0 - headerHeight + static_cast<int>(yo) - 4);
     int slot = clickSlotPos / itemHeight;
     if (x >= x0 && x <= x1 && slot >= 0 && clickSlotPos >= 0 && slot < getNumberOfItems())
 	{
@@ -92,7 +92,7 @@ void ScrolledSelectionList::capYPosition()
     int max = getMaxPosition() - (y1 - y0 - 4);
     if (max < 0) max /= 2;
     if (yo < 0) yo = 0;
-    if (yo > max) yo = (float)max;
+    if (yo > max) yo = static_cast<float>(max);
 }
 
 void ScrolledSelectionList::buttonClicked(Button *button)

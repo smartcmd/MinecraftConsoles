@@ -14,11 +14,11 @@ ZombieRenderer::ZombieRenderer() : HumanoidMobRenderer(new ZombieModel(), .5f, 1
 	defaultModel = humanoidModel;
 	villagerModel = new VillagerZombieModel();
 
-	defaultArmorParts1 = NULL;
-	defaultArmorParts2 = NULL;
+	defaultArmorParts1 = nullptr;
+	defaultArmorParts2 = nullptr;
 
-	villagerArmorParts1 = NULL;
-	villagerArmorParts2 = NULL;
+	villagerArmorParts1 = nullptr;
+	villagerArmorParts2 = nullptr;
 
 	createArmorParts();
 }
@@ -98,7 +98,7 @@ void ZombieRenderer::swapArmor(shared_ptr<Zombie> mob)
 		armorParts2 = defaultArmorParts2;
 	}
 
-	humanoidModel = (HumanoidModel *) model;
+	humanoidModel = static_cast<HumanoidModel *>(model);
 }
 
 void ZombieRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a)
@@ -106,7 +106,7 @@ void ZombieRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, fl
 	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	if (mob->isConverting())
 	{
-		bodyRot += (float) (cos(mob->tickCount * 3.25) * PI * .25f);
+		bodyRot += static_cast<float>(cos(mob->tickCount * 3.25) * PI * .25f);
 	}
 	HumanoidMobRenderer::setupRotations(mob, bob, bodyRot, a);
 }
