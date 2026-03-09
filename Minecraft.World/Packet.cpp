@@ -327,49 +327,28 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	id = dis->read();
 	if (id == -1) return nullptr;
 
-	// Track last few good packets for diagnosing TCP desync
-	static thread_local int s_lastIds[8] = {};
-	static thread_local int s_lastIdPos = 0;
-	static thread_local int s_packetCount = 0;
-
 	if ((isServer && serverReceivedPackets.find(id) == serverReceivedPackets.end()) || (!isServer && clientReceivedPackets.find(id) == clientReceivedPackets.end()))
 	{
-		app.DebugPrintf("*** BAD PACKET ID %d (0x%02X) isServer=%d totalPacketsRead=%d\n", id, id, isServer ? 1 : 0, s_packetCount);
-		app.DebugPrintf("*** Last %d good packet IDs (oldest first): ", 8);
-		for (int dbg = 0; dbg < 8; dbg++)
-		{
-			int idx = (s_lastIdPos + dbg) % 8;
-			app.DebugPrintf("%d ", s_lastIds[idx]);
-		}
-		app.DebugPrintf("\n");
-		// Dump the next 32 bytes from the stream to see what follows
-		app.DebugPrintf("*** Next bytes in stream: ");
-		for (int dbg = 0; dbg < 32; dbg++)
-		{
-			int b = dis->read();
-			if (b == -1) { app.DebugPrintf("[EOS] "); break; }
-			app.DebugPrintf("%02X ", b);
-		}
-		app.DebugPrintf("\n");
-		__debugbreak();
-		assert(false);
+		// Squirrel - Fix crash on connection to server, show an in-game error instead
+		return packet;
+		//app.DebugPrintf("Bad packet id %d\n", id);
+		//__debugbreak();
+		//assert(false);
 		//            throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
 	}
 
 	packet = getPacket(id);
-	if (packet == nullptr) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
-
-	s_lastIds[s_lastIdPos] = id;
-	s_lastIdPos = (s_lastIdPos + 1) % 8;
-	s_packetCount++;
-
+	
+	//if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+	if (packet == NULL) return packet;
+	//app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client", packet->getId());
 	packet->read(dis);
 	//    }
 	//	catch (EOFException e)
 	//	{
 	//       // reached end of stream
 	//        OutputDebugString("Reached end of stream");
-	//        return nullptr;
+	//        return NULL;
 	//    }
 
 	// 4J - Don't bother tracking stats in a content package
@@ -396,7 +375,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 
 void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
-	//app.DebugPrintf("NET WRITE: packet id=%d (0x%02X) estSize=%d\n", packet->getId(), packet->getId(), packet->getEstimatedSize());
+	//app.DebugPrintf("Writing packet %d\n", packet->getId());
 	dos->write(packet->getId());
 	packet->write(dos);
 }
@@ -410,7 +389,7 @@ void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOE
 	}
 #endif
 
-	dos->writeShort(static_cast<short>(value.length()));
+	dos->writeShort((short)value.length());
 	dos->writeChars(value);
 }
 
@@ -467,7 +446,7 @@ double Packet::PacketStatistics::getAverageSize()
 	{
 		return 0;
 	}
-	return static_cast<double>(totalSize) / count;
+	return (double) totalSize / count;
 }
 
 int Packet::PacketStatistics::getTotalSize()
@@ -536,7 +515,7 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 		int count = dis->readByte();
 		int damage = dis->readShort();
 
-		item = std::make_shared<ItemInstance>(id, count, damage);
+		item = shared_ptr<ItemInstance>( new ItemInstance(id, count, damage) );
 		// 4J Stu - Always read/write the tag
 		//if (Item.items[id].canBeDepleted() || Item.items[id].shouldOverrideMultiplayerNBT())
 		{
@@ -549,7 +528,7 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 
 void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 {
-	if (item == nullptr)
+	if (item == NULL)
 	{
 		dos->writeShort(-1);
 	}
@@ -569,7 +548,7 @@ void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 CompoundTag *Packet::readNbt(DataInputStream *dis)
 {
 	int size = dis->readShort();
-	if (size < 0) return nullptr;
+	if (size < 0) return NULL;
 	byteArray buff(size);
 	dis->readFully(buff);
 	CompoundTag *result = (CompoundTag *) NbtIo::decompress(buff);
@@ -579,14 +558,14 @@ CompoundTag *Packet::readNbt(DataInputStream *dis)
 
 void Packet::writeNbt(CompoundTag *tag, DataOutputStream *dos)
 {
-	if (tag == nullptr)
+	if (tag == NULL)
 	{
 		dos->writeShort(-1);
 	}
 	else
 	{
 		byteArray buff = NbtIo::compress(tag);
-		dos->writeShort(static_cast<short>(buff.length));
+		dos->writeShort((short) buff.length);
 		dos->write(buff);
 		delete [] buff.data;
 	}
