@@ -52,8 +52,8 @@ void CConsoleMinecraftApp::GetSaveThumbnail(PBYTE *pbData,DWORD *pdwSize)
 	}
 	else
 	{
-		// No capture happened (e.g. first save on world creation) leave thumbnail as NULL
-		if (pbData)  *pbData  = NULL;
+		// No capture happened (e.g. first save on world creation) leave thumbnail as nullptr
+		if (pbData)  *pbData  = nullptr;
 		if (pdwSize) *pdwSize = 0;
 	}
 }
@@ -69,7 +69,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 {
 	////////////////////////////////////////////////////////////////////////////////////////////// From CScene_Main::OnInit
 
-	app.setLevelGenerationOptions(NULL);
+	app.setLevelGenerationOptions(nullptr);
 
 	// From CScene_Main::RunPlayGame
 	Minecraft *pMinecraft=Minecraft::GetInstance();
@@ -99,7 +99,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = seedValue;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 
 	app.SetGameHostOption(eGameHostOption_Difficulty,0);
 	app.SetGameHostOption(eGameHostOption_FriendsOfFriends,0);
@@ -125,7 +125,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();

@@ -70,14 +70,14 @@ bool LeashFenceKnotEntity::interact(shared_ptr<Player> player)
 	shared_ptr<ItemInstance> item = player->getCarriedItem();
 
 	bool attachedMob = false;
-	if (item != NULL && item->id == Item::lead_Id)
+	if (item != nullptr && item->id == Item::lead_Id)
 	{
 		if (!level->isClientSide)
 		{
 			// look for entities that can be attached to the fence
 			double range = 7;
 			vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
-			if (mobs != NULL)
+			if (mobs != nullptr)
 			{
 				for(auto& it : *mobs)
 				{
@@ -101,7 +101,7 @@ bool LeashFenceKnotEntity::interact(shared_ptr<Player> player)
 			// if the player is in creative mode, attempt to remove all leashed mobs without dropping additional items
 			double range = 7;
 			vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
-			if (mobs != NULL)
+			if (mobs != nullptr)
 			{
 				for(auto& it : *mobs)
 				{
@@ -122,7 +122,7 @@ bool LeashFenceKnotEntity::survives()
 {
 	// knots are placed on top of fence tiles
 	int tile = level->getTile(xTile, yTile, zTile);
-	if (Tile::tiles[tile] != NULL && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE)
+	if (Tile::tiles[tile] != nullptr && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE)
 	{
 		return true;
 	}
@@ -131,7 +131,7 @@ bool LeashFenceKnotEntity::survives()
 
 shared_ptr<LeashFenceKnotEntity> LeashFenceKnotEntity::createAndAddKnot(Level *level, int x, int y, int z)
 {
-	shared_ptr<LeashFenceKnotEntity> knot = shared_ptr<LeashFenceKnotEntity>( new LeashFenceKnotEntity(level, x, y, z) );
+	shared_ptr<LeashFenceKnotEntity> knot = std::make_shared<LeashFenceKnotEntity>(level, x, y, z);
 	knot->forcedLoading = true;
 	level->addEntity(knot);
 	return knot;
@@ -140,7 +140,7 @@ shared_ptr<LeashFenceKnotEntity> LeashFenceKnotEntity::createAndAddKnot(Level *l
 shared_ptr<LeashFenceKnotEntity> LeashFenceKnotEntity::findKnotAt(Level *level, int x, int y, int z)
 {
 	vector<shared_ptr<Entity> > *knots = level->getEntitiesOfClass(typeid(LeashFenceKnotEntity), AABB::newTemp(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0));
-	if (knots != NULL)
+	if (knots != nullptr)
 	{
         for (auto& it : *knots )
         {

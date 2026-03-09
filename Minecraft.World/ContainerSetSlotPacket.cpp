@@ -22,7 +22,7 @@ ContainerSetSlotPacket::ContainerSetSlotPacket(int containerId, int slot, shared
 {
 	this->containerId = containerId;
 	this->slot = slot;
-	this->item = item == NULL ? item : item->copy();
+	this->item = item == nullptr ? item : item->copy();
 }
 
 void ContainerSetSlotPacket::handle(PacketListener *listener) 

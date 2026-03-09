@@ -9,7 +9,7 @@ CropTile::CropTile(int id) : Bush(id)
 {
 	setTicking(true);
 	updateDefaultShape();
-	icons = NULL;
+	icons = nullptr;
 
 	setDestroyTime(0.0f);
 	setSoundType(SOUND_GRASS);
@@ -40,7 +40,7 @@ void CropTile::tick(Level *level, int x, int y, int z, Random *random)
 		{
 			float growthSpeed = getGrowthSpeed(level, x, y, z);
 
-			if (random->nextInt((int) (25 / growthSpeed) + 1) == 0)
+			if (random->nextInt(static_cast<int>(25 / growthSpeed) + 1) == 0)
 			{
 				age++;
 				level->setData(x, y, z, age, Tile::UPDATE_CLIENTS);
@@ -136,7 +136,7 @@ void CropTile::spawnResources(Level *level, int x, int y, int z, int data, float
 		for (int i = 0; i < count; i++)
 		{
 			if (level->random->nextInt(5 * 3) > data) continue;
-			popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(getBaseSeedId(), 1, 0)));
+			popResource(level, x, y, z, std::make_shared<ItemInstance>(getBaseSeedId(), 1, 0));
 		}
 	}
 }

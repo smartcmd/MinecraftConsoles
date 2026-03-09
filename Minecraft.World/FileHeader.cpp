@@ -5,7 +5,7 @@
 
 FileHeader::FileHeader()
 {
-	lastFile = NULL;
+	lastFile = nullptr;
 	m_saveVersion = 0;
 
 	// New saves should have an original version set to the latest version. This will be overridden when we load a save
@@ -49,7 +49,7 @@ FileEntry *FileHeader::AddFile( const wstring &name, unsigned int length /* = 0 
 
 void FileHeader::RemoveFile( FileEntry *file )
 {
-	if( file == NULL ) return;
+	if( file == nullptr ) return;
 
 	AdjustStartOffsets(file, file->getFileSize(), true);
 
@@ -72,13 +72,13 @@ void FileHeader::WriteHeader( LPVOID saveMem )
 	unsigned int headerOffset = GetStartOfNextData();
 
 	// 4J Changed for save version 2 to be the number of files rather than the size in bytes
-	unsigned int headerSize = (int)(fileTable.size());
+	unsigned int headerSize = static_cast<int>(fileTable.size());
 	
 	//DWORD numberOfBytesWritten = 0;
 
 	// Write the offset of the header
 	//assert(numberOfBytesWritten == 4);
-	int *begin = (int *)saveMem;
+	int *begin = static_cast<int *>(saveMem);
 #ifdef __PSVITA__
 	VirtualCopyTo(begin, &headerOffset, sizeof(headerOffset));
 #else
@@ -115,7 +115,7 @@ void FileHeader::WriteHeader( LPVOID saveMem )
 	app.DebugPrintf("Write save file with original version: %d, and current version %d\n", m_originalSaveVersion, versionNumber);
 #endif
 
-	char *headerPosition = (char *)saveMem + headerOffset;
+	char *headerPosition = static_cast<char *>(saveMem) + headerOffset;
 
 #ifdef _DEBUG_FILE_HEADER
 	app.DebugPrintf("\n\nWrite file Header: Offset = %d, Size = %d\n", headerOffset, headerSize);
@@ -164,7 +164,7 @@ void FileHeader::ReadHeader( LPVOID saveMem, ESavePlatform plat /*= SAVE_FILE_PL
 	
 	// Read the offset of the header
 	//assert(numberOfBytesRead == 4);
-	int *begin = (int *)saveMem;
+	int *begin = static_cast<int *>(saveMem);
 #ifdef __PSVITA__
 	VirtualCopyFrom(&headerOffset, begin, sizeof(headerOffset));
 #else
@@ -205,7 +205,7 @@ void FileHeader::ReadHeader( LPVOID saveMem, ESavePlatform plat /*= SAVE_FILE_PL
 	app.DebugPrintf("\n\nRead file Header: Offset = %d, Size = %d\n", headerOffset, headerSize);
 #endif
 
-	char *headerPosition = (char *)saveMem + headerOffset;
+	char *headerPosition = static_cast<char *>(saveMem) + headerOffset;
 
 	switch( m_saveVersion )
 	{
@@ -321,7 +321,7 @@ unsigned int FileHeader::GetStartOfNextData()
 
 unsigned int FileHeader::GetFileSize()
 {
-	return GetStartOfNextData() + ( sizeof(FileEntrySaveData) * (unsigned int)fileTable.size() );
+	return GetStartOfNextData() + ( sizeof(FileEntrySaveData) * static_cast<unsigned int>(fileTable.size()) );
 }
 
 void FileHeader::AdjustStartOffsets(FileEntry *file, DWORD nNumberOfBytesToWrite, bool subtract /*= false*/)
@@ -364,13 +364,13 @@ bool FileHeader::fileExists( const wstring &name )
 
 vector<FileEntry *> *FileHeader::getFilesWithPrefix(const wstring &prefix)
 {
-	vector<FileEntry *> *files = NULL;
+	vector<FileEntry *> *files = nullptr;
 
 	for( unsigned int i = 0; i < fileTable.size(); ++i )
 	{
 		if( wcsncmp( fileTable[i]->data.filename, prefix.c_str(), prefix.size() ) == 0 )
 		{
-			if( files == NULL )
+			if( files == nullptr )
 			{
 				files = new vector<FileEntry *>();
 			}
@@ -479,7 +479,7 @@ wstring FileHeader::getPlayerDataFilenameForSave(const PlayerUID& pUID)
 
 vector<FileEntry *> *FileHeader::getValidPlayerDatFiles()
 {
-	vector<FileEntry *> *files = NULL;
+	vector<FileEntry *> *files = nullptr;
 
 	// find filenames that match this pattern
 	// P_5e7ff8372ea9_00000004_Mark_4J
@@ -509,7 +509,7 @@ vector<FileEntry *> *FileHeader::getValidPlayerDatFiles()
 			continue;
 
 		// if we get here, it must be a valid filename
-		if( files == NULL )
+		if( files == nullptr )
 		{
 			files = new vector<FileEntry *>();
 		}
@@ -524,21 +524,21 @@ vector<FileEntry *> *FileHeader::getValidPlayerDatFiles()
 vector<FileEntry *> *FileHeader::getDatFilesWithOnlineID(const PlayerUID& pUID)
 {
 	if(pUID.isSignedIntoPSN() == false)
-		return NULL;
+		return nullptr;
 
 	vector<FileEntry *>* datFiles = getValidPlayerDatFiles();
-	if(datFiles == NULL)
-		return NULL;
+	if(datFiles == nullptr)
+		return nullptr;
 
 	// we're looking for the online name from the pUID in these types of filenames - 
 	// P_5e7ff8372ea9_00000004_Mark_4J
 	wchar_t onlineIDW[64];
 	mbstowcs(onlineIDW, pUID.getOnlineID(), 64);
 
-	vector<FileEntry *> *files = NULL;
+	vector<FileEntry *> *files = nullptr;
 	int onlineIDSize = wcslen(onlineIDW);
 	if(onlineIDSize == 0)
-		return NULL;
+		return nullptr;
 
 	wcscat(onlineIDW, L".dat");
 
@@ -564,7 +564,7 @@ vector<FileEntry *> *FileHeader::getDatFilesWithOnlineID(const PlayerUID& pUID)
 		{
 			if(wcsncmp(&filenameOnly[onlineIDStart], onlineIDW, onlineIDSize) == 0)
 			{	
-				if( files == NULL )
+				if( files == nullptr )
 				{
 					files = new vector<FileEntry *>();
 				}
@@ -582,8 +582,8 @@ vector<FileEntry *> *FileHeader::getDatFilesWithMacAndUserID(const PlayerUID& pU
 {
 
 	vector<FileEntry *>* datFiles = getValidPlayerDatFiles();
-	if(datFiles == NULL)
-		return NULL;
+	if(datFiles == nullptr)
+		return nullptr;
 
 	// we're looking for the mac address and userIDfrom the pUID in these types of filenames - 
 	// P_5e7ff8372ea9_00000004_Mark_4J
@@ -592,7 +592,7 @@ vector<FileEntry *> *FileHeader::getDatFilesWithMacAndUserID(const PlayerUID& pU
 	const wchar_t* pMacStr = macStr.c_str();
 	const wchar_t* pUserStr = userStr.c_str();
 
-	vector<FileEntry *> *files = NULL;
+	vector<FileEntry *> *files = nullptr;
 	static const int macAddrStart = 2;   // 2 characters into the filename
 	static const int userIDStart = 15;   // 15 characters into the filename
 
@@ -609,7 +609,7 @@ vector<FileEntry *> *FileHeader::getDatFilesWithMacAndUserID(const PlayerUID& pU
 			// check the userID matches
 			if(wcsncmp(&filenameOnly[userIDStart], pUserStr, userStr.size()) == 0)
 			{
-				if( files == NULL )
+				if( files == nullptr )
 				{
 					files = new vector<FileEntry *>();
 				}
@@ -627,12 +627,12 @@ vector<FileEntry *> *FileHeader::getDatFilesWithPrimaryUser()
 {
 
 	vector<FileEntry *>* datFiles = getValidPlayerDatFiles();
-	if(datFiles == NULL)
-		return NULL;
+	if(datFiles == nullptr)
+		return nullptr;
 
 	// we're just looking for filenames starting with "P_" in these types of filenames - 
 	// P_5e7ff8372ea9_00000004_Mark_4J
-	vector<FileEntry *> *files = NULL;
+	vector<FileEntry *> *files = nullptr;
 
 	char tempStr[128];
 	for( unsigned int i = 0; i < datFiles->size(); ++i )
@@ -644,7 +644,7 @@ vector<FileEntry *> *FileHeader::getDatFilesWithPrimaryUser()
 		// check for "P_" prefix
 		if(wcsncmp(&filenameOnly[0], L"P_", 2) == 0)
 		{	
-			if( files == NULL )
+			if( files == nullptr )
 			{
 				files = new vector<FileEntry *>();
 			}

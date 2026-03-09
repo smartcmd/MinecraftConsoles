@@ -25,8 +25,8 @@ IDOC RADEXPFUNC HIGGYEXP RADEXPLINK IggyExpCreate(char *ip_address, S32 port, vo
    $:storage A small block of storage that needed to store the $HIGGYEXP, must be at least $IGGYEXP_MIN_STORAGE
    $:storage_size_in_bytes The size of the block pointer to by <tt>storage</tt>
 
-Returns a NULL HIGGYEXP if the IP address/hostname can't be resolved, or no Iggy Explorer
-can be contacted at the specified address/port. Otherwise returns a non-NULL $HIGGYEXP
+Returns a nullptr HIGGYEXP if the IP address/hostname can't be resolved, or no Iggy Explorer
+can be contacted at the specified address/port. Otherwise returns a non-nullptr $HIGGYEXP
 which you can pass to $IggyUseExplorer. */
 
 IDOC RADEXPFUNC void  RADEXPLINK IggyExpDestroy(HIGGYEXP p);

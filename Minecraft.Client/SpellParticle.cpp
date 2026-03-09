@@ -13,7 +13,7 @@ SpellParticle::SpellParticle(Level *level, double x, double y, double z, double 
 
 	size *= 0.75f;
 
-	lifetime = (int) (8 / (Math::random() * 0.8 + 0.2));
+	lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2));
 	noPhysics = false;
 
 	baseTex = 8 * 16;

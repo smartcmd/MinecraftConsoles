@@ -97,7 +97,7 @@ bool	DQRNetworkPlayer::HasVoice()
 	Microsoft::Xbox::GameChat::ChatUser^ chatUser = m_manager->m_chat->GetChatUserByXboxUserId(ref new Platform::String(m_UID.toString().c_str()));
 
 	if( chatUser == nullptr ) return false;
-	if( ((int)chatUser->ParticipantType) & ((int)Windows::Xbox::Chat::ChatParticipantTypes::Talker) )
+	if( static_cast<int>(chatUser->ParticipantType) & static_cast<int>(Windows::Xbox::Chat::ChatParticipantTypes::Talker) )
 	{
 		return true;
 	}

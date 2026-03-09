@@ -10,7 +10,7 @@ public:
 
 	RailTile_SPU(int id) : Tile_SPU(id) {}
     virtual bool isSolidRender(bool isServerLevel = false) { return false; }
-    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		int data = level->getData(x, y, z);
 		if (data >= 2 && data <= 5)

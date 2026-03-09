@@ -36,13 +36,13 @@ void ControlledByPlayerGoal::stop()
 
 bool ControlledByPlayerGoal::canUse()
 {
-	return mob->isAlive() && mob->rider.lock() != NULL && mob->rider.lock()->instanceof(eTYPE_PLAYER) && (boosting || mob->canBeControlledByRider());
+	return mob->isAlive() && mob->rider.lock() != nullptr && mob->rider.lock()->instanceof(eTYPE_PLAYER) && (boosting || mob->canBeControlledByRider());
 }
 
 void ControlledByPlayerGoal::tick()
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob->rider.lock());
-	PathfinderMob *pig = (PathfinderMob *)mob;
+	PathfinderMob *pig = static_cast<PathfinderMob *>(mob);
 
 	float yrd = Mth::wrapDegrees(player->yRot - mob->yRot) * 0.5f;
 	if (yrd > 5) yrd = 5;
@@ -62,7 +62,7 @@ void ControlledByPlayerGoal::tick()
 		{
 			boosting = false;
 		}
-		moveSpeed += moveSpeed * 1.15f * Mth::sin((float) boostTime / boostTimeTotal * PI);
+		moveSpeed += moveSpeed * 1.15f * Mth::sin(static_cast<float>(boostTime) / boostTimeTotal * PI);
 	}
 
 	float friction = 0.91f;
@@ -117,13 +117,13 @@ void ControlledByPlayerGoal::tick()
 	{
 		shared_ptr<ItemInstance> carriedItem = player->getCarriedItem();
 
-		if (carriedItem != NULL && carriedItem->id == Item::carrotOnAStick_Id)
+		if (carriedItem != nullptr && carriedItem->id == Item::carrotOnAStick_Id)
 		{
 			carriedItem->hurtAndBreak(1, player);
 
 			if (carriedItem->count == 0)
 			{
-				shared_ptr<ItemInstance> replacement = shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
+				shared_ptr<ItemInstance> replacement = std::make_shared<ItemInstance>(Item::fishingRod);
 				replacement->setTag(carriedItem->tag);
 				player->inventory->items[player->inventory->selected] = replacement;
 			}
@@ -135,7 +135,7 @@ void ControlledByPlayerGoal::tick()
 
 bool ControlledByPlayerGoal::isNoJumpTile(int tile)
 {
-	return Tile::tiles[tile] != NULL && (Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_STAIRS || (dynamic_cast<HalfSlabTile *>(Tile::tiles[tile]) != NULL) );
+	return Tile::tiles[tile] != nullptr && (Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_STAIRS || (dynamic_cast<HalfSlabTile *>(Tile::tiles[tile]) != nullptr) );
 }
 
 bool ControlledByPlayerGoal::isBoosting()

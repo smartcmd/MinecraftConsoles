@@ -138,7 +138,7 @@ private:
     DWORD           m_dwCharsTotal;
     DWORD           m_dwCharsConsumed;
 
-    BYTE            m_pReadBuf[ XML_READ_BUFFER_SIZE + 2 ]; // room for a trailing NULL
+    BYTE            m_pReadBuf[ XML_READ_BUFFER_SIZE + 2 ]; // room for a trailing nullptr
     WCHAR           m_pWriteBuf[ XML_WRITE_BUFFER_SIZE ];    
 
     BYTE*           m_pReadPtr;

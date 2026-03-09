@@ -17,11 +17,11 @@ public:
 
 	DLCSkinFile(const wstring &path);
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
-	virtual void addParameter(DLCManager::EDLCParameterType type, const wstring &value);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
+    void addParameter(DLCManager::EDLCParameterType type, const wstring &value) override;
 
-	virtual wstring getParameterAsString(DLCManager::EDLCParameterType type);
-	virtual bool getParameterAsBool(DLCManager::EDLCParameterType type);
+    wstring getParameterAsString(DLCManager::EDLCParameterType type) override;
+    bool getParameterAsBool(DLCManager::EDLCParameterType type) override;
 	vector<SKIN_BOX *> *getAdditionalBoxes();
 	int getAdditionalBoxesCount();
 	unsigned int getAnimOverrideBitmask() { return m_uiAnimOverrideBitmask;}

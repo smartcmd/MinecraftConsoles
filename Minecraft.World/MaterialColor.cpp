@@ -3,20 +3,20 @@
 
 MaterialColor **MaterialColor::colors;
 		   
-MaterialColor *MaterialColor::none = NULL;
-MaterialColor *MaterialColor::grass = NULL;
-MaterialColor *MaterialColor::sand = NULL;
-MaterialColor *MaterialColor::cloth = NULL;
-MaterialColor *MaterialColor::fire = NULL;
-MaterialColor *MaterialColor::ice = NULL;
-MaterialColor *MaterialColor::metal = NULL;
-MaterialColor *MaterialColor::plant = NULL;
-MaterialColor *MaterialColor::snow = NULL;
-MaterialColor *MaterialColor::clay = NULL;
-MaterialColor *MaterialColor::dirt = NULL;
-MaterialColor *MaterialColor::stone = NULL;
-MaterialColor *MaterialColor::water = NULL;
-MaterialColor *MaterialColor::wood = NULL;
+MaterialColor *MaterialColor::none = nullptr;
+MaterialColor *MaterialColor::grass = nullptr;
+MaterialColor *MaterialColor::sand = nullptr;
+MaterialColor *MaterialColor::cloth = nullptr;
+MaterialColor *MaterialColor::fire = nullptr;
+MaterialColor *MaterialColor::ice = nullptr;
+MaterialColor *MaterialColor::metal = nullptr;
+MaterialColor *MaterialColor::plant = nullptr;
+MaterialColor *MaterialColor::snow = nullptr;
+MaterialColor *MaterialColor::clay = nullptr;
+MaterialColor *MaterialColor::dirt = nullptr;
+MaterialColor *MaterialColor::stone = nullptr;
+MaterialColor *MaterialColor::water = nullptr;
+MaterialColor *MaterialColor::wood = nullptr;
 
 void MaterialColor::staticCtor()
 {

@@ -78,11 +78,11 @@ void LightningBolt::tick()
 			life = 1;
 
 			seed = random->nextLong();
-			if (!level->isClientSide && level->getGameRules()->getBoolean(GameRules::RULE_DOFIRETICK) && level->hasChunksAt( (int) floor(x), (int) floor(y), (int) floor(z), 10))
+			if (!level->isClientSide && level->getGameRules()->getBoolean(GameRules::RULE_DOFIRETICK) && level->hasChunksAt( static_cast<int>(floor(x)), static_cast<int>(floor(y)), static_cast<int>(floor(z)), 10))
 			{
-				int xt = (int) floor(x);
-				int yt = (int) floor(y);
-				int zt = (int) floor(z);
+				int xt = static_cast<int>(floor(x));
+				int yt = static_cast<int>(floor(y));
+				int zt = static_cast<int>(floor(z));
 
 				// 4J added - don't go setting tiles if we aren't tracking them for network synchronisation
 				if( MinecraftServer::getInstance()->getPlayers()->isTrackingTile(xt, yt, zt, level->dimension->id) )

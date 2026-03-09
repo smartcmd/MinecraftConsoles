@@ -13,7 +13,7 @@ UIScene_SignEntryMenu::UIScene_SignEntryMenu(int iPad, void *_initData, UILayer 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	SignEntryScreenInput* initData = (SignEntryScreenInput*)_initData;
+	SignEntryScreenInput* initData = static_cast<SignEntryScreenInput *>(_initData);
 	m_sign = initData->sign;
 
 	m_bConfirmed = false;
@@ -175,9 +175,9 @@ void UIScene_SignEntryMenu::tick()
 		if (pMinecraft->level->isClientSide)
 		{
 			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
-			if(player != NULL && player->connection && player->connection->isStarted())
+			if(player != nullptr && player->connection && player->connection->isStarted())
 			{
-				player->connection->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
+				player->connection->send(std::make_shared<SignUpdatePacket>(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()));
 			}
 		}
 		ui.CloseUIScenes(m_iPad);
@@ -309,7 +309,7 @@ bool UIScene_SignEntryMenu::handleMouseClick(F32 x, F32 y)
 
 int UIScene_SignEntryMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_SignEntryMenu *pClass=(UIScene_SignEntryMenu *)lpParam;
+	const auto pClass=static_cast<UIScene_SignEntryMenu *>(lpParam);
 	pClass->m_bIgnoreInput = false;
 	if (bRes)
 	{
@@ -317,7 +317,7 @@ int UIScene_SignEntryMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t));
 		Win64_GetKeyboardText(pchText, 128);
-		pClass->m_textInputLines[pClass->m_iEditingLine].setLabel((wchar_t *)pchText);
+		pClass->m_textInputLines[pClass->m_iEditingLine].setLabel(reinterpret_cast<wchar_t *>(pchText));
 #else
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t) );
@@ -333,7 +333,7 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 #ifdef _WINDOWS64
 	if (isDirectEditBlocking()) return;
 #endif
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Confirm:
 		{
@@ -345,7 +345,7 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_Line3:
 	case eControl_Line4:
 		{
-			m_iEditingLine = (int)controlId;
+			m_iEditingLine = static_cast<int>(controlId);
 #ifdef _WINDOWS64
 			if (g_KBMInput.IsKBMActive())
 			{
@@ -384,7 +384,7 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 				break;
 			}
 #else
-			InputManager.RequestKeyboard(app.GetString(IDS_SIGN_TITLE),m_textInputLines[m_iEditingLine].getLabel(),(DWORD)m_iPad,15,&UIScene_SignEntryMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Alphabet);
+			InputManager.RequestKeyboard(app.GetString(IDS_SIGN_TITLE),m_textInputLines[m_iEditingLine].getLabel(),static_cast<DWORD>(m_iPad),15,&UIScene_SignEntryMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Alphabet);
 #endif
 #endif
 		}

@@ -108,23 +108,23 @@ class SoundEngine : public ConsoleSoundEngine
 	static const int MAX_SAME_SOUNDS_PLAYING = 8; // 4J added
 public:
 	SoundEngine();
-	virtual void destroy();
+    void destroy() override;
 #ifdef _DEBUG
 	void GetSoundName(char *szSoundName,int iSound);
 #endif
-	virtual void play(int iSound, float x, float y, float z, float volume, float pitch);
-	virtual void playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay=true);
-	virtual void playUI(int iSound, float volume, float pitch);
-	virtual void playMusicTick();
-	virtual void updateMusicVolume(float fVal);
-	virtual void updateSystemMusicPlaying(bool isPlaying);
-	virtual void updateSoundEffectVolume(float fVal);
-	virtual void init(Options *);
-	virtual void tick(shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
-	virtual void add(const wstring& name, File *file);
-	virtual void addMusic(const wstring& name, File *file);
-	virtual void addStreaming(const wstring& name, File *file);
-	virtual char *ConvertSoundPathToName(const wstring& name, bool bConvertSpaces=false);
+    void play(int iSound, float x, float y, float z, float volume, float pitch) override;
+    void playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay=true) override;
+    void playUI(int iSound, float volume, float pitch) override;
+    void playMusicTick() override;
+    void updateMusicVolume(float fVal) override;
+    void updateSystemMusicPlaying(bool isPlaying) override;
+    void updateSoundEffectVolume(float fVal) override;
+    void init(Options *) override;
+    void tick(shared_ptr<Mob> *players, float a) override;	// 4J - updated to take array of local players rather than single one
+    void add(const wstring& name, File *file) override;
+    void addMusic(const wstring& name, File *file) override;
+    void addStreaming(const wstring& name, File *file) override;
+    char *ConvertSoundPathToName(const wstring& name, bool bConvertSpaces=false) override;
 	bool isStreamingWavebankReady();		// 4J Added
 	int getMusicID(int iDomain);
 	int getMusicID(const wstring& name);
@@ -138,7 +138,8 @@ private:
 #ifdef __PS3__
 	int initAudioHardware(int iMinSpeakers);
 #else
-	int initAudioHardware(int iMinSpeakers)	{ return iMinSpeakers;}
+	int initAudioHardware(int iMinSpeakers) override
+    { return iMinSpeakers;}
 #endif
 	
 	int GetRandomishTrack(int iStart,int iEnd);

@@ -31,7 +31,7 @@ BufferedImage::BufferedImage(int width,int height,int type)
 
 	for( int i = 1 ; i < 10; i++ )
 	{
-		data[i] = NULL;
+		data[i] = nullptr;
 	}
 	this->width = width;
 	this->height = height;
@@ -140,7 +140,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	for( int l = 0; l < 10; l++ )
@@ -193,12 +193,12 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 {
 	HRESULT hr;
 	wstring filePath = File;
-	BYTE *pbData = NULL;
+	BYTE *pbData = nullptr;
 	DWORD dwBytes = 0;
 
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	for( int l = 0; l < 10; l++ )
@@ -230,7 +230,7 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 
 		DLCFile *dlcFile = dlcPack->getFile(DLCManager::e_DLCType_All, name);
 		pbData = dlcFile->getData(dwBytes);
-		if(pbData == NULL || dwBytes == 0)
+		if(pbData == nullptr || dwBytes == 0)
 		{
 			// 4J - If we haven't loaded the non-mipmap version then exit the game
 			if( l == 0 )
@@ -269,7 +269,7 @@ BufferedImage::BufferedImage(BYTE *pbData, DWORD dwBytes)
 	int iCurrentByte=0;
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	D3DXIMAGE_INFO ImageInfo;
@@ -329,7 +329,7 @@ int *BufferedImage::getData(int level)
 
 Graphics *BufferedImage::getGraphics()
 {
-	return NULL;
+	return nullptr;
 }
 
 //Returns the transparency. Returns either OPAQUE, BITMASK, or TRANSLUCENT.
@@ -359,7 +359,7 @@ BufferedImage *BufferedImage::getSubimage(int x ,int y, int w, int h)
 	this->getRGB(x, y, w, h, arrayWrapper,0,w);
 
 	int level = 1;
-	while(getData(level) != NULL)
+	while(getData(level) != nullptr)
 	{
 		int ww = w >> level;
 		int hh = h >> level;
@@ -391,9 +391,9 @@ void BufferedImage::preMultiplyAlpha()
 	{
 		cur = curData[i];
 		alpha = (cur >> 24) & 0xff;
-		r = ((cur >> 16) & 0xff) * (float)alpha/255;
-		g = ((cur >> 8) & 0xff) * (float)alpha/255;
-		b = (cur & 0xff) * (float)alpha/255;
+		r = ((cur >> 16) & 0xff) * static_cast<float>(alpha)/255;
+		g = ((cur >> 8) & 0xff) * static_cast<float>(alpha)/255;
+		b = (cur & 0xff) * static_cast<float>(alpha)/255;
 
 		curData[i] = (r << 16) | (g << 8) | (b ) | (alpha << 24);
 	}

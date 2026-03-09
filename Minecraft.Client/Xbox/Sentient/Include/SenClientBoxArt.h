@@ -116,7 +116,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                  E_POINTER: out_boxArtInfoList is NULL.
+	///                  E_POINTER: out_boxArtInfoList is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -160,7 +160,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: boxArtInfo.resourceID or boxArtInfo.image is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -198,7 +198,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: boxArtInfo.resourceID or boxArtInfo.xml is invalid.
-	///                  E_POINTER: out_boxArtExtraInfo is NULL.
+	///                  E_POINTER: out_boxArtExtraInfo is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -236,7 +236,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: boxArtInfo.resourceID or boxArtInfo.xml is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -263,7 +263,7 @@ namespace Sentient
 	///
 	/// @param[in]       culture
 	///                  This is the result of a call to SenCultureFind() or SenCultureGet*().
-	///                  You may also pass NULL to use the culture set with SenCultureSetCurrent().
+	///                  You may also pass nullptr to use the culture set with SenCultureSetCurrent().
 	///
 	/// @param[in]       bufferLength
 	///                  Note that bufferLength is in wchars, and needs to _include_ space for the terminating nul.
@@ -271,16 +271,16 @@ namespace Sentient
 	/// @param[out]      out_bufferLength
 	///                  Used to return the actual number of wchars written to the buffer, including the terminating nul.
 	///                  The actual length of the _string_ is (*out_bufferLength - 1).
-	///                  Pass @a out_bufferLength = NULL if you don't care about the actual size.
+	///                  Pass @a out_bufferLength = nullptr if you don't care about the actual size.
 	///
 	/// @param[out]      out_buffer
 	///                  The buffer to fill in with the string.
 	///                  It is assumed that this is preallocated to at least @a bufferLength wchars.
-	///                  Pass @a out_buffer = NULL if you are only interested in finding out the necessary buffer size.
+	///                  Pass @a out_buffer = nullptr if you are only interested in finding out the necessary buffer size.
 	///
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                  E_UNEXPECTED: passed a NULL culture without a default culture being set first.
+	///                  E_UNEXPECTED: passed a nullptr culture without a default culture being set first.
 	///                  E_INVALIDARG: senXML does not contain parsed XML data.
 	///                  E_FAIL: Failed to locate text.
 	///                  S_OK: Server call spawned successfully.
@@ -291,14 +291,14 @@ namespace Sentient
 	///                  First method, filling a fixed-size buffer:
 	///
 	///                  wchar_t buffer[1234];
-	///                  SenBoxArtXMLGetTitle( xml, culture, _countof(buffer), NULL, buffer );
+	///                  SenBoxArtXMLGetTitle( xml, culture, _countof(buffer), nullptr, buffer );
 	///
 	///                  Second method, filling a dynamically-allocated buffer:
 	///
 	///                  size_t bufferLength;
-	///                  SenBoxArtXMLGetTitle( xml, culture, 0, &bufferLength, NULL );
+	///                  SenBoxArtXMLGetTitle( xml, culture, 0, &bufferLength, nullptr );
 	///                  wchar_t buffer = new wchar_t[bufferLength];
-	///                  SenBoxArtXMLGetTitle( xml, culture, bufferLength, NULL, buffer );
+	///                  SenBoxArtXMLGetTitle( xml, culture, bufferLength, nullptr, buffer );
 	///
 	/// @related         SenBoxArtDownloadXML()
 	/// @related         SenXMLParse()
@@ -319,7 +319,7 @@ namespace Sentient
 	///
 	/// @param[in]       culture
 	///                  This is the result of a call to SenCultureFind() or SenCultureGet*().
-	///                  You may also pass NULL to use the culture set with SenCultureSetCurrent().
+	///                  You may also pass nullptr to use the culture set with SenCultureSetCurrent().
 	///
 	/// @param[in]       bufferLength
 	///                  Note that bufferLength is in wchars, and needs to _include_ space for the terminating nul.
@@ -327,16 +327,16 @@ namespace Sentient
 	/// @param[out]      out_bufferLength
 	///                  Used to return the actual number of wchars written to the buffer, including the terminating nul.
 	///                  The actual length of the _string_ is (*out_bufferLength - 1).
-	///                  Pass @a out_bufferLength = NULL if you don't care about the actual size.
+	///                  Pass @a out_bufferLength = nullptr if you don't care about the actual size.
 	///
 	/// @param[out]      out_buffer
 	///                  The buffer to fill in with the string.
 	///                  It is assumed that this is preallocated to at least @a bufferLength wchars.
-	///                  Pass @a out_buffer = NULL if you are only interested in finding out the necessary buffer size.
+	///                  Pass @a out_buffer = nullptr if you are only interested in finding out the necessary buffer size.
 	///
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                  E_UNEXPECTED: passed a NULL culture without a default culture being set first.
+	///                  E_UNEXPECTED: passed a nullptr culture without a default culture being set first.
 	///                  E_INVALIDARG: senXML does not contain parsed XML data.
 	///                  E_FAIL: Failed to locate text.
 	///                  S_OK: Server call spawned successfully.
@@ -347,14 +347,14 @@ namespace Sentient
 	///                  First method, filling a fixed-size buffer:
 	///
 	///                  wchar_t buffer[1234];
-	///                  SenBoxArtXMLGetDescription( xml, culture, _countof(buffer), NULL, buffer );
+	///                  SenBoxArtXMLGetDescription( xml, culture, _countof(buffer), nullptr, buffer );
 	///
 	///                  Second method, filling a dynamically-allocated buffer:
 	///
 	///                  size_t bufferLength;
-	///                  SenBoxArtXMLGetDescription( xml, culture, 0, &bufferLength, NULL );
+	///                  SenBoxArtXMLGetDescription( xml, culture, 0, &bufferLength, nullptr );
 	///                  wchar_t buffer = new wchar_t[bufferLength];
-	///                  SenBoxArtXMLGetDescription( xml, culture, bufferLength, NULL, buffer );
+	///                  SenBoxArtXMLGetDescription( xml, culture, bufferLength, nullptr, buffer );
 	///
 	/// @related         SenBoxArtDownloadXML()
 	/// @related         SenXMLParse()
@@ -390,7 +390,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: boxArtInfo.resourceID or boxArtInfo.image is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///

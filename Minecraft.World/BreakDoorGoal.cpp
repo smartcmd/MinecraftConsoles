@@ -47,7 +47,7 @@ void BreakDoorGoal::tick()
 
 	breakTime++;
 
-	int progress = (int) (breakTime / (float) DOOR_BREAK_TIME * 10);
+	int progress = static_cast<int>(breakTime / (float)DOOR_BREAK_TIME * 10);
 	if (progress != lastBreakProgress)
 	{
 		mob->level->destroyTileProgress(mob->entityId, doorX, doorY, doorZ, progress);

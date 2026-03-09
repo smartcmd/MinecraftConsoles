@@ -19,9 +19,9 @@ UIScene_CreativeMenu::UIScene_CreativeMenu(int iPad, void *_initData, UILayer *p
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	InventoryScreenInput *initData = (InventoryScreenInput *)_initData;
+	InventoryScreenInput *initData = static_cast<InventoryScreenInput *>(_initData);
 
-	shared_ptr<SimpleContainer> creativeContainer = shared_ptr<SimpleContainer>(new SimpleContainer( 0, L"", false, TabSpec::MAX_SIZE ));
+	shared_ptr<SimpleContainer> creativeContainer = std::make_shared<SimpleContainer>(0, L"", false, TabSpec::MAX_SIZE);
 	itemPickerMenu = new ItemPickerMenu(creativeContainer, initData->player->inventory);
 
 	Initialize( initData->iPad, itemPickerMenu, false, -1, eSectionInventoryCreativeUsing, eSectionInventoryCreativeMax, initData->bNavigateBack);
@@ -42,9 +42,9 @@ UIScene_CreativeMenu::UIScene_CreativeMenu(int iPad, void *_initData, UILayer *p
 	}
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[initData->iPad] != NULL )
+	if( pMinecraft->localgameModes[initData->iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Creative_Inventory_Menu, this);
 	}
@@ -144,7 +144,7 @@ void UIScene_CreativeMenu::handleOtherClicked(int iPad, ESceneSection eSection, 
 	case eSectionInventoryCreativeTab_6:
 	case eSectionInventoryCreativeTab_7:
 		{
-			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)((int)eCreativeInventoryTab_BuildingBlocks + (int)eSection - (int)eSectionInventoryCreativeTab_0);
+			ECreativeInventoryTabs tab = static_cast<ECreativeInventoryTabs>((int)eCreativeInventoryTab_BuildingBlocks + (int)eSection - (int)eSectionInventoryCreativeTab_0);
 			if(tab != m_curTab)
 			{
 				switchTab(tab);
@@ -193,8 +193,8 @@ void UIScene_CreativeMenu::handleInput(int iPad, int key, bool repeat, bool pres
 		// Fall through intentional
 	case VK_PAD_RSHOULDER:
 		{		
-			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)(m_curTab + dir);
-			if (tab < 0) tab = (ECreativeInventoryTabs)(eCreativeInventoryTab_COUNT - 1);
+			ECreativeInventoryTabs tab = static_cast<ECreativeInventoryTabs>(m_curTab + dir);
+			if (tab < 0) tab = static_cast<ECreativeInventoryTabs>(eCreativeInventoryTab_COUNT - 1);
 			if (tab >= eCreativeInventoryTab_COUNT) tab = eCreativeInventoryTab_BuildingBlocks;
 			switchTab(tab);
 			ui.PlayUISFX(eSFX_Focus);
@@ -220,7 +220,7 @@ void UIScene_CreativeMenu::updateTabHighlightAndText(ECreativeInventoryTabs tab)
 	IggyDataValue value[1];
 
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (F64)tab;
+	value[0].number = static_cast<F64>(tab);
 
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ) , m_funcSetActiveTab , 1 , value );
 
@@ -400,7 +400,7 @@ void UIScene_CreativeMenu::setSectionSelectedSlot(ESceneSection eSection, int x,
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionInventoryCreativeSelector:
@@ -419,7 +419,7 @@ void UIScene_CreativeMenu::setSectionSelectedSlot(ESceneSection eSection, int x,
 
 UIControl *UIScene_CreativeMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionInventoryCreativeSelector:
@@ -468,10 +468,10 @@ void UIScene_CreativeMenu::updateScrollCurrentPage(int currentPage, int pageCoun
 	IggyDataValue value[2];
 
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (F64)pageCount;
+	value[0].number = static_cast<F64>(pageCount);
 
 	value[1].type = IGGY_DATATYPE_number;
-	value[1].number = (F64)currentPage - 1;
+	value[1].number = static_cast<F64>(currentPage) - 1;
 
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ) , m_funcSetScrollBar , 2 , value );
 }

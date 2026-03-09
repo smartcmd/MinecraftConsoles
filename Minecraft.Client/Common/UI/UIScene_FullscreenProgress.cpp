@@ -4,7 +4,6 @@
 #include "..\..\Minecraft.h"
 #include "..\..\ProgressRenderer.h"
 
-
 UIScene_FullscreenProgress::UIScene_FullscreenProgress(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
@@ -27,7 +26,7 @@ UIScene_FullscreenProgress::UIScene_FullscreenProgress(int iPad, void *initData,
 	m_buttonConfirm.init( app.GetString( IDS_CONFIRM_OK ), eControl_Confirm );
 	m_buttonConfirm.setVisible(false);
 
-	LoadingInputParams *params = (LoadingInputParams *)initData;
+	LoadingInputParams *params = static_cast<LoadingInputParams *>(initData);
 
 	m_CompletionData = params->completionData;
 	m_iPad=params->completionData->iPad;
@@ -102,7 +101,7 @@ void UIScene_FullscreenProgress::handleDestroy()
 	DWORD exitcode = *((DWORD *)&code);
 
 	// If we're active, have a cancel func, and haven't already cancelled, call cancel func
-	if( exitcode == STILL_ACTIVE && m_cancelFunc != NULL && !m_bWasCancelled)
+	if( exitcode == STILL_ACTIVE && m_cancelFunc != nullptr && !m_bWasCancelled)
 	{
 		m_bWasCancelled = true;
 		m_cancelFunc(m_cancelFuncParam);
@@ -224,7 +223,7 @@ void UIScene_FullscreenProgress::tick()
 
 						// This just allows it to be shown
 						Minecraft *pMinecraft = Minecraft::GetInstance();
-						if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
+						if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
 						ui.UpdatePlayerBasePositions();
 						navigateBack();
 					}
@@ -286,7 +285,7 @@ void UIScene_FullscreenProgress::handleInput(int iPad, int key, bool repeat, boo
 			break;
 		case ACTION_MENU_B:
 		case ACTION_MENU_CANCEL:
-			if( pressed && m_cancelFunc != NULL && !m_bWasCancelled ) 			
+			if( pressed && m_cancelFunc != nullptr && !m_bWasCancelled ) 			
 			{
 				m_bWasCancelled = true;
 				m_cancelFunc( m_cancelFuncParam );
@@ -298,7 +297,7 @@ void UIScene_FullscreenProgress::handleInput(int iPad, int key, bool repeat, boo
 
 void UIScene_FullscreenProgress::handlePress(F64 controlId, F64 childId)
 {
-	if(m_threadCompleted && (int)controlId == eControl_Confirm)
+	if(m_threadCompleted && static_cast<int>(controlId) == eControl_Confirm)
 	{
 		// This assumes all buttons can only be pressed with the A button
 		ui.AnimateKeyPress(m_iPad, ACTION_MENU_A, false, true, false);

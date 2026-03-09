@@ -235,7 +235,7 @@ bool ComparatorTile::triggerEvent(Level *level, int x, int y, int z, int b0, int
 {
 	DiodeTile::triggerEvent(level, x, y, z, b0, b1);
 	shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
-	if (te != NULL)
+	if (te != nullptr)
 	{
 		return te->triggerEvent(b0, b1);
 	}
@@ -244,7 +244,7 @@ bool ComparatorTile::triggerEvent(Level *level, int x, int y, int z, int b0, int
 
 shared_ptr<TileEntity> ComparatorTile::newTileEntity(Level *level)
 {
-	return shared_ptr<ComparatorTileEntity>( new ComparatorTileEntity() );
+	return std::make_shared<ComparatorTileEntity>();
 }
 
 bool ComparatorTile::TestUse()

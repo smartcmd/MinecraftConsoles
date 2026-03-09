@@ -61,7 +61,7 @@ namespace Sentient
 	///
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                  E_POINTER: out_isInRole is NULL.
+	///                  E_POINTER: out_isInRole is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -91,7 +91,7 @@ namespace Sentient
 	///
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                  E_POINTER: out_isInRole is NULL.
+	///                  E_POINTER: out_isInRole is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///

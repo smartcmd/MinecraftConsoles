@@ -124,7 +124,7 @@ void WitherBoss::aiStep()
 	if (!level->isClientSide && getAlternativeTarget(0) > 0)
 	{
 		shared_ptr<Entity> e = level->getEntity(getAlternativeTarget(0));
-		if (e != NULL)
+		if (e != nullptr)
 		{
 			if ((y < e->y) || (!isPowered() && y < (e->y + 5)))
 			{
@@ -148,7 +148,7 @@ void WitherBoss::aiStep()
 	}
 	if ((xd * xd + zd * zd) > .05f)
 	{
-		yRot = (float) atan2(zd, xd) * Mth::RADDEG - 90;
+		yRot = static_cast<float>(atan2(zd, xd)) * Mth::RADDEG - 90;
 	}
 	Monster::aiStep();
 
@@ -167,7 +167,7 @@ void WitherBoss::aiStep()
 		{
 			e = level->getEntity(entityId);
 		}
-		if (e != NULL)
+		if (e != nullptr)
 		{
 			double hx = getHeadX(i + 1);
 			double hy = getHeadY(i + 1);
@@ -178,8 +178,8 @@ void WitherBoss::aiStep()
 			double zd = e->z - hz;
 			double sd = Mth::sqrt(xd * xd + zd * zd);
 
-			float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
-			float xRotD = (float) -(atan2(yd, sd) * 180 / PI);
+			float yRotD = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
+			float xRotD = static_cast<float>(-(atan2(yd, sd) * 180 / PI));
 			xRotHeads[i] = rotlerp(xRotHeads[i], xRotD, 40);
 			yRotHeads[i] = rotlerp(yRotHeads[i], yRotD, 10);
 
@@ -221,7 +221,7 @@ void WitherBoss::newServerAiStep()
 		if (newCount <= 0)
 		{
 			level->explode(shared_from_this(), x, y + getHeadHeight(), z, 7, false, level->getGameRules()->getBoolean(GameRules::RULE_MOBGRIEFING));
-			level->globalLevelEvent(LevelEvent::SOUND_WITHER_BOSS_SPAWN, (int) x, (int) y, (int) z, 0);
+			level->globalLevelEvent(LevelEvent::SOUND_WITHER_BOSS_SPAWN, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 		}
 
 		setInvulnerableTicks(newCount);
@@ -258,7 +258,7 @@ void WitherBoss::newServerAiStep()
 				shared_ptr<Entity> current = level->getEntity(headTarget);
 
 				// 4J: Added check for instance of living entity, had a problem with IDs being recycled to other entities
-				if (current == NULL || !current->instanceof(eTYPE_LIVINGENTITY) || !current->isAlive() || distanceToSqr(current) > 30 * 30 || !canSee(current))
+				if (current == nullptr || !current->instanceof(eTYPE_LIVINGENTITY) || !current->isAlive() || distanceToSqr(current) > 30 * 30 || !canSee(current))
 				{
 					setAlternativeTarget(i, 0);
 				}
@@ -303,7 +303,7 @@ void WitherBoss::newServerAiStep()
 			}
 		}
 	}
-	if (getTarget() != NULL)
+	if (getTarget() != nullptr)
 	{
 		assert(getTarget()->instanceof(eTYPE_LIVINGENTITY));
 		setAlternativeTarget(0, getTarget()->entityId);
@@ -346,7 +346,7 @@ void WitherBoss::newServerAiStep()
 			}
 			if (destroyed)
 			{
-				level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_DOOR_CRASH, (int) x, (int) y, (int) z, 0);
+				level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_DOOR_CRASH, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 			}
 		}
 	}
@@ -427,7 +427,7 @@ void WitherBoss::performRangedAttack(int head, shared_ptr<LivingEntity> target)
 
 void WitherBoss::performRangedAttack(int head, double tx, double ty, double tz, bool dangerous)
 {
-	level->levelEvent(nullptr, LevelEvent::SOUND_WITHER_BOSS_SHOOT, (int) x, (int) y, (int) z, 0);
+	level->levelEvent(nullptr, LevelEvent::SOUND_WITHER_BOSS_SHOOT, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 
 	double hx = getHeadX(head);
 	double hy = getHeadY(head);
@@ -437,7 +437,7 @@ void WitherBoss::performRangedAttack(int head, double tx, double ty, double tz, 
 	double yd = ty - hy;
 	double zd = tz - hz;
 
-	shared_ptr<WitherSkull> ie = shared_ptr<WitherSkull>( new WitherSkull(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), xd, yd, zd) );
+	shared_ptr<WitherSkull> ie = std::make_shared<WitherSkull>(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), xd, yd, zd);
 	if (dangerous) ie->setDangerous(true);
 	ie->y = hy;
 	ie->x = hx;
@@ -462,14 +462,14 @@ bool WitherBoss::hurt(DamageSource *source, float dmg)
 	if (isPowered())
 	{
 		shared_ptr<Entity> directEntity = source->getDirectEntity();
-		if (directEntity != NULL && directEntity->GetType() == eTYPE_ARROW)
+		if (directEntity != nullptr && directEntity->GetType() == eTYPE_ARROW)
 		{
 			return false;
 		}
 	}
 
 	shared_ptr<Entity> sourceEntity = source->getEntity();
-	if (sourceEntity != NULL)
+	if (sourceEntity != nullptr)
 	{
 		if ( sourceEntity->instanceof(eTYPE_PLAYER) )
 		{

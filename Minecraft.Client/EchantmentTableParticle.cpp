@@ -21,22 +21,22 @@ EchantmentTableParticle::EchantmentTableParticle(Level *level, double x, double 
 
 	oSize = size = random->nextFloat() * 0.5f + 0.2f;
 
-	lifetime = (int) (Math::random() * 10) + 30;
+	lifetime = static_cast<int>(Math::random() * 10) + 30;
 	noPhysics = true;
-	setMiscTex( (int) (Math::random() * 26 + 1 + 14 * 16) );
+	setMiscTex( static_cast<int>(Math::random() * 26 + 1 + 14 * 16) );
 }
 
 int EchantmentTableParticle::getLightColor(float a)
 {
 	int br = Particle::getLightColor(a);
 
-	float pos = age / (float) lifetime;
+	float pos = age / static_cast<float>(lifetime);
 	pos = pos * pos;
 	pos = pos * pos;
 
 	int br1 = (br) & 0xff;
 	int br2 = (br >> 16) & 0xff;
-	br2 += (int) (pos * 15 * 16);
+	br2 += static_cast<int>(pos * 15 * 16);
 	if (br2 > 15 * 16) br2 = 15 * 16;
 	return br1 | br2 << 16;
 }
@@ -44,7 +44,7 @@ int EchantmentTableParticle::getLightColor(float a)
 float EchantmentTableParticle::getBrightness(float a)
 {
 	float br = Particle::getBrightness(a);
-	float pos = age / (float) lifetime;
+	float pos = age / static_cast<float>(lifetime);
 	pos = pos * pos;
 	pos = pos * pos;
 	return br * (1 - pos) + pos;
@@ -56,7 +56,7 @@ void EchantmentTableParticle::tick()
 	yo = y;
 	zo = z;
 
-	float pos = age / (float) lifetime;
+	float pos = age / static_cast<float>(lifetime);
 
 	pos = 1 - pos;
 

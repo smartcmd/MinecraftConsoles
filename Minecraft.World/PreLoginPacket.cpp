@@ -9,7 +9,7 @@
 PreLoginPacket::PreLoginPacket() 
 {
 	loginKey = L"";
-	m_playerXuids = NULL;
+	m_playerXuids = nullptr;
 	m_dwPlayerCount = 0;
 	m_friendsOnlyBits = 0;
 	m_ugcPlayersVersion = 0;
@@ -23,7 +23,7 @@ PreLoginPacket::PreLoginPacket()
 PreLoginPacket::PreLoginPacket(wstring userName) 
 {
 	this->loginKey = userName;
-	m_playerXuids = NULL;
+	m_playerXuids = nullptr;
 	m_dwPlayerCount = 0;
 	m_friendsOnlyBits = 0;
 	m_ugcPlayersVersion = 0;
@@ -50,7 +50,7 @@ PreLoginPacket::PreLoginPacket(wstring userName, PlayerUID *playerXuids, DWORD p
 
 PreLoginPacket::~PreLoginPacket()
 {
-	if( m_playerXuids != NULL ) delete [] m_playerXuids;
+	if( m_playerXuids != nullptr ) delete [] m_playerXuids;
 }
 
 void PreLoginPacket::read(DataInputStream *dis) //throws IOException 
@@ -92,7 +92,7 @@ void PreLoginPacket::write(DataOutputStream *dos) //throws IOException
 	
 	dos->writeByte(m_friendsOnlyBits);
 	dos->writeInt(m_ugcPlayersVersion);
-	dos->writeByte((byte)m_dwPlayerCount);
+	dos->writeByte(static_cast<byte>(m_dwPlayerCount));
 	for(DWORD i = 0; i < m_dwPlayerCount; ++i)
 	{
 		dos->writePlayerUID( m_playerXuids[i] );
@@ -115,5 +115,5 @@ void PreLoginPacket::handle(PacketListener *listener)
 
 int PreLoginPacket::getEstimatedSize() 
 {
-	return 4 + 4 + (int)loginKey.length() + 4 +14 + 4 + 1 + 4;
+	return 4 + 4 + static_cast<int>(loginKey.length()) + 4 +14 + 4 + 1 + 4;
 }

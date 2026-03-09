@@ -72,7 +72,7 @@ HRESULT CScene_Main::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 	// load from the .xzp file
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 	swprintf(szResourceLocator, LOCATOR_SIZE ,L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/splashes.txt");
 
 	BYTE *splashesData;
@@ -119,7 +119,7 @@ HRESULT CScene_Main::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	m_bIgnorePress=false;
 
 	// 4J Stu - Clear out any loaded game rules
-	app.setLevelGenerationOptions(NULL);
+	app.setLevelGenerationOptions(nullptr);
 
 	// Fix for #45154 - Frontend: DLC: Content can only be downloaded from the frontend if you have not joined/exited multiplayer
 	XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_ALWAYS_ALLOW);
@@ -325,7 +325,7 @@ HRESULT CScene_Main::OnTransitionStart( XUIMessageTransition *pTransition, BOOL&
 	if(pTransition->dwTransType == XUI_TRANSITION_TO || pTransition->dwTransType == XUI_TRANSITION_BACKTO)
 	{
 		// 4J-PB - remove the "hobo humping" message legal (Sony) say we can't have - pretty sure Microsoft would say the same if they noticed it.
-		int splashIndex = eSplashRandomStart + 1 + random->nextInt( (int)m_splashes.size() - (eSplashRandomStart + 1) );
+		int splashIndex = eSplashRandomStart + 1 + random->nextInt( static_cast<int>(m_splashes.size()) - (eSplashRandomStart + 1) );
 
 		// Override splash text on certain dates
 		SYSTEMTIME LocalSysTime;
@@ -359,7 +359,7 @@ HRESULT CScene_Main::OnTransitionStart( XUIMessageTransition *pTransition, BOOL&
 		HRESULT hr=S_OK;
 		float fWidth,fHeight;
 
-		HXUIOBJ visual=NULL;
+		HXUIOBJ visual=nullptr;
 		HXUIOBJ pulser, subtitle, text;
 		hr=XuiControlGetVisual(m_Subtitle.m_hObj,&visual);
 		hr=XuiElementGetChildById(visual,L"Pulser",&pulser);
@@ -436,7 +436,7 @@ HRESULT CScene_Main::OnControlNavigate(XUIMessageControlNavigate *pControlNaviga
 	// added so we can skip greyed out items for Minecon
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 	
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -457,7 +457,7 @@ HRESULT CScene_Main::OnKeyDown(XUIMessageInput *pInputData, BOOL& bHandled)
 
 int CScene_Main::SignInReturned(void *pParam,bool bContinue)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -470,7 +470,7 @@ int CScene_Main::SignInReturned(void *pParam,bool bContinue)
 
 int CScene_Main::DeviceSelectReturned(void *pParam,bool bContinue)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 	//HRESULT hr;
 
 	if(bContinue==true)
@@ -506,7 +506,7 @@ int CScene_Main::DeviceSelectReturned(void *pParam,bool bContinue)
 
 int CScene_Main::CreateLoad_OfflineProfileReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -555,7 +555,7 @@ int CScene_Main::CreateLoad_OfflineProfileReturned(void *pParam,bool bContinue, 
 
 int CScene_Main::CreateLoad_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -662,7 +662,7 @@ int CScene_Main::CreateLoad_SignInReturned(void *pParam,bool bContinue, int iPad
 
 int CScene_Main::MustSignInReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -787,7 +787,7 @@ int CScene_Main::Achievements_SignInReturned(void *pParam,bool bContinue,int iPa
 }
 int CScene_Main::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int iPad)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -834,7 +834,7 @@ int CScene_Main::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int i
 
 int CScene_Main::UnlockFullGame_SignInReturned(void *pParam,bool bContinue,int iPad)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -907,7 +907,7 @@ void CScene_Main::LoadTrial(void)
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = 0;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 	param->settings = app.GetGameHostOption( eGameHostOption_Tutorial );
 
 	vector<LevelGenerationOptions *> *generators = app.getLevelGenerators();
@@ -915,7 +915,7 @@ void CScene_Main::LoadTrial(void)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1228,7 +1228,7 @@ void CScene_Main::RunUnlockOrDLC(int iPad)
 
 int CScene_Main::TMSReadFileListReturned(void *pParam,int iPad,C4JStorage::PTMSPP_FILE_LIST pTmsFileList)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	// push the file details in to a unordered map if they are not already in there
 // 	for(int i=0;i<pTmsFileList->iCount;i++)
@@ -1240,7 +1240,7 @@ int CScene_Main::TMSReadFileListReturned(void *pParam,int iPad,C4JStorage::PTMSP
 
 int CScene_Main::TMSFileWriteReturned(void *pParam,int iPad,int iResult)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	// push the file details in to a unordered map if they are not already in there
 	// 	for(int i=0;i<pTmsFileList->iCount;i++)
@@ -1252,7 +1252,7 @@ int CScene_Main::TMSFileWriteReturned(void *pParam,int iPad,int iResult)
 
 int CScene_Main::TMSFileReadReturned(void *pParam,int iPad,C4JStorage::PTMSPP_FILEDATA pData)
 {
-	CScene_Main* pClass = (CScene_Main*)pParam;
+	CScene_Main* pClass = static_cast<CScene_Main *>(pParam);
 
 	// push the file details in to a unordered map if they are not already in there
 	// 	for(int i=0;i<pTmsFileList->iCount;i++)

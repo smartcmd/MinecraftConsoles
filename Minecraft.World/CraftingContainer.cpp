@@ -58,7 +58,7 @@ bool CraftingContainer::hasCustomName()
 
 shared_ptr<ItemInstance> CraftingContainer::removeItemNoUpdate(int slot)
 {
-	if ((*items)[slot] != NULL)
+	if ((*items)[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = (*items)[slot];
 		(*items)[slot] = nullptr;
@@ -69,7 +69,7 @@ shared_ptr<ItemInstance> CraftingContainer::removeItemNoUpdate(int slot)
 
 shared_ptr<ItemInstance> CraftingContainer::removeItem(unsigned int slot, int count)
 {
-	if ((*items)[slot] != NULL)
+	if ((*items)[slot] != nullptr)
 	{
 		if ((*items)[slot]->count <= count)
 		{

@@ -117,9 +117,9 @@ void ServerLevelListener::destroyTileProgress(int id, int x, int y, int z, int p
 	for(auto& p : server->getPlayers()->players)
 	{
 		if (p == nullptr || p->level != level || p->entityId == id) continue;
-		double xd = (double) x - p->x;
-		double yd = (double) y - p->y;
-		double zd = (double) z - p->z;
+		double xd = static_cast<double>(x) - p->x;
+		double yd = static_cast<double>(y) - p->y;
+		double zd = static_cast<double>(z) - p->z;
 
 		if (xd * xd + yd * yd + zd * zd < 32 * 32)
 		{

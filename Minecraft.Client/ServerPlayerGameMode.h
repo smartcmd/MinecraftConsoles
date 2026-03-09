@@ -54,7 +54,7 @@ private:
 public:
     bool destroyBlock(int x, int y, int z);
     bool useItem(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
-    bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false, bool *pbUsedItem=NULL);
+    bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false, bool *pbUsedItem=nullptr);
 
 	void setLevel(ServerLevel *newLevel);
 };

@@ -10,9 +10,9 @@ private:
 
 public:
 	DLCColourTableFile(const wstring &path);
-	~DLCColourTableFile();
+	~DLCColourTableFile() override;
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
 
-	ColourTable *getColourTable() { return m_colourTable; }
+	ColourTable *getColourTable() const { return m_colourTable; }
 };

@@ -19,7 +19,7 @@ void MeleeAttackGoal::_init(PathfinderMob *mob, double speedModifier, bool track
 
 
 	attackTime = 0;
-	path = NULL;
+	path = nullptr;
 	timeToRecalcPath = 0;
 }
 
@@ -36,24 +36,24 @@ MeleeAttackGoal::MeleeAttackGoal(PathfinderMob *mob, double speedModifier, bool 
 
 MeleeAttackGoal::~MeleeAttackGoal()
 {
-	if(path != NULL) delete path;
+	if(path != nullptr) delete path;
 }
 
 bool MeleeAttackGoal::canUse()
 {
 	shared_ptr<LivingEntity> target = mob->getTarget();
-	if (target == NULL) return false;
+	if (target == nullptr) return false;
 	if (!target->isAlive()) return false;
-	if (attackType != NULL && !target->instanceof(attackType)) return false;
+	if (attackType != eTYPE_NOTSET && !target->instanceof(attackType)) return false;
 	delete path;
 	path = mob->getNavigation()->createPath(target);
-	return path != NULL;
+	return path != nullptr;
 }
 
 bool MeleeAttackGoal::canContinueToUse()
 {
 	shared_ptr<LivingEntity> target = mob->getTarget();
-	if (target == NULL) return false;
+	if (target == nullptr) return false;
 	if (!target->isAlive()) return false;
 	if (!trackTarget) return !mob->getNavigation()->isDone();
 	if (!mob->isWithinRestriction(Mth::floor(target->x), Mth::floor(target->y), Mth::floor(target->z))) return false;
@@ -63,7 +63,7 @@ bool MeleeAttackGoal::canContinueToUse()
 void MeleeAttackGoal::start()
 {
 	mob->getNavigation()->moveTo(path, speedModifier);
-	path = NULL;
+	path = nullptr;
 	timeToRecalcPath = 0;
 }
 
@@ -91,6 +91,6 @@ void MeleeAttackGoal::tick()
 	if (mob->distanceToSqr(target->x, target->bb->y0, target->z) > meleeRadiusSqr) return;
 	if (attackTime > 0) return;
 	attackTime = 20;
-	if (mob->getCarriedItem() != NULL) mob->swing();
+	if (mob->getCarriedItem() != nullptr) mob->swing();
 	mob->doHurtTarget(target);
 }

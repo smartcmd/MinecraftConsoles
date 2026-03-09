@@ -48,7 +48,7 @@ void WitherBossRenderer::scale(shared_ptr<LivingEntity> _mob, float a)
 	int inTicks = mob->getInvulnerableTicks();
 	if (inTicks > 0)
 	{
-		float scale = 2.0f - (((float) inTicks - a) / (SharedConstants::TICKS_PER_SECOND * 11)) * .5f;
+		float scale = 2.0f - ((static_cast<float>(inTicks) - a) / (SharedConstants::TICKS_PER_SECOND * 11)) * .5f;
 		glScalef(scale, scale, scale);
 	}
 	else

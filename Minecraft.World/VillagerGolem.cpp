@@ -53,7 +53,7 @@ VillagerGolem::VillagerGolem(Level *level) : Golem(level)
 void VillagerGolem::defineSynchedData()
 {
 	Golem::defineSynchedData();
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, static_cast<byte>(0));
 }
 
 bool VillagerGolem::useNewAi()
@@ -68,11 +68,11 @@ void VillagerGolem::serverAiMobStep()
 		villageUpdateInterval = 70 + random->nextInt(50);
 		shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
 		village = _village;
-		if (_village == NULL) clearRestriction();
+		if (_village == nullptr) clearRestriction();
 		else
 		{
 			Pos *center = _village->getCenter();
-			restrictTo(center->x, center->y, center->z, (int)((float)_village->getRadius()) * 0.6f);
+			restrictTo(center->x, center->y, center->z, static_cast<int>((float)_village->getRadius()) * 0.6f);
 		}
 	}
 
@@ -234,17 +234,17 @@ void VillagerGolem::setPlayerCreated(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x01));
 	}
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x01));
 	}
 }
 
 void VillagerGolem::die(DamageSource *source)
 {
-	if (!isPlayerCreated() && lastHurtByPlayer != NULL && village.lock() != NULL)
+	if (!isPlayerCreated() && lastHurtByPlayer != nullptr && village.lock() != nullptr)
 	{
 		village.lock()->modifyStanding(lastHurtByPlayer->getName(), -5);
 	}
@@ -257,7 +257,7 @@ bool VillagerGolem::hurt(DamageSource *source, float dmg)
 	if (isPlayerCreated())
 	{
 		shared_ptr<Entity> entity = source->getDirectEntity();
-		if (entity != NULL && entity->instanceof(eTYPE_PLAYER))
+		if (entity != nullptr && entity->instanceof(eTYPE_PLAYER))
 		{
 			shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
 			if (!player->isAllowedToAttackPlayers()) return false;

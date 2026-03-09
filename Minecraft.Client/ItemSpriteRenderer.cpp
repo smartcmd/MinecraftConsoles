@@ -22,14 +22,14 @@ void ItemSpriteRenderer::render(shared_ptr<Entity> e, double x, double y, double
 {
 	// the icon is already cached in the item object, so there should not be any performance impact by not caching it here
 	Icon *icon = sourceItem->getIcon(sourceItemAuxValue);
-	if (icon == NULL)
+	if (icon == nullptr)
 	{
 		return;
 	}
 
     glPushMatrix();
 
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     glEnable(GL_RESCALE_NORMAL);
     glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
     bindTexture(e);
@@ -72,10 +72,10 @@ void ItemSpriteRenderer::renderIcon(Tesselator *t, Icon *icon)
     glRotatef(-entityRenderDispatcher->playerRotX, 1, 0, 0);
     t->begin();
     t->normal(0, 1, 0);
-    t->vertexUV((float)(0 - xo), (float)( 0 - yo), (float)( 0), (float)( u0), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( 0 - yo), (float)( 0), (float)( u1), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( r - yo), (float)( 0), (float)( u1), (float)( v0));
-    t->vertexUV((float)(0 - xo), (float)( r - yo), (float)( 0), (float)( u0), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u0), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u1), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( r - yo), static_cast<float>(0), (float)( u1), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( r - yo), static_cast<float>(0), (float)( u0), (float)( v0));
     t->end();
 }
 

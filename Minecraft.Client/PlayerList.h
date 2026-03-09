@@ -133,6 +133,7 @@ public:
 	// 4J Added
 	void kickPlayerByShortId(BYTE networkSmallId);
 	void closePlayerConnectionBySmallId(BYTE networkSmallId);
+	void queueSmallIdForRecycle(BYTE smallId);
 	bool isXuidBanned(PlayerUID xuid);
 	// AP added for Vita so the range can be increased once the level starts
 	void setViewDistance(int newViewDistance);

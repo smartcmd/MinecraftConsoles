@@ -13,7 +13,7 @@ ResourceLocation EnderDragonRenderer::DRAGON_LOCATION = ResourceLocation(TN_MOB_
 
 EnderDragonRenderer::EnderDragonRenderer() : MobRenderer(new DragonModel(0), 0.5f)
 {
-	dragonModel = (DragonModel *) model;
+	dragonModel = static_cast<DragonModel *>(model);
 	setArmor(model); // TODO: Make second constructor that assigns this.
 }
 
@@ -90,15 +90,15 @@ void EnderDragonRenderer::render(shared_ptr<Entity> _mob, double x, double y, do
 	shared_ptr<EnderDragon> mob = dynamic_pointer_cast<EnderDragon>(_mob);
 	BossMobGuiInfo::setBossHealth(mob, false);
 	MobRenderer::render(mob, x, y, z, rot, a);
-	if (mob->nearestCrystal != NULL)
+	if (mob->nearestCrystal != nullptr)
 	{
 		float tt = mob->nearestCrystal->time + a;
 		float hh = sin(tt * 0.2f) / 2 + 0.5f;
 		hh = (hh * hh + hh) * 0.2f;
 
-		float xd = (float) (mob->nearestCrystal->x - mob->x - (mob->xo - mob->x) * (1 - a));
-		float yd = (float) (hh + mob->nearestCrystal->y - 1 - mob->y - (mob->yo - mob->y) * (1 - a));
-		float zd = (float) (mob->nearestCrystal->z - mob->z - (mob->zo - mob->z) * (1 - a));
+		float xd = static_cast<float>(mob->nearestCrystal->x - mob->x - (mob->xo - mob->x) * (1 - a));
+		float yd = static_cast<float>(hh + mob->nearestCrystal->y - 1 - mob->y - (mob->yo - mob->y) * (1 - a));
+		float zd = static_cast<float>(mob->nearestCrystal->z - mob->z - (mob->zo - mob->z) * (1 - a));
 
 		float sdd = sqrt(xd * xd + zd * zd);
 		float dd = sqrt(xd * xd + yd * yd + zd * zd);
@@ -107,7 +107,7 @@ void EnderDragonRenderer::render(shared_ptr<Entity> _mob, double x, double y, do
 		glColor4f(1, 1, 1, 1);
 
 		glPushMatrix();
-		glTranslatef((float) x, (float) y + 2, (float) z);
+		glTranslatef(static_cast<float>(x), static_cast<float>(y) + 2, static_cast<float>(z));
 		glRotatef((float) (-atan2(zd, xd)) * 180.0f / PI - 90.0f, 0, 1, 0);
 		glRotatef((float) (-atan2(sdd, yd)) * 180.0f / PI - 90.0f, 1, 0, 0);
 
@@ -202,7 +202,7 @@ void EnderDragonRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, flo
 			t->begin(GL_TRIANGLE_FAN);
 			float dist = random.nextFloat() * 20 + 5 + overDrive * 10;
 			float w = random.nextFloat() * 2 + 1 + overDrive * 2;
-			t->color(0xffffff, (int) (255 * (1 - overDrive)));
+			t->color(0xffffff, static_cast<int>(255 * (1 - overDrive)));
 			t->vertex(0, 0, 0);
 			t->color(0xff00ff, 0);
 			t->vertex(-0.866 * w, dist, -0.5f * w);

@@ -65,7 +65,7 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 
     random->setSeed(187);
     shared_ptr<ItemInstance> item = itemEntity->getItem();
-	if (item->getItem() == NULL) return;
+	if (item->getItem() == nullptr) return;
 
     glPushMatrix();
     float bob = Mth::sin((itemEntity->age + a) / 10.0f + itemEntity->bobOffs) * 0.1f + 0.1f;
@@ -77,12 +77,12 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
     if (itemEntity->getItem()->count > 20) count = 4;
 	if (itemEntity->getItem()->count > 40) count = 5;
 
-    glTranslatef((float) x, (float) y + bob, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y) + bob, static_cast<float>(z));
     glEnable(GL_RESCALE_NORMAL);
 
 	Tile *tile = Tile::tiles[item->id];
 
-	if (item->getIconType() == Icon::TYPE_TERRAIN && tile != NULL && TileRenderer::canRender(tile->getRenderShape()))
+	if (item->getIconType() == Icon::TYPE_TERRAIN && tile != nullptr && TileRenderer::canRender(tile->getRenderShape()))
 	{
         glRotatef(spin, 0, 1, 0);
 
@@ -200,7 +200,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 {
     Tesselator *t = Tesselator::getInstance();
 
-	if (icon == NULL) icon = entityRenderDispatcher->textures->getMissingIcon(entity->getItem()->getIconType());
+	if (icon == nullptr) icon = entityRenderDispatcher->textures->getMissingIcon(entity->getItem()->getIconType());
     float u0 = icon->getU0();
     float u1 = icon->getU1();
     float v0 = icon->getV0();
@@ -264,7 +264,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 			glTranslatef(0, 0, width + margin);
 
 			bool bIsTerrain = false;
-			if (item->getIconType() == Icon::TYPE_TERRAIN && Tile::tiles[item->id] != NULL)
+			if (item->getIconType() == Icon::TYPE_TERRAIN && Tile::tiles[item->id] != nullptr)
 			{
 				bIsTerrain = true;
                 bindTexture(&TextureAtlas::LOCATION_BLOCKS); // TODO: Do this sanely by Icon
@@ -279,7 +279,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 			//ItemInHandRenderer::renderItem3D(t, u1, v0, u0, v1, icon->getSourceWidth(), icon->getSourceHeight(), width, false);
 			ItemInHandRenderer::renderItem3D(t, u0, v0, u1, v1, icon->getSourceWidth(), icon->getSourceHeight(), width, false, bIsTerrain);
 
-			if (item != NULL && item->isFoil())
+			if (item != nullptr && item->isFoil())
 			{
 				glDepthFunc(GL_EQUAL);
 				glDisable(GL_LIGHTING);
@@ -332,10 +332,10 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 			glColor4f(red, green, blue, 1);
 			t->begin();
 			t->normal(0, 1, 0);
-			t->vertexUV((float)(0 - xo), (float)( 0 - yo), (float)( 0), (float)( u0), (float)( v1));
-			t->vertexUV((float)(r - xo), (float)( 0 - yo), (float)( 0), (float)( u1), (float)( v1));
-			t->vertexUV((float)(r - xo), (float)( 1 - yo), (float)( 0), (float)( u1), (float)( v0));
-			t->vertexUV((float)(0 - xo), (float)( 1 - yo), (float)( 0), (float)( u0), (float)( v0));
+			t->vertexUV((float)(0 - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u0), (float)( v1));
+			t->vertexUV((float)(r - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u1), (float)( v1));
+			t->vertexUV((float)(r - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u1), (float)( v0));
+			t->vertexUV((float)(0 - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u0), (float)( v0));
 			t->end();
 
 			glPopMatrix();
@@ -416,7 +416,7 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 			}
 			else
 			{
-				blit((int)x, (int)y, fillingIcon, 16, 16);
+				blit(static_cast<int>(x), static_cast<int>(y), fillingIcon, 16, 16);
 			}
 		}
 		glEnable(GL_LIGHTING);
@@ -443,7 +443,7 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 		}
 		MemSect(0);
 
-		if (itemIcon == NULL)
+		if (itemIcon == nullptr)
 		{
 			itemIcon = textures->getMissingIcon(item->getIconType());
 		}
@@ -462,7 +462,7 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 		}
 		else
 		{
-			blit((int)x, (int)y, itemIcon, 16, 16);
+			blit(static_cast<int>(x), static_cast<int>(y), itemIcon, 16, 16);
 		}
         glEnable(GL_LIGHTING);
 		PIXEndNamedEvent();
@@ -475,13 +475,13 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 // 4J - original interface, now just a wrapper for preceding overload
 void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y)
 {
-	renderGuiItem(font, textures, item, (float)x, (float)y, 1.0f, 1.0f );
+	renderGuiItem(font, textures, item, static_cast<float>(x), static_cast<float>(y), 1.0f, 1.0f );
 }
 
 // 4J - this used to take x and y as ints, and no scale, alpha or foil - but this interface is now implemented as a wrapper round this more fully featured one
 void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScale,float fAlpha, bool isFoil)
 {
-	if(item==NULL) return;
+	if(item==nullptr) return;
 	renderAndDecorateItem(font, textures, item, x, y,fScale, fScale, fAlpha, isFoil, true);
 }
 
@@ -489,7 +489,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 // (ie from the gui rather than xui). In this case we dno't want to enable/disable blending, and do need to restore the blend state when we are done.
 void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScaleX, float fScaleY,float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled)
 {
-    if (item == NULL)
+    if (item == nullptr)
 	{
         return;
     }
@@ -535,7 +535,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 // 4J - original interface, now just a wrapper for preceding overload
 void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, int x, int y)
 {
-	renderAndDecorateItem( font, textures, item, (float)x, (float)y, 1.0f, 1.0f, item->isFoil() );
+	renderAndDecorateItem( font, textures, item, static_cast<float>(x), static_cast<float>(y), 1.0f, 1.0f, item->isFoil() );
 }
 
 // 4J - a few changes here to get x, y, w, h in as floats (for xui rendering accuracy), and to align
@@ -546,8 +546,8 @@ void ItemRenderer::blitGlint(int id, float x, float y, float w, float h)
 	float vs = 1.0f / 64.0f / 4;
 
 	// 4J - calculate what the pixel coordinates will be in final screen coordinates
-	float sfx = (float)Minecraft::GetInstance()->width / (float)Minecraft::GetInstance()->width_phys;
-	float sfy = (float)Minecraft::GetInstance()->height / (float)Minecraft::GetInstance()->height_phys;
+	float sfx = static_cast<float>(Minecraft::GetInstance()->width) / static_cast<float>(Minecraft::GetInstance()->width_phys);
+	float sfy = static_cast<float>(Minecraft::GetInstance()->height) / static_cast<float>(Minecraft::GetInstance()->height_phys);
 	float xx0 = x * sfx;
 	float xx1 = ( x + w ) * sfx;
 	float yy0 = y * sfy;
@@ -593,7 +593,7 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
 
 void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y, const wstring &countText, float fAlpha)
 {
-    if (item == NULL)
+    if (item == nullptr)
 	{
         return;
     }
@@ -617,15 +617,15 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
 		MemSect(0);
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
-        font->drawShadow(amount, x + 19 - 2 - font->width(amount), y + 6 + 3, 0xffffff |(((unsigned int)(fAlpha * 0xff))<<24));
+        font->drawShadow(amount, x + 19 - 2 - font->width(amount), y + 6 + 3, 0xffffff |(static_cast<unsigned int>(fAlpha * 0xff)<<24));
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
     }
 
     if (item->isDamaged())
 	{
-        int p = (int) Math::round(13.0 - (double) item->getDamageValue() * 13.0 / (double) item->getMaxDamage());
-        int cc = (int) Math::round(255.0 - (double) item->getDamageValue() * 255.0 / (double) item->getMaxDamage());
+        int p = static_cast<int>(Math::round(13.0 - (double)item->getDamageValue() * 13.0 / (double)item->getMaxDamage()));
+        int cc = static_cast<int>(Math::round(255.0 - (double)item->getDamageValue() * 255.0 / (double)item->getMaxDamage()));
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_TEXTURE_2D);
@@ -676,10 +676,10 @@ void ItemRenderer::fillRect(Tesselator *t, int x, int y, int w, int h, int c)
 {
 	t->begin();
 	t->color(c);
-	t->vertex((float)(x + 0), (float)( y + 0), (float)( 0));
-	t->vertex((float)(x + 0), (float)( y + h), (float)( 0));
-	t->vertex((float)(x + w), (float)( y + h), (float)( 0));
-	t->vertex((float)(x + w), (float)( y + 0), (float)( 0));
+	t->vertex(static_cast<float>(x + 0), static_cast<float>(y + 0), static_cast<float>(0));
+	t->vertex(static_cast<float>(x + 0), static_cast<float>(y + h), static_cast<float>(0));
+	t->vertex(static_cast<float>(x + w), static_cast<float>(y + h), static_cast<float>(0));
+	t->vertex(static_cast<float>(x + w), static_cast<float>(y + 0), static_cast<float>(0));
 	t->end();
 }
 
@@ -693,8 +693,8 @@ void ItemRenderer::blit(float x, float y, int sx, int sy, float w, float h)
 	t->begin();
 
 	// 4J - calculate what the pixel coordinates will be in final screen coordinates
-	float sfx = (float)Minecraft::GetInstance()->width / (float)Minecraft::GetInstance()->width_phys;
-	float sfy = (float)Minecraft::GetInstance()->height / (float)Minecraft::GetInstance()->height_phys;
+	float sfx = static_cast<float>(Minecraft::GetInstance()->width) / static_cast<float>(Minecraft::GetInstance()->width_phys);
+	float sfy = static_cast<float>(Minecraft::GetInstance()->height) / static_cast<float>(Minecraft::GetInstance()->height_phys);
 	float xx0 = x * sfx;
 	float xx1 = ( x + w ) * sfx;
 	float yy0 = y * sfy;
@@ -716,7 +716,7 @@ void ItemRenderer::blit(float x, float y, int sx, int sy, float w, float h)
 	float yy1f = yy1 / sfy;
 
 	// 4J - subtracting 0.5f (actual screen pixels, so need to compensate for physical & game width) from each x & y coordinate to compensate for centre of pixels in directx vs openGL
-	float f = ( 0.5f * (float)Minecraft::GetInstance()->width ) / (float)Minecraft::GetInstance()->width_phys;
+	float f = ( 0.5f * static_cast<float>(Minecraft::GetInstance()->width) ) / static_cast<float>(Minecraft::GetInstance()->width_phys);
 
 	t->vertexUV(xx0f, yy1f, (float)( blitOffset), (float)( (sx + 0) * us), (float)( (sy + 16) * vs));
 	t->vertexUV(xx1f, yy1f, (float)( blitOffset), (float)( (sx + 16) * us), (float)( (sy + 16) * vs));
@@ -731,8 +731,8 @@ void ItemRenderer::blit(float x, float y, Icon *tex, float w, float h)
 	t->begin();
 
 	// 4J - calculate what the pixel coordinates will be in final screen coordinates
-	float sfx = (float)Minecraft::GetInstance()->width / (float)Minecraft::GetInstance()->width_phys;
-	float sfy = (float)Minecraft::GetInstance()->height / (float)Minecraft::GetInstance()->height_phys;
+	float sfx = static_cast<float>(Minecraft::GetInstance()->width) / static_cast<float>(Minecraft::GetInstance()->width_phys);
+	float sfy = static_cast<float>(Minecraft::GetInstance()->height) / static_cast<float>(Minecraft::GetInstance()->height_phys);
 	float xx0 = x * sfx;
 	float xx1 = ( x + w ) * sfx;
 	float yy0 = y * sfy;
@@ -754,7 +754,7 @@ void ItemRenderer::blit(float x, float y, Icon *tex, float w, float h)
 	float yy1f = yy1 / sfy;
 
 	// 4J - subtracting 0.5f (actual screen pixels, so need to compensate for physical & game width) from each x & y coordinate to compensate for centre of pixels in directx vs openGL
-	float f = ( 0.5f * (float)Minecraft::GetInstance()->width ) / (float)Minecraft::GetInstance()->width_phys;
+	float f = ( 0.5f * static_cast<float>(Minecraft::GetInstance()->width) ) / static_cast<float>(Minecraft::GetInstance()->width_phys);
 
 	t->vertexUV(xx0f, yy1f, blitOffset, tex->getU0(true), tex->getV1(true));
 	t->vertexUV(xx1f, yy1f, blitOffset, tex->getU1(true), tex->getV1(true));

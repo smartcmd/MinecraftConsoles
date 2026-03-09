@@ -11,7 +11,7 @@ const wstring Villages::VILLAGE_FILE_ID = L"villages";
 Villages::Villages(const wstring &id) : SavedData(id)
 {
 	_tick = 0;
-	level = NULL;
+	level = nullptr;
 }
 
 Villages::Villages(Level *level) : SavedData(VILLAGE_FILE_ID)
@@ -117,7 +117,7 @@ void Villages::cluster()
 		bool found = false;
 		for(auto& village : villages)
 		{
-			int dist = (int) village->getCenter()->distSqr(di->x, di->y, di->z);
+			int dist = static_cast<int>(village->getCenter()->distSqr(di->x, di->y, di->z));
 			int radius = MaxDoorDist + village->getRadius();
 			if (dist > radius * radius) continue;
 			village->addDoorInfo(di);
@@ -127,7 +127,7 @@ void Villages::cluster()
 		if (found) continue;
 
 		// create new Village
-		shared_ptr<Village> village = shared_ptr<Village>(new Village(level));
+		shared_ptr<Village> village = std::make_shared<Village>(level);
 		village->addDoorInfo(di);
 		villages.push_back(village);
 		setDirty();
@@ -147,7 +147,7 @@ void Villages::addDoorInfos(Pos *pos)
 				if (isDoor(xx, yy, zz))
 				{
 					shared_ptr<DoorInfo> currentDoor = getDoorInfo(xx, yy, zz);
-					if (currentDoor == NULL) createDoorInfo(xx, yy, zz);
+					if (currentDoor == nullptr) createDoorInfo(xx, yy, zz);
 					else currentDoor->timeStamp = _tick;
 				}
 			}
@@ -173,7 +173,7 @@ shared_ptr<DoorInfo> Villages::getDoorInfo(int x, int y, int z)
 
 void Villages::createDoorInfo(int x, int y, int z)
 {
-	int dir = ((DoorTile *) Tile::door_wood)->getDir(level, x, y, z);
+	int dir = static_cast<DoorTile *>(Tile::door_wood)->getDir(level, x, y, z);
 	if (dir == 0 || dir == 2)
 	{
 		int canSeeX = 0;
@@ -181,7 +181,7 @@ void Villages::createDoorInfo(int x, int y, int z)
 			if (level->canSeeSky(x + i, y, z)) canSeeX--;
 		for (int i = 1; i <= 5; ++i)
 			if (level->canSeeSky(x + i, y, z)) canSeeX++;
-		if (canSeeX != 0) unclustered.push_back(shared_ptr<DoorInfo>(new DoorInfo(x, y, z, canSeeX > 0 ? -2 : 2, 0, _tick)));
+		if (canSeeX != 0) unclustered.push_back(std::make_shared<DoorInfo>(x, y, z, canSeeX > 0 ? -2 : 2, 0, _tick));
 	}
 	else
 	{
@@ -190,7 +190,7 @@ void Villages::createDoorInfo(int x, int y, int z)
 			if (level->canSeeSky(x, y, z + i)) canSeeZ--;
 		for (int i = 1; i <= 5; ++i)
 			if (level->canSeeSky(x, y, z + i)) canSeeZ++;
-		if (canSeeZ != 0) unclustered.push_back(shared_ptr<DoorInfo>(new DoorInfo(x, y, z, 0, canSeeZ > 0 ? -2 : 2, _tick)));
+		if (canSeeZ != 0) unclustered.push_back(std::make_shared<DoorInfo>(x, y, z, 0, canSeeZ > 0 ? -2 : 2, _tick));
 	}
 }
 
@@ -218,7 +218,7 @@ void Villages::load(CompoundTag *tag)
 	for (int i = 0; i < villageTags->size(); i++)
 	{
 		CompoundTag *compoundTag = villageTags->get(i);
-		shared_ptr<Village> village = shared_ptr<Village>(new Village());
+		shared_ptr<Village> village = std::make_shared<Village>();
 		village->readAdditionalSaveData(compoundTag);
 		villages.push_back(village);
 	}

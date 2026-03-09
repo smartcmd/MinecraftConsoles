@@ -20,7 +20,7 @@ void FireballRenderer::render(shared_ptr<Entity> _fireball, double x, double y, 
 
     glPushMatrix();
 
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     glEnable(GL_RESCALE_NORMAL);
     float s = scale;
     glScalef(s / 1.0f, s / 1.0f, s / 1.0f);
@@ -43,10 +43,10 @@ void FireballRenderer::render(shared_ptr<Entity> _fireball, double x, double y, 
     glRotatef(-entityRenderDispatcher->playerRotX, 1, 0, 0);
     t->begin();
     t->normal(0, 1, 0);
-    t->vertexUV((float)(0 - xo), (float)( 0 - yo), (float)( 0), (float)( u0), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( 0 - yo), (float)( 0), (float)( u1), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( 1 - yo), (float)( 0), (float)( u1), (float)( v0));
-    t->vertexUV((float)(0 - xo), (float)( 1 - yo), (float)( 0), (float)( u0), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u0), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u1), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u1), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u0), (float)( v0));
     t->end();
 
     glDisable(GL_RESCALE_NORMAL);
@@ -61,7 +61,7 @@ void FireballRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, dou
 	Icon *tex = Tile::fire->getTextureLayer(0);
 
     glPushMatrix();
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
     float s = e->bbWidth * 1.4f;
     glScalef(s, s, s);
@@ -75,7 +75,7 @@ void FireballRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, dou
 //        float yo = 0.0f;
 
     float h = e->bbHeight / s;
-    float yo = (float) (e->y - e->bb->y0);
+    float yo = static_cast<float>(e->y - e->bb->y0);
 
     //glRotatef(-entityRenderDispatcher->playerRotY, 0, 1, 0);
 
@@ -99,10 +99,10 @@ void FireballRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, dou
 	u1 = u0;
 	u0 = tmp;
 
-	t->vertexUV((float)(0 - xo), (float)( 0 - yo), (float)( 0), (float)( u1), (float)( v1));
-	t->vertexUV((float)(r - xo), (float)( 0 - yo), (float)( 0), (float)( u0), (float)( v1));
-	t->vertexUV((float)(r - xo), (float)( 1.4f - yo), (float)( 0), (float)( u0), (float)( v0));
-	t->vertexUV((float)(0 - xo), (float)( 1.4f - yo), (float)( 0), (float)( u1), (float)( v0));
+	t->vertexUV((float)(0 - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u1), (float)( v1));
+	t->vertexUV((float)(r - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u0), (float)( v1));
+	t->vertexUV((float)(r - xo), (float)( 1.4f - yo), static_cast<float>(0), (float)( u0), (float)( v0));
+	t->vertexUV((float)(0 - xo), (float)( 1.4f - yo), static_cast<float>(0), (float)( u1), (float)( v0));
 
     t->end();
     glPopMatrix();

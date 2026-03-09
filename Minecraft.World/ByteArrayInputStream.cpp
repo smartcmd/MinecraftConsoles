@@ -114,5 +114,5 @@ int64_t ByteArrayInputStream::skip(int64_t n)
 
 ByteArrayInputStream::~ByteArrayInputStream()
 {
-	if(buf.data != NULL) delete [] buf.data;
+	if(buf.data != nullptr) delete [] buf.data;
 }

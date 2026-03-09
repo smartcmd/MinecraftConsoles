@@ -517,24 +517,24 @@ static unsigned char pshader_basic_17[412] = {
 };
 
 static ShaderCode pshader_basic_arr[18] = {
-   { pshader_basic_0, { NULL }  },
-   { pshader_basic_1, { NULL }  },
-   { pshader_basic_2, { NULL }  },
-   { pshader_basic_3, { NULL }  },
-   { pshader_basic_4, { NULL }  },
-   { pshader_basic_5, { NULL }  },
-   { pshader_basic_6, { NULL }  },
-   { pshader_basic_7, { NULL }  },
-   { pshader_basic_8, { NULL }  },
-   { pshader_basic_9, { NULL }  },
-   { pshader_basic_10, { NULL }  },
-   { pshader_basic_11, { NULL }  },
-   { pshader_basic_12, { NULL }  },
-   { pshader_basic_13, { NULL }  },
-   { pshader_basic_14, { NULL }  },
-   { pshader_basic_15, { NULL }  },
-   { pshader_basic_16, { NULL }  },
-   { pshader_basic_17, { NULL }  },
+   { pshader_basic_0, { nullptr }  },
+   { pshader_basic_1, { nullptr }  },
+   { pshader_basic_2, { nullptr }  },
+   { pshader_basic_3, { nullptr }  },
+   { pshader_basic_4, { nullptr }  },
+   { pshader_basic_5, { nullptr }  },
+   { pshader_basic_6, { nullptr }  },
+   { pshader_basic_7, { nullptr }  },
+   { pshader_basic_8, { nullptr }  },
+   { pshader_basic_9, { nullptr }  },
+   { pshader_basic_10, { nullptr }  },
+   { pshader_basic_11, { nullptr }  },
+   { pshader_basic_12, { nullptr }  },
+   { pshader_basic_13, { nullptr }  },
+   { pshader_basic_14, { nullptr }  },
+   { pshader_basic_15, { nullptr }  },
+   { pshader_basic_16, { nullptr }  },
+   { pshader_basic_17, { nullptr }  },
 };
 
 static unsigned char pshader_exceptional_blend_1[440] = {
@@ -917,19 +917,19 @@ static unsigned char pshader_exceptional_blend_12[336] = {
 };
 
 static ShaderCode pshader_exceptional_blend_arr[13] = {
-   { NULL, { NULL }  },
-   { pshader_exceptional_blend_1, { NULL }  },
-   { pshader_exceptional_blend_2, { NULL }  },
-   { pshader_exceptional_blend_3, { NULL }  },
-   { pshader_exceptional_blend_4, { NULL }  },
-   { pshader_exceptional_blend_5, { NULL }  },
-   { pshader_exceptional_blend_6, { NULL }  },
-   { pshader_exceptional_blend_7, { NULL }  },
-   { pshader_exceptional_blend_8, { NULL }  },
-   { pshader_exceptional_blend_9, { NULL }  },
-   { pshader_exceptional_blend_10, { NULL }  },
-   { pshader_exceptional_blend_11, { NULL }  },
-   { pshader_exceptional_blend_12, { NULL }  },
+   { nullptr, { nullptr }  },
+   { pshader_exceptional_blend_1, { nullptr }  },
+   { pshader_exceptional_blend_2, { nullptr }  },
+   { pshader_exceptional_blend_3, { nullptr }  },
+   { pshader_exceptional_blend_4, { nullptr }  },
+   { pshader_exceptional_blend_5, { nullptr }  },
+   { pshader_exceptional_blend_6, { nullptr }  },
+   { pshader_exceptional_blend_7, { nullptr }  },
+   { pshader_exceptional_blend_8, { nullptr }  },
+   { pshader_exceptional_blend_9, { nullptr }  },
+   { pshader_exceptional_blend_10, { nullptr }  },
+   { pshader_exceptional_blend_11, { nullptr }  },
+   { pshader_exceptional_blend_12, { nullptr }  },
 };
 
 static unsigned char pshader_filter_0[420] = {
@@ -1685,38 +1685,38 @@ static unsigned char pshader_filter_27[412] = {
 };
 
 static ShaderCode pshader_filter_arr[32] = {
-   { pshader_filter_0, { NULL }  },
-   { pshader_filter_1, { NULL }  },
-   { pshader_filter_2, { NULL }  },
-   { pshader_filter_3, { NULL }  },
-   { pshader_filter_4, { NULL }  },
-   { pshader_filter_5, { NULL }  },
-   { pshader_filter_6, { NULL }  },
-   { pshader_filter_7, { NULL }  },
-   { pshader_filter_8, { NULL }  },
-   { pshader_filter_9, { NULL }  },
-   { pshader_filter_10, { NULL }  },
-   { pshader_filter_11, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { pshader_filter_16, { NULL }  },
-   { pshader_filter_17, { NULL }  },
-   { pshader_filter_18, { NULL }  },
-   { pshader_filter_19, { NULL }  },
-   { pshader_filter_20, { NULL }  },
-   { pshader_filter_21, { NULL }  },
-   { pshader_filter_22, { NULL }  },
-   { pshader_filter_23, { NULL }  },
-   { pshader_filter_24, { NULL }  },
-   { pshader_filter_25, { NULL }  },
-   { pshader_filter_26, { NULL }  },
-   { pshader_filter_27, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
+   { pshader_filter_0, { nullptr }  },
+   { pshader_filter_1, { nullptr }  },
+   { pshader_filter_2, { nullptr }  },
+   { pshader_filter_3, { nullptr }  },
+   { pshader_filter_4, { nullptr }  },
+   { pshader_filter_5, { nullptr }  },
+   { pshader_filter_6, { nullptr }  },
+   { pshader_filter_7, { nullptr }  },
+   { pshader_filter_8, { nullptr }  },
+   { pshader_filter_9, { nullptr }  },
+   { pshader_filter_10, { nullptr }  },
+   { pshader_filter_11, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { pshader_filter_16, { nullptr }  },
+   { pshader_filter_17, { nullptr }  },
+   { pshader_filter_18, { nullptr }  },
+   { pshader_filter_19, { nullptr }  },
+   { pshader_filter_20, { nullptr }  },
+   { pshader_filter_21, { nullptr }  },
+   { pshader_filter_22, { nullptr }  },
+   { pshader_filter_23, { nullptr }  },
+   { pshader_filter_24, { nullptr }  },
+   { pshader_filter_25, { nullptr }  },
+   { pshader_filter_26, { nullptr }  },
+   { pshader_filter_27, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
 };
 
 static unsigned char pshader_blur_2[356] = {
@@ -2024,16 +2024,16 @@ static unsigned char pshader_blur_9[748] = {
 };
 
 static ShaderCode pshader_blur_arr[10] = {
-   { NULL, { NULL }  },
-   { NULL, { NULL }  },
-   { pshader_blur_2, { NULL }  },
-   { pshader_blur_3, { NULL }  },
-   { pshader_blur_4, { NULL }  },
-   { pshader_blur_5, { NULL }  },
-   { pshader_blur_6, { NULL }  },
-   { pshader_blur_7, { NULL }  },
-   { pshader_blur_8, { NULL }  },
-   { pshader_blur_9, { NULL }  },
+   { nullptr, { nullptr }  },
+   { nullptr, { nullptr }  },
+   { pshader_blur_2, { nullptr }  },
+   { pshader_blur_3, { nullptr }  },
+   { pshader_blur_4, { nullptr }  },
+   { pshader_blur_5, { nullptr }  },
+   { pshader_blur_6, { nullptr }  },
+   { pshader_blur_7, { nullptr }  },
+   { pshader_blur_8, { nullptr }  },
+   { pshader_blur_9, { nullptr }  },
 };
 
 static unsigned char pshader_color_matrix_0[348] = {
@@ -2062,7 +2062,7 @@ static unsigned char pshader_color_matrix_0[348] = {
 };
 
 static ShaderCode pshader_color_matrix_arr[1] = {
-   { pshader_color_matrix_0, { NULL }  },
+   { pshader_color_matrix_0, { nullptr }  },
 };
 
 static unsigned char pshader_manual_clear_0[164] = {
@@ -2080,7 +2080,7 @@ static unsigned char pshader_manual_clear_0[164] = {
 };
 
 static ShaderCode pshader_manual_clear_arr[1] = {
-   { pshader_manual_clear_0, { NULL }  },
+   { pshader_manual_clear_0, { nullptr }  },
 };
 
 static unsigned char vshader_vsps4_0[580] = {
@@ -2124,7 +2124,7 @@ static unsigned char vshader_vsps4_0[580] = {
 };
 
 static ShaderCode vshader_vsps4_arr[1] = {
-   { vshader_vsps4_0, { NULL }  },
+   { vshader_vsps4_0, { nullptr }  },
 };
 
 static unsigned char cshader_tex_upload_0[212] = {
@@ -2145,7 +2145,7 @@ static unsigned char cshader_tex_upload_0[212] = {
 };
 
 static ShaderCode cshader_tex_upload_arr[1] = {
-   { cshader_tex_upload_0, { NULL }  },
+   { cshader_tex_upload_0, { nullptr }  },
 };
 
 static unsigned char cshader_memset_0[196] = {
@@ -2165,7 +2165,7 @@ static unsigned char cshader_memset_0[196] = {
 };
 
 static ShaderCode cshader_memset_arr[1] = {
-   { cshader_memset_0, { NULL }  },
+   { cshader_memset_0, { nullptr }  },
 };
 
 static unsigned char cshader_defragment_0[204] = {
@@ -2185,7 +2185,7 @@ static unsigned char cshader_defragment_0[204] = {
 };
 
 static ShaderCode cshader_defragment_arr[1] = {
-   { cshader_defragment_0, { NULL }  },
+   { cshader_defragment_0, { nullptr }  },
 };
 
 static unsigned char cshader_mipgen_0[340] = {
@@ -2214,6 +2214,6 @@ static unsigned char cshader_mipgen_0[340] = {
 };
 
 static ShaderCode cshader_mipgen_arr[1] = {
-   { cshader_mipgen_0, { NULL }  },
+   { cshader_mipgen_0, { nullptr }  },
 };
 
