@@ -39,9 +39,8 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 	if (app.GetGameSettings(m_iPad, eGameSetting_FOV) < 101) {
 		float newFov = app.GetGameSettings(m_iPad, eGameSetting_FOV) * 40.0f / 100.0f; // old system stores 70-110 as 0-100. divide by 4 to get 0-40 for 70-110
 		if (newFov > 15) newFov = 15; // FOV of 85 in the old system is the same as 110 in new system, so if set higher than that we need to cap it. 
-		newFov *= (20.0f / 15.0f); // we need to map the old range from 70-85 to 90-110 so we can convert to a new equivalent FOV 
-		// if old FOV was 70, newFov = 0. if old FOV was >= 85, new newFov = 20.
-		newFov += 60; // apply offset so now our FOV is between 60-80 (which is 90-110 in new system)
+		newFov *= (40.0f / 15.0f); // we need to map the old range from 70-85 to 70-110 so we can convert to a new equivalent FOV 
+		newFov += 40; // apply offset so now our FOV is between 40-80 (which is 70-110 in new system)
 		app.SetGameSettings(m_iPad, eGameSetting_FOV, (newFov / (80.0f / 100.0f)) + 101); // store new value in range from 101-201
 		pMinecraft->options->fov = (newFov / 40.0f) - 1;
 	}
