@@ -42,7 +42,7 @@ void BreakingItemParticle::render(Tesselator *t, float a, float xa, float ya, fl
     float v1 = v0 + 0.999f / 16.0f / 4;
     float r = 0.1f * size;
 
-	if (tex != NULL)
+	if (tex != nullptr)
 	{
 		u0 = tex->getU((uo / 4.0f) * SharedConstants::WORLD_RESOLUTION);
 		u1 = tex->getU(((uo + 1) / 4.0f) * SharedConstants::WORLD_RESOLUTION);
@@ -50,9 +50,9 @@ void BreakingItemParticle::render(Tesselator *t, float a, float xa, float ya, fl
 		v1 = tex->getV(((vo + 1) / 4.0f) * SharedConstants::WORLD_RESOLUTION);
 	}
 
-    float x = (float) (xo + (this->x - xo) * a - xOff);
-    float y = (float) (yo + (this->y - yo) * a - yOff);
-    float z = (float) (zo + (this->z - zo) * a - zOff);
+    float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+    float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+    float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
     float br = SharedConstants::TEXTURE_LIGHTING ? 1 : getBrightness(a);	// 4J - change brought forward from 1.8.2
     t->color(br * rCol, br * gCol, br * bCol);
 

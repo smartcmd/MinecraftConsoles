@@ -31,7 +31,7 @@ void Spider::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, static_cast<byte>(0));
 }
 
 void Spider::tick()
@@ -109,7 +109,7 @@ void Spider::checkHurtTarget(shared_ptr<Entity> target, float d)
 		{
 			double xdd = target->x - x;
 			double zdd = target->z - z;
-			float dd = (float) sqrt(xdd * xdd + zdd * zdd);
+			float dd = static_cast<float>(sqrt(xdd * xdd + zdd * zdd));
 			xd = (xdd / dd * 0.5f) * 0.8f + xd * 0.2f;
 			zd = (zdd / dd * 0.5f) * 0.8f + zd * 0.2f;
 			yd = 0.4f;
@@ -195,26 +195,26 @@ MobGroupData *Spider::finalizeMobSpawn(MobGroupData *groupData, int extraData /*
 	if (level->random->nextInt(100) == 0)
 #endif
 	{
-		shared_ptr<Skeleton> skeleton = shared_ptr<Skeleton>( new Skeleton(level) );
+		shared_ptr<Skeleton> skeleton = std::make_shared<Skeleton>(level);
 		skeleton->moveTo(x, y, z, yRot, 0);
-		skeleton->finalizeMobSpawn(NULL);
+		skeleton->finalizeMobSpawn(nullptr);
 		level->addEntity(skeleton);
 		skeleton->ride(shared_from_this());
 	}
 
-	if (groupData == NULL)
+	if (groupData == nullptr)
 	{
 		groupData = new SpiderEffectsGroupData();
 
 		if (level->difficulty > Difficulty::NORMAL && level->random->nextFloat() < SPIDER_SPECIAL_EFFECT_CHANCE * level->getDifficulty(x, y, z))
 		{
-			((SpiderEffectsGroupData *) groupData)->setRandomEffect(level->random);
+			static_cast<SpiderEffectsGroupData *>(groupData)->setRandomEffect(level->random);
 		}
 	}
-	if ( dynamic_cast<SpiderEffectsGroupData *>( groupData ) != NULL)
+	if ( dynamic_cast<SpiderEffectsGroupData *>( groupData ) != nullptr)
 	{
-		int effect = ((SpiderEffectsGroupData *) groupData)->effectId;
-		if (effect > 0 && MobEffect::effects[effect] != NULL)
+		int effect = static_cast<SpiderEffectsGroupData *>(groupData)->effectId;
+		if (effect > 0 && MobEffect::effects[effect] != nullptr)
 		{
 			addEffect(new MobEffectInstance(effect, Integer::MAX_VALUE));
 		}

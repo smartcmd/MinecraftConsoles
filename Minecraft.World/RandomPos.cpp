@@ -7,7 +7,7 @@ Vec3 *RandomPos::tempDir = Vec3::newPermanent(0, 0, 0);
 
 Vec3 *RandomPos::getPos(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, int quadrant/*=-1*/)		// 4J - added quadrant
 {
-	return generateRandomPos(mob, xzDist, yDist, NULL, quadrant);
+	return generateRandomPos(mob, xzDist, yDist, nullptr, quadrant);
 }
 
 Vec3 *RandomPos::getPosTowards(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *towardsPos)
@@ -62,7 +62,7 @@ Vec3 *RandomPos::generateRandomPos(shared_ptr<PathfinderMob> mob, int xzDist, in
 		}
 		yt = random->nextInt(2 * yDist) - yDist;
 
-		if (dir != NULL && xt * dir->x + zt * dir->z < 0) continue;
+		if (dir != nullptr && xt * dir->x + zt * dir->z < 0) continue;
 
 		xt += Mth::floor(mob->x);
 		yt += Mth::floor(mob->y);
@@ -84,5 +84,5 @@ Vec3 *RandomPos::generateRandomPos(shared_ptr<PathfinderMob> mob, int xzDist, in
 		return Vec3::newTemp(xBest, yBest, zBest);
 	}
 
-	return NULL;
+	return nullptr;
 }

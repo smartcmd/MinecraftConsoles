@@ -20,7 +20,7 @@ void UIControl_DLCList::addItem(const string &label, bool showTick, int iId)
 
 	IggyStringUTF8 stringVal;
 	stringVal.string = (char*)label.c_str();
-	stringVal.length = (S32)label.length();
+	stringVal.length = static_cast<S32>(label.length());
 	value[0].type = IGGY_DATATYPE_string_UTF8;
 	value[0].string8 = stringVal;
 
@@ -41,7 +41,7 @@ void UIControl_DLCList::addItem(const wstring &label, bool showTick, int iId)
 
 	IggyStringUTF16 stringVal;
 	stringVal.string = (IggyUTF16 *)label.c_str();
-	stringVal.length = (S32)label.length();
+	stringVal.length = static_cast<S32>(label.length());
 	value[0].type = IGGY_DATATYPE_string_UTF16;
 	value[0].string16 = stringVal;
 

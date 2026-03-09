@@ -8,10 +8,10 @@
 
 BaseMobSpawner::BaseMobSpawner()
 {
-	spawnPotentials = NULL;
+	spawnPotentials = nullptr;
 	spawnDelay = 20;
 	entityId = L"Pig";
-	nextSpawnData = NULL;
+	nextSpawnData = nullptr;
 	spin = oSpin = 0.0;
 
 	minSpawnDelay = SharedConstants::TICKS_PER_SECOND * 10;
@@ -37,7 +37,7 @@ BaseMobSpawner::~BaseMobSpawner()
 
 wstring BaseMobSpawner::getEntityId()
 {
-	if (getNextSpawnData() == NULL)
+	if (getNextSpawnData() == nullptr)
 	{
 		if (entityId.compare(L"Minecart") == 0)
 		{
@@ -58,7 +58,7 @@ void BaseMobSpawner::setEntityId(const wstring &entityId)
 
 bool BaseMobSpawner::isNearPlayer()
 {
-	return getLevel()->getNearestPlayer(getX() + 0.5, getY() + 0.5, getZ() + 0.5, requiredPlayerRange) != NULL;
+	return getLevel()->getNearestPlayer(getX() + 0.5, getY() + 0.5, getZ() + 0.5, requiredPlayerRange) != nullptr;
 }
 
 void BaseMobSpawner::tick()
@@ -78,7 +78,7 @@ void BaseMobSpawner::tick()
 
 		if (spawnDelay > 0) spawnDelay--;
 		oSpin = spin;
-		spin = (int)(spin + 1000 / (spawnDelay + 200.0f)) % 360;
+		spin = static_cast<int>(spin + 1000 / (spawnDelay + 200.0f)) % 360;
 	}
 	else
 	{
@@ -95,7 +95,7 @@ void BaseMobSpawner::tick()
 		for (int c = 0; c < spawnCount; c++)
 		{
 			shared_ptr<Entity> entity = EntityIO::newEntity(getEntityId(), getLevel());
-			if (entity == NULL) return;
+			if (entity == nullptr) return;
 
 			int nearBy = getLevel()->getEntitiesOfClass( typeid(entity.get()), AABB::newTemp(getX(), getY(), getZ(), getX() + 1, getY() + 1, getZ() + 1)->grow(spawnRange * 2, 4, spawnRange * 2))->size();
 			if (nearBy >= maxNearbyEntities)
@@ -111,12 +111,12 @@ void BaseMobSpawner::tick()
 
 			entity->moveTo(xp, yp, zp, getLevel()->random->nextFloat() * 360, 0);
 
-			if (mob == NULL || mob->canSpawn())
+			if (mob == nullptr || mob->canSpawn())
 			{
 				loadDataAndAddEntity(entity);
 				getLevel()->levelEvent(LevelEvent::PARTICLES_MOBTILE_SPAWN, getX(), getY(), getZ(), 0);
 
-				if (mob != NULL)
+				if (mob != nullptr)
 				{
 					mob->spawnAnim();
 				}
@@ -131,7 +131,7 @@ void BaseMobSpawner::tick()
 
 shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entity)
 {
-	if (getNextSpawnData() != NULL)
+	if (getNextSpawnData() != nullptr)
 	{
 		CompoundTag *data = new CompoundTag();
 		entity->save(data);
@@ -147,7 +147,7 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 		}
 
 		entity->load(data);
-		if (entity->level != NULL) entity->level->addEntity(entity);
+		if (entity->level != nullptr) entity->level->addEntity(entity);
 
 		// add mounts
 		shared_ptr<Entity> rider = entity;
@@ -155,7 +155,7 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 		{
 			CompoundTag *ridingTag = data->getCompound(Entity::RIDING_TAG);
 			shared_ptr<Entity> mount = EntityIO::newEntity(ridingTag->getString(L"id"), entity->level);
-			if (mount != NULL)
+			if (mount != nullptr)
 			{
 				CompoundTag *mountData = new CompoundTag();
 				mount->save(mountData);
@@ -172,7 +172,7 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 				mount->load(mountData);
 				mount->moveTo(rider->x, rider->y, rider->z, rider->yRot, rider->xRot);
 
-				if (entity->level != NULL) entity->level->addEntity(mount);
+				if (entity->level != nullptr) entity->level->addEntity(mount);
 				rider->ride(mount);
 			}
 			rider = mount;
@@ -180,9 +180,9 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 		}
 
 	}
-	else if (entity->instanceof(eTYPE_LIVINGENTITY) && entity->level != NULL)
+	else if (entity->instanceof(eTYPE_LIVINGENTITY) && entity->level != nullptr)
 	{
-		dynamic_pointer_cast<Mob>( entity )->finalizeMobSpawn(NULL);
+		dynamic_pointer_cast<Mob>( entity )->finalizeMobSpawn(nullptr);
 		getLevel()->addEntity(entity);
 	}
 
@@ -200,9 +200,9 @@ void BaseMobSpawner::delay()
 		spawnDelay = minSpawnDelay + getLevel()->random->nextInt(maxSpawnDelay - minSpawnDelay);
 	}
 
-	if ( (spawnPotentials != NULL) && (spawnPotentials->size() > 0) )
+	if ( (spawnPotentials != nullptr) && (spawnPotentials->size() > 0) )
 	{
-		setNextSpawnData( (SpawnData*) WeighedRandom::getRandomItem((Random*)getLevel()->random, (vector<WeighedRandomItem*>*)spawnPotentials) );
+		setNextSpawnData( static_cast<SpawnData *>(WeighedRandom::getRandomItem((Random *)getLevel()->random, (vector<WeighedRandomItem *> *)spawnPotentials)) );
 	}
 
 	broadcastEvent(EVENT_SPAWN);
@@ -225,7 +225,7 @@ void BaseMobSpawner::load(CompoundTag *tag)
 	}
 	else
 	{
-		spawnPotentials = NULL;
+		spawnPotentials = nullptr;
 	}
 
 	if (tag->contains(L"SpawnData"))
@@ -234,7 +234,7 @@ void BaseMobSpawner::load(CompoundTag *tag)
 	}
 	else
 	{
-		setNextSpawnData(NULL);
+		setNextSpawnData(nullptr);
 	}
 
 	if (tag->contains(L"MinSpawnDelay"))
@@ -252,7 +252,7 @@ void BaseMobSpawner::load(CompoundTag *tag)
 
 	if (tag->contains(L"SpawnRange")) spawnRange = tag->getShort(L"SpawnRange");
 
-	if (getLevel() != NULL && getLevel()->isClientSide)
+	if (getLevel() != nullptr && getLevel()->isClientSide)
 	{
 		displayEntity = nullptr;
 	}
@@ -261,20 +261,20 @@ void BaseMobSpawner::load(CompoundTag *tag)
 void BaseMobSpawner::save(CompoundTag *tag)
 {
 	tag->putString(L"EntityId", getEntityId());
-	tag->putShort(L"Delay", (short) spawnDelay);
-	tag->putShort(L"MinSpawnDelay", (short) minSpawnDelay);
-	tag->putShort(L"MaxSpawnDelay", (short) maxSpawnDelay);
-	tag->putShort(L"SpawnCount", (short) spawnCount);
-	tag->putShort(L"MaxNearbyEntities", (short) maxNearbyEntities);
-	tag->putShort(L"RequiredPlayerRange", (short) requiredPlayerRange);
-	tag->putShort(L"SpawnRange", (short) spawnRange);
+	tag->putShort(L"Delay", static_cast<short>(spawnDelay));
+	tag->putShort(L"MinSpawnDelay", static_cast<short>(minSpawnDelay));
+	tag->putShort(L"MaxSpawnDelay", static_cast<short>(maxSpawnDelay));
+	tag->putShort(L"SpawnCount", static_cast<short>(spawnCount));
+	tag->putShort(L"MaxNearbyEntities", static_cast<short>(maxNearbyEntities));
+	tag->putShort(L"RequiredPlayerRange", static_cast<short>(requiredPlayerRange));
+	tag->putShort(L"SpawnRange", static_cast<short>(spawnRange));
 
-	if (getNextSpawnData() != NULL)
+	if (getNextSpawnData() != nullptr)
 	{
-		tag->putCompound(L"SpawnData", (CompoundTag *) getNextSpawnData()->tag->copy());
+		tag->putCompound(L"SpawnData", static_cast<CompoundTag *>(getNextSpawnData()->tag->copy()));
 	}
 
-	if (getNextSpawnData() != NULL || (spawnPotentials != NULL && spawnPotentials->size() > 0))
+	if (getNextSpawnData() != nullptr || (spawnPotentials != nullptr && spawnPotentials->size() > 0))
 	{
 		ListTag<CompoundTag> *list = new ListTag<CompoundTag>();
 
@@ -296,9 +296,9 @@ void BaseMobSpawner::save(CompoundTag *tag)
 
 shared_ptr<Entity> BaseMobSpawner::getDisplayEntity()
 {
-	if (displayEntity == NULL)
+	if (displayEntity == nullptr)
 	{
-		shared_ptr<Entity> e = EntityIO::newEntity(getEntityId(), NULL);
+		shared_ptr<Entity> e = EntityIO::newEntity(getEntityId(), nullptr);
 		e = loadDataAndAddEntity(e);
 		displayEntity = e;
 	}
@@ -333,7 +333,7 @@ BaseMobSpawner::SpawnData::SpawnData(CompoundTag *base) : WeighedRandomItem(base
 
 	if (_type.compare(L"Minecart") == 0)
 	{
-		if (tag != NULL)
+		if (tag != nullptr)
 		{
 			switch (tag->getInt(L"Type"))
 			{
@@ -362,7 +362,7 @@ BaseMobSpawner::SpawnData::SpawnData(CompoundTag *tag, wstring _type) : WeighedR
 {
 	if (_type.compare(L"Minecart") == 0)
 	{
-		if (tag != NULL)
+		if (tag != nullptr)
 		{
 			switch (tag->getInt(L"Type"))
 			{

@@ -28,7 +28,7 @@ DWORD PistonBaseTile::tlsIdx = TlsAlloc();
 // 4J - ignoreUpdate is a static in java, implementing as TLS here to make thread safe
 bool PistonBaseTile::ignoreUpdate()
 {
-	return (TlsGetValue(tlsIdx) != NULL);
+	return (TlsGetValue(tlsIdx) != nullptr);
 }
 
 void PistonBaseTile::ignoreUpdate(bool set)
@@ -45,9 +45,9 @@ PistonBaseTile::PistonBaseTile(int id, bool isSticky) : Tile(id, Material::pisto
 	setSoundType(SOUND_STONE);
 	setDestroyTime(0.5f);
 
-	iconInside = NULL;
-	iconBack = NULL;
-	iconPlatform = NULL;
+	iconInside = nullptr;
+	iconBack = nullptr;
+	iconPlatform = nullptr;
 }
 
 Icon *PistonBaseTile::getPlatformTexture()
@@ -75,7 +75,7 @@ Icon *PistonBaseTile::getTexture(int face, int data)
 		// when the piston is extended, either normally
 		// or because a piston arm animation, the top
 		// texture is the furnace bottom
-		ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+		ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 		if (isExtended(data) || tls->xx0 > 0 || tls->yy0 > 0 || tls->zz0 > 0 || tls->xx1 < 1 || tls->yy1 < 1 || tls->zz1 < 1)
 		{
 			return iconInside;
@@ -97,7 +97,7 @@ Icon *PistonBaseTile::getTexture(const wstring &name)
 	if (name.compare(PLATFORM_STICKY_TEX) == 0) return Tile::pistonStickyBase->iconPlatform;
 	if (name.compare(INSIDE_TEX) == 0) return Tile::pistonBase->iconInside;
 
-	return NULL;
+	return nullptr;
 }
 
 //@Override
@@ -144,7 +144,7 @@ void PistonBaseTile::neighborChanged(Level *level, int x, int y, int z, int type
 
 void PistonBaseTile::onPlace(Level *level, int x, int y, int z)
 {
-	if (!level->isClientSide && level->getTileEntity(x, y, z) == NULL && !ignoreUpdate())
+	if (!level->isClientSide && level->getTileEntity(x, y, z) == nullptr && !ignoreUpdate())
 	{
 		checkIfExtend(level, x, y, z);
 	}
@@ -255,7 +255,7 @@ bool PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 	{
 		PIXBeginNamedEvent(0,"Contract phase A\n");
 		shared_ptr<TileEntity> prevTileEntity = level->getTileEntity(x + Facing::STEP_X[facing], y + Facing::STEP_Y[facing], z + Facing::STEP_Z[facing]);
-		if (prevTileEntity != NULL && dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity) != NULL)
+		if (prevTileEntity != nullptr && dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity) != nullptr)
 		{
 			dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity)->finalTick();
 		}
@@ -285,7 +285,7 @@ bool PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 				// the block two steps away is a moving piston block piece, so replace it with the real data,
 				// since it's probably this piston which is changing too fast
 				shared_ptr<TileEntity> tileEntity = level->getTileEntity(twoX, twoY, twoZ);
-				if (tileEntity != NULL && dynamic_pointer_cast<PistonPieceEntity>(tileEntity) != NULL )
+				if (tileEntity != nullptr && dynamic_pointer_cast<PistonPieceEntity>(tileEntity) != nullptr )
 				{
 					shared_ptr<PistonPieceEntity> ppe = dynamic_pointer_cast<PistonPieceEntity>(tileEntity);
 
@@ -412,7 +412,7 @@ bool PistonBaseTile::isExtended(int data)
 
 int PistonBaseTile::getNewFacing(Level *level, int x, int y, int z, shared_ptr<LivingEntity> player)
 {
-	if (Mth::abs((float) player->x - x) < 2 && Mth::abs((float) player->z - z) < 2) 
+	if (Mth::abs(static_cast<float>(player->x) - x) < 2 && Mth::abs(static_cast<float>(player->z) - z) < 2) 
 	{
 		// If the player is above the block, the slot is on the top
 		double py = player->y + 1.82 - player->heightOffset;

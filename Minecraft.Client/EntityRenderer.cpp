@@ -18,7 +18,7 @@ ResourceLocation EntityRenderer::SHADOW_LOCATION = ResourceLocation(TN__CLAMP__M
 // 4J - added
 EntityRenderer::EntityRenderer()
 {
-	model = NULL;
+	model = nullptr;
 	tileRenderer = new TileRenderer();
 	shadowRadius = 0;
 	shadowStrength = 1.0f;
@@ -89,7 +89,7 @@ void EntityRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, doubl
 	Icon *fire2 = Tile::fire->getTextureLayer(1);
 
 	glPushMatrix();
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	float s = e->bbWidth * 1.4f;
 	glScalef(s, s, s);
@@ -102,18 +102,18 @@ void EntityRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, doubl
 	float xo = 0.0f;
 
 	float h = e->bbHeight / s;
-	float yo = (float) (e->y - e->bb->y0);
+	float yo = static_cast<float>(e->y - e->bb->y0);
 
 	glRotatef(-entityRenderDispatcher->playerRotY, 0, 1, 0);
 
-	glTranslatef(0, 0, -0.3f + ((int) h) * 0.02f);
+	glTranslatef(0, 0, -0.3f + static_cast<int>(h) * 0.02f);
 	glColor4f(1, 1, 1, 1);
 	float zo = 0;
 	int ss = 0;
 	t->begin();
 	while (h > 0)
 	{
-		Icon *tex = NULL;
+		Icon *tex = nullptr;
 		if (ss % 2 == 0)
 		{
 			tex = fire1;
@@ -238,7 +238,7 @@ void EntityRenderer::renderTileShadow(Tile *tt, double x, double y, double z, in
 	if (a < 0) return;
 	if (a > 1) a = 1;
 	
-	t->color(1.0f, 1.0f, 1.0f, (float) a);
+	t->color(1.0f, 1.0f, 1.0f, static_cast<float>(a));
 	// glColor4f(1, 1, 1, (float) a);
 
 	double x0 = xt + tt->getShapeX0() + xo;
@@ -247,20 +247,20 @@ void EntityRenderer::renderTileShadow(Tile *tt, double x, double y, double z, in
 	double z0 = zt + tt->getShapeZ0() + zo;
 	double z1 = zt + tt->getShapeZ1() + zo;
 
-	float u0 = (float) ((x - (x0)) / 2 / r + 0.5f);
-	float u1 = (float) ((x - (x1)) / 2 / r + 0.5f);
-	float v0 = (float) ((z - (z0)) / 2 / r + 0.5f);
-	float v1 = (float) ((z - (z1)) / 2 / r + 0.5f);
+	float u0 = static_cast<float>((x - (x0)) / 2 / r + 0.5f);
+	float u1 = static_cast<float>((x - (x1)) / 2 / r + 0.5f);
+	float v0 = static_cast<float>((z - (z0)) / 2 / r + 0.5f);
+	float v1 = static_cast<float>((z - (z1)) / 2 / r + 0.5f);
 
 	// u0 = 0;
 	// v0 = 0;
 	// u1 = 1;
 	// v1 = 1;
 
-	t->vertexUV((float)(x0), (float)( y0), (float)( z0), (float)( u0), (float)( v0));
-	t->vertexUV((float)(x0), (float)( y0), (float)( z1), (float)( u0), (float)( v1));
-	t->vertexUV((float)(x1), (float)( y0), (float)( z1), (float)( u1), (float)( v1));
-	t->vertexUV((float)(x1), (float)( y0), (float)( z0), (float)( u1), (float)( v0));
+	t->vertexUV(static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), (float)( u0), (float)( v0));
+	t->vertexUV(static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), (float)( u0), (float)( v1));
+	t->vertexUV(static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), (float)( u1), (float)( v1));
+	t->vertexUV(static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), (float)( u1), (float)( v0));
 }
 
 void EntityRenderer::render(AABB *bb, double xo, double yo, double zo)
@@ -269,42 +269,42 @@ void EntityRenderer::render(AABB *bb, double xo, double yo, double zo)
 	Tesselator *t = Tesselator::getInstance();
 	glColor4f(1, 1, 1, 1);
 	t->begin();
-	t->offset((float)xo, (float)yo, (float)zo);
+	t->offset(static_cast<float>(xo), static_cast<float>(yo), static_cast<float>(zo));
 	t->normal(0, 0, -1);
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
 
 	t->normal(0, 0, 1);
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
 
 	t->normal(0, -1, 0);
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
 
 	t->normal(0, 1, 0);
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
 
 	t->normal(-1, 0, 0);
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
 
 	t->normal(1, 0, 0);
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
 	t->offset(0, 0, 0);
 	t->end();
 	glEnable(GL_TEXTURE_2D);
@@ -315,30 +315,30 @@ void EntityRenderer::renderFlat(AABB *bb)
 {
 	Tesselator *t = Tesselator::getInstance();
 	t->begin();
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x0), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x0), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z0));
-	t->vertex((float)(bb->x1), (float)( bb->y1), (float)( bb->z1));
-	t->vertex((float)(bb->x1), (float)( bb->y0), (float)( bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x0), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z0));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y1), static_cast<float>(bb->z1));
+	t->vertex(static_cast<float>(bb->x1), static_cast<float>(bb->y0), static_cast<float>(bb->z1));
 	t->end();
 }
 
@@ -385,7 +385,7 @@ void EntityRenderer::postRender(shared_ptr<Entity> entity, double x, double y, d
 		if (bRenderPlayerShadow && entityRenderDispatcher->options->fancyGraphics && shadowRadius > 0 && !entity->isInvisible())
 		{
 			double dist = entityRenderDispatcher->distanceToSqr(entity->x, entity->y, entity->z);
-			float pow = (float) ((1 - dist / (16.0f * 16.0f)) * shadowStrength);
+			float pow = static_cast<float>((1 - dist / (16.0f * 16.0f)) * shadowStrength);
 			if (pow > 0)
 			{
 				renderShadow(entity, x, y, z, pow, a);
@@ -406,5 +406,5 @@ void EntityRenderer::registerTerrainTextures(IconRegister *iconRegister)
 
 ResourceLocation *EntityRenderer::getTextureLocation(shared_ptr<Entity> mob)
 {
-	return NULL;
+	return nullptr;
 }

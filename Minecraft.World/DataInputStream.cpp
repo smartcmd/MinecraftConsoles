@@ -92,12 +92,12 @@ bool DataInputStream::readBoolean()
 //the 8-bit value read.
 byte DataInputStream::readByte()
 {
-	return (byte) stream->read();
+	return static_cast<byte>(stream->read());
 }
 
 unsigned char DataInputStream::readUnsignedByte()
 {
-	return (unsigned char) stream->read();
+	return static_cast<unsigned char>(stream->read());
 }
 
 //Reads two input bytes and returns a char value. Let a be the first byte read and b be the second byte. The value returned is:
@@ -110,7 +110,7 @@ wchar_t DataInputStream::readChar()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (wchar_t)((a << 8) | (b & 0xff));
+	return static_cast<wchar_t>((a << 8) | (b & 0xff));
 }
 
 //Reads some bytes from an input stream and stores them into the buffer array b. The number of bytes read is equal to the length of b.
@@ -254,14 +254,14 @@ short DataInputStream::readShort()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (short)((a << 8) | (b & 0xff));
+	return static_cast<short>((a << 8) | (b & 0xff));
 }
 
 unsigned short DataInputStream::readUnsignedShort()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (unsigned short)((a << 8) | (b & 0xff));
+	return static_cast<unsigned short>((a << 8) | (b & 0xff));
 }
 
 //Reads in a string that has been encoded using a modified UTF-8 format. The general contract of readUTF is that it reads a representation
@@ -301,7 +301,7 @@ wstring DataInputStream::readUTF()
 	wstring outputString;
 	int a = stream->read();
 	int b = stream->read();
-	unsigned short UTFLength = (unsigned short) (((a & 0xff) << 8) | (b & 0xff));
+	unsigned short UTFLength = static_cast<unsigned short>(((a & 0xff) << 8) | (b & 0xff));
 
 	//// 4J Stu - I decided while writing DataOutputStream that we didn't need to bother using the UTF8 format
 	//// used in the java libs, and just write in/out as wchar_t all the time
@@ -343,7 +343,7 @@ wstring DataInputStream::readUTF()
 		else if( (firstByte & 0x80) == 0x00 )
 		{
 			// One byte UTF
-			wchar_t readChar = (wchar_t)firstByte;
+			wchar_t readChar = static_cast<wchar_t>(firstByte);
 			outputString.push_back( readChar );
 			continue;
 		}
@@ -374,7 +374,7 @@ wstring DataInputStream::readUTF()
 				break;
 			}
 
-			wchar_t readChar = (wchar_t)( ((firstByte& 0x1F) << 6) | (secondByte & 0x3F) );
+			wchar_t readChar = static_cast<wchar_t>(((firstByte & 0x1F) << 6) | (secondByte & 0x3F));
 			outputString.push_back( readChar );
 			continue;
 		}
@@ -422,7 +422,7 @@ wstring DataInputStream::readUTF()
 				break;
 			}
 
-			wchar_t readChar = (wchar_t)(((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
+			wchar_t readChar = static_cast<wchar_t>(((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
 			outputString.push_back( readChar );
 			continue;
 		}

@@ -44,8 +44,8 @@ bool JustGrSource::ready() { return true; }
 
 LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 {
-	m_spawnPos = NULL;
-	m_stringTable = NULL;
+	m_spawnPos = nullptr;
+	m_stringTable = nullptr;
 
 	m_hasLoadedData = false;
 
@@ -56,7 +56,7 @@ LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 	m_minY = INT_MAX;
 	m_bRequiresGameRules = false;
 
-	m_pbBaseSaveData = NULL;
+	m_pbBaseSaveData = nullptr;
 	m_dwBaseSaveSize = 0;
 
 	m_parentDLCPack = parentPack;
@@ -66,7 +66,7 @@ LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 LevelGenerationOptions::~LevelGenerationOptions()
 {
 	clearSchematics();
-	if(m_spawnPos != NULL) delete m_spawnPos;
+	if(m_spawnPos != nullptr) delete m_spawnPos;
 	for (auto& it : m_schematicRules )
 	{
 		delete it;
@@ -141,26 +141,26 @@ void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
 
 GameRuleDefinition *LevelGenerationOptions::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_ApplySchematic)
 	{
 		rule = new ApplySchematicRuleDefinition(this);
-		m_schematicRules.push_back((ApplySchematicRuleDefinition *)rule);
+		m_schematicRules.push_back(static_cast<ApplySchematicRuleDefinition *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_GenerateStructure)
 	{
 		rule = new ConsoleGenerateStructure();
-		m_structureRules.push_back((ConsoleGenerateStructure *)rule);
+		m_structureRules.push_back(static_cast<ConsoleGenerateStructure *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_BiomeOverride)
 	{
 		rule = new BiomeOverride();
-		m_biomeOverrides.push_back((BiomeOverride *)rule);
+		m_biomeOverrides.push_back(static_cast<BiomeOverride *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_StartFeature)
 	{
 		rule = new StartFeature();
-		m_features.push_back((StartFeature *)rule);
+		m_features.push_back(static_cast<StartFeature *>(rule));
 	}
 	else
 	{
@@ -180,21 +180,21 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 	}
 	else if(attributeName.compare(L"spawnX") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->x = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnX=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnY") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->y = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnY=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnZ") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->z = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnZ=%d\n",value);
@@ -268,7 +268,7 @@ void LevelGenerationOptions::processSchematics(LevelChunk *chunk)
 		if (structureStart->getBoundingBox()->intersects(cx, cz, cx + 15, cz + 15))
 		{
 			BoundingBox *bb = new BoundingBox(cx, cz, cx + 15, cz + 15);
-			structureStart->postProcess(chunk->level, NULL, bb);
+			structureStart->postProcess(chunk->level, nullptr, bb);
 			delete bb;
 		}
 	}
@@ -353,7 +353,7 @@ ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &f
 		return it->second;
 	}
 
-	ConsoleSchematicFile *schematic = NULL;
+	ConsoleSchematicFile *schematic = nullptr;
 	byteArray data(pbData,dwLen);
 	ByteArrayInputStream bais(data);
 	DataInputStream dis(&bais);
@@ -366,7 +366,7 @@ ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &f
 
 ConsoleSchematicFile *LevelGenerationOptions::getSchematicFile(const wstring &filename)
 {
-	ConsoleSchematicFile *schematic = NULL;
+	ConsoleSchematicFile *schematic = nullptr;
 	// If we have already loaded this, just return
 	auto it = m_schematics.find(filename);
 	if(it != m_schematics.end())
@@ -399,7 +399,7 @@ void LevelGenerationOptions::loadStringTable(StringTable *table)
 
 LPCWSTR LevelGenerationOptions::getString(const wstring &key)
 {
-	if(m_stringTable == NULL)
+	if(m_stringTable == nullptr)
 	{
 		return L"";
 	}
@@ -456,7 +456,7 @@ unordered_map<wstring, ConsoleSchematicFile *> *LevelGenerationOptions::getUnfin
 void LevelGenerationOptions::loadBaseSaveData()
 {
 	int mountIndex = -1;
-	if(m_parentDLCPack != NULL) mountIndex = m_parentDLCPack->GetDLCMountIndex();
+	if(m_parentDLCPack != nullptr) mountIndex = m_parentDLCPack->GetDLCMountIndex();
 
 	if(mountIndex > -1)
 	{
@@ -485,7 +485,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 
 int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask)
 {
-	LevelGenerationOptions *lgo = (LevelGenerationOptions *)pParam;
+	LevelGenerationOptions *lgo = static_cast<LevelGenerationOptions *>(pParam);
 	lgo->m_bLoadingData = false;
 	if(dwErr!=ERROR_SUCCESS)
 	{
@@ -499,7 +499,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 		int gameRulesCount = lgo->m_parentDLCPack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 		for(int i = 0; i < gameRulesCount; ++i)
 		{
-			DLCGameRulesHeader *dlcFile = (DLCGameRulesHeader *) lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+			DLCGameRulesHeader *dlcFile = static_cast<DLCGameRulesHeader *>(lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 
 			if (!dlcFile->getGrfPath().empty())
 			{
@@ -513,10 +513,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						pchFilename, // file name
 						GENERIC_READ, // access mode
 						0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-						NULL, // Unused
+						nullptr, // Unused
 						OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 						FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-						NULL // Unsupported
+						nullptr // Unsupported
 						);
 #else
 					const char *pchFilename=wstringtofilename(grf.getPath());
@@ -524,10 +524,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						pchFilename, // file name
 						GENERIC_READ, // access mode
 						0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-						NULL, // Unused
+						nullptr, // Unused
 						OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 						FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-						NULL // Unsupported
+						nullptr // Unsupported
 						);
 #endif
 
@@ -536,7 +536,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						DWORD dwFileSize = grf.length();
 						DWORD bytesRead;
 						PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-						BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,NULL);
+						BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,nullptr);
 						if(bSuccess==FALSE)
 						{
 							app.FatalLoadError();
@@ -565,10 +565,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 					pchFilename, // file name
 					GENERIC_READ, // access mode
 					0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-					NULL, // Unused
+					nullptr, // Unused
 					OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 					FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-					NULL // Unsupported
+					nullptr // Unsupported
 					);
 #else
 				const char *pchFilename=wstringtofilename(save.getPath());
@@ -576,18 +576,18 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 					pchFilename, // file name
 					GENERIC_READ, // access mode
 					0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-					NULL, // Unused
+					nullptr, // Unused
 					OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 					FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-					NULL // Unsupported
+					nullptr // Unsupported
 					);
 #endif
 
 				if( fileHandle != INVALID_HANDLE_VALUE )
 				{
-					DWORD bytesRead,dwFileSize = GetFileSize(fileHandle,NULL);
+					DWORD bytesRead,dwFileSize = GetFileSize(fileHandle,nullptr);
 					PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-					BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,NULL);
+					BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,nullptr);
 					if(bSuccess==FALSE)
 					{
 						app.FatalLoadError();
@@ -624,8 +624,8 @@ void LevelGenerationOptions::reset_start()
 
 void LevelGenerationOptions::reset_finish()
 {
-	//if (m_spawnPos)				{ delete m_spawnPos; m_spawnPos = NULL; }
-	//if (m_stringTable)			{ delete m_stringTable; m_stringTable = NULL; }
+	//if (m_spawnPos)				{ delete m_spawnPos; m_spawnPos = nullptr; }
+	//if (m_stringTable)			{ delete m_stringTable; m_stringTable = nullptr; }
 
 	if (isFromDLC())
 	{
@@ -694,8 +694,8 @@ bool LevelGenerationOptions::ready() { return info()->ready(); }
 
 void LevelGenerationOptions::setBaseSaveData(PBYTE pbData, DWORD dwSize) { m_pbBaseSaveData = pbData; m_dwBaseSaveSize = dwSize; }
 PBYTE LevelGenerationOptions::getBaseSaveData(DWORD &size) { size = m_dwBaseSaveSize; return m_pbBaseSaveData; }
-bool LevelGenerationOptions::hasBaseSaveData() { return m_dwBaseSaveSize > 0 && m_pbBaseSaveData != NULL; }
-void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete m_pbBaseSaveData; m_pbBaseSaveData = NULL; m_dwBaseSaveSize = 0; }
+bool LevelGenerationOptions::hasBaseSaveData() { return m_dwBaseSaveSize > 0 && m_pbBaseSaveData != nullptr; }
+void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete m_pbBaseSaveData; m_pbBaseSaveData = nullptr; m_dwBaseSaveSize = 0; }
 
 bool LevelGenerationOptions::hasLoadedData() { return m_hasLoadedData; }
 void LevelGenerationOptions::setLoadedData() { m_hasLoadedData = true; }

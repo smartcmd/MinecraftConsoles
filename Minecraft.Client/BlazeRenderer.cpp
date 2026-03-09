@@ -7,7 +7,7 @@ ResourceLocation BlazeRenderer::BLAZE_LOCATION = ResourceLocation(TN_MOB_BLAZE);
 
 BlazeRenderer::BlazeRenderer() : MobRenderer(new BlazeModel(), 0.5f)
 {
-	modelVersion = ((BlazeModel *) model)->modelVersion();
+	modelVersion = static_cast<BlazeModel *>(model)->modelVersion();
 }
 
 void BlazeRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
@@ -16,7 +16,7 @@ void BlazeRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z
 	// do some casting around instead
 	shared_ptr<Blaze> mob = dynamic_pointer_cast<Blaze>(_mob);
 
-	int modelVersion = ((BlazeModel *) model)->modelVersion();
+	int modelVersion = static_cast<BlazeModel *>(model)->modelVersion();
 	if (modelVersion != this->modelVersion)
 	{
 		this->modelVersion = modelVersion;

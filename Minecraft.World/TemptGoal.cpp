@@ -29,10 +29,10 @@ bool TemptGoal::canUse()
 		return false;
 	}
 	player = weak_ptr<Player>(mob->level->getNearestPlayer(mob->shared_from_this(), 10));
-	if (player.lock() == NULL) return false;
+	if (player.lock() == nullptr) return false;
 	mob->setDespawnProtected();		// If we've got a nearby player, then consider this mob as something we'd miss if it despawned
 	shared_ptr<ItemInstance> item = player.lock()->getSelectedItem();
-	if (item == NULL) return false;
+	if (item == nullptr) return false;
 	if (item->id != itemId) return false;
 	return true;
 }
@@ -41,7 +41,7 @@ bool TemptGoal::canContinueToUse()
 {
 	if (canScare)
 	{
-		if(player.lock() == NULL) return false;
+		if(player.lock() == nullptr) return false;
 		if (mob->distanceToSqr(player.lock()) < 6 * 6)
 		{
 			if (player.lock()->distanceToSqr(px, py, pz) > 0.1 * 0.1) return false;

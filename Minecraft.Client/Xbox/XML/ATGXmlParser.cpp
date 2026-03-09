@@ -27,7 +27,7 @@ XMLParser::XMLParser()
 {
     m_pWritePtr = m_pWriteBuf;
     m_pReadPtr = m_pReadBuf;
-    m_pISAXCallback = NULL;
+    m_pISAXCallback = nullptr;
     m_hFile = INVALID_HANDLE_VALUE;
 }
 
@@ -49,7 +49,7 @@ VOID XMLParser::FillBuffer()
 
     m_pReadPtr = m_pReadBuf;
 
-    if( m_hFile == NULL )
+    if( m_hFile == nullptr )
     {
         if( m_uInXMLBufferCharsLeft > XML_READ_BUFFER_SIZE )
             NChars = XML_READ_BUFFER_SIZE;
@@ -62,15 +62,15 @@ VOID XMLParser::FillBuffer()
     }
     else
     {
-        if( !ReadFile( m_hFile, m_pReadBuf, XML_READ_BUFFER_SIZE, &NChars, NULL ))
+        if( !ReadFile( m_hFile, m_pReadBuf, XML_READ_BUFFER_SIZE, &NChars, nullptr ))
         {
             return;
         }
     }
 
     m_dwCharsConsumed += NChars;
-    int64_t iProgress = m_dwCharsTotal ? (( (int64_t)m_dwCharsConsumed * 1000 ) / (int64_t)m_dwCharsTotal) : 0;
-    m_pISAXCallback->SetParseProgress( (DWORD)iProgress );
+    int64_t iProgress = m_dwCharsTotal ? (( static_cast<int64_t>(m_dwCharsConsumed) * 1000 ) / static_cast<int64_t>(m_dwCharsTotal)) : 0;
+    m_pISAXCallback->SetParseProgress( static_cast<DWORD>(iProgress) );
 
     m_pReadBuf[ NChars ] = '\0';
     m_pReadBuf[ NChars + 1] = '\0';
@@ -192,30 +192,29 @@ HRESULT XMLParser::ConvertEscape()
     // must be an entity reference
 
     WCHAR *pEntityRefVal = m_pWritePtr;
-    UINT EntityRefLen;
 
     SkipNextAdvance();
     if( FAILED( hr = AdvanceName() ) )
         return hr;
 
-    EntityRefLen = (UINT)( m_pWritePtr - pEntityRefVal );
+    const UINT entityRefLen = static_cast<UINT>(m_pWritePtr - pEntityRefVal);
     m_pWritePtr = pEntityRefVal;
 
-    if ( EntityRefLen == 0 )
+    if ( entityRefLen == 0 )
     {
         Error( E_INVALID_XML_SYNTAX, "Expecting entity name after &" );
         return E_INVALID_XML_SYNTAX;
     }
 
-    if( !wcsncmp( pEntityRefVal, L"lt", EntityRefLen ) )
+    if( !wcsncmp( pEntityRefVal, L"lt", entityRefLen ) )
         wVal = '<';
-    else if( !wcsncmp( pEntityRefVal, L"gt", EntityRefLen ) )
+    else if( !wcsncmp( pEntityRefVal, L"gt", entityRefLen ) )
         wVal = '>';
-    else if( !wcsncmp( pEntityRefVal, L"amp", EntityRefLen ) )
+    else if( !wcsncmp( pEntityRefVal, L"amp", entityRefLen ) )
         wVal = '&';
-    else if( !wcsncmp( pEntityRefVal, L"apos", EntityRefLen ) )
+    else if( !wcsncmp( pEntityRefVal, L"apos", entityRefLen ) )
         wVal = '\'';
-    else if( !wcsncmp( pEntityRefVal, L"quot", EntityRefLen ) )
+    else if( !wcsncmp( pEntityRefVal, L"quot", entityRefLen ) )
         wVal = '"';
     else
     {
@@ -359,7 +358,7 @@ HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
         // Read more from the file
         FillBuffer();
 
-        // We are at EOF if it is still NULL
+        // We are at EOF if it is still nullptr
         if ( ( m_pReadPtr[0] == '\0' ) && ( m_pReadPtr[1] == '\0' ) )
         {
             if( !bOkToFail )
@@ -498,7 +497,7 @@ HRESULT XMLParser::AdvanceElement()
             return hr;
 
         if( FAILED( m_pISAXCallback->ElementEnd( pEntityRefVal,
-                                                (UINT) ( m_pWritePtr - pEntityRefVal ) ) ) )
+                                                 static_cast<UINT>(m_pWritePtr - pEntityRefVal) ) ) )
             return E_ABORT;
 
         if( FAILED( hr = ConsumeSpace() ) )
@@ -541,7 +540,7 @@ HRESULT XMLParser::AdvanceElement()
         if( FAILED( hr = AdvanceName() ) )
             return hr;
 
-        EntityRefLen = (UINT)( m_pWritePtr - pEntityRefVal );
+        EntityRefLen = static_cast<UINT>(m_pWritePtr - pEntityRefVal);
 
         if( FAILED( hr = ConsumeSpace() ) )
             return hr;
@@ -565,8 +564,7 @@ HRESULT XMLParser::AdvanceElement()
             // Attribute name
             if( FAILED( hr = AdvanceName() ) )
                 return hr;
-
-            Attributes[ NumAttrs ].NameLen = (UINT)( m_pWritePtr - Attributes[ NumAttrs ].strName );
+            Attributes[ NumAttrs ].NameLen = static_cast<UINT>(m_pWritePtr - Attributes[NumAttrs].strName);
 
             if( FAILED( hr = ConsumeSpace() ) )
                 return hr;
@@ -588,9 +586,8 @@ HRESULT XMLParser::AdvanceElement()
             if( FAILED( hr = AdvanceAttrVal() ) )
                 return hr;
 
-            Attributes[ NumAttrs ].ValueLen = (UINT)( m_pWritePtr -
-                Attributes[ NumAttrs ].strValue );
-
+            Attributes[ NumAttrs ].ValueLen = static_cast<UINT>(m_pWritePtr -
+                                                                Attributes[NumAttrs].strValue);
             ++NumAttrs;
 
             if( FAILED( hr = ConsumeSpace() ) )
@@ -663,13 +660,13 @@ HRESULT XMLParser::AdvanceCDATA()
 
         if( m_pWritePtr - m_pWriteBuf >= XML_WRITE_BUFFER_SIZE )
         {
-            if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), TRUE ) ) )
+            if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, static_cast<UINT>(m_pWritePtr - m_pWriteBuf), TRUE ) ) )
                 return E_ABORT;
             m_pWritePtr = m_pWriteBuf;
         }
     }
 
-    if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
+    if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, static_cast<UINT>(m_pWritePtr - m_pWriteBuf), FALSE ) ) )
         return E_ABORT;
 
     m_pWritePtr = m_pWriteBuf;
@@ -782,9 +779,9 @@ HRESULT XMLParser::MainParseLoop()
     {
         if( FAILED( AdvanceCharacter( TRUE ) ) )
         {
-            if ( ( (UINT) ( m_pWritePtr - m_pWriteBuf ) != 0 ) && ( !bWhiteSpaceOnly ) )
+            if ( ( static_cast<UINT>(m_pWritePtr - m_pWriteBuf) != 0 ) && ( !bWhiteSpaceOnly ) )
             {
-                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
+                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, static_cast<UINT>(m_pWritePtr - m_pWriteBuf), FALSE ) ) )
                     return E_ABORT;
 
                 bWhiteSpaceOnly = TRUE;
@@ -798,9 +795,9 @@ HRESULT XMLParser::MainParseLoop()
 
         if( m_Ch == '<' )
         {
-            if( ( (UINT) ( m_pWritePtr - m_pWriteBuf ) != 0 ) && ( !bWhiteSpaceOnly ) )
+            if( ( static_cast<UINT>(m_pWritePtr - m_pWriteBuf) != 0 ) && ( !bWhiteSpaceOnly ) )
             {
-                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
+                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, static_cast<UINT>(m_pWritePtr - m_pWriteBuf), FALSE ) ) )
                     return E_ABORT;
 
                 bWhiteSpaceOnly = TRUE;
@@ -838,7 +835,7 @@ HRESULT XMLParser::MainParseLoop()
                 if( !bWhiteSpaceOnly )
                 {
                     if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf,
-                                                                    ( UINT ) ( m_pWritePtr - m_pWriteBuf ),
+                        static_cast<UINT>(m_pWritePtr - m_pWriteBuf),
                                                                     TRUE ) ) )
                     {
                         return E_ABORT;
@@ -861,7 +858,7 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
 {
     HRESULT hr;
 
-    if( m_pISAXCallback == NULL )
+    if( m_pISAXCallback == nullptr )
         return E_NOINTERFACE;
 
     m_pISAXCallback->m_LineNum = 1;
@@ -872,11 +869,12 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
     m_pReadPtr = m_pReadBuf;
 
     m_pReadBuf[ 0 ] = '\0';
+
     m_pReadBuf[ 1 ] = '\0';
 
-    m_pInXMLBuffer = NULL;
+    m_pInXMLBuffer = nullptr;
     m_uInXMLBufferCharsLeft = 0;
-    m_hFile = CreateFile( strFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL );
+    m_hFile = CreateFile( strFilename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 
     if( m_hFile == INVALID_HANDLE_VALUE )
     {
@@ -888,7 +886,7 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
     {
         LARGE_INTEGER iFileSize;
         GetFileSizeEx( m_hFile, &iFileSize );
-        m_dwCharsTotal = (DWORD)iFileSize.QuadPart;
+        m_dwCharsTotal = static_cast<DWORD>(iFileSize.QuadPart);
         m_dwCharsConsumed = 0;
         hr = MainParseLoop();
     }
@@ -899,7 +897,7 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
     m_hFile = INVALID_HANDLE_VALUE;
 
     // we no longer own strFilename, so un-set it
-    m_pISAXCallback->m_strFilename = NULL;
+    m_pISAXCallback->m_strFilename = nullptr;  
 
     return hr;
 }
@@ -912,7 +910,7 @@ HRESULT XMLParser::ParseXMLBuffer( CONST CHAR *strBuffer, UINT uBufferSize )
 {
     HRESULT hr;
 
-    if( m_pISAXCallback == NULL )
+    if( m_pISAXCallback == nullptr)
         return E_NOINTERFACE;
 
     m_pISAXCallback->m_LineNum = 1;
@@ -925,7 +923,7 @@ HRESULT XMLParser::ParseXMLBuffer( CONST CHAR *strBuffer, UINT uBufferSize )
     m_pReadBuf[ 0 ] = '\0';
     m_pReadBuf[ 1 ] = '\0';
 
-    m_hFile = NULL;
+    m_hFile = nullptr;
     m_pInXMLBuffer = strBuffer;
     m_uInXMLBufferCharsLeft = uBufferSize;
     m_dwCharsTotal = uBufferSize;
@@ -934,7 +932,7 @@ HRESULT XMLParser::ParseXMLBuffer( CONST CHAR *strBuffer, UINT uBufferSize )
     hr = MainParseLoop();
 
     // we no longer own strFilename, so un-set it
-    m_pISAXCallback->m_strFilename = NULL;
+    m_pISAXCallback->m_strFilename = nullptr;
 
     return hr;
 }

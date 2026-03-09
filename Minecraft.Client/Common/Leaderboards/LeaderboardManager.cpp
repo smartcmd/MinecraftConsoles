@@ -12,7 +12,7 @@ const wstring LeaderboardManager::filterNames[eNumFilterModes] =
 void LeaderboardManager::DeleteInstance()
 {
 	delete m_instance;
-	m_instance = NULL;
+	m_instance = nullptr;
 }
 
 LeaderboardManager::LeaderboardManager()
@@ -26,7 +26,7 @@ void LeaderboardManager::zeroReadParameters()
 {
 	m_difficulty = -1;
 	m_statsType = eStatsType_UNDEFINED;
-	m_readListener = NULL;
+	m_readListener = nullptr;
 	m_startIndex = 0;
 	m_readCount = 0;
 	m_eFilterMode = eFM_UNDEFINED;

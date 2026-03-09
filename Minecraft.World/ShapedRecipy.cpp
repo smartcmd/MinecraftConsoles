@@ -52,18 +52,18 @@ bool ShapedRecipy::matches(shared_ptr<CraftingContainer> craftSlots, int xOffs, 
 		for (int y = 0; y < 3; y++) {
 			int xs = x - xOffs;
 			int ys = y - yOffs;
-			ItemInstance *expected = NULL;
+			ItemInstance *expected = nullptr;
 			if (xs >= 0 && ys >= 0 && xs < width && ys < height) 
 			{
 				if (xFlip) expected = recipeItems[(width - xs - 1) + ys * width];
 				else expected = recipeItems[xs + ys * width];
 			}
 			shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
-			if (item == NULL && expected == NULL) 
+			if (item == nullptr && expected == nullptr) 
 			{
 				continue;
 			}
-			if ((item == NULL && expected != NULL) || (item != NULL && expected == NULL)) 
+			if ((item == nullptr && expected != nullptr) || (item != nullptr && expected == nullptr)) 
 			{
 				return false;
 			}
@@ -84,15 +84,15 @@ shared_ptr<ItemInstance> ShapedRecipy::assemble(shared_ptr<CraftingContainer> cr
 {
 	shared_ptr<ItemInstance> result = getResultItem()->copy();
 
-	if (_keepTag && craftSlots != NULL)
+	if (_keepTag && craftSlots != nullptr)
 	{
 		for (int i = 0; i < craftSlots->getContainerSize(); i++)
 		{
 			shared_ptr<ItemInstance> item = craftSlots->getItem(i);
 
-			if (item != NULL && item->hasTag())
+			if (item != nullptr && item->hasTag())
 			{
-				result->setTag((CompoundTag *) item->tag->copy());
+				result->setTag(static_cast<CompoundTag *>(item->tag->copy()));
 			}
 		}
 	}
@@ -117,7 +117,7 @@ bool ShapedRecipy::reqs(int iRecipe)
 			if (x < width && y < height) 
 			{
 				ItemInstance *expected = recipeItems[x+y*width];
-				if (expected!=NULL) 
+				if (expected!=nullptr) 
 				{			
 					//printf("\tIngredient %d is %d\n",iCount++,expected->id);
 				}
@@ -159,7 +159,7 @@ void ShapedRecipy::reqs(INGREDIENTS_REQUIRED *pIngReq)
 			{
 				ItemInstance *expected = recipeItems[x+y*width];
 
-				if (expected!=NULL) 
+				if (expected!=nullptr) 
 				{			
 					int iAuxVal = expected->getAuxValue();
 					TempIngReq.uiGridA[x+y*3]=expected->id | iAuxVal<<24;

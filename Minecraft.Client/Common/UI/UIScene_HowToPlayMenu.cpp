@@ -122,7 +122,7 @@ void UIScene_HowToPlayMenu::updateTooltips()
 
 void UIScene_HowToPlayMenu::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -191,13 +191,13 @@ void UIScene_HowToPlayMenu::handleInput(int iPad, int key, bool repeat, bool pre
 
 void UIScene_HowToPlayMenu::handlePress(F64 controlId, F64 childId)
 {
-	if( (int)controlId == eControl_Buttons)
+	if( static_cast<int>(controlId) == eControl_Buttons)
 	{
 		//CD - Added for audio
 		ui.PlayUISFX(eSFX_Press);
 
 		unsigned int uiInitData;
-		uiInitData = ( ( 1 <<  31 )  | ( m_uiHTPSceneA[(int)childId]  << 16 ) | ( short )( m_iPad ) );
+		uiInitData = ( ( 1 <<  31 )  | ( m_uiHTPSceneA[static_cast<int>(childId)]  << 16 ) | static_cast<short>(m_iPad) );
 		ui.NavigateToScene(m_iPad, eUIScene_HowToPlay, ( void* )( uiInitData ) );
 	}
 }

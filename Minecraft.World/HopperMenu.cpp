@@ -35,7 +35,7 @@ shared_ptr<ItemInstance> HopperMenu::quickMoveStack(shared_ptr<Player> player, i
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();

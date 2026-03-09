@@ -47,7 +47,7 @@ int HopperTile::getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int 
 
 shared_ptr<TileEntity> HopperTile::newTileEntity(Level *level)
 {
-	return shared_ptr<HopperTileEntity>( new HopperTileEntity() );
+	return std::make_shared<HopperTileEntity>();
 }
 
 void HopperTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
@@ -74,7 +74,7 @@ bool HopperTile::use(Level *level, int x, int y, int z, shared_ptr<Player> playe
 		return true;
 	}
 	shared_ptr<HopperTileEntity> hopper = getHopper(level, x, y, z);
-	if (hopper != NULL) player->openHopper(hopper);
+	if (hopper != nullptr) player->openHopper(hopper);
 	return true;
 }
 
@@ -99,12 +99,12 @@ void HopperTile::checkPoweredState(Level *level, int x, int y, int z)
 void HopperTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 {
 	shared_ptr<Container> container = dynamic_pointer_cast<HopperTileEntity>( level->getTileEntity(x, y, z) );
-	if (container != NULL)
+	if (container != nullptr)
 	{
 		for (int i = 0; i < container->getContainerSize(); i++)
 		{
 			shared_ptr<ItemInstance> item = container->getItem(i);
-			if (item != NULL)
+			if (item != nullptr)
 			{
 				float xo = random.nextFloat() * 0.8f + 0.1f;
 				float yo = random.nextFloat() * 0.8f + 0.1f;
@@ -116,17 +116,17 @@ void HopperTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 					if (count > item->count) count = item->count;
 					item->count -= count;
 
-					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()))));
+					shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>(new ItemInstance(item->id, count, item->getAuxValue())));
 
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 
 					float pow = 0.05f;
-					itemEntity->xd = (float) random.nextGaussian() * pow;
-					itemEntity->yd = (float) random.nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random.nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random.nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random.nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random.nextGaussian()) * pow;
 					level->addEntity(itemEntity);
 				}
 			}
@@ -197,7 +197,7 @@ Icon *HopperTile::getTexture(const wstring &name)
 {
 	if (name.compare(TEXTURE_OUTSIDE) == 0) return Tile::hopper->hopperIcon;
 	if (name.compare(TEXTURE_INSIDE) == 0) return Tile::hopper->hopperInnerIcon;
-	return NULL;
+	return nullptr;
 }
 
 wstring HopperTile::getTileItemIconName()

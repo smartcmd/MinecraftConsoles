@@ -285,7 +285,7 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	return pD3D->CreateDevice(
 		0, 
 		D3DDEVTYPE_HAL,
-		NULL,
+		nullptr,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
 		pd3dPP,
 		ppDevice );
@@ -399,7 +399,7 @@ int __cdecl main()
 	}
 
 	// Create an XAudio2 mastering voice (utilized by XHV2 when voice data is mixed to main speakers)
-	hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, NULL);
+	hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, nullptr);
 	if ( FAILED( hr ) )
 	{
 		app.DebugPrintf( "Creating XAudio2 mastering voice failed (err = 0x%08x)!\n", hr );
@@ -671,7 +671,7 @@ int __cdecl main()
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();

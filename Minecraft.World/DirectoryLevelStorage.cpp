@@ -24,8 +24,8 @@ _MapDataMappings::_MapDataMappings()
 
 int _MapDataMappings::getDimension(int id)
 {
-	int offset = (2*(id%4));
-	int val = (dimensions[id>>2] & (3 << offset))>>offset;
+	const int offset = (2*(id%4));
+	const int val = (dimensions[id>>2] & (3 << offset))>>offset;
 
 	int returnVal=0;
 
@@ -54,7 +54,7 @@ void _MapDataMappings::setMapping(int id, PlayerUID xuid, int dimension)
 {
 	xuids[id] = xuid;
 
-	int offset = (2*(id%4));
+	const int offset = (2*(id%4));
 
 	// Reset it first
 	dimensions[id>>2] &= ~( 2 << offset );
@@ -108,7 +108,7 @@ void _MapDataMappings_old::setMapping(int id, PlayerUID xuid, int dimension)
 #ifdef _LARGE_WORLDS
 void DirectoryLevelStorage::PlayerMappings::addMapping(int id, int centreX, int centreZ, int dimension, int scale)
 {
-	int64_t index = ( ((int64_t)(centreZ & 0x1FFFFFFF)) << 34) | ( ((int64_t)(centreX & 0x1FFFFFFF)) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
+	const int64_t index = ( static_cast<int64_t>(centreZ & 0x1FFFFFFF) << 34) | ( static_cast<int64_t>(centreX & 0x1FFFFFFF) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
 	m_mappings[index] = id;
 	//app.DebugPrintf("Adding mapping: %d - (%d,%d)/%d/%d [%I64d - 0x%016llx]\n", id, centreX, centreZ, dimension, scale, index, index);
 }
@@ -120,8 +120,8 @@ bool DirectoryLevelStorage::PlayerMappings::getMapping(int &id, int centreX, int
 	//int64_t zShifted = zMasked << 34;
 	//int64_t xShifted = xMasked << 5;
 	//app.DebugPrintf("xShifted = %d (0x%016x), zShifted = %I64d (0x%016llx)\n", xShifted, xShifted, zShifted, zShifted);
-	int64_t index = ( ((int64_t)(centreZ & 0x1FFFFFFF)) << 34) | ( ((int64_t)(centreX & 0x1FFFFFFF)) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
-	auto it = m_mappings.find(index);
+	const int64_t index = ( static_cast<int64_t>(centreZ & 0x1FFFFFFF) << 34) | ( static_cast<int64_t>(centreX & 0x1FFFFFFF) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
+	const auto it = m_mappings.find(index);
 	if(it != m_mappings.end())
 	{
 		id = it->second;
@@ -138,7 +138,7 @@ bool DirectoryLevelStorage::PlayerMappings::getMapping(int &id, int centreX, int
 void DirectoryLevelStorage::PlayerMappings::writeMappings(DataOutputStream *dos)
 {
 	dos->writeInt(m_mappings.size());
-	for ( auto& it : m_mappings )
+	for (const auto& it : m_mappings )
 	{
 		app.DebugPrintf("    -- %lld (0x%016llx) = %d\n", it.first, it.first, it.second);
 		dos->writeLong(it.first);
@@ -148,11 +148,11 @@ void DirectoryLevelStorage::PlayerMappings::writeMappings(DataOutputStream *dos)
 
 void DirectoryLevelStorage::PlayerMappings::readMappings(DataInputStream *dis)
 {
-	int count = dis->readInt();
+	const int count = dis->readInt();
 	for(unsigned int i = 0; i < count; ++i)
 	{
 		int64_t index = dis->readLong();
-		int id = dis->readInt();
+		const int id = dis->readInt();
 		m_mappings[index] = id;
 		app.DebugPrintf("    -- %lld (0x%016llx) = %d\n", index, index, id);
 	}
@@ -174,7 +174,7 @@ DirectoryLevelStorage::~DirectoryLevelStorage()
 {
 	delete m_saveFile;
 
-	for( auto& it : m_cachedSaveData )
+	for(const auto& it : m_cachedSaveData )
 	{
 		delete it.second;
 	}
@@ -188,7 +188,7 @@ void DirectoryLevelStorage::initiateSession()
 {
 	// 4J Jev, removed try/catch.
 
-	File dataFile = File( dir, wstring(L"session.lock") );
+	const File dataFile = File( dir, wstring(L"session.lock") );
 	FileOutputStream fos = FileOutputStream(dataFile);
 	DataOutputStream dos = DataOutputStream(&fos);
 	dos.writeLong(sessionId);
@@ -217,15 +217,15 @@ ChunkStorage *DirectoryLevelStorage::createChunkStorage(Dimension *dimension)
 {
 	// 4J Jev, removed try/catch.
 
-	if (dynamic_cast<HellDimension *>(dimension) != NULL)
+	if (dynamic_cast<HellDimension *>(dimension) != nullptr)
 	{
-		File dir2 = File(dir, LevelStorage::NETHER_FOLDER);
+		const File dir2 = File(dir, LevelStorage::NETHER_FOLDER);
 		//dir2.mkdirs(); // 4J Removed
 		return new OldChunkStorage(dir2, true);
 	}
-	if (dynamic_cast<TheEndDimension *>(dimension) != NULL)
+	if (dynamic_cast<TheEndDimension *>(dimension) != nullptr)
 	{
-		File dir2 = File(dir, LevelStorage::ENDER_FOLDER);
+		const File dir2 = File(dir, LevelStorage::ENDER_FOLDER);
 		//dir2.mkdirs(); // 4J Removed
 		return new OldChunkStorage(dir2, true);
 	}
@@ -237,7 +237,7 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 {
 	// 4J Stu Added
 #ifdef _LARGE_WORLDS
-	ConsoleSavePath mapFile = getDataFile(L"largeMapDataMappings");
+	const ConsoleSavePath mapFile = getDataFile(L"largeMapDataMappings");
 #else
 	ConsoleSavePath mapFile = getDataFile(L"mapDataMappings");
 #endif
@@ -270,16 +270,16 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 		else
 #endif
 		{
-			getSaveFile()->setFilePointer(fileEntry,0,NULL, FILE_BEGIN);
+			getSaveFile()->setFilePointer(fileEntry,0,nullptr, FILE_BEGIN);
 
 #ifdef _LARGE_WORLDS
-			byteArray data(fileEntry->getFileSize());
+			const byteArray data(fileEntry->getFileSize());
 			getSaveFile()->readFile( fileEntry, data.data, fileEntry->getFileSize(), &NumberOfBytesRead);
 			assert( NumberOfBytesRead == fileEntry->getFileSize() );
 
 			ByteArrayInputStream bais(data);
 			DataInputStream dis(&bais);
-			int count = dis.readInt();
+			const int count = dis.readInt();
 			app.DebugPrintf("Loading %d mappings\n", count);
 			for(unsigned int i = 0; i < count; ++i)
 			{
@@ -332,7 +332,7 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 
 	// 4J Jev, removed try/catch
 
-	ConsoleSavePath dataFile = ConsoleSavePath( wstring( L"level.dat" ) );
+	const ConsoleSavePath dataFile = ConsoleSavePath( wstring( L"level.dat" ) );
 
 	if ( m_saveFile->doesFileExist( dataFile ) )
 	{
@@ -344,7 +344,7 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 		return ret;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void DirectoryLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players)
@@ -356,7 +356,7 @@ void DirectoryLevelStorage::saveLevelData(LevelData *levelData, vector<shared_pt
 	CompoundTag *root = new CompoundTag();
 	root->put(L"Data", dataTag);
 
-	ConsoleSavePath currentFile = ConsoleSavePath( wstring( L"level.dat" ) );
+	const ConsoleSavePath currentFile = ConsoleSavePath( wstring( L"level.dat" ) );
 
 	ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream( m_saveFile, currentFile );
 	NbtIo::writeCompressed(root, &fos);
@@ -373,7 +373,7 @@ void DirectoryLevelStorage::saveLevelData(LevelData *levelData)
 	CompoundTag *root = new CompoundTag();
 	root->put(L"Data", dataTag);
 
-	ConsoleSavePath currentFile = ConsoleSavePath( wstring( L"level.dat" ) );
+	const ConsoleSavePath currentFile = ConsoleSavePath( wstring( L"level.dat" ) );
 
 	ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream( m_saveFile, currentFile );
 	NbtIo::writeCompressed(root, &fos);
@@ -398,7 +398,7 @@ void DirectoryLevelStorage::save(shared_ptr<Player> player)
 #elif defined(_DURANGO)
 		ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + player->getXuid().toString() + L".dat" );
 #else
-		ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + std::to_wstring( player->getXuid() ) + L".dat" );
+		const ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + std::to_wstring( player->getXuid() ) + L".dat" );
 #endif
 		// If saves are disabled (e.g. because we are writing the save buffer to disk) then cache this player data
 		if(StorageManager.GetSaveDisabled())
@@ -406,7 +406,7 @@ void DirectoryLevelStorage::save(shared_ptr<Player> player)
 			ByteArrayOutputStream *bos = new ByteArrayOutputStream();
 			NbtIo::writeCompressed(tag,bos);
 
-			auto it = m_cachedSaveData.find(realFile.getName());
+			const auto it = m_cachedSaveData.find(realFile.getName());
 			if(it != m_cachedSaveData.end() )
 			{
 				delete it->second;
@@ -432,7 +432,7 @@ void DirectoryLevelStorage::save(shared_ptr<Player> player)
 CompoundTag *DirectoryLevelStorage::load(shared_ptr<Player> player)
 {
 	CompoundTag *tag = loadPlayerDataTag( player->getXuid() );
-	if (tag != NULL)
+	if (tag != nullptr)
 	{
 		player->load(tag);
 	}
@@ -447,9 +447,9 @@ CompoundTag *DirectoryLevelStorage::loadPlayerDataTag(PlayerUID xuid)
 #elif defined(_DURANGO)
 	ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + xuid.toString() + L".dat" );
 #else
-	ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + std::to_wstring( xuid ) + L".dat" );
+	const ConsoleSavePath realFile = ConsoleSavePath( playerDir.getName() + std::to_wstring( xuid ) + L".dat" );
 #endif
-	auto it = m_cachedSaveData.find(realFile.getName());
+	const auto it = m_cachedSaveData.find(realFile.getName());
 	if(it != m_cachedSaveData.end() )
 	{
 		ByteArrayOutputStream *bos = it->second;
@@ -464,7 +464,7 @@ CompoundTag *DirectoryLevelStorage::loadPlayerDataTag(PlayerUID xuid)
 		ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(m_saveFile, realFile);
 		return NbtIo::readCompressed(&fis);
 	}
-	return NULL;
+	return nullptr;
 }
 
 // 4J Added function
@@ -478,19 +478,19 @@ void DirectoryLevelStorage::clearOldPlayerFiles()
 	vector<FileEntry *> *playerFiles = m_saveFile->getFilesWithPrefix( playerDir.getName() );
 #endif
 
-	if( playerFiles != NULL )
+	if( playerFiles != nullptr )
 	{
 #ifndef _FINAL_BUILD
 		if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_DistributableSave))
 		{
 			for(unsigned int i = 0; i < playerFiles->size(); ++i )
 			{
-				FileEntry *file = playerFiles->at(i);
+				const FileEntry *file = playerFiles->at(i);
 				wstring xuidStr = replaceAll( replaceAll(file->data.filename,playerDir.getName(),L""),L".dat",L"");
 #if defined(__PS3__) || defined(__ORBIS__) || defined(_DURANGO)
 				PlayerUID xuid(xuidStr);
 #else
-				PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
+				const PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
 #endif
 				deleteMapFilesForPlayer(xuid);
 				m_saveFile->deleteFile( playerFiles->at(i) );
@@ -504,12 +504,12 @@ void DirectoryLevelStorage::clearOldPlayerFiles()
 
 				for(unsigned int i = MAX_PLAYER_DATA_SAVES; i < playerFiles->size(); ++i )
 				{
-					FileEntry *file = playerFiles->at(i);
+					const FileEntry *file = playerFiles->at(i);
 					wstring xuidStr = replaceAll( replaceAll(file->data.filename,playerDir.getName(),L""),L".dat",L"");
 #if defined(__PS3__) || defined(__ORBIS__) || defined(_DURANGO)
 					PlayerUID xuid(xuidStr);
 #else
-					PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
+					const PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
 #endif
 					deleteMapFilesForPlayer(xuid);
 					m_saveFile->deleteFile( playerFiles->at(i) );
@@ -545,7 +545,7 @@ void DirectoryLevelStorage::flushSaveFile(bool autosave)
 	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_DistributableSave))
 	{
 		// Delete gamerules files if it exists
-		ConsoleSavePath gameRulesFiles(GAME_RULE_SAVENAME);
+		const ConsoleSavePath gameRulesFiles(GAME_RULE_SAVENAME);
 		if(m_saveFile->doesFileExist(gameRulesFiles))
 		{
 			FileEntry *fe = m_saveFile->createFile(gameRulesFiles);
@@ -564,7 +564,7 @@ void DirectoryLevelStorage::resetNetherPlayerPositions()
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
 		vector<FileEntry *> *playerFiles = m_saveFile->getValidPlayerDatFiles();
 #else
-		vector<FileEntry *> *playerFiles = m_saveFile->getFilesWithPrefix( playerDir.getName() );
+		const vector<FileEntry *> *playerFiles = m_saveFile->getFilesWithPrefix( playerDir.getName() );
 #endif
 
 		if ( playerFiles )
@@ -573,7 +573,7 @@ void DirectoryLevelStorage::resetNetherPlayerPositions()
 			{
 				ConsoleSaveFileInputStream fis = ConsoleSaveFileInputStream(m_saveFile, realFile);
 				CompoundTag *tag = NbtIo::readCompressed(&fis);
-				if (tag != NULL)
+				if (tag != nullptr)
 				{
 					// If the player is in the nether, set their y position above the top of the nether
 					// This will force the player to be spawned in a valid position in the overworld when they are loaded
@@ -599,7 +599,7 @@ int DirectoryLevelStorage::getAuxValueForMap(PlayerUID xuid, int dimension, int 
 	bool foundMapping = false;
 
 #ifdef _LARGE_WORLDS
-	auto it = m_playerMappings.find(xuid);
+	const auto it = m_playerMappings.find(xuid);
 	if(it != m_playerMappings.end())
 	{
 		foundMapping = it->second.getMapping(mapId, centreXC, centreZC, dimension, scale);
@@ -666,7 +666,7 @@ void DirectoryLevelStorage::saveMapIdLookup()
 	if(StorageManager.GetSaveDisabled() ) return;
 
 #ifdef _LARGE_WORLDS
-	ConsoleSavePath file = getDataFile(L"largeMapDataMappings");
+	const ConsoleSavePath file = getDataFile(L"largeMapDataMappings");
 #else
 	ConsoleSavePath file = getDataFile(L"mapDataMappings");
 #endif
@@ -675,7 +675,7 @@ void DirectoryLevelStorage::saveMapIdLookup()
 	{
 		DWORD NumberOfBytesWritten;
 		FileEntry *fileEntry = m_saveFile->createFile(file);
-		m_saveFile->setFilePointer(fileEntry,0,NULL, FILE_BEGIN);
+		m_saveFile->setFilePointer(fileEntry,0,nullptr, FILE_BEGIN);
 
 #ifdef _LARGE_WORLDS
 		ByteArrayOutputStream baos;
@@ -712,13 +712,13 @@ void DirectoryLevelStorage::saveMapIdLookup()
 void DirectoryLevelStorage::dontSaveMapMappingForPlayer(PlayerUID xuid)
 {
 #ifdef _LARGE_WORLDS
-	auto it = m_playerMappings.find(xuid);
+	const auto it = m_playerMappings.find(xuid);
 	if(it != m_playerMappings.end())
 	{
 		for (auto itMap = it->second.m_mappings.begin(); itMap != it->second.m_mappings.end(); ++itMap)
 		{
-			int index = itMap->second / 8;
-			int offset = itMap->second % 8;
+			const int index = itMap->second / 8;
+			const int offset = itMap->second % 8;
 			m_usedMappings[index] &= ~(1<<offset);
 		}
 		m_playerMappings.erase(it);
@@ -736,14 +736,14 @@ void DirectoryLevelStorage::dontSaveMapMappingForPlayer(PlayerUID xuid)
 
 void DirectoryLevelStorage::deleteMapFilesForPlayer(shared_ptr<Player> player)
 {
-	PlayerUID playerXuid = player->getXuid();
+	const PlayerUID playerXuid = player->getXuid();
 	if(playerXuid != INVALID_XUID) deleteMapFilesForPlayer(playerXuid);
 }
 
 void DirectoryLevelStorage::deleteMapFilesForPlayer(PlayerUID xuid)
 {
 #ifdef _LARGE_WORLDS
-	auto it = m_playerMappings.find(xuid);
+	const auto it = m_playerMappings.find(xuid);
 	if(it != m_playerMappings.end())
 	{
 		for (auto itMap = it->second.m_mappings.begin(); itMap != it->second.m_mappings.end(); ++itMap)
@@ -758,8 +758,8 @@ void DirectoryLevelStorage::deleteMapFilesForPlayer(PlayerUID xuid)
 				else m_saveFile->deleteFile( m_saveFile->createFile(file) );
 			}
 
-			int index = itMap->second / 8;
-			int offset = itMap->second % 8;
+			const int index = itMap->second / 8;
+			const int offset = itMap->second % 8;
 			m_usedMappings[index] &= ~(1<<offset);
 		}
 		m_playerMappings.erase(it);
@@ -807,7 +807,7 @@ void DirectoryLevelStorage::saveAllCachedData()
 	}
 	m_cachedSaveData.clear();
 
-	for (auto& it : m_mapFilesToDelete )
+	for (const auto& it : m_mapFilesToDelete )
 	{
 		std::wstring id = wstring( L"map_" ) + std::to_wstring(it);
 		ConsoleSavePath file = getDataFile(id);

@@ -22,7 +22,7 @@ ApplicationView::ApplicationView()
 XALLOC_ATTRIBUTES ExpandAllocAttributes( _In_ LONGLONG dwAttributes )
 {
 	XALLOC_ATTRIBUTES attr;
-	attr = *((XALLOC_ATTRIBUTES *)&dwAttributes);
+	attr = *static_cast<XALLOC_ATTRIBUTES *>(&dwAttributes);
 	return attr;
 }
 
@@ -247,7 +247,7 @@ void ApplicationView::OnSuspending(Platform::Object^ sender, SuspendingEventArgs
 	LARGE_INTEGER qwTicksPerSec, qwTime, qwNewTime, qwDeltaTime;
 	float fElapsedTime = 0.0f;
 	QueryPerformanceFrequency( &qwTicksPerSec );
-	float fSecsPerTick = 1.0f / (float)qwTicksPerSec.QuadPart;
+	float fSecsPerTick = 1.0f / static_cast<float>(qwTicksPerSec.QuadPart);
 	// Save the start time
 	QueryPerformanceCounter( &qwTime );
 
@@ -275,7 +275,7 @@ void ApplicationView::OnSuspending(Platform::Object^ sender, SuspendingEventArgs
 	QueryPerformanceCounter( &qwNewTime );
 
 	qwDeltaTime.QuadPart = qwNewTime.QuadPart - qwTime.QuadPart;
-	fElapsedTime = fSecsPerTick * ((FLOAT)(qwDeltaTime.QuadPart));
+	fElapsedTime = fSecsPerTick * static_cast<FLOAT>(qwDeltaTime.QuadPart);
 
 	app.DebugPrintf("Entire suspend process: Elapsed time %f\n", fElapsedTime);
 }

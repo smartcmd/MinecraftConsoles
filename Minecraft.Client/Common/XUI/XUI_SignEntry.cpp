@@ -15,7 +15,7 @@ HRESULT CScene_SignEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	XuiControlSetText(m_ButtonDone,app.GetString(IDS_DONE));
 	XuiControlSetText(m_labelEditSign,app.GetString(IDS_EDIT_SIGN_MESSAGE));
 
-	SignEntryScreenInput* initData = (SignEntryScreenInput*)pInitData->pvInitData;
+	SignEntryScreenInput* initData = static_cast<SignEntryScreenInput *>(pInitData->pvInitData);
 	m_sign = initData->sign;
 	
 	CXuiSceneBase::ShowDarkOverlay( initData->iPad, TRUE );
@@ -75,9 +75,9 @@ HRESULT CScene_SignEntry::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* p
 		if (pMinecraft->level->isClientSide)
 		{
 			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[pNotifyPressData->UserIndex];
-			if(player != NULL && player->connection && player->connection->isStarted())
+			if(player != nullptr && player->connection && player->connection->isStarted())
 			{
-				player->connection->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
+				player->connection->send(std::make_shared<SignUpdatePacket>(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()));
 			}
 		}
 		app.CloseXuiScenes(pNotifyPressData->UserIndex);

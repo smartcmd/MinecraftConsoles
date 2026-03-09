@@ -35,7 +35,7 @@ void TextEditScreen::removed()
     Keyboard::enableRepeatEvents(false);
     if (minecraft->level->isClientSide)
 	{
-        minecraft->getConnection(0)->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(sign->x, sign->y, sign->z, sign->IsVerified(), sign->IsCensored(), sign->GetMessages()) ) );
+        minecraft->getConnection(0)->send(std::make_shared<SignUpdatePacket>(sign->x, sign->y, sign->z, sign->IsVerified(), sign->IsCensored(), sign->GetMessages()));
     }
 
 }
@@ -52,7 +52,7 @@ void TextEditScreen::buttonClicked(Button *button)
     if (button->id == 0)
 	{
         sign->setChanged();
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
     }
 }
 
@@ -82,7 +82,7 @@ void TextEditScreen::render(int xm, int ym, float a)
     drawCenteredString(font, title, width / 2, 40, 0xffffff);
 
     glPushMatrix();
-    glTranslatef((float)width / 2, (float)height / 2, 50);
+    glTranslatef(static_cast<float>(width) / 2, static_cast<float>(height) / 2, 50);
     float ss = 60 / (16 / 25.0f);
     glScalef(-ss, -ss, -ss);
     glRotatef(180, 0, 1, 0);

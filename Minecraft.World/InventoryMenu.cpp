@@ -28,8 +28,8 @@ InventoryMenu::InventoryMenu(shared_ptr<Inventory> inventory, bool active, Playe
 
 void InventoryMenu::_init(shared_ptr<Inventory> inventory, bool active)
 {
-	craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(this, 2, 2) );
-	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
+	craftSlots = std::make_shared<CraftingContainer>(this, 2, 2);
+	resultSlots = std::make_shared<ResultContainer>();
 
 	this->active = active;
 	addSlot(new ResultSlot( inventory->player, craftSlots, resultSlots, 0, 144, 36));
@@ -77,7 +77,7 @@ void InventoryMenu::removed(shared_ptr<Player> player)
 	for (int i = 0; i < 4; i++)
 	{
 		shared_ptr<ItemInstance> item = craftSlots->removeItemNoUpdate(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			player->drop(item);
 			craftSlots->setItem(i, nullptr);
@@ -102,7 +102,7 @@ shared_ptr<ItemInstance> InventoryMenu::quickMoveStack(shared_ptr<Player> player
 	Slot *BootsSlot = slots.at(ARMOR_SLOT_START+3);
 
 
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
@@ -240,7 +240,7 @@ shared_ptr<ItemInstance> InventoryMenu::clicked(int slotIndex, int buttonNum, in
 	for (int i = ARMOR_SLOT_START; i < ARMOR_SLOT_END; i++)
 	{
 		Slot *slot = slots.at(i);
-		if ( (slot==NULL) || (!slot->hasItem()) || (slot->getItem()->getItem()->id != ironItems[i-ARMOR_SLOT_START]) )
+		if ( (slot==nullptr) || (!slot->hasItem()) || (slot->getItem()->getItem()->id != ironItems[i-ARMOR_SLOT_START]) )
 		{
 			return out;
 		}

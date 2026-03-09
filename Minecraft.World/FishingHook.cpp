@@ -102,7 +102,7 @@ bool FishingHook::shouldRenderAtSqrDistance(double distance)
 
 void FishingHook::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 {
-	float dist = (float) sqrt(xd * xd + yd * yd + zd * zd);
+	float dist = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 
 	xd /= dist;
 	yd /= dist;
@@ -122,8 +122,8 @@ void FishingHook::shoot(double xd, double yd, double zd, float pow, float uncert
 
 	double sd = sqrt(xd * xd + zd * zd);
 
-	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	life = 0;
 }
 
@@ -161,8 +161,8 @@ void FishingHook::tick()
 
 		double yrd = Mth::wrapDegrees(lyr - yRot);
 
-		yRot += (float) ( (yrd) / lSteps );
-		xRot += (float) ( (lxr - xRot) / lSteps );
+		yRot += static_cast<float>((yrd) / lSteps);
+		xRot += static_cast<float>((lxr - xRot) / lSteps);
 
 		lSteps--;
 		setPos(xt, yt, zt);
@@ -173,14 +173,14 @@ void FishingHook::tick()
 	if (!level->isClientSide)
 	{
 		shared_ptr<ItemInstance> selectedItem = owner->getSelectedItem();
-		if (owner->removed || !owner->isAlive() || selectedItem == NULL || selectedItem->getItem() != Item::fishingRod || distanceToSqr(owner) > 32 * 32)
+		if (owner->removed || !owner->isAlive() || selectedItem == nullptr || selectedItem->getItem() != Item::fishingRod || distanceToSqr(owner) > 32 * 32)
 		{
 			remove();
 			owner->fishing = nullptr;
 			return;
 		}
 
-		if (hookedIn != NULL)
+		if (hookedIn != nullptr)
 		{
 			if (hookedIn->removed) hookedIn = nullptr;
 			else
@@ -226,7 +226,7 @@ void FishingHook::tick()
 
 	from = Vec3::newTemp(x, y, z);
 	to = Vec3::newTemp(x + xd, y + yd, z + zd);
-	if (res != NULL) 
+	if (res != nullptr) 
 	{
 		to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
 	}
@@ -241,7 +241,7 @@ void FishingHook::tick()
 		float rr = 0.3f;
 		AABB *bb = e->bb->grow(rr, rr, rr);
 		HitResult *p = bb->clip(from, to);
-		if (p != NULL)
+		if (p != nullptr)
 		{
 			double dd = from->distanceTo(p->pos);
 			if (dd < nearest || nearest == 0)
@@ -253,15 +253,15 @@ void FishingHook::tick()
 		}
 	}
 
-	if (hitEntity != NULL)
+	if (hitEntity != nullptr)
 	{
 		delete res;
 		res = new HitResult(hitEntity);
 	}
 
-	if (res != NULL)
+	if (res != nullptr)
 	{
-		if (res->entity != NULL) 
+		if (res->entity != nullptr) 
 		{
 			// 4J Stu Move fix for : fix for #48587 - CRASH: Code: Gameplay: Hitting another player with the fishing bobber crashes the game. [Fishing pole, line]
 			// Incorrect dynamic_pointer_cast used around the shared_from_this()
@@ -284,8 +284,8 @@ void FishingHook::tick()
 	move(xd, yd, zd);
 
 	double sd = sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -337,7 +337,7 @@ void FishingHook::tick()
 				nibble = random->nextInt(30) + 10;
 				yd -= 0.2f;
 				playSound(eSoundType_RANDOM_SPLASH, 0.25f, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
-				float yt = (float) Mth::floor(bb->y0);
+				float yt = static_cast<float>(Mth::floor(bb->y0));
 				for (int i = 0; i < 1 + bbWidth * 20; i++)
 				{
 					float xo = (random->nextFloat() * 2 - 1) * bbWidth;
@@ -377,12 +377,12 @@ void FishingHook::tick()
 
 void FishingHook::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-	tag->putShort(L"yTile", (short) yTile);
-	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+	tag->putShort(L"yTile", static_cast<short>(yTile));
+	tag->putShort(L"zTile", static_cast<short>(zTile));
+	tag->putByte(L"inTile", static_cast<byte>(lastTile));
+	tag->putByte(L"shake", static_cast<byte>(shakeTime));
+	tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
 }
 
 void FishingHook::readAdditionalSaveData(CompoundTag *tag)
@@ -405,7 +405,7 @@ int FishingHook::retrieve()
 	if (level->isClientSide) return 0;
 
 	int dmg = 0;
-	if (hookedIn != NULL)
+	if (hookedIn != nullptr)
 	{
 		double xa = owner->x - x;
 		double ya = owner->y - y;
@@ -420,7 +420,7 @@ int FishingHook::retrieve()
 	}
 	else if (nibble > 0)
 	{
-		shared_ptr<ItemEntity> ie = shared_ptr<ItemEntity>( new ItemEntity(this->Entity::level, x, y, z, shared_ptr<ItemInstance>( new ItemInstance(Item::fish_raw) ) ) );
+		shared_ptr<ItemEntity> ie = std::make_shared<ItemEntity>(this->Entity::level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::fish_raw)));
 		double xa = owner->x - x;
 		double ya = owner->y - y;
 		double za = owner->z - z;
@@ -431,7 +431,7 @@ int FishingHook::retrieve()
 		ie->Entity::yd = ya * speed + sqrt(dist) * 0.08;
 		ie->Entity::zd = za * speed;
 		level->addEntity(ie);
-		owner->level->addEntity( shared_ptr<ExperienceOrb>( new ExperienceOrb(owner->level, owner->x, owner->y + 0.5f, owner->z + 0.5f, random->nextInt(6) + 1) ) ); // 4J Stu brought forward from 1.4
+		owner->level->addEntity(std::make_shared<ExperienceOrb>(owner->level, owner->x, owner->y + 0.5f, owner->z + 0.5f, random->nextInt(6) + 1)); // 4J Stu brought forward from 1.4
 		dmg = 1;
 	}
 	if (inGround) dmg = 2;
@@ -445,5 +445,5 @@ int FishingHook::retrieve()
 void FishingHook::remove()
 {
 	Entity::remove();
-	if (owner != NULL) owner->fishing = nullptr;
+	if (owner != nullptr) owner->fishing = nullptr;
 }

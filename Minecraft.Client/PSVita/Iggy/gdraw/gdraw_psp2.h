@@ -68,7 +68,7 @@ IDOC extern int gdraw_psp2_SetResourceMemory(gdraw_psp2_resourcetype type, S32 n
    mapped to the GPU and *writeable*. If it isn't, the GPU will crash during
    either this function or CreateContext!
 
-   Pass in NULL for "ptr" and zero "num_bytes" to free the memory allocated to
+   Pass in nullptr for "ptr" and zero "num_bytes" to free the memory allocated to
    a specific pool.
 
    GDraw can run into cases where resource memory gets fragmented; we defragment
@@ -121,7 +121,7 @@ IDOC extern GDrawFunctions * gdraw_psp2_CreateContext(SceGxmShaderPatcher *shade
    be valid for as long as a GDraw context is alive.
 
    If initialization fails for some reason (the main reason would be an out of memory condition),
-   NULL is returned. Otherwise, you can pass the return value to IggySetGDraw. */
+   nullptr is returned. Otherwise, you can pass the return value to IggySetGDraw. */
 
 IDOC extern void gdraw_psp2_DestroyContext(void);
 /* Destroys the current GDraw context, if any.

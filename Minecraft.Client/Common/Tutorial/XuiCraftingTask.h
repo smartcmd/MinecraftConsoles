@@ -12,7 +12,7 @@ public:
 	};
 
 	// Select group
-	XuiCraftingTask(Tutorial *tutorial, int descriptionId, Recipy::_eGroupType groupToSelect, bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = NULL, 
+	XuiCraftingTask(Tutorial *tutorial, int descriptionId, Recipy::_eGroupType groupToSelect, bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = nullptr, 
 		bool bShowMinimumTime=false,  bool bAllowFade=true, bool m_bTaskReminders=true )
 		: TutorialTask(tutorial, descriptionId, enablePreCompletion, inConstraints,	bShowMinimumTime, bAllowFade, m_bTaskReminders ),
 		m_group(groupToSelect),
@@ -20,7 +20,7 @@ public:
 	{}
 
 	// Select Item
-	XuiCraftingTask(Tutorial *tutorial, int descriptionId, int itemId, bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = NULL, 
+	XuiCraftingTask(Tutorial *tutorial, int descriptionId, int itemId, bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = nullptr, 
 		bool bShowMinimumTime=false,  bool bAllowFade=true, bool m_bTaskReminders=true )
 		: TutorialTask(tutorial, descriptionId, enablePreCompletion, inConstraints,	bShowMinimumTime, bAllowFade, m_bTaskReminders ),
 		m_item(itemId),

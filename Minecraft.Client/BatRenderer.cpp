@@ -7,7 +7,7 @@ ResourceLocation BatRenderer::BAT_LOCATION = ResourceLocation(TN_MOB_BAT);
 
 BatRenderer::BatRenderer() : MobRenderer(new BatModel(), 0.25f)
 {
-	modelVersion = ((BatModel *)model)->modelVersion();
+	modelVersion = static_cast<BatModel *>(model)->modelVersion();
 }
 
 void BatRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)

@@ -15,13 +15,13 @@ NetherBridgeFeature::NetherBridgeFeature() : StructureFeature()
 	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_SKELETON, 10, 4, 4));
 	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_LAVASLIME, 3, 4, 4));
 	isSpotSelected=false;
-	netherFortressPos = NULL;
+	netherFortressPos = nullptr;
 
 }
 
 NetherBridgeFeature::~NetherBridgeFeature()
 {
-	if( netherFortressPos != NULL ) delete netherFortressPos;
+	if( netherFortressPos != nullptr ) delete netherFortressPos;
 }
 
 wstring NetherBridgeFeature::getFeatureName()
@@ -57,7 +57,7 @@ bool NetherBridgeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat)
 
 	bool forcePlacement = false;
 	LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
-	if( levelGenOptions != NULL )
+	if( levelGenOptions != nullptr )
 	{
 		forcePlacement = levelGenOptions->isFeatureChunk(x,z,eFeature_NetherBridge);
 	}
@@ -118,7 +118,7 @@ NetherBridgeFeature::NetherBridgeStart::NetherBridgeStart(Level *level, Random *
 	vector<StructurePiece *> *pendingChildren = &start->pendingChildren;
 	while (!pendingChildren->empty())
 	{
-		int pos = random->nextInt((int)pendingChildren->size());
+		int pos = random->nextInt(static_cast<int>(pendingChildren->size()));
         auto it = pendingChildren->begin() + pos;
         StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);

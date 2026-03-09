@@ -16,7 +16,7 @@ SpawnEggItem::SpawnEggItem(int id) : Item(id)
 {
 	setMaxStackSize(16); // 4J-PB brought forward. It is 64 on PC, but we'll never be able to place that many
 	setStackedByData(true);
-	overlay = NULL;
+	overlay = nullptr;
 }
 
 wstring SpawnEggItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
@@ -69,7 +69,7 @@ Icon *SpawnEggItem::getLayerIcon(int auxValue, int spriteLayer)
 shared_ptr<Entity> SpawnEggItem::canSpawn(int iAuxVal, Level *level, int *piResult)
 {
 	shared_ptr<Entity> newEntity = EntityIO::newById(iAuxVal, level);
-	if (newEntity != NULL)
+	if (newEntity != nullptr)
 	{
 		bool canSpawn = false;
 
@@ -200,7 +200,7 @@ bool SpawnEggItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 		level->removeTile(x,y,z);
 		level->setTileAndData(x,y,z,Tile::mobSpawner_Id, 0, Tile::UPDATE_ALL);
 		shared_ptr<MobSpawnerTileEntity> mste = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x,y,z) );
-		if(mste != NULL)
+		if(mste != nullptr)
 		{
 			mste->setEntityId( EntityIO::getEncodeId(itemInstance->getAuxValue()) );
 			return true;
@@ -213,7 +213,7 @@ bool SpawnEggItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 	z += Facing::STEP_Z[face];
 
 	double yOff = 0;
-	if (face == Facing::UP && (Tile::tiles[tile] != NULL && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE))
+	if (face == Facing::UP && (Tile::tiles[tile] != nullptr && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE))
 	{
 		// special case
 		yOff = .5;
@@ -224,10 +224,10 @@ bool SpawnEggItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 
 	if(bTestUseOnOnly)
 	{
-		return result != NULL;
+		return result != nullptr;
 	}
 
-	if (result != NULL)
+	if (result != nullptr)
 	{
 		// 4J-JEV: SetCustomName is a method for Mob not LivingEntity; so change instanceof to check for Mobs.
 		if ( result->instanceof(eTYPE_MOB) && itemInstance->hasCustomHoverName() )
@@ -252,7 +252,7 @@ shared_ptr<ItemInstance> SpawnEggItem::use(shared_ptr<ItemInstance> itemInstance
 	if (level->isClientSide) return itemInstance;
 
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
-	if (hr == NULL)
+	if (hr == nullptr)
 	{
 		delete hr;
 		return itemInstance;
@@ -275,7 +275,7 @@ shared_ptr<ItemInstance> SpawnEggItem::use(shared_ptr<ItemInstance> itemInstance
 		{
 			int iResult=0;
 			shared_ptr<Entity> result = spawnMobAt(level, itemInstance->getAuxValue(), xt, yt, zt, &iResult);
-			if (result != NULL)
+			if (result != nullptr)
 			{
 				// 4J-JEV: SetCustomName is a method for Mob not LivingEntity; so change instanceof to check for Mobs.
 				if ( result->instanceof(eTYPE_MOB) && itemInstance->hasCustomHoverName() )
@@ -317,7 +317,7 @@ shared_ptr<Entity> SpawnEggItem::spawnMobAt(Level *level, int auxVal, double x, 
 		newEntity = canSpawn(mobId, level, piResult);
 
 		// 4J-JEV: DynCasting to Mob not LivingEntity; so change instanceof to check for Mobs.
-		if ( newEntity != NULL && newEntity->instanceof(eTYPE_MOB) )
+		if ( newEntity != nullptr && newEntity->instanceof(eTYPE_MOB) )
 		{
 			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(newEntity);
 			newEntity->moveTo(x, y, z, Mth::wrapDegrees(level->random->nextFloat() * 360), 0);
@@ -325,7 +325,7 @@ shared_ptr<Entity> SpawnEggItem::spawnMobAt(Level *level, int auxVal, double x, 
 			mob->yHeadRot = mob->yRot;
 			mob->yBodyRot = mob->yRot;
 
-			mob->finalizeMobSpawn(NULL, extraData);
+			mob->finalizeMobSpawn(nullptr, extraData);
 			level->addEntity(newEntity);
 			mob->playAmbientSound();
 		}

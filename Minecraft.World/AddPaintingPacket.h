@@ -22,6 +22,6 @@ public:
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddPaintingPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AddPaintingPacket>(); }
 	virtual int getId() { return 25; }
 };

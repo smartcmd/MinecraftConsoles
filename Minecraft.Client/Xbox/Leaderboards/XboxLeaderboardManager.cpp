@@ -10,25 +10,25 @@ LeaderboardManager *LeaderboardManager::m_instance = new XboxLeaderboardManager(
 
 const XboxLeaderboardManager::LeaderboardDescriptor XboxLeaderboardManager::LEADERBOARD_DESCRIPTORS[XboxLeaderboardManager::NUM_LEADERBOARDS][4] = {
 	{
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_PEACEFUL,	4,	STATS_COLUMN_TRAVELLING_PEACEFUL_WALKED,	STATS_COLUMN_TRAVELLING_PEACEFUL_FALLEN,	STATS_COLUMN_TRAVELLING_PEACEFUL_MINECART,	STATS_COLUMN_TRAVELLING_PEACEFUL_BOAT,	NULL, NULL, NULL,NULL),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_EASY,		4,	STATS_COLUMN_TRAVELLING_EASY_WALKED,		STATS_COLUMN_TRAVELLING_EASY_FALLEN,		STATS_COLUMN_TRAVELLING_EASY_MINECART,		STATS_COLUMN_TRAVELLING_EASY_BOAT,		NULL, NULL, NULL,NULL),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_NORMAL,	4,	STATS_COLUMN_TRAVELLING_NORMAL_WALKED,		STATS_COLUMN_TRAVELLING_NORMAL_FALLEN,		STATS_COLUMN_TRAVELLING_NORMAL_MINECART,	STATS_COLUMN_TRAVELLING_NORMAL_BOAT,	NULL, NULL, NULL,NULL),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_HARD,		4,	STATS_COLUMN_TRAVELLING_HARD_WALKED,		STATS_COLUMN_TRAVELLING_HARD_FALLEN,		STATS_COLUMN_TRAVELLING_HARD_MINECART,		STATS_COLUMN_TRAVELLING_HARD_BOAT,		NULL, NULL, NULL,NULL),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_PEACEFUL,	4,	STATS_COLUMN_TRAVELLING_PEACEFUL_WALKED,	STATS_COLUMN_TRAVELLING_PEACEFUL_FALLEN,	STATS_COLUMN_TRAVELLING_PEACEFUL_MINECART,	STATS_COLUMN_TRAVELLING_PEACEFUL_BOAT,	nullptr, nullptr, nullptr,nullptr),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_EASY,		4,	STATS_COLUMN_TRAVELLING_EASY_WALKED,		STATS_COLUMN_TRAVELLING_EASY_FALLEN,		STATS_COLUMN_TRAVELLING_EASY_MINECART,		STATS_COLUMN_TRAVELLING_EASY_BOAT,		nullptr, nullptr, nullptr,nullptr),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_NORMAL,	4,	STATS_COLUMN_TRAVELLING_NORMAL_WALKED,		STATS_COLUMN_TRAVELLING_NORMAL_FALLEN,		STATS_COLUMN_TRAVELLING_NORMAL_MINECART,	STATS_COLUMN_TRAVELLING_NORMAL_BOAT,	nullptr, nullptr, nullptr,nullptr),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_HARD,		4,	STATS_COLUMN_TRAVELLING_HARD_WALKED,		STATS_COLUMN_TRAVELLING_HARD_FALLEN,		STATS_COLUMN_TRAVELLING_HARD_MINECART,		STATS_COLUMN_TRAVELLING_HARD_BOAT,		nullptr, nullptr, nullptr,nullptr),
 	}, {
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_PEACEFUL,	7,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_DIRT,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_STONE,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_SAND,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_COBBLESTONE,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_GRAVEL,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_CLAY,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_OBSIDIAN,	NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_EASY,		7,	STATS_COLUMN_MINING_BLOCKS_EASY_DIRT,		STATS_COLUMN_MINING_BLOCKS_EASY_STONE,		STATS_COLUMN_MINING_BLOCKS_EASY_SAND,		STATS_COLUMN_MINING_BLOCKS_EASY_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_EASY_GRAVEL,		STATS_COLUMN_MINING_BLOCKS_EASY_CLAY,		STATS_COLUMN_MINING_BLOCKS_EASY_OBSIDIAN,		NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_NORMAL,		7,	STATS_COLUMN_MINING_BLOCKS_NORMAL_DIRT,		STATS_COLUMN_MINING_BLOCKS_NORMAL_STONE,	STATS_COLUMN_MINING_BLOCKS_NORMAL_SAND,		STATS_COLUMN_MINING_BLOCKS_NORMAL_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_NORMAL_GRAVEL,	STATS_COLUMN_MINING_BLOCKS_NORMAL_CLAY,		STATS_COLUMN_MINING_BLOCKS_NORMAL_OBSIDIAN,		NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_HARD,		7,	STATS_COLUMN_MINING_BLOCKS_HARD_DIRT,		STATS_COLUMN_MINING_BLOCKS_HARD_STONE,		STATS_COLUMN_MINING_BLOCKS_HARD_SAND,		STATS_COLUMN_MINING_BLOCKS_HARD_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_HARD_GRAVEL,		STATS_COLUMN_MINING_BLOCKS_HARD_CLAY,		STATS_COLUMN_MINING_BLOCKS_HARD_OBSIDIAN,		NULL ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_PEACEFUL,	7,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_DIRT,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_STONE,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_SAND,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_COBBLESTONE,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_GRAVEL,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_CLAY,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_OBSIDIAN,	nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_EASY,		7,	STATS_COLUMN_MINING_BLOCKS_EASY_DIRT,		STATS_COLUMN_MINING_BLOCKS_EASY_STONE,		STATS_COLUMN_MINING_BLOCKS_EASY_SAND,		STATS_COLUMN_MINING_BLOCKS_EASY_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_EASY_GRAVEL,		STATS_COLUMN_MINING_BLOCKS_EASY_CLAY,		STATS_COLUMN_MINING_BLOCKS_EASY_OBSIDIAN,		nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_NORMAL,		7,	STATS_COLUMN_MINING_BLOCKS_NORMAL_DIRT,		STATS_COLUMN_MINING_BLOCKS_NORMAL_STONE,	STATS_COLUMN_MINING_BLOCKS_NORMAL_SAND,		STATS_COLUMN_MINING_BLOCKS_NORMAL_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_NORMAL_GRAVEL,	STATS_COLUMN_MINING_BLOCKS_NORMAL_CLAY,		STATS_COLUMN_MINING_BLOCKS_NORMAL_OBSIDIAN,		nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_HARD,		7,	STATS_COLUMN_MINING_BLOCKS_HARD_DIRT,		STATS_COLUMN_MINING_BLOCKS_HARD_STONE,		STATS_COLUMN_MINING_BLOCKS_HARD_SAND,		STATS_COLUMN_MINING_BLOCKS_HARD_COBBLESTONE,		STATS_COLUMN_MINING_BLOCKS_HARD_GRAVEL,		STATS_COLUMN_MINING_BLOCKS_HARD_CLAY,		STATS_COLUMN_MINING_BLOCKS_HARD_OBSIDIAN,		nullptr ),
 	}, {
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_PEACEFUL,	6, STATS_COLUMN_FARMING_PEACEFUL_EGGS,	STATS_COLUMN_FARMING_PEACEFUL_WHEAT,	STATS_COLUMN_FARMING_PEACEFUL_MUSHROOMS,STATS_COLUMN_FARMING_PEACEFUL_SUGARCANE,STATS_COLUMN_FARMING_PEACEFUL_MILK,	STATS_COLUMN_FARMING_PEACEFUL_PUMPKINS,	NULL, NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_EASY,		6, STATS_COLUMN_FARMING_EASY_EGGS,		STATS_COLUMN_FARMING_PEACEFUL_WHEAT,	STATS_COLUMN_FARMING_EASY_MUSHROOMS,	STATS_COLUMN_FARMING_EASY_SUGARCANE,	STATS_COLUMN_FARMING_EASY_MILK,		STATS_COLUMN_FARMING_EASY_PUMPKINS,		NULL, NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_NORMAL,	6, STATS_COLUMN_FARMING_NORMAL_EGGS,	STATS_COLUMN_FARMING_NORMAL_WHEAT,		STATS_COLUMN_FARMING_NORMAL_MUSHROOMS,	STATS_COLUMN_FARMING_NORMAL_SUGARCANE,	STATS_COLUMN_FARMING_NORMAL_MILK,	STATS_COLUMN_FARMING_NORMAL_PUMPKINS,	NULL, NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_HARD,		6, STATS_COLUMN_FARMING_HARD_EGGS,		STATS_COLUMN_FARMING_HARD_WHEAT,		STATS_COLUMN_FARMING_HARD_MUSHROOMS,	STATS_COLUMN_FARMING_HARD_SUGARCANE,	STATS_COLUMN_FARMING_HARD_MILK,		STATS_COLUMN_FARMING_HARD_PUMPKINS,		NULL, NULL ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_PEACEFUL,	6, STATS_COLUMN_FARMING_PEACEFUL_EGGS,	STATS_COLUMN_FARMING_PEACEFUL_WHEAT,	STATS_COLUMN_FARMING_PEACEFUL_MUSHROOMS,STATS_COLUMN_FARMING_PEACEFUL_SUGARCANE,STATS_COLUMN_FARMING_PEACEFUL_MILK,	STATS_COLUMN_FARMING_PEACEFUL_PUMPKINS,	nullptr, nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_EASY,		6, STATS_COLUMN_FARMING_EASY_EGGS,		STATS_COLUMN_FARMING_PEACEFUL_WHEAT,	STATS_COLUMN_FARMING_EASY_MUSHROOMS,	STATS_COLUMN_FARMING_EASY_SUGARCANE,	STATS_COLUMN_FARMING_EASY_MILK,		STATS_COLUMN_FARMING_EASY_PUMPKINS,		nullptr, nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_NORMAL,	6, STATS_COLUMN_FARMING_NORMAL_EGGS,	STATS_COLUMN_FARMING_NORMAL_WHEAT,		STATS_COLUMN_FARMING_NORMAL_MUSHROOMS,	STATS_COLUMN_FARMING_NORMAL_SUGARCANE,	STATS_COLUMN_FARMING_NORMAL_MILK,	STATS_COLUMN_FARMING_NORMAL_PUMPKINS,	nullptr, nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_FARMING_HARD,		6, STATS_COLUMN_FARMING_HARD_EGGS,		STATS_COLUMN_FARMING_HARD_WHEAT,		STATS_COLUMN_FARMING_HARD_MUSHROOMS,	STATS_COLUMN_FARMING_HARD_SUGARCANE,	STATS_COLUMN_FARMING_HARD_MILK,		STATS_COLUMN_FARMING_HARD_PUMPKINS,		nullptr, nullptr ),
 	}, {
-		XboxLeaderboardManager::LeaderboardDescriptor( NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_EASY,	7, STATS_COLUMN_KILLS_EASY_ZOMBIES,		STATS_COLUMN_KILLS_EASY_SKELETONS,		STATS_COLUMN_KILLS_EASY_CREEPERS,	STATS_COLUMN_KILLS_EASY_SPIDERS,	STATS_COLUMN_KILLS_EASY_SPIDERJOCKEYS,		STATS_COLUMN_KILLS_EASY_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_EASY_SLIME,		NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_NORMAL,	7, STATS_COLUMN_KILLS_NORMAL_ZOMBIES,	STATS_COLUMN_KILLS_NORMAL_SKELETONS,	STATS_COLUMN_KILLS_NORMAL_CREEPERS,	STATS_COLUMN_KILLS_NORMAL_SPIDERS,	STATS_COLUMN_KILLS_NORMAL_SPIDERJOCKEYS,	STATS_COLUMN_KILLS_NORMAL_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_NORMAL_SLIME,	NULL ),
-		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_HARD,	7, STATS_COLUMN_KILLS_HARD_ZOMBIES,		STATS_COLUMN_KILLS_HARD_SKELETONS,		STATS_COLUMN_KILLS_HARD_CREEPERS,	STATS_COLUMN_KILLS_HARD_SPIDERS,	STATS_COLUMN_KILLS_HARD_SPIDERJOCKEYS,		STATS_COLUMN_KILLS_HARD_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_HARD_SLIME,		NULL ),
+		XboxLeaderboardManager::LeaderboardDescriptor( nullptr, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_EASY,	7, STATS_COLUMN_KILLS_EASY_ZOMBIES,		STATS_COLUMN_KILLS_EASY_SKELETONS,		STATS_COLUMN_KILLS_EASY_CREEPERS,	STATS_COLUMN_KILLS_EASY_SPIDERS,	STATS_COLUMN_KILLS_EASY_SPIDERJOCKEYS,		STATS_COLUMN_KILLS_EASY_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_EASY_SLIME,		nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_NORMAL,	7, STATS_COLUMN_KILLS_NORMAL_ZOMBIES,	STATS_COLUMN_KILLS_NORMAL_SKELETONS,	STATS_COLUMN_KILLS_NORMAL_CREEPERS,	STATS_COLUMN_KILLS_NORMAL_SPIDERS,	STATS_COLUMN_KILLS_NORMAL_SPIDERJOCKEYS,	STATS_COLUMN_KILLS_NORMAL_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_NORMAL_SLIME,	nullptr ),
+		XboxLeaderboardManager::LeaderboardDescriptor( STATS_VIEW_KILLS_HARD,	7, STATS_COLUMN_KILLS_HARD_ZOMBIES,		STATS_COLUMN_KILLS_HARD_SKELETONS,		STATS_COLUMN_KILLS_HARD_CREEPERS,	STATS_COLUMN_KILLS_HARD_SPIDERS,	STATS_COLUMN_KILLS_HARD_SPIDERJOCKEYS,		STATS_COLUMN_KILLS_HARD_ZOMBIEPIGMEN,	STATS_COLUMN_KILLS_HARD_SLIME,		nullptr ),
 	},
 };
 
@@ -37,9 +37,9 @@ XboxLeaderboardManager::XboxLeaderboardManager()
 	m_eStatsState = eStatsState_Idle;
 	m_statsRead = false;
 
-	m_hSession = NULL;
-	m_spec = NULL;
-	m_stats = NULL;
+	m_hSession = nullptr;
+	m_spec = nullptr;
+	m_stats = nullptr;
 
 	m_isQNetSession = false;
 	m_endingSession = false;
@@ -53,11 +53,11 @@ void XboxLeaderboardManager::Tick()
 	{
 
 		/*if( IsStatsReadComplete() )
-			if( m_readCompleteCallback != NULL )
+			if( m_readCompleteCallback != nullptr )
 				m_readCompleteCallback(m_readCompleteUserdata);*/
 
 		if ( IsStatsReadComplete() )
-			if (m_readListener != NULL)
+			if (m_readListener != nullptr)
 			{
 				// 4J Stu - If the state is other than ready, then we don't have any stats to sort
 				if(m_eFilterMode == LeaderboardManager::eFM_Friends && m_eStatsState == eStatsState_Ready) SortFriendStats();
@@ -83,12 +83,12 @@ bool XboxLeaderboardManager::OpenSession()
 	if (m_endingSession) return false;
 
 	//We've already got an open session
-	if (m_hSession != NULL) return true;
+	if (m_hSession != nullptr) return true;
 
 	int lockedProfile = ProfileManager.GetLockedProfile();
 	if( lockedProfile == -1 )
 	{
-		m_hSession = NULL;
+		m_hSession = nullptr;
 		return false;
 	}
 
@@ -112,26 +112,26 @@ bool XboxLeaderboardManager::OpenSession()
 	XSESSION_INFO	sessionInfo;
     ULONGLONG		sessionNonce;
 
-	DWORD ret = XSessionCreate(XSESSION_CREATE_USES_STATS | XSESSION_CREATE_HOST, lockedProfile, 8, 8, &sessionNonce, &sessionInfo, NULL, &m_hSession);
+	DWORD ret = XSessionCreate(XSESSION_CREATE_USES_STATS | XSESSION_CREATE_HOST, lockedProfile, 8, 8, &sessionNonce, &sessionInfo, nullptr, &m_hSession);
 	if( ret != ERROR_SUCCESS )
 	{
-		m_hSession = NULL;
+		m_hSession = nullptr;
 		return false;
 	}
 
 	DWORD userIndices[1] = { lockedProfile };
 	BOOL privateSlots[1] = { FALSE };
-	ret = XSessionJoinLocal(m_hSession, 1, userIndices, privateSlots, NULL);
+	ret = XSessionJoinLocal(m_hSession, 1, userIndices, privateSlots, nullptr);
 	if( ret != ERROR_SUCCESS )
 	{
-		m_hSession = NULL;
+		m_hSession = nullptr;
 		return false;
 	}
 	
-	ret = XSessionStart(m_hSession, 0, NULL);
+	ret = XSessionStart(m_hSession, 0, nullptr);
 	if( ret != ERROR_SUCCESS )
 	{
-		m_hSession = NULL;
+		m_hSession = nullptr;
 		return false;
 	}
 
@@ -151,7 +151,7 @@ void XboxLeaderboardManager::CloseSession()
 			return;
 		}
 
-		if (m_hSession == NULL) return;
+		if (m_hSession == nullptr) return;
 
 		memset(&m_endSessionOverlapped, 0, sizeof(m_endSessionOverlapped));
 
@@ -166,15 +166,15 @@ void XboxLeaderboardManager::CloseSession()
 			if (ret != ERROR_SUCCESS) DeleteSession();
 		}
 
-		m_readListener = NULL;
+		m_readListener = nullptr;
 	}
 }
 
 void XboxLeaderboardManager::DeleteSession()
 {
-	XSessionDelete(m_hSession, NULL);
+	XSessionDelete(m_hSession, nullptr);
 	CloseHandle(m_hSession);
-	m_hSession = NULL;
+	m_hSession = nullptr;
 }
 
 bool XboxLeaderboardManager::WriteStats(unsigned int viewCount, ViewIn views)
@@ -190,9 +190,9 @@ bool XboxLeaderboardManager::WriteStats(unsigned int viewCount, ViewIn views)
 	if(m_isQNetSession == true)
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByXuid(m_myXUID);
-		if(player != NULL)
+		if(player != nullptr)
 		{
-			ret = ((NetworkPlayerXbox *)player)->GetQNetPlayer()->WriteStats(viewCount,views);
+			ret = static_cast<NetworkPlayerXbox *>(player)->GetQNetPlayer()->WriteStats(viewCount,views);
 			//printf("Wrote stats to QNet player\n");
 		}
 		else
@@ -204,7 +204,7 @@ bool XboxLeaderboardManager::WriteStats(unsigned int viewCount, ViewIn views)
 	}
 	else
 	{
-		ret = XSessionWriteStats(m_hSession, m_myXUID, viewCount, views, NULL);
+		ret = XSessionWriteStats(m_hSession, m_myXUID, viewCount, views, nullptr);
 	}
 	if (ret != ERROR_SUCCESS) return false;
 	return true;
@@ -213,7 +213,7 @@ bool XboxLeaderboardManager::WriteStats(unsigned int viewCount, ViewIn views)
 void XboxLeaderboardManager::CancelOperation()
 {
 	//Need to have a session open
-	if( m_hSession == NULL )
+	if( m_hSession == nullptr )
 		if( !OpenSession() )
 			return;
 
@@ -249,7 +249,7 @@ bool XboxLeaderboardManager::ReadStats_MyScore(LeaderboardReadListener *callback
 
 	//Allocate a buffer for the stats
 	m_stats = (PXUSER_STATS_READ_RESULTS) new BYTE[m_numStats];
-	if (m_stats == NULL) return false;
+	if (m_stats == nullptr) return false;
 
 	memset(m_stats, 0, m_numStats);
 	memset(&m_overlapped, 0, sizeof(m_overlapped));
@@ -258,7 +258,7 @@ bool XboxLeaderboardManager::ReadStats_MyScore(LeaderboardReadListener *callback
 			hEnumerator,		// Enumeration handle
 			m_stats,			// Buffer
 			m_numStats,			// Size of buffer
-			NULL,				// Number of rows returned; not used for async
+			nullptr,				// Number of rows returned; not used for async
 			&m_overlapped );	// Overlapped structure; not used for sync
 
 	if ( (ret!=ERROR_SUCCESS) && (ret!=ERROR_IO_PENDING) ) return false;
@@ -280,12 +280,12 @@ bool XboxLeaderboardManager::ReadStats_Friends(LeaderboardReadListener *callback
 	
 	getFriends(friendCount, &friends);
 
-	if(friendCount == 0 || friends == NULL)
+	if(friendCount == 0 || friends == nullptr)
 	{
 		app.DebugPrintf("XboxLeaderboardManager::ReadStats_Friends - No friends found. Possibly you are offline?\n");
 		return false;
 	}
-	assert(friendCount > 0 && friends != NULL);
+	assert(friendCount > 0 && friends != nullptr);
 
 	m_numStats = 0;
 	ret = XUserReadStats(
@@ -295,8 +295,8 @@ bool XboxLeaderboardManager::ReadStats_Friends(LeaderboardReadListener *callback
 							1, //specCount,
 							m_spec,
 							&m_numStats,
-							NULL,
-							NULL
+							nullptr,
+							nullptr
 						);
 
 	//Annoyingly, this returns ERROR_INSUFFICIENT_BUFFER when it is being asked to calculate the size of the buffer by passing zero resultsSize
@@ -304,7 +304,7 @@ bool XboxLeaderboardManager::ReadStats_Friends(LeaderboardReadListener *callback
 
 	//Allocate a buffer for the stats
 	m_stats = (PXUSER_STATS_READ_RESULTS) new BYTE[m_numStats];
-	if (m_stats == NULL) return false;
+	if (m_stats == nullptr) return false;
 	
 	memset(m_stats, 0, m_numStats);
 	memset(&m_overlapped, 0, sizeof(m_overlapped));
@@ -346,7 +346,7 @@ bool XboxLeaderboardManager::ReadStats_TopRank(LeaderboardReadListener *callback
 
 	//Allocate a buffer for the stats
 	m_stats = (PXUSER_STATS_READ_RESULTS) new BYTE[m_numStats];
-	if (m_stats == NULL) return false;
+	if (m_stats == nullptr) return false;
 
 	memset(m_stats, 0, m_numStats);
 	memset(&m_overlapped, 0, sizeof(m_overlapped));
@@ -355,7 +355,7 @@ bool XboxLeaderboardManager::ReadStats_TopRank(LeaderboardReadListener *callback
 			hEnumerator,		// Enumeration handle
 			m_stats,			// Buffer
 			m_numStats,			// Size of buffer
-			NULL,				// Number of rows returned; not used for async
+			nullptr,				// Number of rows returned; not used for async
 			&m_overlapped );	// Overlapped structure; not used for sync
 
 	if( (ret!=ERROR_SUCCESS) && (ret!=ERROR_IO_PENDING) ) return false;
@@ -367,7 +367,7 @@ bool XboxLeaderboardManager::ReadStats_TopRank(LeaderboardReadListener *callback
 bool XboxLeaderboardManager::readStats(int difficulty, EStatsType type)
 {
 	//Need to have a session open
-	if (m_hSession==NULL) if(!OpenSession()) return false;
+	if (m_hSession==nullptr) if(!OpenSession()) return false;
 
 	m_eStatsState = eStatsState_Failed;
 	m_statsRead = false;
@@ -376,17 +376,17 @@ bool XboxLeaderboardManager::readStats(int difficulty, EStatsType type)
 
 	//Setup the spec structure for the read request
 	m_spec = new XUSER_STATS_SPEC[1];
-	m_spec[0].dwViewId = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_viewId;
-	m_spec[0].dwNumColumnIds = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_columnCount;
+	m_spec[0].dwViewId = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_viewId;
+	m_spec[0].dwNumColumnIds = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_columnCount;
 	for (unsigned int i=0; i<m_spec[0].dwNumColumnIds; ++i)
-		m_spec[0].rgwColumnIds[i] = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_columnIds[i];
+		m_spec[0].rgwColumnIds[i] = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_columnIds[i];
 
 	return true;
 }
 
 void XboxLeaderboardManager::FlushStats()
 {
-	if( m_hSession == NULL || m_isQNetSession ) return;
+	if( m_hSession == nullptr || m_isQNetSession ) return;
 	memset(&m_flushStatsOverlapped, 0, sizeof(m_flushStatsOverlapped));
 	XSessionFlushStats(m_hSession, &m_flushStatsOverlapped);
 }
@@ -403,7 +403,7 @@ bool XboxLeaderboardManager::IsStatsReadComplete()
 			if( m_stats )
 			{
 				delete [] m_stats;
-				m_stats = NULL;
+				m_stats = nullptr;
 			}
 		}
 		else
@@ -415,7 +415,7 @@ bool XboxLeaderboardManager::IsStatsReadComplete()
 				if( m_stats )
 				{
 					delete [] m_stats;
-					m_stats = NULL;
+					m_stats = nullptr;
 				}
 			}
 			else
@@ -431,7 +431,7 @@ bool XboxLeaderboardManager::IsStatsReadComplete()
 
 int XboxLeaderboardManager::FriendSortFunction(const void* a, const void* b)
 {
-	return ((int)((XUSER_STATS_ROW*)a)->dwRank) - ((int)((XUSER_STATS_ROW*)b)->dwRank);
+	return static_cast<int>(((XUSER_STATS_ROW *)a)->dwRank) - static_cast<int>(((XUSER_STATS_ROW *)b)->dwRank);
 }
 
 void XboxLeaderboardManager::SortFriendStats()
@@ -465,10 +465,10 @@ void XboxLeaderboardManager::SortFriendStats()
 #if 0
 void XboxLeaderboardManager::SetStatsRetrieved(bool success)
 {
-	if( m_stats != NULL )
+	if( m_stats != nullptr )
 	{
 		delete [] m_stats;
-		m_stats = NULL;
+		m_stats = nullptr;
 	}
 
 	m_statsRead = success;
@@ -496,7 +496,7 @@ bool XboxLeaderboardManager::getFriends(unsigned int &friendsCount, PlayerUID** 
 						xonlineFriends,
 						resultsSize,
 						&numFriends,
-						NULL
+						nullptr
 					);
 
 	if (ret!=ERROR_SUCCESS) friendsCount = 0;

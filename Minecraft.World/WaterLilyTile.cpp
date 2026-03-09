@@ -25,7 +25,7 @@ int WaterlilyTile::getRenderShape()
 
 void WaterlilyTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
-	if (source == NULL || !source->instanceof(eTYPE_BOAT))
+	if (source == nullptr || !source->instanceof(eTYPE_BOAT))
 	{
 		Bush::addAABBs(level, x, y, z, box, boxes, source);
 	}
@@ -33,7 +33,7 @@ void WaterlilyTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBL
 
 AABB *WaterlilyTile::getAABB(Level *level, int x, int y, int z)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	// 4J Stu - Added this so that the TLS shape is correct for this tile
 	if(tls->tileId != this->id) updateDefaultShape();
 	return AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1);

@@ -17,9 +17,9 @@ void SetEntityMotionPacket::_init(int id, double xd, double yd, double zd)
 	if (xd > m) xd = m;
 	if (yd > m) yd = m;
 	if (zd > m) zd = m;
-	xa = (int) (xd * 8000.0);
-	ya = (int) (yd * 8000.0);
-	za = (int) (zd * 8000.0);
+	xa = static_cast<int>(xd * 8000.0);
+	ya = static_cast<int>(yd * 8000.0);
+	za = static_cast<int>(zd * 8000.0);
 	// 4J - if we could transmit this as bytes (in 1/16 accuracy) then flag to do so
 	if( ( xa >= (-128 * 16 ) ) && ( ya >= (-128 * 16 ) ) && ( za >= (-128 * 16 ) ) &&
 		( xa < (128 * 16 ) ) && ( ya < (128 * 16 ) ) && ( za < (128 * 16 ) ) )
@@ -53,9 +53,9 @@ void SetEntityMotionPacket::read(DataInputStream *dis) //throws IOException
 	id = idAndFlag & 0x07ff;
 	if( idAndFlag & 0x0800 )
 	{
-		xa = (int)dis->readByte();
-		ya = (int)dis->readByte();
-		za = (int)dis->readByte();
+		xa = static_cast<int>(dis->readByte());
+		ya = static_cast<int>(dis->readByte());
+		za = static_cast<int>(dis->readByte());
 		xa = ( xa << 24 ) >> 24;
 		ya = ( ya << 24 ) >> 24;
 		za = ( za << 24 ) >> 24;

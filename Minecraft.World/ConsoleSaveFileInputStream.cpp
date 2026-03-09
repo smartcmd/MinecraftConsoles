@@ -9,7 +9,7 @@ ConsoleSaveFileInputStream::ConsoleSaveFileInputStream(ConsoleSaveFile *saveFile
 	m_saveFile = saveFile;
 	m_file = m_saveFile->createFile( file );
 
-	m_saveFile->setFilePointer( m_file, 0, NULL, FILE_BEGIN );
+	m_saveFile->setFilePointer( m_file, 0, nullptr, FILE_BEGIN );
 }
 
 ConsoleSaveFileInputStream::ConsoleSaveFileInputStream(ConsoleSaveFile *saveFile, FileEntry *file)
@@ -17,7 +17,7 @@ ConsoleSaveFileInputStream::ConsoleSaveFileInputStream(ConsoleSaveFile *saveFile
 	m_saveFile = saveFile;
 	m_file = file;
 
-	m_saveFile->setFilePointer( m_file, 0, NULL, FILE_BEGIN );
+	m_saveFile->setFilePointer( m_file, 0, nullptr, FILE_BEGIN );
 }
 
 //Reads a byte of data from this input stream. This method blocks if no input is yet available.
@@ -119,7 +119,7 @@ int ConsoleSaveFileInputStream::read(byteArray b, unsigned int offset, unsigned 
 //If this stream has an associated channel then the channel is closed as well.
 void ConsoleSaveFileInputStream::close()
 {
-	if( m_saveFile != NULL )
+	if( m_saveFile != nullptr )
 	{
 		BOOL result = m_saveFile->closeHandle( m_file );
 
@@ -129,6 +129,6 @@ void ConsoleSaveFileInputStream::close()
 		}
 
 		// Stop the dtor from trying to close it again
-		m_saveFile = NULL;
+		m_saveFile = nullptr;
 	}
 }
