@@ -390,7 +390,7 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 		break;
 #endif
 
-	default:	// __debugbreak();
+	default:	return 0;
 	}
 	
 	bool confirmUser = false;

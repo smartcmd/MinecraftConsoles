@@ -635,13 +635,13 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 	}
 
 #ifndef _CONTENT_PACKAGE
-	if(p!=blockCount) // __debugbreak();
+	if(p!=blockCount) return 0;
 #endif
 
 	// We don't know how this will compress - just make a fixed length buffer to initially decompress into
 	// Some small sets of blocks can end up compressing into something bigger than their source
 	unsigned int inputSize = blockCount * 3 / 2;
-	unsigned char *ucTemp = new unsigned char[inputSize];
+	unsigned char *ucTemp = new unsigned char[(size_t)inputSize];
 
 	switch(compressionType)
 	{
