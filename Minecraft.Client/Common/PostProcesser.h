@@ -51,10 +51,7 @@ private:
     struct GammaCBData
     {
         float gamma;
-        float pad;
-        float uvOffsetX, uvOffsetY;
-        float uvScaleX, uvScaleY;
-        float pad2[2];
+        float pad[3];
     };
 
     static const char* g_gammaVSCode;
