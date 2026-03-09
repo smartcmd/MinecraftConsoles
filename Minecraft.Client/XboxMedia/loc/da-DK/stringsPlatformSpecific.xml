@@ -1,0 +1,396 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Hvis du spiller dette spil i høj opløsning, kan op til fire spillere deltage på delt skærm på samme konsol!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Tilslut ekstra controllere til din konsol, og tryk på {*CONTROLLER_VK_START*} for at deltage i et spil, når som helst.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>minecraftforum indeholder en særlig sektion om Xbox One Edition.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Du kan få de seneste nyheder om spillet fra 4JStudios og Kappische på Twitter!</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Du må aldrig se en Enderman i øjnene!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Vi tror, at 4J Studios har fjernet Herobrine fra Xbox One-konsolspillet, men vi er ikke sikre.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: Xbox One Edition slog mange rekorder!</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}SÅDAN SPILLER DU: MULTIPLAYER{*ETW*}{*B*}{*B*}
+Minecraft til Xbox One-konsollen er i udgangspunktet et multiplayerspil. Hvis du spiller i høj opløsning, kan andre spillere slutte sig til dit spil på samme konsol ved at tilslutte controllere og trykke på{*CONTROLLER_VK_START*} når som helst.{*B*}{*B*}
+NÅr du starter eller tilslutter til et onlinespil, bliver det synligt for alle på din venneliste (med mindre du har valgt Kun for inviterede, da du oprettede spillet), og hvis dine venner tilslutter til spillet, bliver det også synligt for alle på deres venneliste (hvis du har valgt valgmuligheden Tillad venners venner).
+Når du er i et spil, kan du trykke på{*CONTROLLER_VK_BACK*} for at få vist en liste over alle andre i spillet, se deres gamerkort, smide uønskede spillere ud af spillet og invitere andre til spillet.
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}SÅDAN SPILLER DU: DELING AF BILLEDER{*ETW*}{*B*}{*B*}
+Du kan dele et billede fra dit spil ved at åbne pausemenuen og trykke på{*CONTROLLER_VK_Y*} for at dele på Facebook. Du bliver vist en miniatureudgave af billedet, og du kan tilføje tekst til opslaget på Facebook.{*B*}{*B*}
+Der er en særlig kameravenlig visning i spillet, så du kan tage billeder af din figur set forfra – tryk på{*CONTROLLER_ACTION_CAMERA*}, indtil du kan se din figur forfra, inden du trykker på{*CONTROLLER_VK_Y*} for at dele.{*B*}{*B*}
+Gamertags bliver ikke vist på billedet.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}SÅDAN SPILLER DU: KREATIV{*ETW*}{*B*}{*B*}
+ I spiltypen Kreativ kan du overføre alle genstande i spillet til dit lager, uden at du behøver udvinde eller fremstille dem først.
+Genstandene forsvinder ikke fra dit lager, når de bliver placeret eller anvendt i verdenen, så du kan fokusere på at bygge frem for at samle ressourcer.{*B*}
+Hvis du skaber, indlæser eller gemmer en verden i spiltypen Kreativ, vil gennemførelser og ranglister være slået fra for verdenen, selv hvis den indlæses senere gennem Overlevelse.{*B*}
+I spiltypen Kreativ kan du flyve, hvis du trykker på{*CONTROLLER_ACTION_JUMP*}. Skub{*CONTROLLER_ACTION_MOVE*} frem to gange i hurtig rækkefølge for at flyve hurtigere.
+Når du flyver, kan du holde{*CONTROLLER_ACTION_JUMP*} nede for at bevæge dig op og{*CONTROLLER_ACTION_SNEAK*} nede for at bevæge dig nedad, eller du kan bevæge dig op med{*CONTROLLER_ACTION_DPAD_UP*}, ned med{*CONTROLLER_ACTION_DPAD_DOWN*}, 
+til venstre med{*CONTROLLER_ACTION_DPAD_LEFT*} og til højre med{*CONTROLLER_ACTION_DPAD_RIGHT*}.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Skub{*CONTROLLER_ACTION_JUMP*} frem to gange hurtigt for at flyve. Gentag handlingen for at holde op med at flyve. Skub{*CONTROLLER_ACTION_MOVE*} frem to gange hurtigt for at flyve hurtigere.
+Når du flyver, kan du holde{*CONTROLLER_ACTION_JUMP*} nede for at bevæge dig op og{*CONTROLLER_ACTION_SNEAK*} nede for at bevæge dig nedad, eller du kan bevæge dig op, ned, til venstre og til højre med D-blokken.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Vælg lagringsenhed</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Skift lagringsenhed</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Se gamerkort</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Se gamerkort</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Invitér Xbox Live Gruppe</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Hvis du skaber, indlæser eller gemmer en verden i spiltypen Kreativ, vil gennemførelser og ranglisteopdateringer være slået fra for verdenen, selv hvis den indlæses senere i Overlevelse. Er du sikker på, at du vil fortsætte?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Denne verden er tidligere blevet gemt i Kreativ, og gennemførelser og ranglisteopdateringer vil være slået fra. Er du sikker på, at du vil fortsætte?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Denne verden er tidligere blevet gemt i Kreativ, og gennemførelser og ranglisteopdateringer vil være slået fra.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Hvis du skaber, indlæser eller gemmer en verden, hvor værtsprivilegier er slået til, vil gennemførelser og ranglisteopdateringer være slået fra for verdenen, selv hvis den indlæses senere med denne funktion slået fra. Er du sikker på, at du vil fortsætte?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>Forbindelsen til Xbox Live blev afbrudt. Afslutter til hovedmenuen.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>Forbindelsen til Xbox Live blev afbrudt.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hurra! Du har fået en avatargenstand - en T-shirt med Minecraft: Xbox One Edition på!
+Gå hen til dit dashboard for at give din avater T-shirten på.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hurra! Du har fået en avatargenstand - et Minecraft: Xbox One Edition-ur!
+Gå hen til dit dashboard for at give din avatar uret på.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hurra! Du har fået en avatargenstand – en snigerkasket!
+Gå hen til dit dashboard for at give din avater kasketten på.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hurra! Du har fået et Minecraft: Xbox One Edition-tema!
+Gå hen til dit dashboard for at vælge temaet.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Dette er prøveversionen af Minecraft: Xbox One Edition. Hvis du havde haft den fulde version af spillet, ville du have fået en gennemførelse!
+Lås op for den fulde version for at opleve fornøjelsen ved Minecraft: Xbox One Edition og for at spille med dine venner fra resten af verden via Xbox Live.
+Vil du låse op for den fulde version?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Dette er prøveversionen af Minecraft: Xbox One Edition. Hvis du havde haft den fulde version af spillet, ville du have fået en avaterbelønning!
+Lås op for den fulde version for at opleve fornøjelsen ved Minecraft: Xbox One Edition og for at spille med dine venner fra resten af verden via Xbox Live.
+Vil du låse op for den fulde version?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Dette er prøveversionen af Minecraft: Xbox One Edition. Hvis du havde haft den fulde version af spillet, ville du have fået et gamerbillede!
+Lås op for den fulde version for at opleve fornøjelsen ved Minecraft: Xbox One Edition og for at spille med dine venner fra resten af verden via Xbox Live.
+Vil du låse op for den fulde version?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Dette er prøveversionen af Minecraft: Xbox One Edition. Hvis du havde haft den fulde version af spillet, ville du have fået et tema!
+Lås op for den fulde version for at opleve fornøjelsen ved Minecraft: Xbox One Edition og for at spille med dine venner fra resten af verden via Xbox Live.
+Vil du låse op for den fulde version?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Dette er prøveversionen af Minecraft: Xbox One Edition. Du skal have den fulde version af spillet for at kunne acceptere denne invitation.
+Vil du låse op for den fulde version af spillet?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Gæstespillere kan ikke låse op for det komplette spil. Du skal logge ind med et Xbox Live-bruger-id.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Gamertag</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Brygning</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Du er blevet sendt tilbage til startskærmen, fordi din gamerprofil er blevet logget ud</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Du har opbrugt den maksimalt tilladte spilletid af prøveversionen af Minecraft: Xbox One Edition! Vil du låse op for det komplette spil og fortsætte morskaben? </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>"Minecraft: Xbox One Edition" kunne ikke blive indlæst og kan derfor ikke fortsætte.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Kunne ikke tilslutte til spillet, da en eller flere af spillerne ikke kan spille multiplayer på Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Kunne ikke tilslutte til spillet, da en eller flere af spillerne ikke kan spille multiplayer på Xbox Live. Fjern mærket i feltet "Onlinespil" for at påbegynde et offline-spil.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Du må ikke deltage i denne spilsession, da indstillingerne for dine medlemsprivilegier er for strenge. Det kan du ændre under indstillinger for privatliv og online-brug i dit Xbox dashboard, hvis du vil slutte dig til spilsessionen.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Du må ikke deltage i denne spilsession, da indstillingerne for én af dine lokale spilleres medlemsprivilegier er for strenge.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Du må ikke deltage i denne spilsession, da én af spillerne i spilsessionen kun kan spille med spillere fra sin venneliste, og du er ikke på listen.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Du kunne ikke oprette denne spilsession, da indstillingerne for én af dine lokale spilleres medlemsprivilegier er for strenge. Fjern mærket i feltet "Onlinespil" for at påbegynde et offline-spil, eller foretag ændringer under indstillinger for privatliv og online-brug i dit Xbox dashboard.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Dette spil har en funktion, der gemmer automatisk. Når du ser ovenstående ikon, gemmer spillet automatisk dine data.
+Du må ikke slukke for dit Xbox 360-system, når dette ikon vises på skærmen.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Med denne funktion kan værten slå flyveevnen til/fra, slå udmattelse fra og gøre sig usynlig i menuen i spillet. Deaktiverer opdateringer af gennemførelser og ranglister.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Gamertags på delt skærm</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Gennemførelser</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Gamertags:</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Gamertags i spillet</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Se, hvad jeg har lavet i Minecraft: Xbox One Edition!</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Tilbage</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Når funktionen er slået til, bliver gennemførelser og ranglister i verdenen deaktiverede, mens du spiller, og det samme gælder, hvis du indlæser den igen efter at have gemt spillet, mens funktionen var slået til.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Hvis du vælger denne mulighed, vil spillere, der ikke er knyttet til værtens Xbox One-konsol, blive sparket ud af spillet sammen med enhver anden spiller på hans/hendes Xbox One-konsol. Spilleren vil ikke kunne deltage i spillet igen, før det genstartes.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Du bruger prøveversionen af en teksturpakke. Du har fuld adgang til indholdet af teksturpakken, men du kan ikke gemme dine fremskridt.
+Hvis du prøver at gemme, mens du bruger prøveversionen, får du mulighed for at købe den fulde version i stedet.
+</value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Xbox Store</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Lille</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Mellem</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Stor</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Klassisk</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Spilindstillinger</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Verdensstørrelse</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Indtast et seed for at generere det samme terræn igen. Lad stå tom for en tilfældig verden.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Vælg verdensstørrelse for at ændre det udsnit af verdenen, som du kan udforske.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Deaktiver automatisk lagring</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Sluk for løbende automatisk lagring af verden. Hvis du vælger at gemme senere, kan det tage betydeligt længere tid.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Hjælp</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Er du sikker på, at du vil afslutte og gå til hovedmenuen?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Er du sikker på, at du vil afslutte dit nuværende spil og slutte dig til et nyt?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Er du sikker på, at du vil afslutte og gå til hovedmenuen? Alle spillere bliver koblet af spillet.</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Vælg bruger</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Hent gemt data fra Xbox 360</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Henter gemt data fra Xbox 360</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Henter filoplysninger</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Downloader fildata (%.2fMB/%.2fMB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Konverterer data til Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Gemmer</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Der blev ikke fundet gemt data fra Xbox 360</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Lagring kunne ikke gennemføres</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Minecraft: Xbox One Edition har ikke mere lagringsplads. Slet andre verdener i Minecraft: Xbox One Edition for at frigøre plads, og tryk på prøv igen for at fortsætte. Vælg deaktiver lagring for at fortsætte uden at gemme.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Vælg prøv igen for at forsøge at gemme igen, eller vælg deaktiver lagring for at forsætte uden at gemme.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Prøv at gemme igen</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Deaktiver lagring</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Slet gemte spil</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Spil prøveversion</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Aktiver automatisk lagring</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Vil du aktivere løbende automatisk lagring af denne verden?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Deaktiver automatisk lagring</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Deaktiver automatisk lagring</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Er du sikker på, at du vil deaktivere løbende automatisk lagring af denne verden?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Du skal synkronisere, før du kan spille denne verden. Det kan tage et stykke tid. Vil du synkronisere og spille nu?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synkronisering</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Download og konvertering til Xbox One-format gennemført!</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Annullerer download. Vent venligst ...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Download annulleret.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Du har forladt spillet.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>Den spilsession, som du prøver at deltage i, er i øjeblikket fuld. Du vil få besked, når der er plads i denne session.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Skjult pga. spillerens privatlivsindstillinger</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Er du sikker på, at du vil kopiere dette gemte spil?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Kopier gemt spil</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Kopierer gemt spil</value>
+  </data>
+</root>

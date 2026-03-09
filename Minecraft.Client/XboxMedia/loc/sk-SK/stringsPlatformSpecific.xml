@@ -1,0 +1,396 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Ak budete túto hru hrať v režime vysokého rozlíšenia, obrazovku konzoly môžete rozdeliť až pre štyroch hráčov!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Pripojte ku konzole ďalšie ovládače a stlačením tlačidiel {*CONTROLLER_VK_START*} na ovládačoch sa kedykoľvek pripojte ku hre.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Na stránke minecraftforum je časť venovaná vydaniu pre konzoly Xbox One Edition.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Najnovšie informácie o tejto hre získate od spoločností 4J Studios a Kappische na Twitteri!</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Nedívajte sa na človeka z konca sveta so strachom v očiach!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Myslíme si, že spoločnosť 4J Studios odstránila Herobrina z hry pre konzoly Xbox One, ale nie sme si istí.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Hra Minecraft: Xbox One Edition prekonala množstvo rekordov!</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}POKYNY NA HRANIE: HRA PRE VIACERÝCH HRÁČOV{*ETW*}{*B*}{*B*}
+V predvolenom nastavení je Minecraft na konzole Xbox One hrou pre viacerých hráčov. Ak hráte v režime vysokého rozlíšenia, k hre sa môžu pripojiť hráči, ktorí sú pri vás. Stačí pripojiť ovládače a kedykoľvek počas hry stlačiť tlačidlo {*CONTROLLER_VK_START*}.{*B*}{*B*}
+Keď spustíte hru online alebo sa k nej pripojíte, uvidia to ľudia z vášho zoznamu priateľov (okrem prípadov, keď pri hosťovaní hry vyberiete možnosť Len na pozvanie). Ak sa ku hre pripoja, uvidia to aj ľudia z ich zoznamu priateľov (ak ste vybrali možnosť Povoliť priateľov mojich priateľov).{*B*}
+Počas hry môžete stlačením tlačidla {*CONTROLLER_VK_BACK*} vyvolať zoznam všetkých ostatných hráčov v hre, zobraziť ich hráčske karty, vyhodiť hráčov z hry a pozvať iných do hry.
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}POKYNY NA HRANIE: ZDIEĽANIE SNÍMOK OBRAZOVIEK{*ETW*}{*B*}{*B*}
+Snímku obrazovky z hry môžete zachytiť tak, že vyvoláte ponuku Pozastaviť a stlačením tlačidla{*CONTROLLER_VK_Y*} vyberiete položku Zdieľať na Facebooku. Zobrazí sa miniatúrna verzia snímky obrazovky a vy môžete upraviť text spojený s príspevkom na Facebooku.{*B*}{*B*}
+Na zhotovovanie týchto snímok obrazoviek je k dispozícii režim fotoaparátu, aby ste na zábere videli postavu spredu – podržte stlačené tlačidlo{*CONTROLLER_ACTION_CAMERA*}, kým neuvidíte svoju postavu spredu, a stlačením tlačidla{*CONTROLLER_VK_Y*} ju zdieľajte.{*B*}{*B*}
+Na snímke obrazovky sa nezobrazia menovky hráčov.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}POKYNY NA HRANIE: TVORIVÝ REŽIM{*ETW*}{*B*}{*B*}
+Rozhranie tvorivého režimu umožňuje presunutie ktoréhokoľvek predmetu v hre do inventára hráča bez toho, aby ho musel vyťažiť alebo vyrobiť. 
+Predmety v hráčovom inventári sa po umiestnení alebo použití vo svete neodstránia, vďaka čomu sa hráč namiesto zhromažďovania surovín môže sústrediť na stavanie.{*B*}
+Ak v tvorivom režime vytvoríte, načítate alebo uložíte svet, budú preň zakázané dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov, a to aj v prípade, že sa neskôr načíta v režime prežitia.{*B*}
+Ak chcete v tvorivom režime lietať, dvakrát rýchlo stlačte tlačidlo{*CONTROLLER_ACTION_JUMP*}. Ak chcete lietanie ukončiť, zopakujte túto akciu. Ak chcete lietať rýchlejšie, počas letu potlačte tlačidlo{*CONTROLLER_ACTION_MOVE*} dopredu dvakrát rýchlo po sebe. 
+V režime lietania sa môžete presúvať nahor a nadol podržaním týchto tlačidiel:{*CONTROLLER_ACTION_JUMP*} a{*CONTROLLER_ACTION_SNEAK*} alebo {*CONTROLLER_ACTION_DPAD_UP*} a {*CONTROLLER_ACTION_DPAD_DOWN*}. 
+Ak sa chcete presunúť doľava a doprava, podržte tlačidlá {*CONTROLLER_ACTION_DPAD_LEFT*} a {*CONTROLLER_ACTION_DPAD_RIGHT*}.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Ak chcete lietať, dvakrát rýchlo stlačte tlačidlo{*CONTROLLER_ACTION_JUMP*}. Ak chcete lietanie ukončiť, zopakujte túto akciu. Ak chcete lietať rýchlejšie, počas letu potlačte tlačidlo{*CONTROLLER_ACTION_MOVE*} dopredu dvakrát rýchlo po sebe. 
+V režime lietania sa môžete presúvať nahor a nadol podržaním tlačidiel{*CONTROLLER_ACTION_JUMP*} a{*CONTROLLER_ACTION_SNEAK*}. Na pohyb nahor, nadol, doľava alebo doprava môžete takisto používať smerový ovládač.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Vybrať úložné zariadenie</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Zmeniť úložné zariadenie</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Zobraziť kartu hráča</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Zobraziť kartu hráča</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Pozvať na Xbox Live Párty</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Ak v tvorivom režime vytvoríte, načítate alebo uložíte svet, budú preň zakázané dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov, a to aj v prípade, že sa neskôr načíta v režime prežitia. Naozaj chcete pokračovať?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Tento svet bol predtým uložený v tvorivom režime, preto preň budú zakázané dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov. Naozaj chcete pokračovať?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Tento svet bol predtým uložený v tvorivom režime, preto preň budú zakázané dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Ak vytvoríte, načítate alebo uložíte svet s povolenými oprávneniami hostiteľa, budú preň zakázané dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov, a to aj v prípade, že sa neskôr načíta so zakázaním týchto oprávnení. Naozaj chcete pokračovať?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>Pripojenie k službe Xbox Live sa prerušilo. Hra sa ukončí a prejdete do hlavnej ponuky.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>Pripojenie k službe Xbox Live sa prerušilo.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hurá! Získali ste položku avatara – tričko s motívom hry Minecraft: Xbox One Edition!
+Ak chcete, aby si váš avatar toto tričko obliekol, prejdite na panel.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hurá! Získali ste položku avatara – hodinky s motívom hry Minecraft: Xbox One Edition!
+Ak chcete, aby si váš avatar tieto hodinky navliekol na ruku, prejdite na panel.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hurá! Získali ste položku avatara – bejzbalovú čiapku so zakrádačom!
+Ak chcete, aby si váš avatar túto čiapku obliekol, prejdite na panel.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hurá! Získali ste motív z hry Minecraft: Xbox One Edition!
+Ak chcete tento motív vybrať, prejdite na panel.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Toto je skúšobná verzia hry Minecraft: Xbox One Edition. Ak by ste mali plnú verziu, práve by ste získali dosiahnutý výsledok! 
+Odomknutím plnej verzie si hru Minecraft vychutnáte a môžete hrať s priateľmi z celého sveta prostredníctvom služby Xbox Live.
+Chcete odomknúť plnú verziu hry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Toto je skúšobná verzia hry Minecraft: Xbox One Edition. Ak by ste mali plnú hru, práve by ste získali cenu pre avatara! 
+Odomknutím plnej verzie si hru Minecraft vychutnáte a môžete hrať s priateľmi z celého sveta prostredníctvom služby Xbox Live.
+Chcete odomknúť plnú verziu hry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Toto je skúšobná verzia hry Minecraft: Xbox One Edition. Ak by ste mali plnú hru, práve by ste získali obrázok hráča! 
+Odomknutím plnej verzie si hru Minecraft vychutnáte a môžete hrať s priateľmi z celého sveta prostredníctvom služby Xbox Live.
+Chcete odomknúť plnú verziu hry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Toto je skúšobná verzia hry Minecraft: Xbox One Edition. Ak by ste mali plnú hru, práve by ste získali motív! 
+Odomknutím plnej verzie si hru Minecraft vychutnáte a môžete hrať s priateľmi z celého sveta prostredníctvom služby Xbox Live.
+Chcete odomknúť plnú verziu hry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Toto je skúšobná verzia hry Minecraft: Xbox One Edition. Ak chcete prijať toto pozvanie, musíte mať plnú hru. 
+Chcete odomknúť plnú verziu hry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Hráči s funkciou hosťa nemôžu odomknúť plnú hru. Prihláste sa pomocou ID používateľa v službe Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Menovka hráča</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Varenie nápojov</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Vrátili ste sa na úvodnú obrazovku, pretože váš profil hráča bol odhlásený</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Skúšobnú verziu hry Minecraft: Xbox One Edition ste hrali maximálny povolený čas. Chcete odomknúť plnú hru, aby vaša zábava pokračovala? </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Hra Minecraft: Xbox One Edition sa nenačítala a nemôže pokračovať.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>K hre sa nepodarilo pripojiť, pretože niektorí hráči nesmú hrať hry pre viacerých hráčov v službe Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Hru online sa nepodarilo vytvoriť, pretože niektorí hráči nesmú hrať hry pre viacerých hráčov v službe Xbox Live. Ak chcete začať hru v režime offline, zrušte začiarknutie políčka Hra online.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>K tejto hernej relácii sa nemôžete pripojiť, pretože vaše nastavenie oprávnenia na členský obsah je príliš obmedzujúce. Ak sa chcete k tejto relácii pripojiť, zmeňte toto nastavenie v časti Ochrana osobných údajov a nastavenia online na paneli Xbox.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>K tejto hernej relácii sa nemôžete pripojiť, pretože niektorý z lokálnych hráčov má príliš obmedzujúce nastavenie oprávnenia na členský obsah.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>K tejto hernej relácii sa nemôžete pripojiť, pretože niektorý hráč z relácie má oprávnenie na členský obsah nastavené na hodnotu Iba priatelia a vy nie ste v jeho zozname priateľov.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Túto hernú reláciu nemôžete vytvoriť, pretože niektorý z lokálnych hráčov má príliš obmedzujúce nastavenie oprávnenia na členský obsah. Ak chcete začať hru v režime offline, zrušte začiarknutie políčka Hra online alebo zmeňte nastavenie v časti Ochrana osobných údajov a nastavenia online na paneli Xbox.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Táto hra obsahuje funkciu automatického ukladania. Keď sa zobrazí ikona uvedená vyššie, hra ukladá vaše údaje.
+Kým je táto ikona na obrazovke, nevypínajte konzolu Xbox One.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Dá hostiteľovi možnosť zapínať pre seba lietanie, vypínať vyčerpanie a zneviditeľniť sa. Prestanú sa však registrovať dosiahnuté výsledky a postup v rebríčku.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Menovky hráčov na rozdelenej obrazovke</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Dosiahnuté výsledky</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Menovky hráčov:</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Menovky hráčov v hre</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Pozrite sa na môj výtvor v hre Minecraft: Xbox One Edition!</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Späť</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Táto možnosť zakazuje dosiahnuté výsledky a aktualizácie rebríčkov najlepších hráčov pre tento svet počas hrania, ak bola pri opätovnom načítaní uloženej hry táto možnosť zapnutá.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Ak hráč nepoužíva rovnakú konzolu Xbox One ako hostiteľ hry, výber tejto možnosti spôsobí vyhodenie tohto hráča a ostatných hráčov používajúcich jeho konzolu Xbox One z hry. Hráč sa bude môcť ku hre znova pripojiť až po jej reštartovaní.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Používate skúšobnú verziu balíka textúr. Budete mať prístup k celému obsahu balíka textúr, ale nebudete môcť uložiť svoj postup v hre.
+Ak sa pri používaní skúšobnej verzie pokúsite o uloženie, zobrazí sa možnosť kúpy plnej verzie.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Obchod Xbox</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Malý</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Stredný</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Veľký</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Klasický</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Možnosti hry</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Veľkosť sveta</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Ak chcete vygenerovať rovnaký terén znova, zadajte počiatočnú hodnotu. Ak chcete vytvoriť náhodný svet, nechajte pole prázdne.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Vyberte veľkosť sveta. Týmto výberom zmeníte plochu sveta, ktorú môžete preskúmať.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Zakázať automatické ukladanie</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Vypnete neustále, automatické ukladanie sveta. Ak sa ho neskôr rozhodnete uložiť, môže to trvať dlho.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Pomocník</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Naozaj chcete opustiť hru a prejsť do hlavnej ponuky?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Naozaj chcete opustiť aktuálnu hru a pripojiť sa k inej?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Naozaj chcete opustiť hru, prejsť do hlavnej ponuky a odpojiť od hry všetkých hráčov?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Vybrať používateľa</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Načítať uloženú hru pre Xbox 360</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Načítava sa uložená hra pre Xbox 360</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Získavajú sa podrobnosti o súbore</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Preberajú sa údaje súboru (%.2f MB/%.2f MB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Konvertujú sa údaje pre Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Ukladá sa</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Nenašla sa žiadna uložená hra pre Xbox 360</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Ukladanie sa nedokončilo</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Hra Minecraft: Xbox One Edition nemá miesto na uloženie údajov. Ak ho chcete vytvoriť, odstráňte iné svety hry Minecraft: Xbox One Edition a pokračujte výberom položky Zopakovať. Ak chcete pokračovať bez uloženia, vyberte položku Zakázať ukladanie.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Výberom položky Zopakovať sa pokúste o ukladanie znova. Ak chcete pokračovať bez uloženia, vyberte položku Zakázať ukladanie.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Zopakovať ukladanie</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Zakázať ukladanie</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Odstrániť uložené hry</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Hrať skúšobnú verziu hry</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Povoliť automatické ukladanie</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Chcete povoliť neustále, automatické ukladanie sveta?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Zakázať automatické ukladanie</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Zakázať automatické ukladanie</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Naozaj chcete zakázať neustále, automatické ukladanie sveta?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Skôr než v tomto svete budete môcť hrať, musíte ho synchronizovať. Bude to chvíľu trvať. Chcete spustiť synchronizáciu a hrať?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synchronizovať</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Prevzatie a konverzia na formát Xbox One sa dokončili!</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Ruší sa preberanie. Prosím, čakajte...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Preberanie sa zrušilo.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Ukončili ste hru.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>Herná relácia, ku ktorej ste sa pripojili, je momentálne plná. Keď sa v tejto relácii vytvorí miesto, dostanete oznámenie.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Skryté v dôsledku nastavení ochrany osobných údajov hráča.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Naozaj chcete kopírovať túto uloženú hru?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Kopírovať uložené údaje</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Kopírujú sa uložené údaje</value>
+  </data>
+</root>

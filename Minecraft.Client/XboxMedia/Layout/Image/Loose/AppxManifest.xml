@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:mx="http://schemas.microsoft.com/appx/2013/xbox/manifest" IgnorableNamespaces="mx">
+  <Identity Name="Minecraft" Publisher="CN=Publisher" Version="1.0.406.0" ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>Minecraft: Xbox One Edition</DisplayName>
+    <PublisherDisplayName>Microsoft Studios</PublisherDisplayName>
+    <Logo>StoreLogo.png</Logo>
+    <Description>Minecraft</Description>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2</OSMinVersion>
+    <OSMaxVersionTested>6.2</OSMaxVersionTested>
+    <mx:ApplicationEnvironment>title</mx:ApplicationEnvironment>
+    <mx:OSName>era</mx:OSName>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="en-us" />
+    <Resource Language="en-gb" />
+    <Resource Language="de-de" />
+    <Resource Language="es-es" />
+    <Resource Language="es-mx" />
+    <Resource Language="fr-fr" />
+    <Resource Language="it-it" />
+    <Resource Language="pt-br" />
+    <Resource Language="pt-pt" />
+    <Resource Language="ja-jp" />
+    <Resource Language="ko-kr" />
+    <Resource Language="zh-tw" />
+    <Resource Language="zh-hk" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="Minecraft.Client.exe" EntryPoint="Minecraft.App">
+      <VisualElements DisplayName="Minecraft: Xbox One Edition" Logo="StoreLogo.png" SmallLogo="SmallLogo.png" Description="Minecraft" ForegroundText="light" BackgroundColor="#464646">
+        <SplashScreen Image="SplashScreen.png" />
+      </VisualElements>
+      <Extensions>
+        <mx:Extension Category="xbox.live">
+          <mx:XboxLive TitleId="149E11AE" PrimaryServiceConfigId="05c20100-6e60-45d5-878a-4903149e11ae">
+            <mx:ConnectedStorage MaxMegabytesPerUser="1024" />
+          </mx:XboxLive>
+        </mx:Extension>
+        <mx:Extension Category="windows.xbox.networking">
+          <mx:XboxNetworkingManifest>
+            <mx:SocketDescriptions>
+              <mx:SocketDescription Name="MultiplayerSocketUdp" SecureIpProtocol="Udp" BoundPort="8700">
+                <mx:AllowedUsages>
+                  <mx:SecureDeviceSocketUsage Type="Initiate" />
+                  <mx:SecureDeviceSocketUsage Type="Accept" />
+                  <mx:SecureDeviceSocketUsage Type="SendGameData" />
+                  <mx:SecureDeviceSocketUsage Type="ReceiveGameData" />
+                  <mx:SecureDeviceSocketUsage Type="SendChat" />
+                  <mx:SecureDeviceSocketUsage Type="ReceiveChat" />
+                </mx:AllowedUsages>
+              </mx:SocketDescription>
+            </mx:SocketDescriptions>
+            <mx:SecureDeviceAssociationTemplates>
+              <mx:SecureDeviceAssociationTemplate Name="MultiplayerUdp" InitiatorSocketDescription="MultiplayerSocketUdp" AcceptorSocketDescription="MultiplayerSocketUdp" MultiplayerSessionRequirement="Required">
+                <mx:AllowedUsages>
+                  <mx:SecureDeviceAssociationUsage Type="Default" />
+                </mx:AllowedUsages>
+              </mx:SecureDeviceAssociationTemplate>
+            </mx:SecureDeviceAssociationTemplates>
+          </mx:XboxNetworkingManifest>
+        </mx:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Extensions>
+    <mx:PackageExtension Category="xbox.store">
+      <mx:XboxStore>
+        <mx:RelatedProducts>
+          <mx:RelatedProduct Id="582e7bcc-11bc-4702-ab1b-b31566f8e327" />
+        </mx:RelatedProducts>
+      </mx:XboxStore>
+    </mx:PackageExtension>
+    <Extension Category="windows.activatableClass.inProcessServer">
+      <InProcessServer>
+        <Path>windows.xbox.networking.realtimesession.dll</Path>
+        <ActivatableClass ActivatableClassId="Windows.Xbox.Networking.RealtimeSession.Session" ThreadingModel="both" />
+      </InProcessServer>
+    </Extension>
+    <Extension Category="windows.activatableClass.inProcessServer">
+      <InProcessServer>
+        <Path>Microsoft.Xbox.GameChat.dll</Path>
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.GameChat.ChatManager" ThreadingModel="both" />
+      </InProcessServer>
+    </Extension>
+    <Extension Category="windows.activatableClass.inProcessServer">
+      <InProcessServer>
+        <Path>Microsoft.Xbox.Services.dll</Path>
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.XboxLiveContext" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Configuration" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Multiplayer.MultiplayerQualityOfServiceMeasurements" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Multiplayer.MultiplayerSessionReference" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Multiplayer.MultiplayerSessionCapabilities" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Multiplayer.MultiplayerSession" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Matchmaking.CreateMatchTicketResponse" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Matchmaking.HopperStatisticsResponse" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Matchmaking.MatchTicketDetailsResponse" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Presence.PresenceData" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.TitleStorage.TitleStorageBlobMetadata" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.UserStatistics.RequestedStatistics" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Privacy.PermissionIdConstants" ThreadingModel="both" />
+        <ActivatableClass ActivatableClassId="Microsoft.Xbox.Services.Social.SocialGroupConstants" ThreadingModel="both" />
+      </InProcessServer>
+    </Extension>
+  </Extensions>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <mx:Capability Name="kinectAudio" />
+    <mx:Capability Name="kinectGamechat" />
+  </Capabilities>
+</Package>

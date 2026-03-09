@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Det finns inte tillräckligt mycket ledigt utrymme på lagringsenheten för att skapa en sparfil.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Den här sparfilen finns redan på den valda lagringsenheten. Vill du skriva över den?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Problem med lagringsenheten</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Din lagringsenhet är skadad eller går ej att läsa</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Din lagringsenhet är skadad eller går ej att läsa. Välj en ny lagringsenhet.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Välj en ny lagringsenhet</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>Ingen lagringsenhet vald</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>Du kommer inte att kunna spara spelet om du inte väljer en lagringsenhet</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Välj en lagringsenhet</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Din lagringsenhet har tagits bort. Välj en ny.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Avsluta spelet</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>Du har skickats tillbaka till titelskärmen eftersom din Xbox-profil loggades ut</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>Matchen har avslutats eftersom en Xbox-profil loggades ut</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Xbox-profil ej online</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>Vissa funktioner i det här spelet kräver en Xbox Live-aktiverad Xbox-profil, men du är för tillfället offline.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>Den här funktionen kräver en Xbox-profil som är inloggad på Xbox Live.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Anslut till Xbox Live</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Problem med achievement</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> Det gick inte att komma åt din Xbox-profil. Ditt achievement kunde inte delas ut just nu.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Problem med Xbox-profil</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Det gick inte att spara inställningarna på Xbox-profilen.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Gäst-Xbox-profil</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Gäst-Xbox-profiler kan inte använda sig av denna funktion. Använd en annan Xbox-profil.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      Det här är testversionen av Minecraft. Om du hade haft den kompletta versionen så hade du precis fått en achievement!
+      Lås upp det kompletta spelet och upplev hela Minecraft och spela med dina vänner i hela världen över Xbox Live.
+      Vill du låsa upp det kompletta spelet?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>Du tas tillbaka till huvudmenyn på grund av ett problem med att läsa din Xbox-profil.</value>
+  </data>
+</root>

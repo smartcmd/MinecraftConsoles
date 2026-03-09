@@ -1,0 +1,392 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Если выбрать высокое разрешение, можно играть в режиме разделенного экрана вчетвером!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Вы можете присоединиться к игре в любой момент. Для этого подключите дополнительные геймпады и нажмите кнопку START.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>На форуме minecraftforum есть раздел, посвященный версии для Xbox 360.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Если хотите всегда быть в курсе новостей об игре, читайте 4J Studios и Kappische в Twitter.</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Делайте снимки своих питомцев и размещайте их на своей стене в Facebook прямо из меню паузы. Удивите своих друзей!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Похоже, парни из 4J Studios убрали Хиробрина из консольной версии игры (Xbox 360), но мы не уверены в этом.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Игра Minecraft для Xbox 360 побила кучу рекордов.</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}ОБУЧЕНИЕ: ИГРА ПО СЕТИ{*ETW*}{*B*}{*B*}
+Если вы играете в Minecraft на Xbox 360, игра по сети доступна по умолчанию. Если вы играете в режиме высокого разрешения, к вам могут присоединиться другие игроки. Для этого им нужно просто подключить геймпады и нажать кнопку START. Это можно сделать в любой момент во время игры.{*B*}{*B*}
+Если вы создали сетевую игру или подключились к уже созданной, доступ к ней будет открыт всем, кого вы добавили в список друзей (если при создании игры не выбран параметр «Только по приглашению»). Если ваши друзья присоединятся к игре, к ней также смогут подключиться их друзья (если выбран параметр «Открыть доступ друзьям друзей»).{*B*}
+Если вы хотите узнать, кто играет вместе с вами, нажмите кнопку BACK (НАЗАД) во время игры, после чего появится список всех игроков. Эта же кнопка позволяет просматривать карты игроков, а также выгонять и приглашать игроков.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}ОБУЧЕНИЕ: ПУБЛИКАЦИЯ СНИМКОВ ЭКРАНА{*ETW*}{*B*}{*B*}
+Чтобы сделать снимок экрана прямо во время игры, откройте меню паузы, а затем нажмите {*CONTROLLER_VK_Y*}, чтобы разместить снимок на Facebook. На экране появится ваш снимок в миниатюре, рядом с которым вы сможете вставить текст комментария. Затем снимок будет опубликован на стене.{*B*}{*B*}
+Делать снимки экрана можно и в режиме камеры: так вы сможете увидеть своего персонажа спереди. Нажмите {*CONTROLLER_ACTION_CAMERA*}, а затем, когда увидите персонажа в таком ракурсе, нажмите {*CONTROLLER_VK_Y*}, чтобы сделать снимок и опубликовать его.{*B*}{*B*}
+Теги игроков на таких снимках не указываются.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}ОБУЧЕНИЕ: ТВОРЧЕСКИЙ РЕЖИМ{*ETW*}{*B*}{*B*}
+В творческом режиме не нужно ничего добывать или мастерить. Вы можете просто положить любой предмет в свой инвентарь.
+Все, что хранится в вашем инвентаре, всегда останется на своем месте, даже если вы выложите предмет или начнете его использовать. Это позволяет игроку вплотную заняться строительством, а не распыляться на сбор ресурсов.{*B*}
+Создание, загрузка и сохранение игрового мира во время игры в творческом режиме делают невозможными фиксацию достижений и обновление списка лидеров, даже если потом загрузить мир в режиме выживания.{*B*}
+Чтобы взлететь в творческом режиме, быстро нажмите{*CONTROLLER_ACTION_JUMP*} два раза. Чтобы опуститься на землю, еще раз нажмите эту кнопку два раза. Чтобы лететь быстрее, быстро наклоните {*CONTROLLER_ACTION_MOVE*} два раза вперед, когда будете в воздухе. 
+Чтобы подняться выше, удерживайте {*CONTROLLER_ACTION_JUMP*}. Если хотите опуститься, удерживайте {*CONTROLLER_ACTION_SNEAK*}. Лететь вверх можно также с помощью {*CONTROLLER_ACTION_DPAD_UP*}, а вниз с помощью {*CONTROLLER_ACTION_DPAD_DOWN*}. Если вам нужно лететь влево, используйте 
+{*CONTROLLER_ACTION_DPAD_LEFT*}, если вправо — {*CONTROLLER_ACTION_DPAD_RIGHT*}.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Чтобы взлететь в творческом режиме, быстро нажмите {*CONTROLLER_ACTION_JUMP*} два раза. Чтобы опуститься на землю, еще раз нажмите эту кнопку два раза. Чтобы лететь быстрее, быстро наклоните {*CONTROLLER_ACTION_MOVE*} два раза вперед, когда будете в воздухе. 
+Чтобы подняться выше, удерживайте {*CONTROLLER_ACTION_JUMP*}. Если хотите опуститься, удерживайте {*CONTROLLER_ACTION_SNEAK*}. Изменять направление полета (вверх, вниз, влево, право) можно и с помощью крестовины.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Выбрать устройство хранения данных</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Выбрать другое устройство</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Просмотр профиля игрока</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Просмотр профиля игрока</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Пригласить команду Xbox Live</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Создание, загрузка и сохранение игрового мира во время игры в творческом режиме делают невозможной фиксацию достижений и обновление списка лидеров, даже если потом загрузить мир в режиме выживания. Продолжить?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Вы сохраняли этот игровой мир во время игры в творческом режиме, поэтому фиксация достижений и обновление списка лидеров выполняться не будут. Продолжить?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Вы сохраняли этот игровой мир во время игры в творческом режиме, поэтому фиксация достижений и обновление списка лидеров выполняться не будут.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Создание, загрузка и сохранение игрового мира при выбранном параметре «Приоритет главного компьютера» делают невозможной фиксацию достижений и обновление списка лидеров, даже если потом загрузить мир при неактивном параметре. Продолжить?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>Связь с Xbox Live потеряна. Вы будете перемещены в главное меню.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>Связь с Xbox LIVE потеряна.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Ура! Вы получили приз — футболку Minecraft: Xbox 360 для своего персонажа!
+Откройте панель управления и наденьте ее.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Ура! Вы получили приз — часы Minecraft: Xbox 360 для своего персонажа!
+Откройте панель управления и наденьте их.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Ура! Вы получили приз — бейсбольную кепку крипера!
+Откройте панель управления и наденьте ее.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Ура! Вы получили приз — обои Minecraft: Xbox 360!
+Откройте панель управления и заберите их.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Это пробная версия игры Minecraft для Xbox 360. Если бы у вас была полная версия, сейчас вы бы уже отметились каким-нибудь достижением! 
+Перейти на полную версию?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Это пробная версия игры Minecraft для Xbox 360. Если бы у вас была полная версия, сейчас вы бы уже порадовали своего персонажа чем-нибудь новеньким! 
+Перейти на полную версию?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Это пробная версия игры Minecraft для Xbox 360. Если бы у вас была полная версия, сейчас у уже бы была новая аватара! 
+Перейти на полную версию?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Это пробная версия игры Minecraft для Xbox 360. Если бы у вас была полная версия, сейчас вы бы наслаждались новыми обоями! 
+Перейти на полную версию?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Это пробная версия игры Minecraft для Xbox 360. Вы не сможете принять приглашение, пока не перейдете на полную версию! 
+Перейти на полную версию?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Гостям закрыт доступ к полной версии игры. Чтобы перейти на полную версию, войдите в свой профиль Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Тег игрока</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Зельеварение</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Вы оказались в главном меню, так как вышли из своего профиля.</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Время, выделенное на ознакомление с игрой Minecraft для Xbox 360, истекло. Перейдите на полную версию и играйте на здоровье. </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Не удалось запустить игру Minecraft для Xbox 360. Будет выполнен выход из игры.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Не удалось войти в игру, так как одному или нескольким игрокам запрещено играть через службу Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Не удалось создать сетевую игру, так как одному или нескольким игрокам запрещено играть через службу Xbox Live. Вы можете играть в автономном режиме, но параметр «Сетевая игра» должен быть неактивен.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Вы не можете войти в игру, так как вы установили слишком строгие ограничения для членского контента. Откройте панель управления, а затем войдите в раздел «Конфиденциальность и безопасность в Интернете», чтобы изменить настройки. После этого вы сможете войти в игру.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Вы не можете войти в игру, так как один из локальных игроков установил слишком строгие ограничения для членского контента.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Вы не можете войти в игру, так как один из ее участников выбрал параметр «Только друзья» при установке ограничений для членского контента, но не добавил вас в список друзей.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Вы не можете создать игру, так как один из локальных игроков установил слишком строгие ограничения для членского контента. Откройте панель управления, а затем войдите в раздел «Конфиденциальность и безопасность в Интернете», чтобы изменить настройки. Вы можете играть в автономном режиме, но параметр «Сетевая игра» должен быть неактивен.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>В этой игре включена функция автосохранения. Когда на экране появится этот значок, начнется сохранение данных.
+Не выключайте консоль, пока он не исчезнет.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Главный компьютер может летать, преодолевать усталость, становиться невидимым. Достижений и обновлений списка лидеров не будет.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Показывать теги игроков в режиме разделенного экрана</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Достижения</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Теги игрока</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Показывать теги игрока во время игры</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Играю в Minecraft для Xbox 360. Смотри, что у меня получилось.</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox 360</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Назад</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Этот параметр позволяет отключить фиксацию достижений и обновление списка лидеров во время игры в этом мире. Даже если параметр будет активен, когда вы сохраните игру, при загрузке мира достижения все равно не будут фиксироваться, а список лидеров не будет обновляться.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Если игрок играет не на той же консоли Xbox One, что и создатель игры, при выборе этого параметра игрок будет изгнан из игры, также будут исключены все другие игроки, играющие на данной консоли Xbox One. Игрок, которого выгнали, не сможет повторно присоединиться к игре до ее перезапуска.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Вы используете пробную версию пакета текстур. У вас будет доступ к полному содержимому пакета текстур, но вы не сможете сохранять изменения в игровом мире.
+Если при использовании пробной версии вы попытаетесь выполнить сохранение, вам будет предоставлена возможность купить полную версию пакета.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Магазин Xbox</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Небольшой</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Средний</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Большой</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Классика</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Параметры игры</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Размер мира</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Введите ключ, чтобы сгенерировать эту же территорию повторно. Оставьте поле пустым, чтобы создать случайный мир.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Выберите размер мира - этот параметр определяет количество территории для исследования.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Отключить автоматическое сохранение</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Отключает постоянное автоматическое сохранение мира. Если вы впоследствии захотите сохранить мир, для этого может потребоваться больше времени.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Справка</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Выйти в главное меню? Все несохраненные данные будут потеряны.</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Выйти из текущей игры и присоединиться к другой? Все несохраненные данные будут потеряны.</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Вы действительно хотите выйти в главное меню и отсоединить всех игроков от игры?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Выберите пользователя</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Получить файл сохранения Xbox 360</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Получение файла сохранения Xbox 360</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Получение данных файла</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Загрузка данных файла (%.2fМБ/%.2fМБ)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Преобразование данных для Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Сохранение</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Файл сохранения Xbox 360 не найден</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Сохранение не закончено</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Игре Minecraft: Xbox One Edition не хватает места на диске для сохранения данных. Чтобы освободить место, удалите другие миры Minecraft: Xbox One Edition и нажмите кнопку "Повторить" для продолжения, или выберите "Отключить сохранение", чтобы продолжить без сохранения.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Выберите "Повторить", чтобы повторить попытку сохранения, или выберите "Отключить сохранение", чтобы продолжить без сохранения.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Повторить сохранение</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Отключить сохранение</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Удалить файлы сохранения</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Играть в пробную версию игры</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Включить автоматическое сохранение</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Хотите включить постоянное автоматическое сохранение мира?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Отключить автоматическое сохранение</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Отключить автоматическое сохранение</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Вы действительно хотите отключить постоянное автоматическое сохранение мира?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Чтобы вы смогли играть в этом мире, необходимо его синхронизировать, что может занять некоторое время. Хотите начать синхронизацию и игру?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Синхронизировать</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Загрузка и преобразование в формат Xbox One завершены!</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Отмена загрузки. Ожидайте...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Загрузка отменена.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Вы вышли из игры.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>В игре, к которой вы присоединились, нет места. Вы будете уведомлены о том, что место освободилось.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Скрыто из-за настроек конфиденциальности данного игрока.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Вы действительно хотите скопировать этот файл сохранения игры?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Копировать файл сохранения</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Копирование файла сохранения</value>
+  </data>
+</root>

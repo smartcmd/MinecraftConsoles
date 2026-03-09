@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Inutilisé</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>O.K.</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Retour</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Annuler</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Oui</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Non</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Sauvegarde endommagée</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Vos données de sauvegarde semblent endommagées. Créer une nouvelle sauvegarde et écraser le fichier endommagé ?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Espace libre insuffisant</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Le périphérique de stockage sélectionné ne dispose pas de suffisamment d'espace libre pour créer une sauvegarde.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Resélectionner</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Jouer sans sauvegarder</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Créer une sauvegarde</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Écraser la sauvegarde ?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Le périphérique de stockage sélectionné contient déjà une sauvegarde. L'écraser ?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Non, ne pas écraser</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Écraser et sauvegarder</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Échec de la sauvegarde</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Erreur périphérique de stockage</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Votre périphérique de stockage n'est pas disponible ou présente une erreur.</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Votre périphérique de stockage est inaccessible ou présente une erreur. Veuillez sélectionner un autre périphérique de stockage.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Sélectionner autre périphérique</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Aucun périph. sélectionné</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Si vous ne sélectionnez pas de périphérique de stockage, la fonction de sauvegarde sera désactivée.</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Sélectionner un périphérique</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Continuer sans sauvegarder</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Votre périphérique de stockage a été retiré. Sélectionnez-en un autre.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Échec du chargement</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Nommer la sauvegarde</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Saisir un nom pour la sauvegarde</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Voulez-vous vraiment quitter le jeu ?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Déconnexion</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Continuer à jouer</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Continuer à jouer hors ligne</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Sauvegarde...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Enregistrement en cours. N'éteignez pas votre console.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Déverrouiller le jeu complet</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Vous jouez à la version d'évaluation de Minecraft. Si vous possédiez le jeu complet, vous auriez déjà remporté un succès !
+Déverrouillez le jeu complet pour profiter au mieux de Minecraft et jouer avec vos amis partout dans le monde via Xbox Live.
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Une erreur réseau s'est produite.</value>
+  </data>
+</root>

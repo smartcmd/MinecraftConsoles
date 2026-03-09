@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Não Utilizado</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Voltar</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Cancelar</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Sim</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Não</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Dados Guardados Corrompidos</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Os teus dados guardados parecem estar corrompidos. Queres gravar novamente e substituir os dados corrompidos?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Sem Espaço Livre</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>O dispositivo de armazenamento que selecionaste não tem espaço livre suficiente para guardar os dados de jogo.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Selecionar novamente</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Jogar sem guardar</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Guardar novos dados</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Substituir os dados?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>O dispositivo de armazenamento selecionado já contém dados guardados. Tens a certeza de que queres substituí-los?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Não - não substituir</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Substituir e guardar</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Falha ao guardar</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Problema de disp. de armazen.</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>O teu dispositivo de armazenamento não está disponível ou tem um erro</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>O teu dispositivo de armazenamento não está disponível ou apresenta um erro. Seleciona um novo dispositivo de armazenamento.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Selecionar novo dispositivo</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Nenhum disp. de arm. selecionado</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Se não selecionares um dispositivo, a opção de guardar os dados de jogo será desativada</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Selecionar disp. armazenamento</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Continuar sem guardar</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>O teu dispositivo de armazenamento foi removido. Seleciona um novo dispositivo.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Falha ao carregar</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Atrib. nome aos dados guardados</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Introduz um nome para os dados de jogo guardados</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Tens a certeza de que queres sair do jogo?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Sessão terminada</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Continuar a jogar</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Continuar a jogar offline</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>A guardar…</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>A guardar conteúdo. Por favor não desligues a consola.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Desbloquear Jogo Completo</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Esta é a versão de avaliação do Minecraft. Se tivesses o jogo completo, terias acabado de ganhar uma conquista! 
+Desbloqueia o jogo completo para experimentares a diversão do Minecraft e para jogares com os teus amigos em todo o mundo através do Xbox Live.
+Queres desbloquear o jogo completo?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Ocorreu um erro de rede.</value>
+  </data>
+</root>
