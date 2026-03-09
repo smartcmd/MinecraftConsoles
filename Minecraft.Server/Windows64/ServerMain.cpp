@@ -27,6 +27,7 @@
 #include "../../Minecraft.World/compression.h"
 #include "../../Minecraft.World/OldChunkStorage.h"
 #include "../../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../PluginBridgeImports.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -456,6 +457,10 @@ int main(int argc, char **argv)
 	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
 	WinsockNetLayer::Initialize();
 
+	
+	LogStartupStep("initializing plugin system");
+    PluginBridge_Initialize();
+
 	Tesselator::CreateNewThreadStorage(1024 * 1024);
 	AABB::CreateNewThreadStorage();
 	Vec3::CreateNewThreadStorage();
@@ -580,6 +585,10 @@ int main(int argc, char **argv)
 
 	LogStartupStep("server startup complete");
 	LogInfof("startup", "Dedicated server listening on %s:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
+
+	LogStartupStep("firing plugin OnLoad event");
+    PluginBridge_FireOnLoad();
+
 	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !IsShutdownRequested() && !app.m_bShutdown)
 	{
 		// Windows64 suppresses saveToDisc right after new world creation
@@ -647,6 +656,9 @@ int main(int argc, char **argv)
 	app.m_bShutdown = true;
 
 	LogInfof("shutdown", "Dedicated server stopped");
+
+    PluginBridge_FireOnExit();
+
 	MinecraftServer *server = MinecraftServer::getInstance();
 	if (server != NULL)
 	{
@@ -673,6 +685,10 @@ int main(int argc, char **argv)
 	g_NetworkManager.Terminate();
 	LogDebugf("shutdown", "Network manager terminated.");
 	ServerRuntime::ServerLogManager::Shutdown();
+	
+	LogStartupStep("shutting down plugin system");
+    PluginBridge_Shutdown();
+
 	CleanupDevice();
 	
 

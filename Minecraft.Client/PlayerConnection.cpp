@@ -36,6 +36,7 @@
 #include "Options.h"
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\PluginBridgeNative.h"
 #endif
 
 Random PlayerConnection::random;
@@ -50,6 +51,7 @@ PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connecti
 	xLastOk = yLastOk = zLastOk = 0;
 	synched = true;
 	didTick = false;
+    hasDoneFirstTick = false;
 	lastKeepAliveId = 0;
 	lastKeepAliveTime = 0;
 	lastKeepAliveTick = 0;
@@ -100,6 +102,13 @@ unsigned char PlayerConnection::getLogSmallId()
 
 void PlayerConnection::tick()
 {
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+    if (!hasDoneFirstTick)
+    {
+        hasDoneFirstTick = true;
+        PluginBridge::CreateAndBindManagedPlayer(player.get(), this);
+    }
+#endif
 	if( done ) return;
 
 	if( m_bCloseOnTick )
@@ -146,6 +155,8 @@ void PlayerConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 		(player != NULL) ? player->name : std::wstring(),
 		reason,
 		true);
+	
+	PluginBridge::EmitPlayerLeaveEvent(player.get());
 #endif
 	app.DebugPrintf("PlayerConnection disconect reason: %d\n", reason );
 	player->disconnect();
@@ -195,6 +206,20 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 	if (synched)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		double currentX = player->x;
+		double currentY = player->y;
+		double currentZ = player->z;
+		double toX = packet->hasPos ? packet->x : currentX;
+		double toY = packet->hasPos ? packet->y : currentY;
+		double toZ = packet->hasPos ? packet->z : currentZ;
+		bool moveCancelled = false;
+
+		if (currentX != toX || currentY != toY || currentZ != toZ)
+		{
+			moveCancelled = PluginBridge::EmitPlayerMoveEvent(player.get(), currentX, currentY, currentZ, toX, toY, toZ);
+		}
+#endif
 		if (player->riding != NULL)
 		{
 
@@ -319,6 +344,14 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 			// assume the player made a jump
 			player->causeFoodExhaustion(FoodConstants::EXHAUSTION_JUMP);
 		}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		if (moveCancelled)
+		{
+			teleport(xLastOk, yLastOk, zLastOk, yRotT, xRotT);
+			return;
+		}
+#endif
 
 		player->move(xDist, yDist, zDist);
 
@@ -459,12 +492,60 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 
 	if (packet->action == PlayerActionPacket::START_DESTROY_BLOCK)
 	{
-		if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		bool shouldEmitBreakEvent = player->gameMode->isCreative();
+
+		if (!shouldEmitBreakEvent)
+		{
+			int t = level->getTile(x, y, z);
+			if (t != 0)
+			{
+				Tile* tile = Tile::tiles[t];
+				if (tile != NULL)
+				{
+					float progress = tile->getDestroyProgress(player, player->level, x, y, z);
+					if (progress >= 1.0f)
+					{
+						shouldEmitBreakEvent = true;
+					}
+				}
+			}
+		}
+
+		if (shouldEmitBreakEvent)
+		{
+			int blockId = level->getTile(x, y, z);
+			int blockData = level->getData(x, y, z);
+			if (PluginBridge::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+			{
+				player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+				return;
+			}
+		}
+#endif
+
+		if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);
 		else player->connection->send( shared_ptr<TileUpdatePacket>( new TileUpdatePacket(x, y, z, level) ) );
 
 	}
 	else if (packet->action == PlayerActionPacket::STOP_DESTROY_BLOCK)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		if (!player->gameMode->isCreative())
+		{
+			int blockId = level->getTile(x, y, z);
+			if (blockId != 0)
+			{
+				int blockData = level->getData(x, y, z);
+				if (PluginBridge::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+				{
+					player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+					return;
+				}
+			}
+		}
+#endif
+
 		player->gameMode->stopDestroyBlock(x, y, z);
 		server->getPlayers()->prioritiseTileChanges(x, y, z, level->dimension->id);	// 4J added - make sure that the update packets for this get prioritised over other general world updates
 		if (level->getTile(x, y, z) != 0) player->connection->send( shared_ptr<TileUpdatePacket>( new TileUpdatePacket(x, y, z, level) ) );
@@ -473,7 +554,7 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 	{
 		player->gameMode->abortDestroyBlock(x, y, z);
 		if (level->getTile(x, y, z) != 0) player->connection->send(shared_ptr<TileUpdatePacket>( new TileUpdatePacket(x, y, z, level)));
-	}
+}
 }
 
 void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
@@ -500,7 +581,67 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 		{
 			if (true)		// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from java 1.6.4) but putting back to old behaviour
 			{
-				player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+				bool blockPlaceCancelled = false;
+				bool shouldEmitBlockPlaceEvent = false;
+				int placeX = x;
+				int placeY = y;
+				int placeZ = z;
+				bool validFace = true;
+				
+				if (face == 0)
+				{
+					placeY--;
+				}
+				else if (face == 1)
+				{
+					placeY++;
+				}
+				else if (face == 2)
+				{
+					placeZ--;
+				}
+				else if (face == 3)
+				{
+					placeZ++;
+				}
+				else if (face == 4)
+				{
+					placeX--;
+				}
+				else if (face == 5)
+				{
+					placeX++;
+				}
+				else
+				{
+					validFace = false;
+				}
+
+				if (item != NULL && validFace)
+				{
+					// Test if block placement would actually occur
+					shouldEmitBlockPlaceEvent = player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ(), true);
+					
+					if (shouldEmitBlockPlaceEvent)
+					{
+						int blockId = item->id;
+						int blockData = item->getAuxValue();
+						blockPlaceCancelled = PluginBridge::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
+					}
+				}
+
+				if (!blockPlaceCancelled)
+				{
+#endif
+					player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+				}
+				else
+				{
+					informClient = true;
+				}
+#endif
 			}
 		}
 
@@ -578,6 +719,8 @@ void PlayerConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, 
 		(player != NULL) ? player->name : std::wstring(),
 		reason,
 		false);
+	
+	PluginBridge::EmitPlayerLeaveEvent(player.get());
 #endif
 	//    logger.info(player.name + " lost connection: " + reason);
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
@@ -662,6 +805,14 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 		handleCommand(message);
 		return;
 	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (PluginBridge::EmitPlayerChatEvent(player.get(), message))
+	{
+		return;
+	}
+#endif
+
 	wstring formatted = L"<" + player->name + L"> " + message;
 	server->getPlayers()->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(formatted)));
 	chatSpamTickCount += SharedConstants::TICKS_PER_SECOND;
@@ -886,7 +1037,7 @@ void PlayerConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 				vector<SKIN_BOX *> *pvSkinBoxes = app.GetAdditionalSkinBoxes(packet->dwSkinID);
 				unsigned int uiAnimOverrideBitmask= app.GetAnimOverrideBitmask(packet->dwSkinID);
 
-				send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->textureName,pbData,dwTextureBytes,pvSkinBoxes,uiAnimOverrideBitmask) ) );
+			send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->textureName,pbData,dwTextureBytes,pvSkinBoxes,uiAnimOverrideBitmask) ) );
 			}
 		}
 		else
@@ -1594,7 +1745,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 					if (name.length() <= 30)
 					{
 						menu->setItemName(name);
-					}
+	}
 				}
 			}
 		}
@@ -1611,7 +1762,7 @@ void PlayerConnection::handleDebugOptions(shared_ptr<DebugOptionsPacket> packet)
 {
 	//Player player = dynamic_pointer_cast<Player>( player->shared_from_this() );
 	player->SetDebugOptions(packet->m_uiVal);
-}
+	}
 
 void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 {
@@ -1685,7 +1836,7 @@ void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 				{
 					if (ingItemInst->getItem()->hasCraftingRemainingItem())
 					{
-						// replace item with remaining result
+					 // replace item with remaining result
 						player->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(ingItemInst->getItem()->getCraftingRemainingItem()) ) );
 					}
 

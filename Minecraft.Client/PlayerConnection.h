@@ -29,6 +29,7 @@ private:
     int aboveGroundTickCount;
 
     bool didTick;
+    bool hasDoneFirstTick;
 	int lastKeepAliveId;
 	int64_t lastKeepAliveTime;
 	static Random random;
