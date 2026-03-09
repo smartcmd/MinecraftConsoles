@@ -62,6 +62,6 @@ GameType *GameModeCommand::getModeForString(shared_ptr<CommandSender> source, co
 	}
 	else
 	{
-        return NULL;
+        return nullptr;
 	}
 }
