@@ -1408,7 +1408,7 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_FOV:
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
-			float v = ((float)GameSettingsA[iPad]->ucFov - 101) * 80.0f / 100.0f; // jvnpr -- convert 0-80 to 30-110
+			float v = (static_cast<float>(GameSettingsA[iPad]->ucFov) - 101) * 80.0f / 100.0f; // jvnpr -- convert 0-80 to 30-110
 			pMinecraft->options->fov = ( v / 40.0f ) - 1;
 		}
 		break;

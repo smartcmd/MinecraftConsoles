@@ -30,8 +30,8 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 	m_sliderFov.init(TempString,eControl_FOV,0,80,fovSliderVal);
 
 	const float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
-	swprintf( tempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
-	m_sliderTime.init(tempString,eControl_Time,0,240,currentTime/100);
+	swprintf(TempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
+	m_sliderTime.init(TempString,eControl_Time,0,240,currentTime/100);
 
 	m_buttonRain.init(L"Toggle Rain",eControl_Rain);
 	m_buttonThunder.init(L"Toggle Thunder",eControl_Thunder);
@@ -276,7 +276,7 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 	case eControl_FOV:
 		{
 			// jvnpr -- code here is copied from UIScene_SettingsGraphicsMenu.cpp for consistency
-			int v = (int)currentValue;
+			int v = static_cast<int>(currentValue);
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			if (v < 0) v = 0;
 			if (v > 80) v = 80;

@@ -44,13 +44,13 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-	if ((int)(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f) == 70)
+	if (static_cast<int>(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f) == 70)
 	{
 		swprintf((WCHAR*)TempString, 256, L"FOV: Default");
 	}
 	else
 	{
-		swprintf((WCHAR*)TempString, 256, L"FOV: %d", (int)(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f));
+		swprintf((WCHAR*)TempString, 256, L"FOV: %d", static_cast<int>(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f));
 	}
 	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, ((app.GetGameSettings(m_iPad, eGameSetting_FOV)) - 101) * 80.0f / 100.0f);
 	
@@ -196,7 +196,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		{ 
 
 			// jvnpr -- code in Consoles_App.cpp should always reflect the same calculations as here so that controller and mouse inputs work the same.
-			int v = (int)currentValue;
+			int v = static_cast<int>(currentValue);
 			m_sliderFOV.handleSliderMove(v);
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			if (v < 0) v = 0;
