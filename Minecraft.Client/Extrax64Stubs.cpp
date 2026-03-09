@@ -35,6 +35,9 @@
 #include "Orbis\Sentient\DynamicConfigurations.h"
 #include <perf.h>
 #endif
+#ifdef _WINDOWS64
+#include "Windows64/RichPresence/discord_rpc.h"
+#endif
 
 #if !defined(__PS3__) && !defined(__ORBIS__) && !defined(__PSVITA__)
 #ifdef _WINDOWS64
@@ -679,9 +682,109 @@ eAwardType			C_4JProfile::GetAwardType(int iAwardNumber) { return eAwardType_Ach
 bool				C_4JProfile::CanBeAwarded(int iQuadrant, int iAwardNumber) { return false; }
 void				C_4JProfile::Award(int iQuadrant, int iAwardNumber, bool bForce) {}
 bool				C_4JProfile::IsAwardsFlagSet(int iQuadrant, int iAward) { return false; }
-void				C_4JProfile::RichPresenceInit(int iPresenceCount, int iContextCount) {}
-void				C_4JProfile::RegisterRichPresenceContext(int iGameConfigContextID) {}
-void				C_4JProfile::SetRichPresenceContextValue(int iPad, int iContextID, int iVal) {}
+void C_4JProfile::RichPresenceInit(int iPresenceCount, int iContextCount)
+{
+#ifdef _WINDOWS64
+    DiscordEventHandlers discordPresence;
+    memset(&discordPresence, 0, sizeof(discordPresence));
+
+    // 1480245069947732159 is on my discord account (acth2)
+    Discord_Initialize("1480245069947732159", &discordPresence, 1, NULL);
+#endif
+}
+void C_4JProfile::RegisterRichPresenceContext(int iGameConfigContextID)
+{
+}
+
+std::string WStringToUtf8(LPCWSTR wstr)
+{
+    int size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+    std::string result(size - 1, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, result.data(), size, NULL, NULL);
+    return result;
+}
+
+void C_4JProfile::SetRichPresenceContextValue(int iPad, int iContextID, int iVal)
+{
+#ifdef _WINDOWS64
+    DiscordRichPresence discordPresence;
+    memset(&discordPresence, 0, sizeof(discordPresence));
+
+    // std::string = UTF8
+    // LPCWSTR     = UTF16
+
+    static std::string s_detailsUtf8;
+    static std::string s_stateUtf8;
+
+    // i cannot instantly do = because app.getString
+    s_detailsUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BLANK));
+
+    if (iContextID == CONTEXT_GAME_STATE)
+    {
+        discordPresence.details = "Playing Minecraft: Legacy Console Edition";
+
+        // the comments are pretty generic, that would be sick if i could find the real ones
+        // i will probably make different icons depending of what situation the player is to make the rich presence more fun soon
+        discordPresence.largeImageKey = "main_icon";
+        discordPresence.largeImageText = "Minecraft: LCE";
+
+        switch (iVal)
+        {
+        case CONTEXT_GAME_STATE_NETHER:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_NETHER));
+            discordPresence.smallImageKey = "nether_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_FORGING:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_FORGING));
+            discordPresence.smallImageKey = "anvil_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_BOATING:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BOATING));
+            discordPresence.smallImageKey = "boat_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_CRAFTING:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_CRAFTING));
+            discordPresence.smallImageKey = "crafting_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_RIDING_MINECART:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_RIDING_MINECART));
+            discordPresence.smallImageKey = "minecart_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_RIDING_PIG:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_RIDING_PIG));
+            discordPresence.smallImageKey = "pig_icon";
+            break;
+
+        case CONTEXT_GAME_STATE_BLANK:
+        default:
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BLANK));
+            discordPresence.smallImageKey = nullptr;
+            break;
+        }
+
+        // After leaving for exemple an anvil the rich presence would get stuck at "Forging" so to avoid that behaviour,
+        // i just reset every (5*20 / 10) ticks (5 seconds), the division by ten is due to the fact that i call this function once per 10 ticks.
+        // If the player is still forging it will just reset itself and if he dont it will be corrected!
+        //
+        // \/ CODE TO CHANGE \/
+        static int resetRP = 0;
+        if (++resetRP >= (5 * 20) / 10)
+        {
+            iVal = CONTEXT_GAME_STATE_BLANK;
+            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BLANK));
+            discordPresence.smallImageKey = nullptr;
+        }
+
+        discordPresence.state = s_stateUtf8.c_str();
+        Discord_UpdatePresence(&discordPresence);
+    }
+#endif
+}
 void				C_4JProfile::SetCurrentGameActivity(int iPad, int iNewPresence, bool bSetOthersToIdle) {}
 void				C_4JProfile::DisplayFullVersionPurchase(bool bRequired, int iQuadrant, int iUpsellParam) {}
 void				C_4JProfile::SetUpsellCallback(void (*Func)(LPVOID lpParam, eUpsellType type, eUpsellResponse response, int iUserData), LPVOID lpParam) {}
