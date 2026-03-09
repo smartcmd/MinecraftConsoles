@@ -1206,6 +1206,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	app.SetGameHostOption(eGameHostOption_DoTileDrops, pClass->m_MoreOptionsParams.bDoTileDrops);
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, pClass->m_MoreOptionsParams.bNaturalRegeneration);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, pClass->m_MoreOptionsParams.bDoDaylightCycle);
+	app.SetGameHostOption(eGameHostOption_NoMobCap, pClass->m_MoreOptionsParams.bNoMobCap);
 
 	app.SetGameHostOption(eGameHostOption_WasntSaveOwner, false);
 #ifdef _LARGE_WORLDS
@@ -1213,10 +1214,6 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	pClass->m_MoreOptionsParams.currentWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
 	pClass->m_MoreOptionsParams.newWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
 #endif
-	app.SetGameHostOption(eGameHostOption_WorldMobCap, pClass->m_MoreOptionsParams.worldMobCap );
-
-	// Use helper to update the caps based on what was set earlier
-	MobCategory::updateMobCaps(pClass->m_MoreOptionsParams.worldMobCap);
 
 	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
 

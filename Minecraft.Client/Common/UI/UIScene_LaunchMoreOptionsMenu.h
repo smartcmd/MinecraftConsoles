@@ -32,13 +32,13 @@ private:
 		eLaunchCheckbox_TileDrops,
 		eLaunchCheckbox_NaturalRegeneration,
 		eLaunchCheckbox_DayLightCycle,
+		eLaunchCheckbox_NoMobCap,
 
 		eLaunchCheckboxes_Count,
 
 		eControl_EditSeed,
 		eControl_WorldSize,
 		eControl_WorldResize,
-		eControl_WorldMobCap,
 
 		eControl_Count
 	};
@@ -62,7 +62,6 @@ private:
 	UIControl_TextInput m_editSeed;
 	UIControl_Slider m_sliderWorldSize;
 	UIControl_Slider m_sliderWorldResize;
-	UIControl_Slider m_sliderWorldMobCap; // Added ~ Mob cap slider for user control
 	IggyName m_funcSetMenuType, m_funcChangeTab, m_funcSetDescription;
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)
 		UI_MAP_ELEMENT( m_labelGameOptions, "LabelGame")
@@ -87,6 +86,7 @@ private:
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_MobLoot], "CheckboxMobLoot")
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_TileDrops], "CheckboxTileDrops")
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_NaturalRegeneration], "CheckboxNaturalRegeneration")
+			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_NoMobCap], "CheckboxNoMobCap")
 		UI_END_MAP_CHILD_ELEMENTS()
 			
 		UI_MAP_ELEMENT(m_worldOptions, "WorldOptions")
@@ -101,7 +101,6 @@ private:
 			UI_MAP_ELEMENT( m_labelRandomSeed, "RandomSeed")
 			UI_MAP_ELEMENT( m_labelWorldSize, "WorldSize")
 			UI_MAP_ELEMENT( m_sliderWorldSize, "WorldSizeSlider")
-			UI_MAP_ELEMENT( m_sliderWorldMobCap, "WorldMobCapSlider")
 
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_Structures], "CheckboxStructures")
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_BonusChest], "CheckboxBonusChest")

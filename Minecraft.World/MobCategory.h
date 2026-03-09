@@ -71,8 +71,14 @@ private:
 	const bool m_isPersistent;
 	const bool m_isSingleType; // 4J Added
 	const eINSTANCEOF m_eBase; // 4J added
+	// Added for animals so that wolves, mushroomcows, and chickens can be included in the category count.
+	// Only used when mob cap is unlimited, done to ensure the wolves and chickens can spawn properly.
+	// When using the shorter constructor, this will be set to m_eBase.
+	const eINSTANCEOF m_eJavaBase;
 
 	MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType);
+	// Additional constructor, allows specifying the enum to use if mob cap is unlimited
+	MobCategory(int maxVar, Material * spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, eINSTANCEOF eJavaBase, bool isSingleType);
 
 public:
 	const type_info getBaseClass();
@@ -85,7 +91,5 @@ public:
 	bool isPersistent();
 
 public:
-	// Add a function to update the mob caps
-	static void updateMobCaps(int mode);
 	static void staticCtor();
 };

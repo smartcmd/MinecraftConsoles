@@ -4695,7 +4695,7 @@ void Level::decrementUnsavedChunkCount()
 
 bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 {
-	if (app.GetGameHostOption(eGameHostOption_WorldMobCap) == 3)
+	if (app.GetGameHostOption(eGameHostOption_NoMobCap))
 	{
 		return true;
 	}

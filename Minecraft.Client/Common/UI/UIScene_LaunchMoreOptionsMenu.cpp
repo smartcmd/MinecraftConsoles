@@ -15,14 +15,6 @@ int m_iWorldSizeTitleA[4] =
 };
 #endif
 
-string m_iWorldMobCapTitleA[4] =
-{
-	"Small",
-	"Medium",
-	"Large",
-	"Unlimited"
-};
-
 UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
@@ -109,6 +101,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	m_checkboxes[eLaunchCheckbox_TileDrops].init(app.GetString(IDS_TILE_DROPS), eLaunchCheckbox_TileDrops, m_params->bDoTileDrops);
 	m_checkboxes[eLaunchCheckbox_NaturalRegeneration].init(app.GetString(IDS_NATURAL_REGEN), eLaunchCheckbox_NaturalRegeneration, m_params->bNaturalRegeneration);
 	m_checkboxes[eLaunchCheckbox_DayLightCycle].init(app.GetString(IDS_DAYLIGHT_CYCLE), eLaunchCheckbox_DayLightCycle, m_params->bDoDaylightCycle);
+	m_checkboxes[eLaunchCheckbox_NoMobCap].init(UIString::UIString("No Mob Cap"), eLaunchCheckbox_NoMobCap, m_params->bNoMobCap);
 
 	m_labelGameOptions.init( app.GetString(IDS_GAME_OPTIONS) );
 	m_labelSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_SEED));
@@ -139,10 +132,6 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	// #endif
 
 	m_tabIndex = m_params->bGenerateOptions ? TAB_WORLD_OPTIONS : TAB_GAME_OPTIONS;
-
-
-	// Introduce a mob cap slider for large worlds. If there were a better solution for this it would be nice...
-	m_sliderWorldMobCap.init(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]),eControl_WorldMobCap,0,3,m_params->worldMobCap);
 
 	// set the default text
 #ifdef _LARGE_WORLDS
@@ -499,10 +488,10 @@ void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId
 	case eLaunchCheckbox_DayLightCycle:
 		stringId = IDS_GAMEOPTION_DAYLIGHT_CYCLE;
 		break;
-	case eControl_EditSeed:
+	case eLaunchCheckbox_NoMobCap:
 		stringId = IDS_GAMEOPTION_SEED;
 		break;
-	case eControl_WorldMobCap:
+	case eControl_EditSeed:
 		stringId = IDS_GAMEOPTION_SEED;
 		break;
 #ifdef _LARGE_WORLDS
@@ -660,11 +649,6 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 	int value = static_cast<int>(currentValue);
 	switch(static_cast<int>(sliderId))
 	{
-	case eControl_WorldMobCap:
-		m_sliderWorldMobCap.handleSliderMove(value);
-		m_params->worldMobCap = value;
-		m_sliderWorldMobCap.setLabel(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]));
-		break;
 	case eControl_WorldSize:
 #ifdef _LARGE_WORLDS
 		m_sliderWorldSize.handleSliderMove(value);
