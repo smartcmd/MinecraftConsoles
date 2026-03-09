@@ -98,6 +98,7 @@ public:
 
 	// 4J Added
 	virtual void handleCraftItem(shared_ptr<CraftItemPacket> packet);
+	virtual void handleCraftItemGrid(shared_ptr<CraftItemGridPacket> packet);
 	virtual void handleTradeItem(shared_ptr<TradeItemPacket> packet);
 	virtual void handleDebugOptions(shared_ptr<DebugOptionsPacket> packet);
 	virtual void handleTexture(shared_ptr<TexturePacket> packet);
