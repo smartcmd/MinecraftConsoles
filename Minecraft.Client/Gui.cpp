@@ -1104,6 +1104,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	if (uiSetting == 0)
     {
         textScale = textScale * 1.5;
+		bgfirsty = 5;
     }
     else if (uiSetting == 1)
     {
