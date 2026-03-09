@@ -142,6 +142,9 @@ int TileRenderer::getLightColor( Tile *tt, LevelSource *level, int x, int y, int
 	return tt->getLightColor(level, x, y, z);
 }
 
+static constexpr int TILE_RENDERER_CACHE_SIZE = 32 * 32 * 32;
+static thread_local unsigned int s_tlsCache[TILE_RENDERER_CACHE_SIZE];
+
 TileRenderer::TileRenderer( LevelSource* level, int xMin, int yMin, int zMin, unsigned char *tileIds )
 {
 	this->level = level;
@@ -153,14 +156,11 @@ TileRenderer::TileRenderer( LevelSource* level, int xMin, int yMin, int zMin, un
 	this->yMin2 = yMin-2;
 	this->zMin2 = zMin-2;
 	this->tileIds = tileIds;
-	cache = new unsigned int[32*32*32];
-	XMemSet(cache,0,32*32*32*sizeof(unsigned int));
+	cache = s_tlsCache;
+	std::memset(cache, 0, TILE_RENDERER_CACHE_SIZE * sizeof(unsigned int));
 }
 
-TileRenderer::~TileRenderer()
-{
-	delete cache;
-}
+TileRenderer::~TileRenderer() = default;
 
 TileRenderer::TileRenderer( LevelSource* level )
 {
