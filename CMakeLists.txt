@@ -26,8 +26,11 @@ function(configure_msvc_target target)
     $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
     $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
     $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/GS->
     $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
-    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF>
+    $<$<COMPILE_LANGUAGE:CXX>:/GR>
+    $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/Od>
+    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF /Ob3>
   )
 endfunction()
 
@@ -77,7 +80,6 @@ add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
 target_include_directories(MinecraftClient PRIVATE
   "${CLIENT_DIR}"
   "${CLIENT_DIR}/Windows64/Iggy/include"
-  "${CLIENT_DIR}/Xbox/Sentient/Include"
   "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 )
 target_compile_definitions(MinecraftClient PRIVATE
@@ -97,6 +99,7 @@ set_target_properties(MinecraftClient PROPERTIES
 target_link_libraries(MinecraftClient PRIVATE
   MinecraftWorld
   d3d11
+  d3dcompiler
   XInput9_1_0
   wsock32
   legacy_stdio_definitions
