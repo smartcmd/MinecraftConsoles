@@ -51,4 +51,5 @@ internal:
     static void FireEventOnSignChange(SignChangeData *signData, bool *cancelled);
     static void FireEventOnPlayerInteract(PlayerInteractData *interactData, bool *cancelled);
 	static bool DispatchPlayerCommand(String^ playerName, String^ commandLine);
+	static void FireEventOnPlayerDeath(PlayerDeathData* deathData);
 };

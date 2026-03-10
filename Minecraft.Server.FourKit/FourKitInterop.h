@@ -52,6 +52,7 @@ extern "C"
 	__declspec(dllexport) int FourKit_DispatchPlayerCommand(const char* playerName, const char* commandLine);
 	__declspec(dllexport) void FourKit_FireOnLoad();
 	__declspec(dllexport) void FourKit_FireOnExit();
+	__declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData* deathData);
 
 	__declspec(dllexport) void FourKit_SetNativeCallbacks(
 		FourKitSetFallDistanceCallback SetFallDistance,

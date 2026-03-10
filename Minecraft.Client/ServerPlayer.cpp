@@ -35,6 +35,9 @@
 
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\FourKitNative.h"
+#include "..\Minecraft.Server\Common\StringUtils.h"
+#include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\ServerLogger.h"
 #endif
 
 
@@ -55,7 +58,15 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 	latency = 0;
 	wonGame = false;
 	m_enteredEndExitPortal = false;
-	// lastCarried = ItemInstanceArray(5);
+    // lastCarried = ItemInstanceArray(5);
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	m_deathEventOverrideApplied = false;
+	m_deathEventKeepInventory = false;
+	m_deathEventKeepLevel = false;
+	m_deathEventNewExp = 0;
+	m_deathEventNewLevel = 0;
+	m_deathEventNewTotalExp = 0;
+#endif
 	lastActionTime = 0;
 
 	viewDistance = server->getPlayers()->getViewDistance();
@@ -516,8 +527,8 @@ void ServerPlayer::doTickB()
 	{
 		if(level->dimension->id != 0 )
 		{
-			isInsidePortal=true;
-			portalTime=1;
+		 isInsidePortal=true;
+		 portalTime=1;
 		}
 		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
 		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToOverworld));
@@ -565,14 +576,123 @@ shared_ptr<ItemInstance> ServerPlayer::getCarried(int slot)
 	return inventory->armor[slot - 1];
 }
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+// this is infact quite gay ill figure out another way sometime e;lse
+// TODO: make this nicer
+static std::wstring FormatDeathMessage(const shared_ptr<ChatPacket>& packet)
+{
+	if (!packet) return L"";
+
+	const std::wstring& player = packet->m_stringArgs.size() > 0 ? packet->m_stringArgs[0] : L"";
+	const std::wstring& killer = packet->m_stringArgs.size() > 1 ? packet->m_stringArgs[1] : L"";
+	const std::wstring& item   = packet->m_stringArgs.size() > 2 ? packet->m_stringArgs[2] : L"";
+
+	switch (packet->m_messageType)
+	{
+	case ChatPacket::e_ChatCustom:                  return player;
+	case ChatPacket::e_ChatDeathInFire:             return player + L" burned to death";
+	case ChatPacket::e_ChatDeathOnFire:             return player + L" went up in flames";
+	case ChatPacket::e_ChatDeathLava:               return player + L" tried to swim in lava";
+	case ChatPacket::e_ChatDeathInWall:             return player + L" suffocated in a wall";
+	case ChatPacket::e_ChatDeathDrown:              return player + L" drowned";
+	case ChatPacket::e_ChatDeathStarve:             return player + L" starved to death";
+	case ChatPacket::e_ChatDeathCactus:             return player + L" was pricked to death";
+	case ChatPacket::e_ChatDeathFall:               return player + L" fell from a high place";
+	case ChatPacket::e_ChatDeathOutOfWorld:         return player + L" fell out of the world";
+	case ChatPacket::e_ChatDeathGeneric:            return player + L" died";
+	case ChatPacket::e_ChatDeathExplosion:          return player + L" blew up";
+	case ChatPacket::e_ChatDeathMagic:              return player + L" was killed by magic";
+	case ChatPacket::e_ChatDeathWither:             return player + L" withered away";
+	case ChatPacket::e_ChatDeathDragonBreath:       return player + L" was killed by dragon breath";
+	case ChatPacket::e_ChatDeathAnvil:              return player + L" was squashed by a falling anvil";
+	case ChatPacket::e_ChatDeathFallingBlock:       return player + L" was squashed by a falling block";
+	case ChatPacket::e_ChatDeathFellAccidentLadder: return player + L" fell off a ladder";
+	case ChatPacket::e_ChatDeathFellAccidentVines:  return player + L" fell while climbing";
+	case ChatPacket::e_ChatDeathFellAccidentWater:  return player + L" fell out of the water";
+	case ChatPacket::e_ChatDeathFellAccidentGeneric:return player + L" fell off something";
+	case ChatPacket::e_ChatDeathFellKiller:         return player + L" was doomed to fall";
+	case ChatPacket::e_ChatDeathMob:
+	case ChatPacket::e_ChatDeathPlayer:             return killer.empty() ? player + L" was slain" : player + L" was slain by " + killer;
+	case ChatPacket::e_ChatDeathArrow:              return killer.empty() ? player + L" was shot" : player + L" was shot by " + killer;
+	case ChatPacket::e_ChatDeathFireball:           return killer.empty() ? player + L" was fireballed" : player + L" was fireballed by " + killer;
+	case ChatPacket::e_ChatDeathThrown:
+	case ChatPacket::e_ChatDeathIndirectMagic:      return killer.empty() ? player + L" was killed by magic" : player + L" was killed by " + killer + L" using magic";
+	case ChatPacket::e_ChatDeathThorns:             return killer.empty() ? player + L" died" : player + L" was killed trying to hurt " + killer;
+	case ChatPacket::e_ChatDeathExplosionPlayer:    return killer.empty() ? player + L" blew up" : player + L" was blown up by " + killer;
+	case ChatPacket::e_ChatDeathInFirePlayer:       return killer.empty() ? player + L" burned to death" : player + L" walked into fire whilst fighting " + killer;
+	case ChatPacket::e_ChatDeathOnFirePlayer:       return killer.empty() ? player + L" went up in flames" : player + L" burned to death whilst fighting " + killer;
+	case ChatPacket::e_ChatDeathLavaPlayer:         return killer.empty() ? player + L" tried to swim in lava" : player + L" tried to swim in lava whilst trying to escape " + killer;
+	case ChatPacket::e_ChatDeathDrownPlayer:        return killer.empty() ? player + L" drowned" : player + L" drowned whilst trying to escape " + killer;
+	case ChatPacket::e_ChatDeathCactusPlayer:       return killer.empty() ? player + L" was pricked to death" : player + L" was pricked to death whilst fighting " + killer;
+	case ChatPacket::e_ChatDeathFellAssist:         return killer.empty() ? player + L" was doomed to fall" : player + L" was doomed to fall by " + killer;
+	case ChatPacket::e_ChatDeathFellFinish:         return killer.empty() ? player + L" fell too far" : player + L" fell too far and was finished by " + killer;
+	case ChatPacket::e_ChatDeathPlayerItem:         return (killer.empty() ? player + L" was slain" : player + L" was slain by " + killer) + (item.empty() ? L"" : L" using " + item);
+	case ChatPacket::e_ChatDeathArrowItem:          return (killer.empty() ? player + L" was shot" : player + L" was shot by " + killer) + (item.empty() ? L"" : L" with " + item);
+	case ChatPacket::e_ChatDeathFireballItem:       return (killer.empty() ? player + L" was fireballed" : player + L" was fireballed by " + killer) + (item.empty() ? L"" : L" with " + item);
+	case ChatPacket::e_ChatDeathThrownItem:
+	case ChatPacket::e_ChatDeathIndirectMagicItem:  return (killer.empty() ? player + L" was killed by magic" : player + L" was killed by " + killer) + (item.empty() ? L"" : L" using " + item);
+	case ChatPacket::e_ChatDeathFellAssistItem:     return (killer.empty() ? player + L" was doomed to fall" : player + L" was doomed to fall by " + killer) + (item.empty() ? L"" : L" using " + item);
+	case ChatPacket::e_ChatDeathFellFinishItem:     return (killer.empty() ? player + L" fell too far" : player + L" fell too far and was finished by " + killer) + (item.empty() ? L"" : L" using " + item);
+	default:                                        return player + L" died";
+	}
+}
+#endif
+
 void ServerPlayer::die(DamageSource *source)
 {
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(name);
+
+	bool keepInventory = level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY);
+	bool keepLevel = keepInventory;
+	int newLevel = keepLevel ? experienceLevel : 0;
+	int newTotalExp = keepLevel ? totalExperience : 0;
+	int newExp = keepLevel ? (int)(experienceProgress * getXpNeededForNextLevel()) : 0;
+
+	shared_ptr<ChatPacket> deathPacket = getCombatTracker()->getDeathMessagePacket();
+	std::wstring initialDeathMsg = FormatDeathMessage(deathPacket);
+	std::string initialDeathMsgUtf8 = ServerRuntime::StringUtils::WideToUtf8(initialDeathMsg);
+
+	PlayerDeathData deathData;
+	deathData.playerName = nameUtf8.c_str();
+	strncpy_s(deathData.deathMessage, sizeof(deathData.deathMessage), initialDeathMsgUtf8.c_str(), _TRUNCATE);
+	deathData.keepInventory = keepInventory;
+	deathData.keepLevel = keepLevel;
+	deathData.newExp = newExp;
+	deathData.newLevel = newLevel;
+	deathData.newTotalExp = newTotalExp;
+
+	FourKit::EmitPlayerDeathEvent(this, &deathData);
+
+	m_deathEventOverrideApplied = true;
+	m_deathEventKeepInventory = deathData.keepInventory;
+	m_deathEventKeepLevel = deathData.keepLevel;
+	m_deathEventNewExp = deathData.newExp;
+	m_deathEventNewLevel = deathData.newLevel;
+	m_deathEventNewTotalExp = deathData.newTotalExp;
+
+	std::wstring deathMsgWide = ServerRuntime::StringUtils::Utf8ToWide(deathData.deathMessage);
+	if (deathMsgWide != initialDeathMsg)
+	{
+		server->getPlayers()->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(deathMsgWide)));
+	}
+	else
+	{
+		server->getPlayers()->broadcastAll(deathPacket);
+	}
+
+	if (!deathData.keepInventory)
+	{
+		inventory->dropAll();
+	}
+#else
 	server->getPlayers()->broadcastAll(getCombatTracker()->getDeathMessagePacket());
 
 	if (!level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
 	{
 		inventory->dropAll();
 	}
+#endif
 
 	vector<Objective *> *objectives = level->getScoreboard()->findObjectiveFor(ObjectiveCriteria::DEATH_COUNT);
 	if(objectives)
@@ -1452,7 +1572,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));
+			 player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));
 			}
 		}
 		break;
@@ -1571,6 +1691,38 @@ void ServerPlayer::startUsingItem(shared_ptr<ItemInstance> instance, int duratio
 
 void ServerPlayer::restoreFrom(shared_ptr<Player> oldPlayer, bool restoreAll)
 {
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	shared_ptr<ServerPlayer> oldSP = dynamic_pointer_cast<ServerPlayer>(oldPlayer);
+	if (!restoreAll && oldSP != nullptr && oldSP->m_deathEventOverrideApplied)
+	{
+		Player::restoreFrom(oldPlayer, restoreAll);
+
+		if (oldSP->m_deathEventKeepInventory && !level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
+		{
+			inventory->replaceWith(oldPlayer->inventory);
+		}
+		if (oldSP->m_deathEventKeepLevel)
+		{
+			experienceLevel = oldPlayer->experienceLevel;
+			totalExperience = oldPlayer->totalExperience;
+			experienceProgress = oldPlayer->experienceProgress;
+		}
+		else
+		{
+			experienceLevel = max(0, oldSP->m_deathEventNewLevel);
+			totalExperience = max(0, oldSP->m_deathEventNewTotalExp);
+
+			const int xpNeededForNextLevel = max(1, getXpNeededForNextLevel());
+			const int newExpInLevel = min(max(0, oldSP->m_deathEventNewExp), xpNeededForNextLevel);
+			experienceProgress = (float)newExpInLevel / xpNeededForNextLevel;
+		}
+		lastSentExp = -1;
+		lastSentHealth = -1;
+		lastSentFood = -1;
+		entitiesToRemove = oldSP->entitiesToRemove;
+		return;
+	}
+#endif
 	Player::restoreFrom(oldPlayer, restoreAll);
 	lastSentExp = -1;
 	lastSentHealth = -1;

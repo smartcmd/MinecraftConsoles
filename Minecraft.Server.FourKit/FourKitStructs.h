@@ -213,3 +213,25 @@ struct PlayerInteractData
 	{
 	}
 };
+
+struct PlayerDeathData
+{
+	const char* playerName;
+	char deathMessage[512];
+	bool keepInventory;
+	bool keepLevel;
+	int newExp;
+	int newLevel;
+	int newTotalExp;
+
+	PlayerDeathData()
+		: playerName(nullptr)
+		, keepInventory(false)
+		, keepLevel(false)
+		, newExp(0)
+		, newLevel(0)
+		, newTotalExp(0)
+	{
+		deathMessage[0] = '\0';
+	}
+};

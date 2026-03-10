@@ -3,6 +3,7 @@
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 
 #include <string>
+#include "..\Minecraft.Server.FourKit\FourKitStructs.h"
 
 class ServerPlayer;
 class PlayerConnection;
@@ -38,8 +39,9 @@ namespace FourKit
 	bool EmitSignChangeEvent(ServerPlayer* nativePlayer, int x, int y, int z, int dimension, std::wstring lines[4]);
 	bool EmitPlayerInteractEvent(ServerPlayer* nativePlayer, EInteractAction action, int blockFace,
 		bool hasBlock, int x, int y, int z, int dimension, int blockId, int blockData, bool hasItem);
-	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
+		void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
 	bool DispatchPlayerCommand(ServerPlayer* nativePlayer, const std::wstring& commandLine);
+	void EmitPlayerDeathEvent(ServerPlayer* nativePlayer, PlayerDeathData* deathData);
 }
 
 #endif

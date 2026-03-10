@@ -349,6 +349,57 @@ void FourKit::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
     }
 }
 
+void FourKit::FireEventOnPlayerDeath(PlayerDeathData* deathData)
+{
+    try
+    {
+        if (deathData == nullptr) return;
+
+        String^ name = gcnew String((deathData->playerName != nullptr) ? deathData->playerName : "");
+
+        Player^ player = ResolvePlayerByName(name);
+        if (player == nullptr)
+        {
+            player = gcnew Player(name);
+        }
+
+        PlayerDeathEvent^ event = gcnew PlayerDeathEvent();
+        event->PlayerObject = player;
+        event->DeathMessage = gcnew String(deathData->deathMessage);
+        event->KeepInventory = deathData->keepInventory;
+        event->KeepLevel = deathData->keepLevel;
+        event->NewExp = deathData->newExp;
+        event->NewLevel = deathData->newLevel;
+        event->NewTotalExp = deathData->newTotalExp;
+
+        EventManager::FireEvent(event);
+
+        deathData->keepInventory = event->KeepInventory;
+        deathData->keepLevel = event->KeepLevel;
+        deathData->newExp = event->NewExp;
+        deathData->newLevel = event->NewLevel;
+        deathData->newTotalExp = event->NewTotalExp;
+
+        if (event->DeathMessage != nullptr)
+        {
+            IntPtr ptr = Marshal::StringToHGlobalAnsi(event->DeathMessage);
+            try
+            {
+                strncpy_s(deathData->deathMessage, sizeof(deathData->deathMessage),
+                    (const char*)ptr.ToPointer(), _TRUNCATE);
+            }
+            finally
+            {
+                Marshal::FreeHGlobal(ptr);
+            }
+        }
+    }
+    catch (Exception^ ex)
+    {
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerDeath event: {0}", ex->Message));
+    }
+}
+
 void FourKit::FireEventOnPlayerChat(const PlayerChatData &chatData, bool *cancelled)
 {
     try
@@ -1011,6 +1062,11 @@ extern "C"
     __declspec(dllexport) void FourKit_FireOnPlayerLeave(const PlayerLeaveData &playerData)
     {
         FourKit::FireEventOnPlayerLeave(playerData);
+    }
+
+    __declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData* deathData)
+    {
+        FourKit::FireEventOnPlayerDeath(deathData);
     }
 
     __declspec(dllexport) void FourKit_FireOnChat(const PlayerChatData &chatData, bool* cancelled)

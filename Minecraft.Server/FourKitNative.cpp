@@ -499,6 +499,16 @@ namespace FourKit
 		return FourKit_DispatchPlayerCommand(nameUtf8.c_str(), commandUtf8.c_str()) != 0;
 	}
 
+	void EmitPlayerDeathEvent(ServerPlayer* nativePlayer, PlayerDeathData* deathData)
+	{
+		if (nativePlayer == nullptr || deathData == nullptr)
+		{
+			return;
+		}
+
+		FourKit_FireOnPlayerDeath(deathData);
+	}
+
 	void CreateAndBindManagedPlayer(ServerPlayer* nativePlayer, PlayerConnection* connection)
 	{
 		if (nativePlayer == nullptr) return;

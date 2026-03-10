@@ -221,3 +221,29 @@ internal:
     property bool HasItem;
     property bool Cancelled;
 };
+
+public ref class PlayerDeathEvent
+{
+public:
+    Player^ getEntity() { return PlayerObject; }
+    String^ getDeathMessage() { return DeathMessage; }
+    void setDeathMessage(String^ msg) { DeathMessage = msg; }
+    bool getKeepInventory() { return KeepInventory; }
+    bool getKeepLevel() { return KeepLevel; }
+    int getNewExp() { return NewExp; }
+    int getNewLevel() { return NewLevel; }
+    //int getNewTotalExp() { return NewTotalExp; }
+    void setKeepInventory(bool val) { KeepInventory = val; }
+    void setKeepLevel(bool val) { KeepLevel = val; }
+    void setNewExp(int exp) { NewExp = exp; }
+    void setNewLevel(int level) { NewLevel = level; }
+    //void setNewTotalExp(int totalExp) { NewTotalExp = totalExp; }
+internal:
+    property Player^ PlayerObject;
+    property String^ DeathMessage;
+    property bool KeepInventory;
+    property bool KeepLevel;
+    property int NewExp;
+    property int NewLevel;
+    property int NewTotalExp;
+};
