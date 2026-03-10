@@ -578,9 +578,12 @@ bool UIScene::handleMouseClick(F32 x, F32 y)
 		if (bestCtrl->getControlType() == UIControl::eCheckBox)
 		{
 			UIControl_CheckBox *cb = static_cast<UIControl_CheckBox*>(bestCtrl);
-			bool newState = !cb->IsChecked();
-			cb->setChecked(newState);
-			handleCheckboxToggled((F64)bestId, newState);
+			if (cb->IsEnabled())
+			{
+				bool newState = !cb->IsChecked();
+				cb->setChecked(newState);
+				handleCheckboxToggled((F64)bestId, newState);
+			}
 		}
 		else
 		{
