@@ -6,13 +6,13 @@
 #include "FourKitStructs.h"
 #include "PluginLogger.h"
 #include "NativeBlockCallbacks.h"
+#include "PluginCommand.h"
 
 using namespace System;
 using namespace System::Reflection;
 using namespace System::IO;
 using namespace System::Collections::Generic;
 using namespace System::Runtime::InteropServices;
-
 
 namespace
 {
@@ -73,6 +73,46 @@ namespace
 		}
 
 		return player;
+	}
+
+	static cli::array<String^>^ ParseCommandArguments(String^ commandLine, String^% outLabel)
+	{
+		outLabel = String::Empty;
+		if (String::IsNullOrWhiteSpace(commandLine))
+		{
+			return gcnew cli::array<String^>(0);
+		}
+
+		String^ trimmed = commandLine->Trim();
+		if (trimmed->StartsWith("/"))
+		{
+			trimmed = trimmed->Substring(1);
+		}
+
+		if (String::IsNullOrWhiteSpace(trimmed))
+		{
+			return gcnew cli::array<String^>(0);
+		}
+
+		cli::array<String^>^ parts = trimmed->Split(gcnew cli::array<wchar_t>{ ' ' }, StringSplitOptions::RemoveEmptyEntries);
+		if (parts == nullptr || parts->Length == 0)
+		{
+			return gcnew cli::array<String^>(0);
+		}
+
+		outLabel = parts[0]->ToLowerInvariant();
+		int argCount = parts->Length - 1;
+		if (argCount <= 0)
+		{
+			return gcnew cli::array<String^>(0);
+		}
+
+		cli::array<String^>^ args = gcnew cli::array<String^>(argCount);
+		for (int i = 0; i < argCount; ++i)
+		{
+			args[i] = parts[i + 1];
+		}
+		return args;
 	}
 }
 
@@ -139,7 +179,7 @@ bool FourKit::LoadPlugin(String ^ pluginPath)
             return false;
         }
 
-        PluginLogger::LogInfo("fourkit", String::Format("Loaded assembly: {0}", pluginAssembly->FullName));
+        //PluginLogger::LogInfo("fourkit", String::Format("Loaded assembly: {0}", pluginAssembly->FullName));
 
         cli::array<Type ^> ^ types = pluginAssembly->GetTypes();
 
@@ -206,7 +246,7 @@ void FourKit::FireEventOnLoad()
         event->ServerName = "Minecraft Dedicated Server";
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("fourkit", String::Format("Calling OnEnable to {0} plugins", pluginList->Count));
+        //PluginLogger::LogInfo("fourkit", String::Format("Calling OnEnable to {0} plugins", pluginList->Count));
         for each (ServerPlugin ^ plugin in pluginList)
         {
             try
@@ -240,7 +280,7 @@ void FourKit::FireEventOnExit()
         event->Reason = "Server shutdown";
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("fourkit", String::Format("Calling OnDisable to {0} plugins", pluginList->Count));
+        //PluginLogger::LogInfo("fourkit", String::Format("Calling OnDisable to {0} plugins", pluginList->Count));
         for each (ServerPlugin ^ plugin in pluginList)
         {
             try
@@ -277,7 +317,7 @@ void FourKit::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
         event->PlayerObject = player;
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerJoin event to {0} listeners", pluginList->Count));
+        //PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerJoin event to {0} listeners", pluginList->Count));
     }
     catch (Exception ^ ex)
     {
@@ -301,7 +341,7 @@ void FourKit::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
         event->PlayerObject = player;
         EventManager::FireEvent(event);
 
-        PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerLeave event for {0}", name));
+        //PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerLeave event for {0}", name));
     }
     catch (Exception ^ ex)
     {
@@ -684,6 +724,87 @@ Player ^ FourKit::getPlayer(String ^ name)
     return ResolvePlayerByName(name);
 }
 
+PluginCommand^ FourKit::getCommand(String^ name)
+{
+	if (String::IsNullOrWhiteSpace(name))
+	{
+		return nullptr;
+	}
+
+	String^ key = name->Trim()->ToLowerInvariant();
+	PluginCommand^ command = nullptr;
+	if (!commandMap->TryGetValue(key, command))
+	{
+		command = gcnew PluginCommand(key);
+		commandMap->Add(key, command);
+	}
+
+	return command;
+}
+
+bool FourKit::DispatchPlayerCommand(String^ playerName, String^ commandLine)
+{
+	String^ label = String::Empty;
+	cli::array<String^>^ args = ParseCommandArguments(commandLine, label);
+	if (String::IsNullOrWhiteSpace(label))
+	{
+		return false;
+	}
+
+	PluginCommand^ command = nullptr;
+	if (!commandMap->TryGetValue(label, command) || command == nullptr || command->getExecutor() == nullptr)
+	{
+		command = nullptr;
+		for each (KeyValuePair<String^, PluginCommand^> entry in commandMap)
+		{
+			PluginCommand^ registeredCommand = entry.Value;
+			if (registeredCommand == nullptr || registeredCommand->getExecutor() == nullptr)
+			{
+				continue;
+			}
+
+			if (String::Equals(registeredCommand->getName(), label, StringComparison::OrdinalIgnoreCase))
+			{
+				command = registeredCommand;
+				break;
+			}
+
+			List<String^>^ aliases = registeredCommand->getAliases();
+			if (aliases == nullptr)
+			{
+				continue;
+			}
+
+			for each (String^ alias in aliases)
+			{
+				if (!String::IsNullOrWhiteSpace(alias) && String::Equals(alias->Trim(), label, StringComparison::OrdinalIgnoreCase))
+				{
+					command = registeredCommand;
+					break;
+				}
+			}
+
+			if (command != nullptr)
+			{
+				break;
+			}
+		}
+
+		if (command == nullptr)
+		{
+			return false;
+		}
+	}
+
+	CommandSender^ sender = ResolvePlayerByName(playerName);
+	if (sender == nullptr)
+	{
+		sender = gcnew Player(playerName);
+	}
+
+	return command->execute(sender, label, args);
+}
+
 
 // todo: redo how this export stuff works
 // messy
@@ -854,6 +975,22 @@ extern "C"
 			return g_GetPlayerNetworkAddress(playerName, outData);
 		}
 		return false;
+	}
+
+	__declspec(dllexport) int FourKit_DispatchPlayerCommand(const char* playerName, const char* commandLine)
+	{
+		String^ managedPlayerName = gcnew String((playerName != nullptr) ? playerName : "");
+		String^ managedCommandLine = gcnew String((commandLine != nullptr) ? commandLine : "");
+
+		try
+		{
+			return FourKit::DispatchPlayerCommand(managedPlayerName, managedCommandLine) ? 1 : 0;
+		}
+		catch (Exception^ ex)
+		{
+			PluginLogger::LogError("fourkit", String::Format("Error dispatching command: {0}", ex->Message));
+			return 0;
+		}
 	}
 
     __declspec(dllexport) void FourKit_Initialize()

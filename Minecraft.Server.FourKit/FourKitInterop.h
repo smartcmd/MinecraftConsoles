@@ -49,6 +49,7 @@ extern "C"
 	__declspec(dllexport) void FourKit_FireOnPlayerPortal(PlayerPortalData* portalData, bool* cancelled);
 	__declspec(dllexport) void FourKit_FireOnSignChange(SignChangeData* signData, bool* cancelled);
 	__declspec(dllexport) void FourKit_FireOnPlayerInteract(PlayerInteractData* interactData, bool* cancelled);
+	__declspec(dllexport) int FourKit_DispatchPlayerCommand(const char* playerName, const char* commandLine);
 	__declspec(dllexport) void FourKit_FireOnLoad();
 	__declspec(dllexport) void FourKit_FireOnExit();
 

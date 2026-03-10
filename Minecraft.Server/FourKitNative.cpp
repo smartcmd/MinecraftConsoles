@@ -487,6 +487,18 @@ namespace FourKit
 		UnregisterNativePlayer(nameUtf8.c_str());
 	}
 
+	bool DispatchPlayerCommand(ServerPlayer* nativePlayer, const std::wstring& commandLine)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		std::string commandUtf8 = ServerRuntime::StringUtils::WideToUtf8(commandLine);
+		return FourKit_DispatchPlayerCommand(nameUtf8.c_str(), commandUtf8.c_str()) != 0;
+	}
+
 	void CreateAndBindManagedPlayer(ServerPlayer* nativePlayer, PlayerConnection* connection)
 	{
 		if (nativePlayer == nullptr) return;

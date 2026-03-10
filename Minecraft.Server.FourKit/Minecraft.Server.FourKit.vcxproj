@@ -175,8 +175,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandSender.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="CommandExecutor.h" />
     <ClInclude Include="InetAddress.h" />
     <ClInclude Include="InetSocketAddress.h" />
     <ClInclude Include="Listener.h" />
@@ -186,6 +189,7 @@
     <ClInclude Include="FourKit.h" />
     <ClInclude Include="FourKitInterop.h" />
     <ClInclude Include="FourKitStructs.h" />
+    <ClInclude Include="PluginCommand.h" />
     <ClInclude Include="PluginLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

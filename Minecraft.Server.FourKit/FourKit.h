@@ -9,6 +9,7 @@
 #include "Listener.h"
 #include "Player.h"
 #include "Block.h"
+#include "PluginCommand.h"
 #include "FourKitStructs.h"
 
 public ref class FourKit
@@ -17,13 +18,16 @@ public:
 	static void addListener(Listener^ listener);
 	static Block^ getBlockAt(double x, double y, double z);
 	static Player^ getPlayer(String^ name);
+	static PluginCommand^ getCommand(String^ name);
 private:
 	static List<ServerPlugin^>^ pluginList;
+	static Dictionary<String^, PluginCommand^>^ commandMap;
 
 	static FourKit()
 	{
 		// Visual Studio Pls
 		pluginList = gcnew List<ServerPlugin^>();
+		commandMap = gcnew Dictionary<String^, PluginCommand^>(StringComparer::OrdinalIgnoreCase);
 	}
 internal:
 	static bool Initialize();
@@ -46,4 +50,5 @@ internal:
     static void FireEventOnPlayerPortal(PlayerPortalData *portalData, bool *cancelled);
     static void FireEventOnSignChange(SignChangeData *signData, bool *cancelled);
     static void FireEventOnPlayerInteract(PlayerInteractData *interactData, bool *cancelled);
+	static bool DispatchPlayerCommand(String^ playerName, String^ commandLine);
 };

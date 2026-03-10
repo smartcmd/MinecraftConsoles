@@ -39,6 +39,7 @@ namespace FourKit
 	bool EmitPlayerInteractEvent(ServerPlayer* nativePlayer, EInteractAction action, int blockFace,
 		bool hasBlock, int x, int y, int z, int dimension, int blockId, int blockData, bool hasItem);
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
+	bool DispatchPlayerCommand(ServerPlayer* nativePlayer, const std::wstring& commandLine);
 }
 
 #endif

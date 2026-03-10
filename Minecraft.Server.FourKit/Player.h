@@ -1,12 +1,13 @@
 #pragma once
 
 #include "InetSocketAddress.h"
+#include "CommandSender.h"
 
 // todo: improve a little
 
 using namespace System;
 
-public ref class Player
+public ref class Player : public CommandSender
 {
 public:
 	Player(String^ name);
@@ -30,7 +31,7 @@ public:
 	void setFood(int food);
 	//void setSneaking(bool sneaking); doesnt work rn
 	void setSprinting(bool sprinting);
-	void sendMessage(String^ message);
+	virtual void sendMessage(String^ message) override;
     void kickPlayer(); // String^ reason
 	void teleport(double x, double y, double z);
 

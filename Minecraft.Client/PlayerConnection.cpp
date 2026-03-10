@@ -38,6 +38,7 @@
 #include "..\Minecraft.Server\ServerLogManager.h"
 #include "..\Minecraft.Server\ServerLogger.h"
 #include "..\Minecraft.Server\FourKitNative.h"
+#include "..\Minecraft.Server\Common\StringUtils.h"
 #endif
 
 Random PlayerConnection::random;
@@ -879,6 +880,19 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 void PlayerConnection::handleCommand(const wstring& message)
 {
+	wstring commandLine = message;
+	if (!commandLine.empty() && commandLine[0] == L'/')
+	{
+		commandLine = commandLine.substr(1);
+	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (FourKit::DispatchPlayerCommand(player.get(), commandLine))
+	{
+		return;
+	}
+#endif
+
 	// 4J - TODO
 #if 0
 	server.getCommandDispatcher().performCommand(player, message);
