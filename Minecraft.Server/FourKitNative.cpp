@@ -411,6 +411,38 @@ namespace FourKit
 		return cancelled;
 	}
 
+	bool EmitSignChangeEvent(ServerPlayer* nativePlayer, int x, int y, int z, int dimension, std::wstring lines[4])
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		SignChangeData signData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		signData.playerName = nameUtf8.c_str();
+		signData.x = x;
+		signData.y = y;
+		signData.z = z;
+		signData.dimension = dimension;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			std::string lineUtf8 = ServerRuntime::StringUtils::WideToUtf8(lines[i]);
+			strncpy_s(signData.lines[i], sizeof(signData.lines[i]), lineUtf8.c_str(), _TRUNCATE);
+		}
+
+		bool cancelled = false;
+		FourKit_FireOnSignChange(&signData, &cancelled);
+
+		for (int i = 0; i < 4; ++i)
+		{
+			lines[i] = ServerRuntime::StringUtils::Utf8ToWide(signData.lines[i]);
+		}
+
+		return cancelled;
+	}
+
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer)
 	{
 		if (nativePlayer == nullptr)

@@ -62,4 +62,5 @@ internal:
     static void FireEventOnBlockPlace(const BlockPlaceData &blockPlaceData, bool *cancelled);
     static void FireEventOnPlayerMove(const PlayerMoveData &moveData, bool *cancelled);
     static void FireEventOnPlayerPortal(PlayerPortalData *portalData, bool *cancelled);
+    static void FireEventOnSignChange(SignChangeData *signData, bool *cancelled);
 };

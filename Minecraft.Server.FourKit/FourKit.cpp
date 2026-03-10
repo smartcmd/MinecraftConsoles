@@ -501,6 +501,79 @@ void FourKit::FireEventOnPlayerPortal(PlayerPortalData *portalData, bool *cancel
     }
 }
 
+void FourKit::FireEventOnSignChange(SignChangeData *signData, bool *cancelled)
+{
+    try
+    {
+        if (signData == nullptr)
+        {
+            if (cancelled != nullptr)
+            {
+                *cancelled = false;
+            }
+            return;
+        }
+
+        String ^ name = gcnew String((signData->playerName != nullptr) ? signData->playerName : "");
+
+        Player ^ player = ResolvePlayerByName(name);
+        if (player == nullptr)
+        {
+            player = gcnew Player(name);
+        }
+
+        SignChangeEvent^ event = gcnew SignChangeEvent();
+        event->PlayerObject = player;
+        event->BlockObject = gcnew Block(
+            signData->x,
+            signData->y,
+            signData->z,
+            signData->dimension,
+            NativeBlockCallbacks::GetBlockType(signData->x, signData->y, signData->z, signData->dimension),
+            NativeBlockCallbacks::GetBlockData(signData->x, signData->y, signData->z, signData->dimension));
+
+        event->Lines = gcnew cli::array<String^>(4);
+        for (int i = 0; i < 4; ++i)
+        {
+            event->Lines[i] = gcnew String(signData->lines[i]);
+        }
+        event->Cancelled = false;
+
+        EventManager::FireEvent(event);
+
+        if (event->Lines != nullptr)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                String^ managedLine = (i < event->Lines->Length && event->Lines[i] != nullptr) ? event->Lines[i] : String::Empty;
+                IntPtr linePtr = Marshal::StringToHGlobalAnsi(managedLine);
+                try
+                {
+                    const char* lineChars = (const char*)linePtr.ToPointer();
+                    strncpy_s(signData->lines[i], sizeof(signData->lines[i]), lineChars, _TRUNCATE);
+                }
+                finally
+                {
+                    Marshal::FreeHGlobal(linePtr);
+                }
+            }
+        }
+
+        if (cancelled != nullptr)
+        {
+            *cancelled = event->Cancelled;
+        }
+    }
+    catch (Exception ^ ex)
+    {
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnSignChange event: {0}", ex->Message));
+        if (cancelled != nullptr)
+        {
+            *cancelled = false;
+        }
+    }
+}
+
 void FourKit::addListener(Listener ^ listener)
 {
     EventManager::RegisterListener(listener);
@@ -739,6 +812,11 @@ extern "C"
     __declspec(dllexport) void FourKit_FireOnPlayerPortal(PlayerPortalData* portalData, bool* cancelled)
     {
         FourKit::FireEventOnPlayerPortal(portalData, cancelled);
+    }
+
+    __declspec(dllexport) void FourKit_FireOnSignChange(SignChangeData* signData, bool* cancelled)
+    {
+        FourKit::FireEventOnSignChange(signData, cancelled);
     }
 
     __declspec(dllexport) void FourKit_FireOnLoad()

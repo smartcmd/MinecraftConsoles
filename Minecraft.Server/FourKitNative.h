@@ -26,6 +26,7 @@ namespace FourKit
 	bool EmitPlayerPortalEvent(ServerPlayer* nativePlayer, EPortalTeleportCause cause,
 		double& fromX, double& fromY, double& fromZ,
 		double& toX, double& toY, double& toZ);
+	bool EmitSignChangeEvent(ServerPlayer* nativePlayer, int x, int y, int z, int dimension, std::wstring lines[4]);
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
 }
 

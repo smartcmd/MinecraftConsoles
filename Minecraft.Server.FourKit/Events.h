@@ -129,3 +129,28 @@ public:
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
 };
+
+public ref class SignChangeEvent
+{
+public:
+	property Player^ PlayerObject;
+	property Block^ BlockObject;
+	property cli::array<String^>^ Lines;
+	property bool Cancelled;
+
+	String^ getLine(int index)
+	{
+		if (Lines == nullptr || index < 0 || index >= Lines->Length) return String::Empty;
+		return Lines[index];
+	}
+	Block^ getBlock() { return BlockObject; }
+	cli::array<String^>^ getLines() { return Lines; }
+	Player^ getPlayer() { return PlayerObject; }
+	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+	void setLine(int index, String^ content)
+	{
+		if (Lines == nullptr || index < 0 || index >= Lines->Length) return;
+		Lines[index] = (content == nullptr) ? String::Empty : content;
+	}
+	bool isCancelled() { return Cancelled; }
+};

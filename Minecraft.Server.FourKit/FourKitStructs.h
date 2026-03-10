@@ -160,3 +160,26 @@ struct PlayerPortalData
 	{
 	}
 };
+
+struct SignChangeData
+{
+	const char* playerName;
+	int x;
+	int y;
+	int z;
+	int dimension;
+	char lines[4][256];
+
+	SignChangeData()
+		: playerName(nullptr)
+		, x(0)
+		, y(0)
+		, z(0)
+		, dimension(0)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			lines[i][0] = '\0';
+		}
+	}
+};

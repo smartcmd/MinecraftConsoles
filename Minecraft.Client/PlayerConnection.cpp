@@ -1456,42 +1456,60 @@ void PlayerConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 
 void PlayerConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 {
-	player->resetLastActionTime();
-	app.DebugPrintf("PlayerConnection::handleSignUpdate\n");
+    player->resetLastActionTime();
+    app.DebugPrintf("PlayerConnection::handleSignUpdate\n");
 
-	ServerLevel *level = server->getLevel(player->dimension);
-	if (level->hasChunkAt(packet->x, packet->y, packet->z))
-	{
-		shared_ptr<TileEntity> te = level->getTileEntity(packet->x, packet->y, packet->z);
+    ServerLevel *level = server->getLevel(player->dimension);
+    if (level->hasChunkAt(packet->x, packet->y, packet->z))
+    {
+        shared_ptr<TileEntity> te = level->getTileEntity(packet->x, packet->y, packet->z);
 
-		if (dynamic_pointer_cast<SignTileEntity>(te) != NULL)
-		{
-			shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>(te);
-			if (!ste->isEditable() || ste->getPlayerWhoMayEdit() != player)
-			{
-				server->warn(L"Player " + player->getName() + L" just tried to change non-editable sign");
-				return;
-			}
-		}
+        if (dynamic_pointer_cast<SignTileEntity>(te) != NULL)
+        {
+            shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>(te);
+            if (!ste->isEditable() || ste->getPlayerWhoMayEdit() != player)
+            {
+                server->warn(L"Player " + player->getName() + L" just tried to change non-editable sign");
+                return;
+            }
+        }
 
-		// 4J-JEV: Changed to allow characters to display as a [].
-		if (dynamic_pointer_cast<SignTileEntity>(te) != NULL)
-		{
-			int x = packet->x;
-			int y = packet->y;
-			int z = packet->z;
-			shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>(te);
-			for (int i = 0; i < 4; i++)
-			{
-				wstring lineText = packet->lines[i].substr(0,15);
-				ste->SetMessage( i, lineText );
-			}
-			ste->SetVerified(false);
-			ste->setChanged();
-			level->sendTileUpdated(x, y, z);
-		}
-	}
+        // 4J-JEV: Changed to allow characters to display as a [].
+        if (dynamic_pointer_cast<SignTileEntity>(te) != NULL)
+        {
+            int x = packet->x;
+            int y = packet->y;
+            int z = packet->z;
+            shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>(te);
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+            std::wstring updatedLines[4];
+            for (int i = 0; i < 4; i++)
+            {
+                updatedLines[i] = packet->lines[i].substr(0, 15);
+            }
+
+            if (FourKit::EmitSignChangeEvent(player.get(), x, y, z, player->dimension, updatedLines))
+            {
+                return;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                ste->SetMessage(i, updatedLines[i].substr(0, 15));
+            }
+#else
+            for (int i = 0; i < 4; i++)
+            {
+                wstring lineText = packet->lines[i].substr(0, 15);
+                ste->SetMessage(i, lineText);
+            }
+#endif
+            ste->SetVerified(false);
+            ste->setChanged();
+            level->sendTileUpdated(x, y, z);
+        }
+    }
 }
 
 void PlayerConnection::handleKeepAlive(shared_ptr<KeepAlivePacket> packet)
