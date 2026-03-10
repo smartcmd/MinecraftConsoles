@@ -404,7 +404,7 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 
 bool WinsockNetLayer::SendOnSocket(SOCKET sock, const void* data, int dataSize)
 {
-	if (sock == INVALID_SOCKET || dataSize <= 0) return false;
+	if (sock == INVALID_SOCKET || dataSize <= 0 || dataSize > WIN64_NET_MAX_PACKET_SIZE) return false;
 
 	// TODO: s_sendLock is a single global lock for ALL sockets. If one client's
 	// send() blocks (TCP window full, slow WiFi), every other write thread stalls

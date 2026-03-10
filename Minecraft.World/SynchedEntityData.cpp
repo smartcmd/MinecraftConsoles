@@ -342,7 +342,10 @@ vector<shared_ptr<SynchedEntityData::DataItem> > *SynchedEntityData::unpack(Data
 
 	int currentHeader = input->readByte();
 
-	while (currentHeader != EOF_MARKER)
+	int itemCount = 0;
+    const int MAX_ENTITY_DATA_ITEMS = 256;
+
+    while (currentHeader != EOF_MARKER && itemCount < MAX_ENTITY_DATA_ITEMS)
 	{
 
 		if (result == nullptr)
@@ -397,6 +400,7 @@ vector<shared_ptr<SynchedEntityData::DataItem> > *SynchedEntityData::unpack(Data
 			break;
 		}
 		result->push_back(item);
+        itemCount++;
 
 		currentHeader = input->readByte();
 	}

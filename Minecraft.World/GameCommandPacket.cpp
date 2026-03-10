@@ -40,7 +40,7 @@ void GameCommandPacket::read(DataInputStream *dis)
 	command = static_cast<EGameCommand>(dis->readInt());
 	length = dis->readShort();
 
-	if (length > 0 && length < Short::MAX_VALUE)
+	if (length > 0 && length <= Short::MAX_VALUE)
 	{
 		if(data.data != nullptr)
 		{

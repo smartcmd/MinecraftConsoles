@@ -22,9 +22,9 @@ void SetThreadName( DWORD dwThreadID, LPCSTR szThreadName )
 #if ( defined _WINDOWS64 | defined _DURANGO )
 	__try
 	{
-		RaiseException( 0x406D1388, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info );
-	}
-	__except( GetExceptionCode()==0x406D1388 ? EXCEPTION_CONTINUE_EXECUTION : EXCEPTION_EXECUTE_HANDLER )
+        RaiseException(0x406D1388, 0, sizeof(info)/sizeof(ULONG_PTR), (ULONG_PTR *)&info);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
 	{
 	}
 #endif

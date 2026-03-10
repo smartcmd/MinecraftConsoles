@@ -157,6 +157,9 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 	shared_ptr<ItemInstance> clickedEntity = nullptr;
 	shared_ptr<Inventory> inventory = player->inventory;
 
+	if (slotIndex < 0 || slotIndex >= (int)slots.size())
+		return nullptr;
+
 	if (clickType == CLICK_QUICK_CRAFT)
 	{
 		int expectedStatus = quickcraftStatus;
@@ -558,12 +561,13 @@ bool AbstractContainerMenu::isPauseScreen()
 
 void AbstractContainerMenu::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
+	if (slot >= slots.size()) return;
 	getSlot(slot)->set(item);
 }
 
 void AbstractContainerMenu::setAll(ItemInstanceArray *items)
 {
-	for (unsigned int i = 0; i < items->length; i++) 
+    for (unsigned int i = 0; i < items->length && i < slots.size(); i++) 
 	{
 		getSlot(i)->set( (*items)[i] );
 	}

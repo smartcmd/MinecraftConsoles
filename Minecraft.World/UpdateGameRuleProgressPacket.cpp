@@ -18,7 +18,7 @@ UpdateGameRuleProgressPacket::UpdateGameRuleProgressPacket(ConsoleGameRules::EGa
 	m_auxValue = auxValue;
 	m_dataTag = dataTag;
 
-	if(dataLength > 0)
+	if (dataLength > 0 && dataLength <= 65536)
 	{
 		m_data = byteArray(dataLength);
 		memcpy(m_data.data,data,dataLength);

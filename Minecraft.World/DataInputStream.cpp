@@ -303,6 +303,10 @@ wstring DataInputStream::readUTF()
 	int b = stream->read();
 	unsigned short UTFLength = static_cast<unsigned short>(((a & 0xff) << 8) | (b & 0xff));
 
+	const unsigned short MAX_UTF_LENGTH = 32767;
+    if (UTFLength > MAX_UTF_LENGTH)
+        return outputString;
+
 	//// 4J Stu - I decided while writing DataOutputStream that we didn't need to bother using the UTF8 format
 	//// used in the java libs, and just write in/out as wchar_t all the time
 
