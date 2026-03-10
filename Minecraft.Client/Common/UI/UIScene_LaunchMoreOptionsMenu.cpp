@@ -101,7 +101,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	m_checkboxes[eLaunchCheckbox_TileDrops].init(app.GetString(IDS_TILE_DROPS), eLaunchCheckbox_TileDrops, m_params->bDoTileDrops);
 	m_checkboxes[eLaunchCheckbox_NaturalRegeneration].init(app.GetString(IDS_NATURAL_REGEN), eLaunchCheckbox_NaturalRegeneration, m_params->bNaturalRegeneration);
 	m_checkboxes[eLaunchCheckbox_DayLightCycle].init(app.GetString(IDS_DAYLIGHT_CYCLE), eLaunchCheckbox_DayLightCycle, m_params->bDoDaylightCycle);
-	m_checkboxes[eLaunchCheckbox_NoMobCap].init(UIString::UIString("No Mob Cap"), eLaunchCheckbox_NoMobCap, m_params->bNoMobCap);
+	m_checkboxes[eLaunchCheckbox_NoMobCap].init(app.GetString(IDS_NO_MOB_CAP), eLaunchCheckbox_NoMobCap, m_params->bNoMobCap);
 
 	m_labelGameOptions.init( app.GetString(IDS_GAME_OPTIONS) );
 	m_labelSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_SEED));
@@ -489,7 +489,7 @@ void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId
 		stringId = IDS_GAMEOPTION_DAYLIGHT_CYCLE;
 		break;
 	case eLaunchCheckbox_NoMobCap:
-		stringId = IDS_GAMEOPTION_SEED;
+		stringId = IDS_GAMEOPTION_NO_MOB_CAP;
 		break;
 	case eControl_EditSeed:
 		stringId = IDS_GAMEOPTION_SEED;
