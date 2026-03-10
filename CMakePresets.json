@@ -4,38 +4,55 @@
     {
       "name": "windows64",
       "displayName": "Windows64",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64"
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_WINDOWS64"
+      }
     },
     {
       "name": "durango",
       "displayName": "Durango",
-      "generator": "Visual Studio 17 2022",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake"
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_DURANGO;_XBOX_ONE"
+      }
     },
     {
       "name": "orbis",
       "displayName": "ORBIS",
-      "generator": "Visual Studio 17 2022",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake"
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__ORBIS__"
+      }
     },
     {
       "name": "ps3",
       "displayName": "PS3",
-      "generator": "Visual Studio 17 2022",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake"
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__PS3__"
+      }
     },
     {
       "name": "psvita",
       "displayName": "PSVita",
-      "generator": "Visual Studio 17 2022",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake"
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__PSVITA__"
+      }
     },
     {
       "name": "xbox360",
       "displayName": "Xbox 360",
-      "generator": "Visual Studio 17 2022",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake"
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_XBOX"
+      }
     }
   ],
   "buildPresets": [
