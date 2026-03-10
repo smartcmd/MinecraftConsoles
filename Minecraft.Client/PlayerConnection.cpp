@@ -34,6 +34,7 @@
 // 4J Added
 #include "..\Minecraft.World\net.minecraft.world.item.crafting.h"
 #include "Options.h"
+#include "ServerCommands.h"
 
 Random PlayerConnection::random;
 
@@ -633,10 +634,9 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 void PlayerConnection::handleCommand(const wstring& message)
 {
-	// 4J - TODO
-#if 0
-	server.getCommandDispatcher().performCommand(player, message);
-#endif
+	ServerCommands::initialize();
+	CommandSource source(server, player);
+	ServerCommands::execute(server, message, source);
 }
 
 void PlayerConnection::handleAnimate(shared_ptr<AnimatePacket> packet)

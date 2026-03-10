@@ -7,6 +7,7 @@
 #include "ServerLevel.h"
 #include "PlayerList.h"
 #include "MinecraftServer.h"
+#include "ServerCommands.h"
 #include "..\Minecraft.World\net.minecraft.network.h"
 #include "..\Minecraft.World\pos.h"
 #include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
@@ -185,6 +186,10 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		// Do nothing
 	}
 	else if( server->getPlayers()->isXuidBanned( packet->m_onlineXuid ) )
+	{
+		disconnect(DisconnectPacket::eDisconnect_Banned);
+	}
+	else if (ServerCommands::getBanList().isBanned(name))
 	{
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}

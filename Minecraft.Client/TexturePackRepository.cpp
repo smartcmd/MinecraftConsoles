@@ -375,6 +375,11 @@ TexturePack *TexturePackRepository::addTexturePackFromDLC(DLCPack *dlcPack, DWOR
 		cacheById[dwParentID] = newPack;
 
 #ifndef _CONTENT_PACKAGE
+#ifdef _WINDOWS64
+		extern bool g_Win64Verbose;
+		if (g_Win64Verbose)
+		{
+#endif
 		if(dlcPack->hasPurchasedFile(DLCManager::e_DLCType_TexturePack,L""))
 		{
 			wprintf(L"Added new FULL DLCTexturePack: %ls - id=%d\n", dlcPack->getName().c_str(),dwParentID );
@@ -383,6 +388,9 @@ TexturePack *TexturePackRepository::addTexturePackFromDLC(DLCPack *dlcPack, DWOR
 		{
 			wprintf(L"Added new TRIAL DLCTexturePack: %ls - id=%d\n", dlcPack->getName().c_str(),dwParentID );
 		}
+#ifdef _WINDOWS64
+		}
+#endif
 #endif
 	}
 	return newPack;
