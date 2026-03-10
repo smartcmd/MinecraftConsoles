@@ -117,20 +117,20 @@ void PistonPieceEntity::moveCollidedEntities(float progress, float amount)
 	}
 
 	AABB *aabb = Tile::pistonMovingPiece->getAABB(level, x, y, z, id, progress, facing);
-	if (aabb != NULL)
+	if (aabb != nullptr)
 	{
 		vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, aabb);
 		if (!entities->empty())
 		{
 			vector< shared_ptr<Entity> > collisionHolder;
-			for( AUTO_VAR(it, entities->begin()); it != entities->end(); it++ )
+			for(auto& it : *entities)
 			{
-				collisionHolder.push_back(*it);
+				collisionHolder.push_back(it);
 			}
 
-			for( AUTO_VAR(it, collisionHolder.begin()); it != collisionHolder.end(); it++ )
+			for(auto& it : collisionHolder)
 			{
-				(*it)->move(amount * Facing::STEP_X[facing],
+				it->move(amount * Facing::STEP_X[facing],
 							amount * Facing::STEP_Y[facing],
 							amount * Facing::STEP_Z[facing]);
 			}
@@ -140,7 +140,7 @@ void PistonPieceEntity::moveCollidedEntities(float progress, float amount)
 
 void PistonPieceEntity::finalTick()
 {
-	if (progressO < 1 && level != NULL)
+	if (progressO < 1 && level != nullptr)
 	{
 		progressO = progress = 1;
 		level->removeTileEntity(x, y, z);
@@ -207,7 +207,7 @@ void PistonPieceEntity::save(CompoundTag *tag)
 // 4J Added
 shared_ptr<TileEntity> PistonPieceEntity::clone()
 {
-	shared_ptr<PistonPieceEntity> result = shared_ptr<PistonPieceEntity>( new PistonPieceEntity() );
+	shared_ptr<PistonPieceEntity> result = std::make_shared<PistonPieceEntity>();
 	TileEntity::clone(result);
 
 	result->id = id;

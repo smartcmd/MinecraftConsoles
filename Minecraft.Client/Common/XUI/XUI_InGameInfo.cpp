@@ -25,7 +25,7 @@
 HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	m_bIgnoreKeyPresses=true;
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -44,7 +44,7 @@ HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL )
+		if( player != nullptr )
 		{
 			m_players[i] = player->GetSmallId();
 			++m_playersCount;
@@ -55,7 +55,7 @@ HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex( m_iPad );
 	m_isHostPlayer = false;
-	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
+	if(thisPlayer != nullptr) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
@@ -140,9 +140,9 @@ HRESULT CScene_InGameInfo::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandle
 		if(playersList.TreeHasFocus() && (playersList.GetItemCount() > 0) && (playersList.GetCurSel() < m_playersCount) )
 		{
 			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId(m_players[playersList.GetCurSel()]);
-			if( player != NULL )
+			if( player != nullptr )
 			{
-				PlayerUID xuid = ((NetworkPlayerXbox *)player)->GetUID();
+				PlayerUID xuid = static_cast<NetworkPlayerXbox *>(player)->GetUID();
 				if( xuid != INVALID_XUID )
 					hr = XShowGamerCardUI(pInputData->UserIndex, xuid);
 			}
@@ -189,7 +189,7 @@ HRESULT CScene_InGameInfo::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 		bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
 		bool trust = app.GetGameHostOption(eGameHostOption_TrustPlayers) != 0;
 
-		if( isOp && selectedPlayer != NULL && playersList.TreeHasFocus() && (playersList.GetItemCount() > 0) && (playersList.GetCurSel() < m_playersCount) )
+		if( isOp && selectedPlayer != nullptr && playersList.TreeHasFocus() && (playersList.GetItemCount() > 0) && (playersList.GetCurSel() < m_playersCount) )
 		{
 			bool editingHost = selectedPlayer->IsHost();
 			if( (cheats && (m_isHostPlayer || !editingHost ) )
@@ -268,7 +268,7 @@ HRESULT CScene_InGameInfo::OnNotifySetFocus( HXUIOBJ hObjSource, XUINotifyFocus 
 
 void CScene_InGameInfo::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	CScene_InGameInfo *scene = (CScene_InGameInfo *)callbackParam;
+	CScene_InGameInfo *scene = static_cast<CScene_InGameInfo *>(callbackParam);
 	bool playerFound = false;
 
 	for(int i = 0; i < scene->m_playersCount; ++i)
@@ -311,7 +311,7 @@ HRESULT CScene_InGameInfo::OnGetSourceDataText(XUIMessageGetSourceText *pGetSour
 		if( pGetSourceTextData->iItem < m_playersCount )
 		{
 			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId( m_players[pGetSourceTextData->iItem] );
-			if( player != NULL )
+			if( player != nullptr )
 			{
 #ifndef _CONTENT_PACKAGE
 				if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
@@ -397,7 +397,7 @@ HRESULT CScene_InGameInfo::OnGetSourceDataText(XUIMessageGetSourceText *pGetSour
 			hr=XuiElementGetChildById(hVisual,L"VoiceGroup",&hVoiceIcon);
 
 			playFrame = -1;
-			if(player != NULL && player->HasVoice() )
+			if(player != nullptr && player->HasVoice() )
 			{
 				if( player->IsMutedByLocalUser(m_iPad) )
 				{
@@ -477,7 +477,7 @@ void CScene_InGameInfo::updateTooltips()
 		{
 			keyA = IDS_TOOLTIPS_SELECT;
 		}
-		else if( selectedPlayer != NULL)
+		else if( selectedPlayer != nullptr)
 		{
 			bool editingHost = selectedPlayer->IsHost();
 			if( (cheats && (m_isHostPlayer || !editingHost ) ) || (!trust && (m_isHostPlayer || !editingHost))
@@ -499,7 +499,7 @@ void CScene_InGameInfo::updateTooltips()
 	if(!m_gameOptionsButton.HasFocus())
 	{
 		// if the player is me, then view gamer profile
-		if(selectedPlayer != NULL && selectedPlayer->IsLocal() && selectedPlayer->GetUserIndex()==m_iPad)
+		if(selectedPlayer != nullptr && selectedPlayer->IsLocal() && selectedPlayer->GetUserIndex()==m_iPad)
 		{
 			ikeyY = IDS_TOOLTIPS_VIEW_GAMERPROFILE;
 		}
@@ -520,16 +520,16 @@ HRESULT CScene_InGameInfo::OnCustomMessage_Splitscreenplayer(bool bJoining, BOOL
 
 int CScene_InGameInfo::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
-		if(localPlayer != NULL && localPlayer->connection)
+		if(localPlayer != nullptr && localPlayer->connection)
 		{
-			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send(std::make_shared<KickPlayerPacket>(smallId));
 		}
 	}
 

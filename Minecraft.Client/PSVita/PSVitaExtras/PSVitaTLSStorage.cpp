@@ -137,7 +137,7 @@ BOOL PSVitaTLSStorage::SetValue(DWORD dwTlsIndex, LPVOID lpTlsValue)
 #else
 
 
-PSVitaTLSStorage* m_pInstance = NULL;
+PSVitaTLSStorage* m_pInstance = nullptr;
 
 #define sc_maxSlots 64
 BOOL m_activeList[sc_maxSlots];
@@ -157,7 +157,7 @@ void PSVitaTLSStorage::Init()
 	for(int i=0;i<sc_maxSlots; i++)
 	{
 		m_activeList[i] = false;
-//		m_values[i] = NULL;
+//		m_values[i] = nullptr;
 	}
 }
 
@@ -179,7 +179,7 @@ DWORD PSVitaTLSStorage::Alloc()
 		if(m_activeList[i] == false)
 		{
 			m_activeList[i] = true;
-//			m_values[i] = NULL;
+//			m_values[i] = nullptr;
 			return i;
 		}
 	}
@@ -193,7 +193,7 @@ BOOL PSVitaTLSStorage::Free( DWORD _index )
 		return false; // not been allocated
 
 	m_activeList[_index] = false;
-//	m_values[_index] = NULL;
+//	m_values[_index] = nullptr;
 	return true;
 }
 
@@ -209,7 +209,7 @@ BOOL PSVitaTLSStorage::SetValue( DWORD _index, LPVOID _val )
 LPVOID PSVitaTLSStorage::GetValue( DWORD _index )
 {
 	if(m_activeList[_index] == false)
-		return NULL;
+		return nullptr;
 	return user_getValue(_index);
 //	return m_values[_index];
 }
@@ -218,8 +218,8 @@ void PSVitaTLSStorage::RemoveThread(int threadID)
 {
 	for(int i=0; i<sc_maxSlots; i++) 
 	{
-		//m_values[i] = NULL;
-		user_setValue(i, NULL);
+		//m_values[i] = nullptr;
+		user_setValue(i, nullptr);
 	}
 }
 

@@ -100,12 +100,10 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	}
 	MemSect(20);
 	chunksToPoll.clear();
-	
+
 #if 0
-	AUTO_VAR(itEnd, level->players.end());
-	for (AUTO_VAR(it, level->players.begin()); it != itEnd; it++)
+	for (auto& player : level->players)
 	{
-		shared_ptr<Player> player = *it; //level->players.at(i);
 		int xx = Mth::floor(player->x / 16);
 		int zz = Mth::floor(player->z / 16);
 
@@ -120,7 +118,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	// 4J - rewritten to add chunks interleaved by player, and to add them from the centre outwards. We're going to be
 	// potentially adding less creatures than the original so that our count stays consistent with number of players added, so
 	// we want to make sure as best we can that the ones we do add are near the active players
-	int playerCount = (int)level->players.size();
+	int playerCount = static_cast<int>(level->players.size());
 	int *xx = new int[playerCount];
 	int *zz = new int[playerCount];
 	for (int i = 0; i < playerCount; i++)
@@ -164,20 +162,20 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 #ifdef __PSVITA__
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
 #else
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
 #endif
 
@@ -224,16 +222,15 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 		{
 			SCustomMapNode *it = chunksToPoll.get(i);
 #else
-		AUTO_VAR(itEndCTP, chunksToPoll.end());
-		for (AUTO_VAR(it, chunksToPoll.begin()); it != itEndCTP; it++)
+		for (auto& it : chunksToPoll)
 		   {
 #endif
-			   if( it->second )
+			   if( it.second )
 			   {
 				// don't add mobs to edge chunks, to prevent adding mobs "outside" of the active playground
 				   continue;
 			   }
-			   ChunkPos *cp = (ChunkPos *) (&it->first);
+			   ChunkPos *cp = (ChunkPos *) (&it.first);
 
 			   // 4J - don't let this actually create/load a chunk that isn't here already - we'll let the normal updateDirtyChunks etc. processes do that, so it can happen on another thread
 			   if( !level->hasChunk(cp->x,cp->z) ) continue;
@@ -254,8 +251,8 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 				   int z = zStart;
 				   int ss = 6;
 
-				   Biome::MobSpawnerData *currentMobType = NULL;
-				MobGroupData *groupData = NULL;
+				   Biome::MobSpawnerData *currentMobType = nullptr;
+				MobGroupData *groupData = nullptr;
 
 				   for (int ll = 0; ll < 4; ll++)
 				   {
@@ -270,9 +267,9 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 					   if (isSpawnPositionOk(mobCategory, level, x, y, z))
 					   {
 						   float xx = x + 0.5f;
-						   float yy = (float) y;
+						   float yy = static_cast<float>(y);
 						   float zz = z + 0.5f;
-						   if (level->getNearestPlayer(xx, yy, zz, MIN_SPAWN_DISTANCE) != NULL)
+						   if (level->getNearestPlayer(xx, yy, zz, MIN_SPAWN_DISTANCE) != nullptr)
 						   {
 							   continue;
 						   }
@@ -288,10 +285,10 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 							   }
 						   }
 
-                            if (currentMobType == NULL)
+                            if (currentMobType == nullptr)
 							{
                                 currentMobType = level->getRandomMobSpawnAt(mobCategory, x, y, z);
-                                if (currentMobType == NULL)
+                                if (currentMobType == nullptr)
 								{
                                     break;
                                 }
@@ -399,7 +396,7 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 		// 4J - changed to spawn water things only in deep water
 		int yo = 0;
 		int liquidCount = 0;
-		
+
 		while( ( y - yo ) >= 0 && ( yo < 5 ) )
 		{
 			if( level->getMaterial(x, y - yo, z)->isLiquid() ) liquidCount++;
@@ -443,7 +440,7 @@ void MobSpawner::postProcessSpawnMobs(Level *level, Biome *biome, int xo, int zo
 	while (random->nextFloat() < biome->getCreatureProbability())
 	{
 		Biome::MobSpawnerData *type = (Biome::MobSpawnerData *) WeighedRandom::getRandomItem(level->random, ((vector<WeighedRandomItem *> *)mobs));
-		MobGroupData *groupData = NULL;
+		MobGroupData *groupData = nullptr;
 		int count = type->minCount + random->nextInt(1 + type->maxCount - type->minCount);
 
 		int x = xo + random->nextInt(cellWidth);

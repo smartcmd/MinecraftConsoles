@@ -15,7 +15,7 @@ Bat::Bat(Level *level) : AmbientCreature(level)
 	registerAttributes();
 	setHealth(getMaxHealth());
 
-	targetPosition = NULL;
+	targetPosition = nullptr;
 
 	setSize(.5f, .9f);
 	setResting(true);
@@ -90,11 +90,11 @@ void Bat::setResting(bool value)
 	char current = entityData->getByte(DATA_ID_FLAGS);
 	if (value)
 	{
-		entityData->set(DATA_ID_FLAGS, (char) (current | FLAG_RESTING));
+		entityData->set(DATA_ID_FLAGS, static_cast<char>(current | FLAG_RESTING));
 	}
 	else
 	{
-		entityData->set(DATA_ID_FLAGS, (char) (current & ~FLAG_RESTING));
+		entityData->set(DATA_ID_FLAGS, static_cast<char>(current & ~FLAG_RESTING));
 	}
 }
 
@@ -128,10 +128,10 @@ void Bat::newServerAiStep()
 
 	if (isResting())
 	{
-		if (!level->isSolidBlockingTile(Mth::floor(x), (int) y + 1, Mth::floor(z)))
+		if (!level->isSolidBlockingTile(Mth::floor(x), static_cast<int>(y) + 1, Mth::floor(z)))
 		{
 			setResting(false);
-			level->levelEvent(nullptr, LevelEvent::SOUND_BAT_LIFTOFF, (int) x, (int) y, (int) z, 0);
+			level->levelEvent(nullptr, LevelEvent::SOUND_BAT_LIFTOFF, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 		}
 		else
 		{
@@ -141,25 +141,25 @@ void Bat::newServerAiStep()
 				yHeadRot = random->nextInt(360);
 			}
 
-			if (level->getNearestPlayer(shared_from_this(), 4.0f) != NULL)
+			if (level->getNearestPlayer(shared_from_this(), 4.0f) != nullptr)
 			{
 				setResting(false);
-				level->levelEvent(nullptr, LevelEvent::SOUND_BAT_LIFTOFF, (int) x, (int) y, (int) z, 0);
+				level->levelEvent(nullptr, LevelEvent::SOUND_BAT_LIFTOFF, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 			}
 		}
 	}
 	else
 	{
 
-		if (targetPosition != NULL && (!level->isEmptyTile(targetPosition->x, targetPosition->y, targetPosition->z) || targetPosition->y < 1))
+		if (targetPosition != nullptr && (!level->isEmptyTile(targetPosition->x, targetPosition->y, targetPosition->z) || targetPosition->y < 1))
 		{
 			delete targetPosition;
-			targetPosition = NULL;
+			targetPosition = nullptr;
 		}
-		if (targetPosition == NULL || random->nextInt(30) == 0 || targetPosition->distSqr((int) x, (int) y, (int) z) < 4)
+		if (targetPosition == nullptr || random->nextInt(30) == 0 || targetPosition->distSqr(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)) < 4)
 		{
 			delete targetPosition;
-			targetPosition = new Pos((int) x + random->nextInt(7) - random->nextInt(7), (int) y + random->nextInt(6) - 2, (int) z + random->nextInt(7) - random->nextInt(7));
+			targetPosition = new Pos(static_cast<int>(x) + random->nextInt(7) - random->nextInt(7), static_cast<int>(y) + random->nextInt(6) - 2, static_cast<int>(z) + random->nextInt(7) - random->nextInt(7));
 		}
 
 		double dx = (targetPosition->x + .5) - x;
@@ -170,12 +170,12 @@ void Bat::newServerAiStep()
 		yd = yd + (signum(dy) * .7f - yd) * .1f;
 		zd = zd + (signum(dz) * .5f - zd) * .1f;
 
-		float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
+		float yRotD = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
 		float rotDiff = Mth::wrapDegrees(yRotD - yRot);
 		yya = .5f;
 		yRot += rotDiff;
 
-		if (random->nextInt(100) == 0 && level->isSolidBlockingTile(Mth::floor(x), (int) y + 1, Mth::floor(z)))
+		if (random->nextInt(100) == 0 && level->isSolidBlockingTile(Mth::floor(x), static_cast<int>(y) + 1, Mth::floor(z)))
 		{
 			setResting(true);
 		}

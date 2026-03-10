@@ -20,7 +20,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_params = (LaunchMoreOptionsMenuInitData *)initData;
+	m_params = static_cast<LaunchMoreOptionsMenuInitData *>(initData);
 
 	m_labelWorldOptions.init(app.GetString(IDS_WORLD_OPTIONS));
 
@@ -116,9 +116,9 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	if(m_params->currentWorldSize != e_worldSize_Unknown)
 	{
 		m_labelWorldResize.init(app.GetString(IDS_INCREASE_WORLD_SIZE));
-		int min= int(m_params->currentWorldSize)-1;
+		int min= static_cast<int>(m_params->currentWorldSize)-1;
 		int max=3;
-		int curr = int(m_params->newWorldSize)-1;
+		int curr = static_cast<int>(m_params->newWorldSize)-1;
 		m_sliderWorldResize.init(app.GetString(m_iWorldSizeTitleA[curr]),eControl_WorldResize,min,max,curr);
 		m_checkboxes[eLaunchCheckbox_WorldResizeType].init(app.GetString(IDS_INCREASE_WORLD_SIZE_OVERWRITE_EDGES),eLaunchCheckbox_WorldResizeType,m_params->newWorldSizeOverwriteEdges);
 	}
@@ -257,6 +257,9 @@ void UIScene_LaunchMoreOptionsMenu::handleDestroy()
 void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
 	if(m_bIgnoreInput) return;
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking()) return;
+#endif
 
 	//app.DebugPrintf("UIScene_DebugOverlay handling input for pad %d, key %d, down- %s, pressed- %s, released- %s\n", iPad, key, down?"TRUE":"FALSE", pressed?"TRUE":"FALSE", released?"TRUE":"FALSE");
 	ui.AnimateKeyPress(m_iPad, key, repeat, pressed, released);
@@ -305,7 +308,7 @@ void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 			m_tabIndex = m_tabIndex == 0 ? 1 : 0;
 			updateTooltips();
 			IggyDataValue result;
-			IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , NULL );
+			IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , nullptr );
 		}
 		break;
 	}
@@ -327,14 +330,16 @@ void UIScene_LaunchMoreOptionsMenu::handleTouchInput(unsigned int iPad, S32 x, S
 				m_tabIndex = iNewTabIndex;
 				updateTooltips();
 				IggyDataValue result;
-				IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , NULL );
+				IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , nullptr );
 			}
 			ui.TouchBoxRebuild(this);
 			break;
 		}
 	}
 }
+#endif
 
+#if defined(__PSVITA__) || defined(_WINDOWS64)
 UIControl* UIScene_LaunchMoreOptionsMenu::GetMainPanel()
 {
 	if(m_tabIndex == 0)
@@ -349,7 +354,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((EControls)((int)controlId))
+	switch(static_cast<EControls>((int)controlId))
 	{
 	case eLaunchCheckbox_Online:
 		m_params->bOnlineGame = selected;
@@ -423,7 +428,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId)
 {
 	int stringId = 0;
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eLaunchCheckbox_Online:
 		stringId = IDS_GAMEOPTION_ONLINE;
@@ -544,13 +549,18 @@ void UIScene_LaunchMoreOptionsMenu::handleTimerComplete(int id)
 
 int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_LaunchMoreOptionsMenu *pClass=(UIScene_LaunchMoreOptionsMenu *)lpParam;
+	UIScene_LaunchMoreOptionsMenu *pClass=static_cast<UIScene_LaunchMoreOptionsMenu *>(lpParam);
 	pClass->m_bIgnoreInput=false;
-	// 4J HEG - No reason to set value if keyboard was cancelled
 	if (bRes)
 	{
+#ifdef _WINDOWS64
+		uint16_t pchText[128];
+		ZeroMemory(pchText, 128 * sizeof(uint16_t));
+		Win64_GetKeyboardText(pchText, 128);
+		pClass->m_editSeed.setLabel((wchar_t *)pchText);
+		pClass->m_params->seed = (wchar_t *)pchText;
+#else
 #ifdef __PSVITA__
-		//CD - Changed to 2048 [SCE_IME_MAX_TEXT_LENGTH]
 		uint16_t pchText[2048];
 		ZeroMemory(pchText, 2048 * sizeof(uint16_t) );
 #else
@@ -560,18 +570,52 @@ int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,b
 		InputManager.GetText(pchText);
 		pClass->m_editSeed.setLabel((wchar_t *)pchText);
 		pClass->m_params->seed = (wchar_t *)pchText;
+#endif
 	}
 	return 0;
 }
 
+#ifdef _WINDOWS64
+void UIScene_LaunchMoreOptionsMenu::getDirectEditInputs(vector<UIControl_TextInput*> &inputs)
+{
+	inputs.push_back(&m_editSeed);
+}
+
+void UIScene_LaunchMoreOptionsMenu::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
+{
+	if (result == UIControl_TextInput::eDirectEdit_Confirmed)
+		m_params->seed = input->getEditBuffer();
+}
+#endif
+
 void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 {
 	if(m_bIgnoreInput) return;
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking()) return;
+#endif
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_EditSeed:
 		{
+#ifdef _WINDOWS64
+			if (g_KBMInput.IsKBMActive())
+			{
+				m_editSeed.beginDirectEdit(60);
+			}
+			else
+			{
+				m_bIgnoreInput = true;
+				UIKeyboardInitData kbData;
+				kbData.title       = app.GetString(IDS_CREATE_NEW_WORLD_SEED);
+				kbData.defaultText = m_editSeed.getLabel();
+				kbData.maxChars    = 60;
+				kbData.callback    = &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback;
+				kbData.lpParam     = this;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+#else
 			m_bIgnoreInput=true;
 #ifdef __PS3__
 			int language = XGetLanguage();
@@ -583,12 +627,12 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Default);
 				break;
 			default:
-				// 4J Stu - Use a different keyboard for non-asian languages so we don't have prediction on
 				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Alphabet_Extended);
 				break;
 			}
 #else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Default);
+#endif
 #endif
 		}
 		break;
@@ -598,8 +642,8 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_WorldSize:
 #ifdef _LARGE_WORLDS
@@ -610,11 +654,11 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 		break;
 	case eControl_WorldResize:
 #ifdef _LARGE_WORLDS
-		EGameHostOptionWorldSize changedSize = EGameHostOptionWorldSize(value+1);
+		EGameHostOptionWorldSize changedSize = static_cast<EGameHostOptionWorldSize>(value + 1);
 		if(changedSize >= m_params->currentWorldSize)
 		{
 			m_sliderWorldResize.handleSliderMove(value);
-			m_params->newWorldSize = EGameHostOptionWorldSize(value+1);
+			m_params->newWorldSize = static_cast<EGameHostOptionWorldSize>(value + 1);
 			m_sliderWorldResize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
 		}
 #endif

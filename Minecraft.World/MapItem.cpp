@@ -20,19 +20,19 @@ MapItem::MapItem(int id) : ComplexItem(id)
 }
 
 shared_ptr<MapItemSavedData> MapItem::getSavedData(short idNum, Level *level)
-{	
-	std::wstring id = wstring( L"map_" ) + _toString(idNum);
+{
+	std::wstring id = wstring( L"map_" ) + std::to_wstring(idNum);
 	shared_ptr<MapItemSavedData> mapItemSavedData = dynamic_pointer_cast<MapItemSavedData>(level->getSavedData(typeid(MapItemSavedData), id));
 
-	if (mapItemSavedData == NULL) 
+	if (mapItemSavedData == nullptr)
 	{
 		// 4J Stu - This call comes from ClientConnection, but i don't see why we should be trying to work out
 		// the id again when it's passed as a param. In any case that won't work with the new map setup
 		//int aux = level->getFreeAuxValueFor(L"map");
 		int aux = idNum;
 
-		id = wstring( L"map_" ) + _toString(aux);
-		mapItemSavedData = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
+		id = wstring( L"map_" ) + std::to_wstring(aux);
+		mapItemSavedData = std::make_shared<MapItemSavedData>(id);
 
 		level->setSavedData(id, (shared_ptr<SavedData> ) mapItemSavedData);
 	}
@@ -43,19 +43,19 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(short idNum, Level *level)
 shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> itemInstance, Level *level)
 {
 	MemSect(31);
-	std::wstring id = wstring( L"map_" ) + _toString(itemInstance->getAuxValue() );
+	std::wstring id = wstring( L"map_" ) + std::to_wstring(itemInstance->getAuxValue() );
 	MemSect(0);
 	shared_ptr<MapItemSavedData> mapItemSavedData = dynamic_pointer_cast<MapItemSavedData>( level->getSavedData(typeid(MapItemSavedData), id ) );
 
 	bool newData = false;
-	if (mapItemSavedData == NULL)
+	if (mapItemSavedData == nullptr)
 	{
 		// 4J Stu - I don't see why we should be trying to work out the id again when it's passed as a param.
 		// In any case that won't work with the new map setup
 		//itemInstance->setAuxValue(level->getFreeAuxValueFor(L"map"));
 
-		id = wstring( L"map_" ) + _toString(itemInstance->getAuxValue() );
-		mapItemSavedData = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
+		id = wstring( L"map_" ) + std::to_wstring(itemInstance->getAuxValue() );
+		mapItemSavedData = std::make_shared<MapItemSavedData>(id);
 
 		newData = true;
 	}
@@ -71,11 +71,11 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 	{
 #ifdef _LARGE_WORLDS
 		int scale = MapItemSavedData::MAP_SIZE * 2 * (1 << mapItemSavedData->scale);
-		mapItemSavedData->x = Math::round((float) level->getLevelData()->getXSpawn() / scale) * scale;
+		mapItemSavedData->x = Math::round(static_cast<float>(level->getLevelData()->getXSpawn()) / scale) * scale;
 		mapItemSavedData->z = Math::round(level->getLevelData()->getZSpawn() / scale) * scale;
 #endif
-		mapItemSavedData->dimension = (byte) level->dimension->id;
-	
+		mapItemSavedData->dimension = static_cast<byte>(level->dimension->id);
+
 		mapItemSavedData->setDirty();
 
 		level->setSavedData(id, (shared_ptr<SavedData> ) mapItemSavedData);
@@ -86,7 +86,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 
 void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItemSavedData> data)
 {
-	if ( (level->dimension->id != data->dimension) || !player->instanceof(eTYPE_PLAYER) ) 
+	if ( (level->dimension->id != data->dimension) || !player->instanceof(eTYPE_PLAYER) )
 	{
 		// Wrong dimension, abort
 		return;
@@ -148,8 +148,8 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				if (((ss >> 20) & 1) == 0) count[Tile::dirt_Id] += 10;
 				else count[Tile::stone_Id] += 10;
 				hh = 100;
-			} 
-			else 
+			}
+			else
 			{
 				for (int xs = 0; xs < scale; xs++)
 				{
@@ -157,7 +157,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 					{
 						int yy = lc->getHeightmap(xs + xso, zs + zso) + 1;
 						int t = 0;
-						if (yy > 1) 
+						if (yy > 1)
 						{
 							bool ok = false;
 							do
@@ -190,7 +190,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 								} while (y > 0 && below != 0 && Tile::tiles[below]->material->isLiquid());
 							}
 						}
-						hh += yy / (double) (scale * scale);
+						hh += yy / static_cast<double>(scale * scale);
 
 						count[t]++;
 					}
@@ -215,7 +215,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 			if (diff < -0.6) br = 0;
 
 			int col = 0;
-			if (tBest > 0) 
+			if (tBest > 0)
 			{
 				MaterialColor *mc = Tile::tiles[tBest]->material->color;
 				if (mc == MaterialColor::water)
@@ -237,7 +237,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				continue;
 			}
 			byte oldColor = data->colors[x + z * w];
-			byte newColor = (byte) (col * 4 + br);
+			byte newColor = static_cast<byte>(col * 4 + br);
 			if (oldColor != newColor)
 			{
 				if (yd0 > z) yd0 = z;
@@ -245,7 +245,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				data->colors[x + z * w] = newColor;
 			}
 		}
-		if (yd0 <= yd1) 
+		if (yd0 <= yd1)
 		{
 			data->setDirty(x, yd0, yd1);
 		}
@@ -257,7 +257,7 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 	if (level->isClientSide) return;
 
 	shared_ptr<MapItemSavedData> data = getSavedData(itemInstance, level);
-	if ( owner->instanceof(eTYPE_PLAYER) ) 
+	if ( owner->instanceof(eTYPE_PLAYER) )
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
 
@@ -276,7 +276,7 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 			ownersData->tickCarriedBy(player, itemInstance );
 			ownersData->mergeInMapData(data);
 			player->inventoryMenu->broadcastChanges();
-			
+
 			data = ownersData;
 		}
 		else
@@ -285,32 +285,32 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 		}
 	}
 
-	if (selected) 
+	if (selected)
 	{
 		update(level, owner, data);
 	}
 }
 
-shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	charArray data = MapItem::getSavedData(itemInstance, level)->getUpdatePacket(itemInstance, level, player);
 
-	if (data.data == NULL || data.length == 0) return nullptr;
+	if (data.data == nullptr || data.length == 0) return nullptr;
 
-	shared_ptr<Packet> retval = shared_ptr<Packet>(new ComplexItemDataPacket((short) Item::map->id, (short) itemInstance->getAuxValue(), data));
+	shared_ptr<Packet> retval = std::make_shared<ComplexItemDataPacket>(static_cast<short>(Item::map->id), static_cast<short>(itemInstance->getAuxValue()), data);
 	delete data.data;
 	return retval;
 }
 
-void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	wchar_t buf[64];
 
 	int mapScale = 3;
 #ifdef _LARGE_WORLDS
 	int scale = MapItemSavedData::MAP_SIZE * 2 * (1 << mapScale);
-	int centreXC = (int) (Math::round(player->x / scale) * scale);
-	int centreZC = (int) (Math::round(player->z / scale) * scale);
+	int centreXC = static_cast<int>(Math::round(player->x / scale) * scale);
+	int centreZC = static_cast<int>(Math::round(player->z / scale) * scale);
 #else
 	// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 	int centreXC = 0;
@@ -318,24 +318,24 @@ void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, s
 #endif
 
 	itemInstance->setAuxValue(level->getAuxValueForMap(player->getXuid(), player->dimension, centreXC, centreZC, mapScale));
-	
+
 	swprintf(buf,64,L"map_%d", itemInstance->getAuxValue());
 	std::wstring id = wstring(buf);
 
 	shared_ptr<MapItemSavedData> data = getSavedData(itemInstance->getAuxValue(), level);
 	// 4J Stu - We only have one map per player per dimension, so don't reset the one that they have
 	// when a new one is created
-	if( data == NULL )
+	if( data == nullptr )
 	{
-		data = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
+		data = std::make_shared<MapItemSavedData>(id);
 	}
 	level->setSavedData(id, (shared_ptr<SavedData> ) data);
-	
+
 	data->scale = mapScale;
 	// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 	data->x = centreXC;
 	data->z = centreZC;
-	data->dimension = (byte) level->dimension->id;
+	data->dimension = static_cast<byte>(level->dimension->id);
 	data->setDirty();
 }
 

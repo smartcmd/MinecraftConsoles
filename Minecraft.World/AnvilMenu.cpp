@@ -8,8 +8,8 @@
 
 AnvilMenu::AnvilMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt, shared_ptr<Player> player)
 {
-	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
-	repairSlots = shared_ptr<RepairContainer>( new RepairContainer(this,IDS_REPAIR_AND_NAME, true, 2) );
+	resultSlots = std::make_shared<ResultContainer>();
+	repairSlots = std::make_shared<RepairContainer>(this,IDS_REPAIR_AND_NAME, true, 2);
 	cost = 0;
 	repairItemCountCost = 0;
 
@@ -55,7 +55,7 @@ void AnvilMenu::createResult()
 
 	if (DEBUG_COST) app.DebugPrintf("----");
 
-	if (input == NULL)
+	if (input == nullptr)
 	{
 		resultSlots->setItem(0, nullptr);
 		cost = 0;
@@ -68,15 +68,15 @@ void AnvilMenu::createResult()
 		unordered_map<int,int> *enchantments = EnchantmentHelper::getEnchantments(result);
 		bool usingBook = false;
 
-		tax += input->getBaseRepairCost() + (addition == NULL ? 0 : addition->getBaseRepairCost());
+		tax += input->getBaseRepairCost() + (addition == nullptr ? 0 : addition->getBaseRepairCost());
 		if (DEBUG_COST)
 		{
-			app.DebugPrintf("Starting with base repair tax of %d (%d + %d)\n", tax, input->getBaseRepairCost(), (addition == NULL ? 0 : addition->getBaseRepairCost()));
+			app.DebugPrintf("Starting with base repair tax of %d (%d + %d)\n", tax, input->getBaseRepairCost(), (addition == nullptr ? 0 : addition->getBaseRepairCost()));
 		}
 
 		repairItemCountCost = 0;
 
-		if (addition != NULL)
+		if (addition != nullptr)
 		{
 			usingBook = addition->id == Item::enchantedBook_Id && Item::enchantedBook->getEnchantments(addition)->size() > 0;
 
@@ -134,64 +134,67 @@ void AnvilMenu::createResult()
 
 				unordered_map<int, int> *additionalEnchantments = EnchantmentHelper::getEnchantments(addition);
 
-				for(AUTO_VAR(it, additionalEnchantments->begin()); it != additionalEnchantments->end(); ++it)
+				if ( additionalEnchantments )
 				{
-					int id = it->first;
-					Enchantment *enchantment = Enchantment::enchantments[id];
-					AUTO_VAR(localIt, enchantments->find(id));
-					int current = localIt != enchantments->end() ? localIt->second : 0;
-					int level = it->second;
-					level = (current == level) ? level += 1 : max(level, current);
-					int extra = level - current;
-					bool compatible = enchantment->canEnchant(input);
-
-					if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
-
-					for(AUTO_VAR(it2, enchantments->begin()); it2 != enchantments->end(); ++it2)
+					for (const auto& it : *additionalEnchantments)
 					{
-						int other = it2->first;
-						if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
-						{
-							compatible = false;
+						int id = it.first;
+						Enchantment* enchantment = Enchantment::enchantments[id];
+						auto localIt = enchantments->find(id);
+						int current = localIt != enchantments->end() ? localIt->second : 0;
+						int level = it.second;
+						level = (current == level) ? level += 1 : std::max<int>(level, current);
+						int extra = level - current;
+						bool compatible = enchantment->canEnchant(input);
 
-							price += extra;
-							if (DEBUG_COST)
+						if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
+
+						for (auto& it2 : *enchantments)
+						{
+							int other = it2.first;
+							if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
 							{
-								app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								compatible = false;
+
+								price += extra;
+								if (DEBUG_COST)
+								{
+									app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								}
 							}
 						}
+
+						if (!compatible) continue;
+						if (level > enchantment->getMaxLevel()) level = enchantment->getMaxLevel();
+						(*enchantments)[id] = level;
+						int fee = 0;
+
+						switch (enchantment->getFrequency())
+						{
+						case Enchantment::FREQ_COMMON:
+							fee = 1;
+							break;
+						case Enchantment::FREQ_UNCOMMON:
+							fee = 2;
+							break;
+						case Enchantment::FREQ_RARE:
+							fee = 4;
+							break;
+						case Enchantment::FREQ_VERY_RARE:
+							fee = 8;
+							break;
+						}
+
+						if (usingBook) fee = max(1, fee / 2);
+
+						price += fee * extra;
+						if (DEBUG_COST)
+						{
+							app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee * extra);
+						}
 					}
-
-					if (!compatible) continue;
-					if (level > enchantment->getMaxLevel()) level = enchantment->getMaxLevel();
-					(*enchantments)[id] = level;
-					int fee = 0;
-
-					switch (enchantment->getFrequency())
-					{
-					case Enchantment::FREQ_COMMON:
-						fee = 1;
-						break;
-					case Enchantment::FREQ_UNCOMMON:
-						fee = 2;
-						break;
-					case Enchantment::FREQ_RARE:
-						fee = 4;
-						break;
-					case Enchantment::FREQ_VERY_RARE:
-						fee = 8;
-						break;
-					}
-
-					if (usingBook) fee = max(1, fee / 2);
-
-					price += fee * extra;
-					if (DEBUG_COST)
-					{
-						app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee*extra);
-					}
+					delete additionalEnchantments;
 				}
-				delete additionalEnchantments;
 			}
 		}
 
@@ -233,11 +236,11 @@ void AnvilMenu::createResult()
 		}
 
 		int count = 0;
-		for(AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
+		for( const auto& it : *enchantments )
 		{
-			int id = it->first;
+			int id = it.first;
 			Enchantment *enchantment = Enchantment::enchantments[id];
-			int level = it->second;
+			int level = it.second;
 			int fee = 0;
 
 			count++;
@@ -258,7 +261,7 @@ void AnvilMenu::createResult()
 				break;
 			}
 
-			if (usingBook) fee = max(1, fee / 2);
+			if (usingBook) fee = std::max<int>(1, fee / 2);
 
 			tax += count + level * fee;
 			if (DEBUG_COST)
@@ -287,10 +290,10 @@ void AnvilMenu::createResult()
 			result = nullptr;
 		}
 
-		if (result != NULL)
+		if (result != nullptr)
 		{
 			int baseCost = result->getBaseRepairCost();
-			if (addition != NULL && baseCost < addition->getBaseRepairCost()) baseCost = addition->getBaseRepairCost();
+			if (addition != nullptr && baseCost < addition->getBaseRepairCost()) baseCost = addition->getBaseRepairCost();
 			if (result->hasCustomHoverName()) baseCost -= 9;
 			if (baseCost < 0) baseCost = 0;
 			baseCost += 2;
@@ -341,7 +344,7 @@ void AnvilMenu::removed(shared_ptr<Player> player)
 	for (int i = 0; i < repairSlots->getContainerSize(); i++)
 	{
 		shared_ptr<ItemInstance> item = repairSlots->removeItemNoUpdate(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			player->drop(item);
 		}
@@ -359,7 +362,7 @@ shared_ptr<ItemInstance> AnvilMenu::quickMoveStack(shared_ptr<Player> player, in
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();

@@ -51,7 +51,7 @@ HRESULT CDurangoTelemetryManager::Flush()
 bool CDurangoTelemetryManager::RecordPlayerSessionStart(int iPad)
 {
 	durangoStats()->generatePlayerSession();
-	
+
 	return true;
 }
 
@@ -64,7 +64,7 @@ bool CDurangoTelemetryManager::RecordPlayerSessionExit(int iPad, int exitStatus)
 	// 4J-JEV: Still needed to flush cached travel stats.
 	DurangoStats::playerSessionEnd(iPad);
 
-	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
+	if (plr != nullptr && plr->level != nullptr && plr->level->getLevelData() != nullptr)
 	{
 		ULONG hr = EventWritePlayerSessionEnd(
 			DurangoStats::getUserId(iPad),
@@ -123,7 +123,7 @@ bool CDurangoTelemetryManager::RecordPlayerSessionExit(int iPad, int exitStatus)
 bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch friendsOrMatch, ESen_CompeteOrCoop competeOrCoop, int difficulty, int numberOfLocalPlayers, int numberOfOnlinePlayers)
 {
 	CTelemetryManager::RecordLevelStart(iPad, friendsOrMatch, competeOrCoop, difficulty, numberOfLocalPlayers, numberOfOnlinePlayers);
-	
+
 	ULONG hr = 0;
 
 	// Grab player info.
@@ -131,7 +131,7 @@ bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch fri
 	ProfileManager.GetXUID(iPad, &puid, true);
 	plr = Minecraft::GetInstance()->localplayers[iPad];
 
-	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
+	if (plr != nullptr && plr->level != nullptr && plr->level->getLevelData() != nullptr)
 	{
 		hr = EventWritePlayerSessionStart(
 			DurangoStats::getUserId(iPad),
@@ -191,10 +191,10 @@ bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch fri
 		GetSubLevelId(iPad),
 		GetLevelInstanceID(),
 		&ZERO_GUID,
-		friendsOrMatch, 
-		competeOrCoop, 
-		difficulty, 
-		numberOfLocalPlayers, 
+		friendsOrMatch,
+		competeOrCoop,
+		difficulty,
+		numberOfLocalPlayers,
 		numberOfOnlinePlayers,
 		&ZERO_GUID
 		);
@@ -219,10 +219,10 @@ bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch fri
 			// Durango //
 			/* GUID */	guid2str(DurangoStats::getPlayerSession()).c_str(),
 			/* WSTR */	DurangoStats::getMultiplayerCorrelationId(),
-			/* int */	friendsOrMatch, 
-			/* int */	competeOrCoop, 
-			/* int */	difficulty, 
-			/* int */	numberOfLocalPlayers, 
+			/* int */	friendsOrMatch,
+			/* int */	competeOrCoop,
+			/* int */	difficulty,
+			/* int */	numberOfLocalPlayers,
 			/* int */	numberOfOnlinePlayers
 
 			);
@@ -577,7 +577,7 @@ bool CDurangoTelemetryManager::RecordMediaShareUpload(int iPad, ESen_MediaDestin
 		mediaDestination,
 		mediaType
 		);
-#else 
+#else
 	ULONG hr = -1;
 #endif
 
@@ -968,17 +968,17 @@ bool CDurangoTelemetryManager::RecordUnBanLevel(int iPad)
 
 DurangoStats *CDurangoTelemetryManager::durangoStats()
 {
-	return (DurangoStats*) GenericStats::getInstance();
+	return static_cast<DurangoStats *>(GenericStats::getInstance());
 }
 
 wstring CDurangoTelemetryManager::guid2str(LPCGUID guid)
 {
 	wstring out = L"GUID<";
-	out += _toString<unsigned long>(guid->Data1);
+	out += std::to_wstring(guid->Data1);
 	out += L":";
-	out += _toString<unsigned short>(guid->Data2);
+	out += std::to_wstring(guid->Data2);
 	out += L":";
-	out += _toString<unsigned short>(guid->Data3);
+	out += std::to_wstring(guid->Data3);
 	//out += L":";
 	//out += convStringToWstring(string((char*)&guid->Data4,8));
 	out += L">";

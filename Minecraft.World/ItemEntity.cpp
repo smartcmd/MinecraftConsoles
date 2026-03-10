@@ -20,7 +20,7 @@ void ItemEntity::_init()
 	age = 0;
 	throwTime = 0;
 	health = 5;
-	bobOffs = (float) (Math::random() * PI * 2);
+	bobOffs = static_cast<float>(Math::random() * PI * 2);
 
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -36,11 +36,11 @@ void ItemEntity::_init(Level *level, double x, double y, double z)
 
 	setPos(x, y, z);
 
-	yRot = (float) (Math::random() * 360);
+	yRot = static_cast<float>(Math::random() * 360);
 
-	xd = (float) (Math::random() * 0.2f - 0.1f);
+	xd = static_cast<float>(Math::random() * 0.2f - 0.1f);
 	yd = +0.2f;
-	zd = (float) (Math::random() * 0.2f - 0.1f);
+	zd = static_cast<float>(Math::random() * 0.2f - 0.1f);
 }
 
 ItemEntity::ItemEntity(Level *level, double x, double y, double z) : Entity(level)
@@ -66,13 +66,13 @@ ItemEntity::ItemEntity(Level *level) : Entity( level )
 
 void ItemEntity::defineSynchedData()
 {
-	getEntityData()->defineNULL(DATA_ITEM, NULL);
+	getEntityData()->defineNULL(DATA_ITEM, nullptr);
 }
 
 void ItemEntity::tick()
 {
 	Entity::tick();
-	
+
 	if (throwTime > 0) throwTime--;
 	xo = x;
 	yo = y;
@@ -80,11 +80,11 @@ void ItemEntity::tick()
 
 	yd -= 0.04f;
 	noPhysics = checkInTile(x, (bb->y0 + bb->y1) / 2, z);
-	
+
 	// 4J - added parameter here so that these don't care about colliding with other entities
 	move(xd, yd, zd, true);
 
-	bool moved = (int) xo != (int) x || (int) yo != (int) y || (int) zo != (int) z;
+	bool moved = static_cast<int>(xo) != static_cast<int>(x) || static_cast<int>(yo) != static_cast<int>(y) || static_cast<int>(zo) != static_cast<int>(z);
 
 	if (moved || tickCount % 25 == 0)
 	{
@@ -133,11 +133,11 @@ void ItemEntity::tick()
 }
 
 void ItemEntity::mergeWithNeighbours()
-{	
+{
 	vector<shared_ptr<Entity> > *neighbours = level->getEntitiesOfClass(typeid(*this), bb->grow(0.5, 0, 0.5));
-	for(AUTO_VAR(it, neighbours->begin()); it != neighbours->end(); ++it)
+	for(auto& neighbour : *neighbours)
 	{
-		shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(*it);
+		shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(neighbour);
 		merge(entity);
 	}
 	delete neighbours;
@@ -189,10 +189,10 @@ bool ItemEntity::hurt(DamageSource *source, float damage)
 	// 4J - added next line: found whilst debugging an issue with item entities getting into a bad state when being created by a cactus, since entities insides cactuses get hurt
 	// and therefore depending on the timing of things they could get removed from the client when they weren't supposed to be. Are there really any cases were we would want
 	// an itemEntity to be locally hurt?
-	if (level->isClientSide ) return false;	
+	if (level->isClientSide ) return false;
 
 	if (isInvulnerable()) return false;
-	if (getItem() != NULL && getItem()->id == Item::netherStar_Id && source->isExplosion()) return false;
+	if (getItem() != nullptr && getItem()->id == Item::netherStar_Id && source->isExplosion()) return false;
 	markHurt();
 	health -= damage;
 	if (health <= 0)
@@ -204,9 +204,9 @@ bool ItemEntity::hurt(DamageSource *source, float damage)
 
 void ItemEntity::addAdditonalSaveData(CompoundTag *entityTag)
 {
-	entityTag->putShort(L"Health", (byte) health);
-	entityTag->putShort(L"Age", (short) age);
-	if (getItem() != NULL) entityTag->putCompound(L"Item", getItem()->save(new CompoundTag()));
+	entityTag->putShort(L"Health", static_cast<byte>(health));
+	entityTag->putShort(L"Age", static_cast<short>(age));
+	if (getItem() != nullptr) entityTag->putCompound(L"Item", getItem()->save(new CompoundTag()));
 }
 
 void ItemEntity::readAdditionalSaveData(CompoundTag *tag)
@@ -215,7 +215,7 @@ void ItemEntity::readAdditionalSaveData(CompoundTag *tag)
 	age = tag->getShort(L"Age");
 	CompoundTag *itemTag = tag->getCompound(L"Item");
 	setItem(ItemInstance::fromTag(itemTag));
-	if (getItem() == NULL) remove();
+	if (getItem() == nullptr) remove();
 }
 
 void ItemEntity::playerTouch(shared_ptr<Player> player)
@@ -253,7 +253,7 @@ void ItemEntity::playerTouch(shared_ptr<Player> player)
 			}
 #endif
 		}
-		if (item->id == Item::blazeRod_Id) 
+		if (item->id == Item::blazeRod_Id)
 			player->awardStat(GenericStats::blazeRod(), GenericStats::param_blazeRod());
 
 		playSound(eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);
@@ -280,14 +280,14 @@ shared_ptr<ItemInstance> ItemEntity::getItem()
 {
 	shared_ptr<ItemInstance> result = getEntityData()->getItemInstance(DATA_ITEM);
 
-	if (result == NULL)
+	if (result == nullptr)
 	{
-		if (level != NULL)
+		if (level != nullptr)
 		{
 			app.DebugPrintf("Item entity %d has no item?!\n", entityId);
 			//level.getLogger().severe("Item entity " + entityId + " has no item?!");
 		}
-		return shared_ptr<ItemInstance>(new ItemInstance(Tile::stone));
+		return std::make_shared<ItemInstance>(Tile::stone);
 	}
 
 	return result;

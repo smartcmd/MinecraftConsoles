@@ -723,11 +723,17 @@
     <Filter Include="PSVita\Miles Sound System\lib">
       <UniqueIdentifier>{0061db22-43de-4b54-a161-c43958cdcd7e}</UniqueIdentifier>
     </Filter>
-      <Filter Include="net\minecraft\client\resources">
+    <Filter Include="net\minecraft\client\resources">
       <UniqueIdentifier>{889a84db-3009-4a7c-8234-4bf93d412690}</UniqueIdentifier>
     </Filter>
-      <Filter Include="Windows64\Source Files\Network">
+    <Filter Include="Windows64\Source Files\Network">
       <UniqueIdentifier>{e5d7fb24-25b8-413c-84ec-974bf0d4a3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{d8cdea16-28f5-4993-baf8-26a129e50c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\lce_filesystem">
+      <UniqueIdentifier>{70b1f1aa-fe50-4aab-9a6c-14df8cb1f231}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2096,6 +2102,9 @@
       <Filter>Durango</Filter>
     </ClInclude>
     <ClInclude Include="Common\Potion_Macros.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\PostProcesser.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="PS3\4JLibs\inc\4J_Input.h">
@@ -3775,6 +3784,15 @@
     <ClInclude Include="Windows64\Network\WinsockNetLayer.h">
       <Filter>Windows64\Source Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="Common\Audio\miniaudio.h">
+      <Filter>Common\Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Audio\stb_vorbis.h">
+      <Filter>Common\Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lce_filesystem\lce_filesystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -4920,6 +4938,9 @@
     <ClCompile Include="Windows64\Windows64_Minecraft.cpp">
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Windows64\PostProcesser.cpp">
+      <Filter>Windows64\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Windows64\KeyboardMouseInput.cpp">
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
@@ -5925,6 +5946,9 @@
     <ClCompile Include="Windows64\Network\WinsockNetLayer.cpp">
       <Filter>Windows64\Source Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\lce_filesystem\lce_filesystem.cpp">
+      <Filter>include\lce_filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Xbox\4JLibs\libs\4J_Render_d.lib">
@@ -5983,9 +6007,6 @@
     </Library>
     <Library Include="Windows64\4JLibs\libs\4J_Input_d.lib">
       <Filter>Windows64\4JLibs\libs</Filter>
-    </Library>
-    <Library Include="Windows64\Miles\lib\mss64.lib">
-      <Filter>Windows64\Miles Sound System\lib</Filter>
     </Library>
     <Library Include="Windows64\Iggy\lib\iggy_w64.lib">
       <Filter>Windows64\Iggy\lib</Filter>

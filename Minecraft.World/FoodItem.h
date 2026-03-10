@@ -8,7 +8,7 @@ class Level;
 class FoodItem : public Item
 {
 public:
-	static const int EAT_DURATION = (int) (20 * 1.6);
+	static const int EAT_DURATION = static_cast<int>(20 * 1.6);
 
 private:
 	const int nutrition;

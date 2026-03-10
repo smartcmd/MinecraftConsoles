@@ -27,7 +27,7 @@ using namespace std;
 
 // AP - this is a system that works out which chunks actually need to be grouped together via the deferral system when doing chunk::rebuild. Doing this will reduce the number
 // of chunks built in a single group and reduce the chance of seeing through the landscape when digging near the edges/corners of a chunk.
-// I've added another chunk flag to mark a chunk critical so it swipes a bit from the reference count value (goes to 3 bits to 2). This works on Vita because it doesn't have 
+// I've added another chunk flag to mark a chunk critical so it swipes a bit from the reference count value (goes to 3 bits to 2). This works on Vita because it doesn't have
 // split screen reference counting.
 #ifdef __PSVITA__
 #define _CRITICAL_CHUNKS
@@ -61,7 +61,7 @@ public:
 #elif defined __PS3__
 	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 110 * 1024 * 1024;		// 4J - added
 #else
-	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 55 * 1024 * 1024;		// 4J - added 
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 55 * 1024 * 1024;		// 4J - added
 #endif
 public:
 	LevelRenderer(Minecraft *mc, Textures *textures);
@@ -216,7 +216,7 @@ public:
 	// 4J - added for new render list handling
 	// This defines the maximum size of renderable level, must be big enough to cope with actual size of level + view distance at each side
 	// so that we can render the "infinite" sea at the edges
-	static const int	MAX_LEVEL_RENDER_SIZE[3];	
+	static const int	MAX_LEVEL_RENDER_SIZE[3];
 	static const int    DIMENSION_OFFSETS[3];
 	// This is the TOTAL area of columns of chunks to be allocated for render round the players. So for one player, it would be a region of
 	// sqrt(PLAYER_RENDER_AREA) x sqrt(PLAYER_RENDER_AREA)
@@ -271,7 +271,7 @@ public:
 	XLockFreeStack<int> dirtyChunksLockFreeStack;
 
 	bool				dirtyChunkPresent;
-	__int64				lastDirtyChunkFound;
+	int64_t				lastDirtyChunkFound;
 	static const int	FORCE_DIRTY_CHUNK_CHECK_PERIOD_MS = 125; // decreased from 250 to 125 - updated by detectiveren
 
 #ifdef _LARGE_WORLDS

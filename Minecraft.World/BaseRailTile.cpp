@@ -19,7 +19,7 @@ BaseRailTile::Rail::Rail(Level *level, int x, int y, int z)
 	if(m_bValidRail)
 	{
 		int direction = level->getData(x, y, z);
-		if (((BaseRailTile *) Tile::tiles[id])->usesDataBit)
+		if (static_cast<BaseRailTile *>(Tile::tiles[id])->usesDataBit)
 		{
 			usesDataBit = true;
 			direction = direction & ~RAIL_DATA_BIT;
@@ -34,7 +34,7 @@ BaseRailTile::Rail::Rail(Level *level, int x, int y, int z)
 
 BaseRailTile::Rail::~Rail()
 {
-	for( int i = 0; i < connections.size(); i++ )
+	for( size_t i = 0; i < connections.size(); i++ )
 	{
 		delete connections[i];
 	}
@@ -44,7 +44,7 @@ void BaseRailTile::Rail::updateConnections(int direction)
 {
 	if(m_bValidRail)
 	{
-		for( int i = 0; i < connections.size(); i++ )
+		for( size_t i = 0; i < connections.size(); i++ )
 		{
 			delete connections[i];
 		}
@@ -102,7 +102,7 @@ void BaseRailTile::Rail::removeSoftConnections()
 		for (unsigned int i = 0; i < connections.size(); i++)
 		{
 			Rail *rail = getRail(connections[i]);
-			if (rail == NULL || !rail->connectsTo(this))
+			if (rail == nullptr || !rail->connectsTo(this))
 			{
 				delete connections[i];
 				connections.erase(connections.begin()+i);
@@ -130,11 +130,11 @@ bool BaseRailTile::Rail::hasRail(int x, int y, int z)
 
 BaseRailTile::Rail *BaseRailTile::Rail::getRail(TilePos *p)
 {
-	if(!m_bValidRail) return NULL;
+	if(!m_bValidRail) return nullptr;
 	if (isRail(level, p->x, p->y, p->z)) return new Rail(level, p->x, p->y, p->z);
 	if (isRail(level, p->x, p->y + 1, p->z)) return new Rail(level, p->x, p->y + 1, p->z);
 	if (isRail(level, p->x, p->y - 1, p->z)) return new Rail(level, p->x, p->y - 1, p->z);
-	return NULL;
+	return nullptr;
 }
 
 
@@ -142,10 +142,8 @@ bool BaseRailTile::Rail::connectsTo(Rail *rail)
 {
 	if(m_bValidRail)
 	{
-		AUTO_VAR(itEnd, connections.end());
-		for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+		for ( const auto& p : connections )
 		{
-			TilePos *p = *it; //connections[i];
 			if (p->x == rail->x && p->z == rail->z)
 			{
 				return true;
@@ -159,10 +157,8 @@ bool BaseRailTile::Rail::hasConnection(int x, int y, int z)
 {
 	if(m_bValidRail)
 	{
-		AUTO_VAR(itEnd, connections.end());
-		for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+		for ( const auto& p : connections )
 		{
-			TilePos *p = *it; //connections[i];
 			if (p->x == x && p->z == z)
 			{
 				return true;
@@ -257,7 +253,7 @@ bool BaseRailTile::Rail::hasNeighborRail(int x, int y, int z)
 	if(!m_bValidRail) return false;
 	TilePos tp(x,y,z);
 	Rail *neighbor = getRail( &tp );
-	if (neighbor == NULL) return false;
+	if (neighbor == nullptr) return false;
 	neighbor->removeSoftConnections();
 	bool retval = neighbor->canConnectTo(this);
 	delete neighbor;
@@ -332,11 +328,10 @@ void BaseRailTile::Rail::place(bool hasSignal, bool first)
 		{
 			level->setData(x, y, z, data, Tile::UPDATE_ALL);
 
-			AUTO_VAR(itEnd, connections.end());
-			for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+			for ( auto& it : connections )
 			{
-				Rail *neighbor = getRail(*it);
-				if (neighbor == NULL) continue;
+				Rail *neighbor = getRail(it);
+				if (neighbor == nullptr) continue;
 				neighbor->removeSoftConnections();
 
 				if (neighbor->canConnectTo(this))
@@ -364,7 +359,7 @@ BaseRailTile::BaseRailTile(int id, bool usesDataBit) : Tile(id, Material::decora
 	this->usesDataBit = usesDataBit;
 	setShape(0, 0, 0, 1, 2 / 16.0f, 1);
 
-	iconTurn = NULL;
+	iconTurn = nullptr;
 }
 
 bool BaseRailTile::isUsesDataBit()
@@ -374,7 +369,7 @@ bool BaseRailTile::isUsesDataBit()
 
 AABB *BaseRailTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool BaseRailTile::blocksLight()

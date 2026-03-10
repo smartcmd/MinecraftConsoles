@@ -53,42 +53,42 @@ void UIAbstractBitmapFont::registerFont()
 
 IggyFontMetrics * RADLINK UIAbstractBitmapFont::GetFontMetrics_Callback(void *user_context,IggyFontMetrics *metrics)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetFontMetrics(metrics);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetFontMetrics(metrics);
 }
 
 S32 RADLINK UIAbstractBitmapFont::GetCodepointGlyph_Callback(void *user_context,U32 codepoint)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetCodepointGlyph(codepoint);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetCodepointGlyph(codepoint);
 }
 
 IggyGlyphMetrics * RADLINK UIAbstractBitmapFont::GetGlyphMetrics_Callback(void *user_context,S32 glyph,IggyGlyphMetrics *metrics)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetGlyphMetrics(glyph,metrics);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetGlyphMetrics(glyph,metrics);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::IsGlyphEmpty_Callback(void *user_context,S32 glyph)
 {
-	return ((UIAbstractBitmapFont *) user_context)->IsGlyphEmpty(glyph);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->IsGlyphEmpty(glyph);
 }
 
 F32 RADLINK UIAbstractBitmapFont::GetKerningForGlyphPair_Callback(void *user_context,S32 first_glyph,S32 second_glyph)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetKerningForGlyphPair(first_glyph,second_glyph);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetKerningForGlyphPair(first_glyph,second_glyph);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::CanProvideBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale)
 {
-	return ((UIAbstractBitmapFont *) user_context)->CanProvideBitmap(glyph,pixel_scale);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->CanProvideBitmap(glyph,pixel_scale);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::GetGlyphBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetGlyphBitmap(glyph,pixel_scale,bitmap);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetGlyphBitmap(glyph,pixel_scale,bitmap);
 }
 
 void RADLINK UIAbstractBitmapFont::FreeGlyphBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
 {
-	return ((UIAbstractBitmapFont *) user_context)->FreeGlyphBitmap(glyph,pixel_scale,bitmap);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->FreeGlyphBitmap(glyph,pixel_scale,bitmap);
 }
 
 UIBitmapFont::UIBitmapFont(	SFontData &sfontdata )
@@ -250,14 +250,21 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 
 	// Choose a reasonable glyph scale.
 	float glyphScale = 1.0f, truePixelScale = 1.0f / m_cFontData->getFontData()->m_fAdvPerPixel;
-	F32 targetPixelScale = pixel_scale;
-	//if(!RenderManager.IsWidescreen())
-	//{
-	//	// Fix for different scales in 480
-	//	targetPixelScale = pixel_scale*2/3;
-	//}
-	while ( (0.5f + glyphScale) * truePixelScale <  targetPixelScale)
+	while ( (0.5f + glyphScale) * truePixelScale < pixel_scale)
 		glyphScale++;
+
+	// Debug: log each unique (font, pixel_scale) pair
+	{
+		static std::unordered_set<int> s_loggedScaleKeys;
+		// Encode font pointer + quantized scale into a key to log each combo once
+		int scaleKey = (int)(pixel_scale * 100.0f) ^ (int)(uintptr_t)m_cFontData;
+		if (s_loggedScaleKeys.find(scaleKey) == s_loggedScaleKeys.end() && s_loggedScaleKeys.size() < 50) {
+			s_loggedScaleKeys.insert(scaleKey);
+			float tps = truePixelScale;
+			app.DebugPrintf("[FONT-DBG] GetGlyphBitmap: font=%s glyph=%d pixel_scale=%.3f truePixelScale=%.1f glyphScale=%.0f\n",
+				m_cFontData->getFontName().c_str(), glyph, pixel_scale, tps, glyphScale);
+		}
+	}
 
 	// 4J-JEV: Debug code to check which font sizes are being used.
 #if (!defined _CONTENT_PACKAGE) && (VERBOSE_FONT_OUTPUT > 0)
@@ -303,9 +310,6 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 	}
 #endif
 
-	//app.DebugPrintf("Request glyph_%d (U+%.4X) at %f, converted to %f (%f)\n",
-	//				glyph, GetUnicode(glyph), pixel_scale, targetPixelScale, glyphScale);
-
 	// It is not necessary to shrink the glyph width here
 	// as its already been done in 'GetGlyphMetrics' by:
 	// > metrics->x1 = m_kerningTable[glyph] * ratio;
@@ -321,37 +325,67 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 
 	// 4J-PB - this was chopping off the top of the characters, so accented ones were losing a couple of pixels at the top
 	// DaveK has reduced the height of the accented capitalised characters, and we've dropped this from 0.65 to 0.64 
-	bitmap->top_left_y = -((S32) m_cFontData->getFontData()->m_uiGlyphHeight) * m_cFontData->getFontData()->m_fAscent;
+	bitmap->top_left_y = -static_cast<S32>(m_cFontData->getFontData()->m_uiGlyphHeight) * m_cFontData->getFontData()->m_fAscent;
 
 	bitmap->oversample = 0;
-	bitmap->point_sample = true;
 
-	// 4J-JEV:
-	// pixel_scale == font size chosen in flash.
-	// bitmap->pixel_scale_correct = (float) m_glyphHeight;	// Scales the glyph to desired size.
-	// bitmap->pixel_scale_correct = pixel_scale;			// Always the same size (not desired size).
-	// bitmap->pixel_scale_correct = pixel_scale * 0.5;		// Doubles original size.
-	// bitmap->pixel_scale_correct = pixel_scale * 2;		// Halves original size.
-	
-	// Actual scale, and possible range of scales.
-	bitmap->pixel_scale_correct = pixel_scale / glyphScale;
-	bitmap->pixel_scale_max = 99.0f;
-	bitmap->pixel_scale_min = 0.0f;
-
-	/* 4J-JEV: Some of Sean's code.
-	int glyphScaleMin = 1;
-    int glyphScaleMax = 3;
-    float actualScale = pixel_scale / glyphScale;
-    bitmap->pixel_scale_correct = actualScale;
-    bitmap->pixel_scale_min = actualScale * glyphScaleMin * 0.999f;
-    bitmap->pixel_scale_max = actualScale * glyphScaleMax * 1.001f; */
+#ifdef _WINDOWS64
+	// On Windows64 the window can be any size, producing fractional
+	// pixel_scale values that don't align to integer multiples of
+	// truePixelScale.  The original console code cached glyphs with a
+	// broad [truePixelScale, 99] range in the "normal" branch, which
+	// works on consoles (fixed 1080p — font sizes are exact multiples)
+	// but causes cache pollution on Windows: the first glyph cached in
+	// that range sets pixel_scale_correct for ALL subsequent requests,
+	// so different font sizes get scaled by wrong ratios, producing
+	// mixed letter sizes on screen.
+	//
+	// Fix: always use pixel_scale_correct = truePixelScale so every
+	// cache entry is consistent.  Two ranges: downscale (bilinear for
+	// smooth reduction) and upscale (point_sample for crisp pixel-art).
+	bitmap->pixel_scale_correct = truePixelScale;
+	if (pixel_scale < truePixelScale)
+	{
+		bitmap->pixel_scale_min = 0.0f;
+		bitmap->pixel_scale_max = truePixelScale;
+		bitmap->point_sample = false;
+	}
+	else
+	{
+		bitmap->pixel_scale_min = truePixelScale;
+		bitmap->pixel_scale_max = 99.0f;
+		bitmap->point_sample = true;
+	}
+#else
+	if (glyphScale <= 1 && pixel_scale < truePixelScale)
+	{
+		// Small display: pixel_scale is less than the native glyph size.
+		// Report the bitmap at its true native scale so Iggy downscales it
+		// to match the layout metrics (bilinear for smooth downscaling).
+		bitmap->pixel_scale_correct = truePixelScale;
+		bitmap->pixel_scale_min = 0.0f;
+		bitmap->pixel_scale_max = truePixelScale * 1.001f;
+		bitmap->point_sample = false;
+	}
+	else
+	{
+		// Normal/upscale case: integer-multiple scaling for pixel-art look.
+		// Console-only — fixed resolution means pixel_scale values are exact
+		// integer multiples of truePixelScale, so cache sharing is safe.
+		float actualScale = pixel_scale / glyphScale;
+		bitmap->pixel_scale_correct = actualScale;
+		bitmap->pixel_scale_min = truePixelScale;
+		bitmap->pixel_scale_max = 99.0f;
+		bitmap->point_sample = true;
+	}
+#endif
 
 	// 4J-JEV: Nothing to do with glyph placement,
 	// entirely to do with cropping your glyph out of an archive.
 	bitmap->stride_in_bytes = m_cFontData->getFontData()->m_uiGlyphMapX;
 
 	// 4J-JEV: Additional information needed to release memory afterwards.
-	bitmap->user_context_for_free = NULL;
+	bitmap->user_context_for_free = nullptr;
 
 	return true;
 }

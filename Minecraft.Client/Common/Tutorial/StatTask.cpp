@@ -6,7 +6,7 @@
 #include "StatTask.h"
 
 StatTask::StatTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, Stat *stat, int variance /*= 1*/)
-	: TutorialTask( tutorial, descriptionId, enablePreCompletion, NULL )
+	: TutorialTask( tutorial, descriptionId, enablePreCompletion, nullptr )
 {
 	this->stat = stat;
 
@@ -20,6 +20,6 @@ bool StatTask::isCompleted()
 		return true;
 
 	Minecraft *minecraft = Minecraft::GetInstance();
-	bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) >= (unsigned int)targetValue;
+	bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) >= static_cast<unsigned int>(targetValue);
 	return bIsCompleted;
 }

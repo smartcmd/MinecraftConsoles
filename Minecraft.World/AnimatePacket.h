@@ -26,6 +26,6 @@ public:
 	virtual int getEstimatedSize();
 	
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AnimatePacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AnimatePacket>(); }
 	virtual int getId() { return 18; }
 };

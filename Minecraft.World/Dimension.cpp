@@ -30,7 +30,7 @@ void Dimension::updateLightRamp()
 	float ambientLight = 0.00f;
 	for (int i = 0; i <= Level::MAX_BRIGHTNESS; i++)
 	{
-		float v = (1 - i / (float) (Level::MAX_BRIGHTNESS));
+		float v = (1 - i / static_cast<float>(Level::MAX_BRIGHTNESS));
 		brightnessRamp[i] = ((1 - v) / (v * 3 + 1)) * (1 - ambientLight) + ambientLight;
 	}
 }
@@ -45,13 +45,13 @@ void Dimension::init()
 	}
 	else
 #endif
-		if (level->getLevelData()->getGenerator() == LevelType::lvl_flat) 
+		if (level->getLevelData()->getGenerator() == LevelType::lvl_flat)
 		{
 			FlatGeneratorInfo *generator = FlatGeneratorInfo::fromValue(level->getLevelData()->getGeneratorOptions());
 			biomeSource = new FixedBiomeSource(Biome::biomes[generator->getBiome()], 0.5f, 0.5f);
 			delete generator;
 		}
-		else 
+		else
 		{
 			biomeSource = new BiomeSource(level);
 		}
@@ -70,7 +70,7 @@ Dimension::~Dimension()
 {
 	delete[] brightnessRamp;
 
-	if(biomeSource != NULL)
+	if(biomeSource != nullptr)
 		delete biomeSource;
 }
 
@@ -84,11 +84,11 @@ ChunkSource *Dimension::createRandomLevelSource() const
 	}
 	else
 #endif
-		if (levelType == LevelType::lvl_flat) 
+		if (levelType == LevelType::lvl_flat)
 		{
 			return new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
-		} 
-		else 
+		}
+		else
 		{
 			return new RandomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
 		}
@@ -113,9 +113,9 @@ bool Dimension::isValidSpawn(int x, int z) const
 	return true;
 }
 
-float Dimension::getTimeOfDay(__int64 time, float a) const
+float Dimension::getTimeOfDay(int64_t time, float a) const
 {
-	int dayStep = (int) (time % Level::TICKS_PER_DAY);
+	int dayStep = static_cast<int>(time % Level::TICKS_PER_DAY);
 	float td = (dayStep + a) / Level::TICKS_PER_DAY - 0.25f;
 	if (td < 0) td += 1;
 	if (td > 1) td -= 1;
@@ -125,9 +125,9 @@ float Dimension::getTimeOfDay(__int64 time, float a) const
 	return td;
 }
 
-int Dimension::getMoonPhase(__int64 time) const
+int Dimension::getMoonPhase(int64_t time) const
 {
-	return ((int) (time / Level::TICKS_PER_DAY)) % 8;
+	return static_cast<int>(time / Level::TICKS_PER_DAY) % 8;
 }
 
 bool Dimension::isNaturalDimension()
@@ -161,7 +161,7 @@ float *Dimension::getSunriseColor(float td, float a)
 		return sunriseCol;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Vec3 *Dimension::getFogColor(float td, float a) const
@@ -192,12 +192,12 @@ Dimension *Dimension::getNew(int id)
 	if (id == 0) return new NormalDimension();
 	if (id == 1) return new TheEndDimension();
 
-	return NULL;
+	return nullptr;
 }
 
 float Dimension::getCloudHeight()
 {
-	return (float)Level::genDepth;
+	return static_cast<float>(Level::genDepth);
 }
 
 bool Dimension::hasGround()
@@ -207,19 +207,19 @@ bool Dimension::hasGround()
 
 Pos *Dimension::getSpawnPos()
 {
-	return NULL;
+	return nullptr;
 }
 
-int Dimension::getSpawnYPosition() 
+int Dimension::getSpawnYPosition()
 {
-	if (levelType == LevelType::lvl_flat) 
+	if (levelType == LevelType::lvl_flat)
 	{
 		return 4;
 	}
 	return Level::genDepth / 2;
 }
 
-bool Dimension::hasBedrockFog() 
+bool Dimension::hasBedrockFog()
 {
 	// 4J-PB - turn off bedrock fog if the host player doesn't want it
 	if(app.GetGameHostOption(eGameHostOption_BedrockFog)==0)
@@ -230,9 +230,9 @@ bool Dimension::hasBedrockFog()
 	return (levelType != LevelType::lvl_flat && !hasCeiling);
 }
 
-double Dimension::getClearColorScale() 
+double Dimension::getClearColorScale()
 {
-	if (levelType == LevelType::lvl_flat) 
+	if (levelType == LevelType::lvl_flat)
 	{
 		return 1.0;
 	}

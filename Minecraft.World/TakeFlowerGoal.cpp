@@ -24,34 +24,41 @@ bool TakeFlowerGoal::canUse()
 	if (!villager->level->isDay()) return false;
 
 	vector<shared_ptr<Entity> > *golems = villager->level->getEntitiesOfClass(typeid(VillagerGolem), villager->bb->grow(6, 2, 6));
-	if (golems->size() == 0)
+	if ( golems == nullptr )
+		return false;
+
+	if ( golems->size() == 0)
 	{
 		delete golems;
 		return false;
 	}
 
-	//for (Entity e : golems)
-	for(AUTO_VAR(it,golems->begin()); it != golems->end(); ++it)
-	{
-		shared_ptr<VillagerGolem> vg = dynamic_pointer_cast<VillagerGolem>(*it);
-		if (vg->getOfferFlowerTick() > 0)
+    for (auto entity : *golems )
+    {
+		if ( entity == nullptr )
+			continue;
+
+		// safe to call std::static_pointer_cast because of getEntitiesOfClass(typeid(VillagerGolem), ...) makes sure we do not have entities of any other type.
+		auto vg = std::static_pointer_cast<VillagerGolem>(entity);
+		if ( vg && vg->getOfferFlowerTick() > 0)
 		{
-			golem = weak_ptr<VillagerGolem>(vg);
-			break;
+			golem = vg;
+			delete golems;
+			return true;
 		}
 	}
 	delete golems;
-	return golem.lock() != NULL;
+	return false;
 }
 
 bool TakeFlowerGoal::canContinueToUse()
 {
-	return golem.lock() != NULL && golem.lock()->getOfferFlowerTick() > 0;
+	return golem.lock() != nullptr && golem.lock()->getOfferFlowerTick() > 0;
 }
 
 void TakeFlowerGoal::start()
 {
-	pickupTick = villager->getRandom()->nextInt((int) (OfferFlowerGoal::OFFER_TICKS * 0.8));
+	pickupTick = villager->getRandom()->nextInt(static_cast<int>(OfferFlowerGoal::OFFER_TICKS * 0.8));
 	takeFlower = false;
 	golem.lock()->getNavigation()->stop();
 }

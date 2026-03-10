@@ -23,11 +23,11 @@ CRITICAL_SECTION CompressedTileStorage::cs_write;
 
 #ifdef PSVITA_PRECOMPUTED_TABLE
 // AP - this will create a precomputed table to speed up getData
-static int *CompressedTile_StorageIndexTable = NULL;
+static int *CompressedTile_StorageIndexTable = nullptr;
 
 void CompressedTileStorage_InitTable()
 {
-	if( CompressedTile_StorageIndexTable == NULL )
+	if( CompressedTile_StorageIndexTable == nullptr )
 	{
 		CompressedTile_StorageIndexTable = (int*) malloc(sizeof(int) * 64);
 		for(int j = 0;j < 64;j += 1 )
@@ -41,7 +41,7 @@ void CompressedTileStorage_InitTable()
 
 CompressedTileStorage::CompressedTileStorage()
 {
-	indicesAndData = NULL;
+	indicesAndData = nullptr;
 	allocatedSize = 0;
 
 #ifdef PSVITA_PRECOMPUTED_TABLE
@@ -55,12 +55,12 @@ CompressedTileStorage::CompressedTileStorage(CompressedTileStorage *copyFrom)
 	allocatedSize = copyFrom->allocatedSize;
 	if(allocatedSize > 0)
 	{
-		indicesAndData = (unsigned char *)XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc(allocatedSize);
+		indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc(allocatedSize);
 		XMemCpy(indicesAndData, copyFrom->indicesAndData, allocatedSize);
 	}
 	else
 	{
-		indicesAndData = NULL;
+		indicesAndData = nullptr;
 	}
 	LeaveCriticalSection(&cs_write);
 
@@ -71,11 +71,11 @@ CompressedTileStorage::CompressedTileStorage(CompressedTileStorage *copyFrom)
 
 CompressedTileStorage::CompressedTileStorage(byteArray initFrom, unsigned int initOffset)
 {
-	indicesAndData = NULL;
+	indicesAndData = nullptr;
 	allocatedSize = 0;
 
 	// We need 32768 bytes for a fully uncompressed chunk, plus 1024 for the index. Rounding up to nearest 4096 bytes for allocation
-	indicesAndData = (unsigned char *)XPhysicalAlloc(32768+4096, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(32768 + 4096, MAXULONG_PTR, 4096, PAGE_READWRITE));
 
 	unsigned short *indices = (unsigned short *)indicesAndData;
 	unsigned char *data = indicesAndData + 1024;
@@ -117,7 +117,7 @@ bool CompressedTileStorage::isCompressed()
 
 CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 {
-	indicesAndData = NULL;
+	indicesAndData = nullptr;
 	allocatedSize = 0;
 
 	// Empty and already compressed, so we only need 1K. Rounding up to nearest 4096 bytes for allocation
@@ -125,7 +125,7 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 	// XPhysicalAlloc just maps to malloc on PS3, so allocate the smallest amount
 	indicesAndData = (unsigned char *)XPhysicalAlloc(1024, MAXULONG_PTR, 4096, PAGE_READWRITE);
 #else
-	indicesAndData = (unsigned char *)XPhysicalAlloc(4096, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(4096, MAXULONG_PTR, 4096, PAGE_READWRITE));
 #endif //__PS3__
 	unsigned short *indices = (unsigned short *)indicesAndData;
 	//unsigned char *data = indicesAndData + 1024;
@@ -143,16 +143,18 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 #endif
 }
 
-bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range) 
+bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range)
 {
 	int block;
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return true;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 
 	for( int x = 0; x < 16; x += 4 )
 		for( int z = 0; z < 16; z += 4 )
 	{
 		getBlock(&block, x, y, z);
-		__uint64 *comp = (__uint64 *)&blockIndices[block];
+		uint64_t *comp = (uint64_t *)&blockIndices[block];
 		// Are the 4 y regions stored here all zero? (INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG )
 		if( ( *comp ) != 0x0007000700070007L ) return false;
 	}
@@ -170,18 +172,18 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 
 	// Attempt to compare as much as we can in 64-byte chunks (8 groups of 8 bytes)
 	int quickCount = allocatedSize / 64;
-	__int64 *pOld = (__int64 *)indicesAndData;
-	__int64 *pNew = (__int64 *)other->indicesAndData;
+	int64_t *pOld = (int64_t *)indicesAndData;
+	int64_t *pNew = (int64_t *)other->indicesAndData;
 	for( int i = 0; i < quickCount; i++ )
 	{
-		__int64 d0 = pOld[0] ^ pNew[0];
-		__int64 d1 = pOld[1] ^ pNew[1];
-		__int64 d2 = pOld[2] ^ pNew[2];
-		__int64 d3 = pOld[3] ^ pNew[3];
-		__int64 d4 = pOld[4] ^ pNew[4];
-		__int64 d5 = pOld[5] ^ pNew[5];
-		__int64 d6 = pOld[6] ^ pNew[6];
-		__int64 d7 = pOld[7] ^ pNew[7];
+		int64_t d0 = pOld[0] ^ pNew[0];
+		int64_t d1 = pOld[1] ^ pNew[1];
+		int64_t d2 = pOld[2] ^ pNew[2];
+		int64_t d3 = pOld[3] ^ pNew[3];
+		int64_t d4 = pOld[4] ^ pNew[4];
+		int64_t d5 = pOld[5] ^ pNew[5];
+		int64_t d6 = pOld[6] ^ pNew[6];
+		int64_t d7 = pOld[7] ^ pNew[7];
 		d0 |= d1;
 		d2 |= d3;
 		d4 |= d5;
@@ -195,7 +197,7 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 		}
 		pOld += 8;
 		pNew += 8;
-	}	
+	}
 
 	// Now test anything remaining just byte at a time
 	unsigned char *pucOld = (unsigned char *)pOld;
@@ -262,7 +264,7 @@ inline int CompressedTileStorage::getIndex(int block, int tile)
 // and z is:					___________zzzz
 // and maps to this bit of b	________bb_____
 //         and this bit of t    ___________tt__
-// 
+//
 
 inline void CompressedTileStorage::getBlockAndTile(int *block, int *tile, int x, int y, int z)
 {
@@ -303,7 +305,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 	int offsets[512];
 	int memToAlloc = 0;
 //	static int type0 = 0, type1 = 0, type2 = 0, type4 = 0, type8 = 0, chunkTotal = 0;
-	
+
 	// Loop round all blocks
 	for( int i = 0; i < 512; i++ )
 	{
@@ -333,8 +335,8 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 			}
 		}
 #else
-		__uint64 usedFlags[4] = {0,0,0,0};
-		__int64 i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
+		uint64_t usedFlags[4] = {0,0,0,0};
+		int64_t i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
 		for( int j = 0; j < 64; j++ )			// This loop of 64 is to go round the 4 x 4 tiles in the block
 		{
 			int tile = data[getIndex(i,j)];
@@ -386,7 +388,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 //	printf("%d: %d (0) %d (1) %d (2) %d (4) %d (8)\n", chunkTotal, type0 / chunkTotal, type1 / chunkTotal, type2 / chunkTotal, type4 / chunkTotal, type8 / chunkTotal);
 
 	memToAlloc += 1024; // For the indices
-	unsigned char *newIndicesAndData = (unsigned char *)XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc( memToAlloc );
+	unsigned char *newIndicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc( memToAlloc );
 	unsigned char *pucData = newIndicesAndData + 1024;
 	unsigned short usDataOffset = 0;
 	unsigned short *newIndices = (unsigned short *) newIndicesAndData;
@@ -401,7 +403,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 		{
 			if( _blockIndices[i] & INDEX_TYPE_0_BIT_FLAG )
 			{
-				newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (((unsigned short)data[getIndex(i,0)]) << INDEX_TILE_SHIFT);
+				newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (static_cast<unsigned short>(data[getIndex(i, 0)]) << INDEX_TILE_SHIFT);
 			}
 			else
 			{
@@ -423,7 +425,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 				ucMappings[j] = 255;
 			}
 
-			unsigned char *repacked = NULL;
+			unsigned char *repacked = nullptr;
 
 			int bitspertile = 1 << indexTypeNew;		// will be 1, 2 or 4 (from index values of 0, 1, 2)
 			int tiletypecount = 1 << bitspertile;		// will be 2, 4 or 16 (from index values of 0, 1, 2)
@@ -533,8 +535,12 @@ void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 // Gets all tile values into an array of length 32768.
 void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 {
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
-	unsigned char *data = indicesAndData + 1024;
+	// Snapshot pointer to avoid race with compress() swapping indicesAndData
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return;
+
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
+	unsigned char *data = localIndicesAndData + 1024;
 
 	for( int i = 0; i < 512; i++ )
 	{
@@ -588,10 +594,13 @@ void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 // Get an individual tile value
 int  CompressedTileStorage::get(int x, int y, int z)
 {
-	if(!indicesAndData) return 0;
+	// Take a local snapshot of indicesAndData to avoid a race with compress() which swaps the pointer.
+	// Both blockIndices and data must reference the same buffer, otherwise index offsets won't match.
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return 0;
 
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
-	unsigned char *data = indicesAndData + 1024;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
+	unsigned char *data = localIndicesAndData + 1024;
 
 	int block, tile;
 	getBlockAndTile( &block, &tile, x, y, z );
@@ -738,7 +747,7 @@ int  CompressedTileStorage::setDataRegion(byteArray dataIn, int x0, int y0, int 
 	}
 	ptrdiff_t count = pucIn - &dataIn.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 // Tests whether setting data would actually change anything
@@ -777,7 +786,7 @@ int  CompressedTileStorage::getDataRegion(byteArray dataInOut, int x0, int y0, i
 	}
 	ptrdiff_t count = pucOut - &dataInOut.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 void CompressedTileStorage::staticCtor()
@@ -806,7 +815,7 @@ void CompressedTileStorage::tick()
 	int freeIndex = ( deleteQueueIndex + 1 ) % 3;
 
 //	printf("Free queue: %d, %d\n",deleteQueue[freeIndex].GetEntryCount(),deleteQueue[freeIndex].GetAllocated());
-	unsigned char *toFree = NULL;
+	unsigned char *toFree = nullptr;
 	do
 	{
 		toFree = deleteQueue[freeIndex].Pop();
@@ -887,10 +896,10 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 	{
 		unsigned short indexType = blockIndices[i] & INDEX_TYPE_MASK;
 
-		unsigned char *unpacked_data = NULL;
+		unsigned char *unpacked_data = nullptr;
 		unsigned char *packed_data;
 
-		// First task is to find out what type of storage each block needs. Need to unpack each where required. 
+		// First task is to find out what type of storage each block needs. Need to unpack each where required.
 		// Note that we don't need to fully unpack the data at this stage since we are only interested in working out how many unique types of tiles are in each block, not
 		// what those actual tile ids are.
 		if( upgradeBlock == -1 )
@@ -951,8 +960,8 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				}
 #else
 
-				__uint64 usedFlags[4] = {0,0,0,0};
-				__int64 i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
+				uint64_t usedFlags[4] = {0,0,0,0};
+				int64_t i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
 				for( int j = 0; j < 64; j++ )			// This loop of 64 is to go round the 4x4x4 tiles in the block
 				{
 					int tiletype = unpacked_data[j];
@@ -1026,7 +1035,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				}
 			}
 			switch(_blockIndices[i])
-			{				
+			{
 				case INDEX_TYPE_1_BIT:
 					memToAlloc += 10;
 					break;
@@ -1049,8 +1058,8 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 	if( needsCompressed )
 	{
 		memToAlloc += 1024; // For the indices
-		unsigned char *newIndicesAndData = (unsigned char *)XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc( memToAlloc );
-		if( newIndicesAndData == NULL )
+		unsigned char *newIndicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc( memToAlloc );
+		if( newIndicesAndData == nullptr )
 		{
 			DWORD lastError = GetLastError();
 #ifndef _DURANGO
@@ -1097,7 +1106,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				else
 				{
 					packed_data = data + ( ( blockIndices[i] >> INDEX_OFFSET_SHIFT ) & INDEX_OFFSET_MASK);
-					
+
 					int dataSize = 8 << indexTypeOld;		// 8, 16 or 32 bytes of per-tile storage
 					dataSize += 1 << ( 1 << indexTypeOld );	// 2, 4 or 16 bytes to store each tile type
 					newIndices[i] |= ( usDataOffset & INDEX_OFFSET_MASK) << INDEX_OFFSET_SHIFT;
@@ -1111,9 +1120,9 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 			// If we're not done, then we actually need to recompress this block. First of all decompress from its current format.
 			if( !done )
 			{
-				unsigned char *unpacked_data = NULL;
-				unsigned char *tile_types = NULL;
-				unsigned char *packed_data = NULL;
+				unsigned char *unpacked_data = nullptr;
+				unsigned char *tile_types = nullptr;
+				unsigned char *packed_data = nullptr;
 				if( indexTypeOld == INDEX_TYPE_0_OR_8_BIT )
 				{
 					if( blockIndices[i] & INDEX_TYPE_0_BIT_FLAG )
@@ -1159,13 +1168,13 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				}
 #endif
 
-				unsigned char *repacked = NULL;
+				unsigned char *repacked = nullptr;
 
 				if( indexTypeNew == INDEX_TYPE_0_OR_8_BIT )
 				{
 					if( _blockIndices[i] & INDEX_TYPE_0_BIT_FLAG )
 					{
-						newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (((unsigned short)unpacked_data[0]) << INDEX_TILE_SHIFT);
+						newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (static_cast<unsigned short>(unpacked_data[0]) << INDEX_TILE_SHIFT);
 					}
 					else
 					{
@@ -1223,7 +1232,10 @@ int CompressedTileStorage::getAllocatedSize(int *count0, int *count1, int *count
 	*count4 = 0;
 	*count8 = 0;
 
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	// Volatile read: compress() can swap indicesAndData concurrently outside cs_write
+	unsigned char *localIndicesAndData = *(unsigned char *volatile *)&indicesAndData;
+	if(!localIndicesAndData) return 0;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 	for(int i = 0; i < 512; i++ )
 	{
 		unsigned short idxType = blockIndices[i] & INDEX_TYPE_MASK;
@@ -1256,7 +1268,9 @@ int CompressedTileStorage::getAllocatedSize(int *count0, int *count1, int *count
 
 int CompressedTileStorage::getHighestNonEmptyY()
 {
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return -1;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 	unsigned int highestYBlock = 0;
 	bool found = false;
 
@@ -1290,12 +1304,17 @@ int CompressedTileStorage::getHighestNonEmptyY()
 
 		if(found) break;
 	}
-	
+
 	int highestNonEmptyY = -1;
 	if(found)
 	{
 		// Multiply by the number of vertical tiles in a block, and then add that again to be at the top of the block
 		highestNonEmptyY = (highestYBlock * 4) + 4;
+	}
+	else
+	{
+		app.DebugPrintf("[CTS-WARN] getHighestNonEmptyY() returned -1! allocatedSize=%d indicesAndData=%p\n",
+			allocatedSize, indicesAndData);
 	}
 	return highestNonEmptyY;
 }
@@ -1303,13 +1322,15 @@ int CompressedTileStorage::getHighestNonEmptyY()
 void CompressedTileStorage::write(DataOutputStream *dos)
 {
 	dos->writeInt(allocatedSize);
-	if(indicesAndData)
+	// Volatile read: compress() can swap indicesAndData concurrently outside cs_write
+	unsigned char *localIndicesAndData = *(unsigned char *volatile *)&indicesAndData;
+	if(localIndicesAndData)
 	{
 		if(LOCALSYTEM_ENDIAN == BIGENDIAN)
 		{
 			// The first 1024 bytes are an array of shorts, so we need to reverse the endianness
 			byteArray indicesCopy(1024);
-			memcpy(indicesCopy.data, indicesAndData, 1024);
+			memcpy(indicesCopy.data, localIndicesAndData, 1024);
 			reverseIndices(indicesCopy.data);
 			dos->write(indicesCopy);
 			delete [] indicesCopy.data;
@@ -1317,13 +1338,13 @@ void CompressedTileStorage::write(DataOutputStream *dos)
 			// Write the rest of the data
 			if(allocatedSize > 1024)
 			{
-				byteArray dataWrapper(indicesAndData + 1024, allocatedSize - 1024);
+				byteArray dataWrapper(localIndicesAndData + 1024, allocatedSize - 1024);
 				dos->write(dataWrapper);
 			}
 		}
 		else
 		{
-			byteArray wrapper(indicesAndData, allocatedSize);
+			byteArray wrapper(localIndicesAndData, allocatedSize);
 			dos->write(wrapper);
 		}
 	}
@@ -1339,7 +1360,7 @@ void CompressedTileStorage::read(DataInputStream *dis)
 		{
 			XPhysicalFree(indicesAndData);
 		}
-		indicesAndData = (unsigned char *)XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+		indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 
 		byteArray wrapper(indicesAndData, allocatedSize);
 		dis->readFully(wrapper);

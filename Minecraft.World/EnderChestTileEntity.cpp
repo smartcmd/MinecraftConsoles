@@ -94,7 +94,7 @@ bool EnderChestTileEntity::stillValid(shared_ptr<Player> player)
 // 4J Added
 shared_ptr<TileEntity> EnderChestTileEntity::clone()
 {
-	shared_ptr<EnderChestTileEntity> result = shared_ptr<EnderChestTileEntity>( new EnderChestTileEntity() );
+	shared_ptr<EnderChestTileEntity> result = std::make_shared<EnderChestTileEntity>();
 	TileEntity::clone(result);
 
 	return result;

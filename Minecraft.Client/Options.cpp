@@ -76,7 +76,7 @@ bool Options::Option::isBoolean() const
 
 int	Options::Option::getId() const
 {
-	return (int)(this-options);
+	return static_cast<int>(this - options);
 }
 
 wstring Options::Option::getCaptionId() const
@@ -152,8 +152,8 @@ void Options::init()
 	keyMappings[12] = keyPickItem;
 	keyMappings[13] = keyToggleFog;
 
-	minecraft = NULL;
-	//optionsFile = NULL;
+	minecraft = nullptr;
+	//optionsFile = nullptr;
 
 	difficulty = 2;
 	hideGui = false;
@@ -238,6 +238,10 @@ void Options::set(const Options::Option *item, float fVal)
 	{
 		gamma = fVal;
 	}
+	if (item == Option::RENDER_DISTANCE)
+	{
+		viewDistance = fVal;
+	}
 }
 
 void Options::toggle(const Options::Option *option, int dir)
@@ -292,6 +296,7 @@ float Options::getProgressValue(const Options::Option *item)
     if (item == Option::MUSIC) return music;
     if (item == Option::SOUND) return sound;
     if (item == Option::SENSITIVITY) return sensitivity;
+	if (item == Option::RENDER_DISTANCE) return viewDistance;
     return 0;
 }
 
@@ -328,7 +333,7 @@ wstring Options::getMessage(const Options::Option *item)
 			{
                 return caption + language->getElement(L"options.sensitivity.max");
             }
-			return caption + _toString<int>((int) (progressValue * 200)) + L"%";
+			return caption + std::to_wstring(static_cast<int>(progressValue * 200)) + L"%";
 		} else if (item == Option::FOV)
 		{
 			if (progressValue == 0)
@@ -339,7 +344,7 @@ wstring Options::getMessage(const Options::Option *item)
 			{
 				return caption + language->getElement(L"options.fov.max");
 			}
-			return caption + _toString<int>((int) (70 + progressValue * 40));
+			return caption + std::to_wstring(static_cast<int>(70.0f + progressValue * 40.0f));
 		} else if (item == Option::GAMMA)
 		{
 			if (progressValue == 0)
@@ -350,7 +355,7 @@ wstring Options::getMessage(const Options::Option *item)
 			{
 				return caption + language->getElement(L"options.gamma.max");
 			}
-			return caption + L"+" + _toString<int>((int) (progressValue * 100)) + L"%";
+			return caption + L"+" + std::to_wstring( static_cast<int>(progressValue * 100.0f)) + L"%";
         }
 		else
 		{
@@ -358,7 +363,7 @@ wstring Options::getMessage(const Options::Option *item)
 			{
                 return caption + language->getElement(L"options.off");
             }
-            return caption + _toString<int>((int) (progressValue * 100)) + L"%";
+            return caption + std::to_wstring(static_cast<int>(progressValue * 100.0f)) + L"%";
         }
     } else if (item->isBoolean())
 	{
@@ -410,14 +415,14 @@ void Options::load()
         if (!optionsFile.exists()) return;
 		// 4J - was new BufferedReader(new FileReader(optionsFile));
         BufferedReader *br = new BufferedReader(new InputStreamReader( new FileInputStream( optionsFile ) ) );
-			
+
         wstring line = L"";
-        while ((line = br->readLine()) != L"")	// 4J - was check against NULL - do we need to distinguish between empty lines and a fail here?
+        while ((line = br->readLine()) != L"")	// 4J - was check against nullptr - do we need to distinguish between empty lines and a fail here?
 		{
 			// 4J - removed try/catch
 //            try {
                 wstring cmds[2];
-				int splitpos = (int)line.find(L":");
+				size_t splitpos = line.find(L":");
 				if( splitpos == wstring::npos )
 				{
 					cmds[0] = line;
@@ -486,29 +491,29 @@ void Options::save()
 		DataOutputStream dos = DataOutputStream(&fos);
 //        PrintWriter pw = new PrintWriter(new FileWriter(optionsFile));
 
-		dos.writeChars(L"music:" + _toString<float>(music) + L"\n");
-        dos.writeChars(L"sound:" + _toString<float>(sound) + L"\n");
+		dos.writeChars(L"music:" + std::to_wstring(music) + L"\n");
+        dos.writeChars(L"sound:" + std::to_wstring(sound) + L"\n");
         dos.writeChars(L"invertYMouse:" + wstring(invertYMouse ? L"true" : L"false") + L"\n");
-        dos.writeChars(L"mouseSensitivity:" + _toString<float>(sensitivity));
-		dos.writeChars(L"fov:" + _toString<float>(fov));
-		dos.writeChars(L"gamma:" + _toString<float>(gamma));
-        dos.writeChars(L"viewDistance:" + _toString<int>(viewDistance));
-        dos.writeChars(L"guiScale:" + _toString<int>(guiScale));
-		dos.writeChars(L"particles:" + _toString<int>(particles));
+        dos.writeChars(L"mouseSensitivity:" + std::to_wstring(sensitivity));
+		dos.writeChars(L"fov:" + std::to_wstring(fov));
+		dos.writeChars(L"gamma:" + std::to_wstring(gamma));
+        dos.writeChars(L"viewDistance:" + std::to_wstring(viewDistance));
+        dos.writeChars(L"guiScale:" + std::to_wstring(guiScale));
+		dos.writeChars(L"particles:" + std::to_wstring(particles));
         dos.writeChars(L"bobView:" + wstring(bobView ? L"true" : L"false"));
         dos.writeChars(L"anaglyph3d:" + wstring(anaglyph3d ? L"true" : L"false"));
         dos.writeChars(L"advancedOpengl:" + wstring(advancedOpengl ? L"true" : L"false"));
-        dos.writeChars(L"fpsLimit:" + _toString<int>(framerateLimit));
-        dos.writeChars(L"difficulty:" + _toString<int>(difficulty));
+        dos.writeChars(L"fpsLimit:" + std::to_wstring(framerateLimit));
+        dos.writeChars(L"difficulty:" + std::to_wstring(difficulty));
         dos.writeChars(L"fancyGraphics:" + wstring(fancyGraphics ? L"true" : L"false"));
-        dos.writeChars(L"ao:" + wstring(ambientOcclusion ? L"true" : L"false"));
-		dos.writeChars(L"clouds:" + _toString<bool>(renderClouds));
+        dos.writeChars(ambientOcclusion ? L"ao:true" : L"ao:false");
+		dos.writeChars(renderClouds ? L"clouds:true" : L"clouds:false");
         dos.writeChars(L"skin:" + skin);
         dos.writeChars(L"lastServer:" + lastMpIp);
 
         for (int i = 0; i < keyMappings_length; i++)
 		{
-            dos.writeChars(L"key_" + keyMappings[i]->name + L":" + _toString<int>(keyMappings[i]->key));
+            dos.writeChars(L"key_" + keyMappings[i]->name + L":" + std::to_wstring(keyMappings[i]->key));
         }
 
         dos.close();

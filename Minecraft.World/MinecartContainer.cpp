@@ -33,7 +33,7 @@ void MinecartContainer::destroy(DamageSource *source)
 	for (int i = 0; i < getContainerSize(); i++)
 	{
 		shared_ptr<ItemInstance> item = getItem(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			float xo = random->nextFloat() * 0.8f + 0.1f;
 			float yo = random->nextFloat() * 0.8f + 0.1f;
@@ -45,11 +45,11 @@ void MinecartContainer::destroy(DamageSource *source)
 				if (count > item->count) count = item->count;
 				item->count -= count;
 
-				shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()))) );
+				shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>(new ItemInstance(item->id, count, item->getAuxValue())));
 				float pow = 0.05f;
-				itemEntity->xd = (float) random->nextGaussian() * pow;
-				itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-				itemEntity->zd = (float) random->nextGaussian() * pow;
+				itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+				itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+				itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 				level->addEntity(itemEntity);
 			}
 		}
@@ -63,7 +63,7 @@ shared_ptr<ItemInstance> MinecartContainer::getItem(unsigned int slot)
 
 shared_ptr<ItemInstance> MinecartContainer::removeItem(unsigned int slot, int count)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		if (items[slot]->count <= count)
 		{
@@ -83,7 +83,7 @@ shared_ptr<ItemInstance> MinecartContainer::removeItem(unsigned int slot, int co
 
 shared_ptr<ItemInstance> MinecartContainer::removeItemNoUpdate(int slot)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
@@ -95,7 +95,7 @@ shared_ptr<ItemInstance> MinecartContainer::removeItemNoUpdate(int slot)
 void MinecartContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
-	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+	if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 }
 
 void MinecartContainer::setChanged()
@@ -145,7 +145,7 @@ void MinecartContainer::remove()
 		for (int i = 0; i < getContainerSize(); i++)
 		{
 			shared_ptr<ItemInstance> item = getItem(i);
-			if (item != NULL)
+			if (item != nullptr)
 			{
 				float xo = random->nextFloat() * 0.8f + 0.1f;
 				float yo = random->nextFloat() * 0.8f + 0.1f;
@@ -157,17 +157,17 @@ void MinecartContainer::remove()
 					if (count > item->count) count = item->count;
 					item->count -= count;
 
-					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()))));
+					shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>(new ItemInstance(item->id, count, item->getAuxValue())));
 
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 
 					float pow = 0.05f;
-					itemEntity->xd = (float) random->nextGaussian() * pow;
-					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random->nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 					level->addEntity(itemEntity);
 				}
 			}
@@ -185,10 +185,10 @@ void MinecartContainer::addAdditonalSaveData(CompoundTag *base)
 
 	for (int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}

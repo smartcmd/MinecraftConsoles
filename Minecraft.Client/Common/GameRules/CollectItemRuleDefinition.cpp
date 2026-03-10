@@ -22,13 +22,13 @@ void CollectItemRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numA
 	GameRuleDefinition::writeAttributes(dos, numAttributes + 3);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_itemId);
-	dos->writeUTF( _toString( m_itemId ) );
+	dos->writeUTF( std::to_wstring( m_itemId ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_auxValue);
-	dos->writeUTF( _toString( m_auxValue ) );
+	dos->writeUTF( std::to_wstring( m_auxValue ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_quantity);
-	dos->writeUTF( _toString( m_quantity ) );
+	dos->writeUTF( std::to_wstring( m_quantity ) );
 }
 
 void CollectItemRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)
@@ -77,7 +77,7 @@ void CollectItemRuleDefinition::populateGameRule(GameRulesInstance::EGameRulesIn
 bool CollectItemRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item)
 {
 	bool statusChanged = false;
-	if(item != NULL && item->id == m_itemId && item->getAuxValue() == m_auxValue && item->get4JData() == m_4JDataValue)
+	if(item != nullptr && item->id == m_itemId && item->getAuxValue() == m_auxValue && item->get4JData() == m_4JDataValue)
 	{
 		if(!getComplete(rule))
 		{
@@ -90,13 +90,21 @@ bool CollectItemRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemIns
 			if(quantityCollected >= m_quantity)
 			{
 				setComplete(rule, true);
-				app.DebugPrintf("Completed CollectItemRule with info - itemId:%d, auxValue:%d, quantity:%d, dataTag:%d\n", m_itemId,m_auxValue,m_quantity,m_4JDataValue);
+                app.DebugPrintf("Completed CollectItemRule with info - itemId:%d, auxValue:%d, quantity:%d, dataTag:%d\n", m_itemId, m_auxValue, m_quantity, m_4JDataValue);
 
-				if(rule->getConnection() != NULL)
-				{
-					rule->getConnection()->send( shared_ptr<UpdateGameRuleProgressPacket>( new UpdateGameRuleProgressPacket(getActionType(), this->m_descriptionId, m_itemId, m_auxValue, this->m_4JDataValue,NULL,0)));
-				}
-			}
+                if (rule->getConnection() != nullptr)
+                {
+                    rule->getConnection()->send(std::make_shared<UpdateGameRuleProgressPacket>(
+                        getActionType(),
+                        this->m_descriptionId,
+                        m_itemId,
+                        m_auxValue,
+                        this->m_4JDataValue,
+                        nullptr,
+                        static_cast<DWORD>(0)
+                        ));
+                }
+            }
 		}
 	}
 	return statusChanged;
@@ -106,11 +114,11 @@ wstring CollectItemRuleDefinition::generateXml(shared_ptr<ItemInstance> item)
 {
 	// 4J Stu - This should be kept in sync with the GameRulesDefinition.xsd
 	wstring xml = L"";
-	if(item != NULL)
+	if(item != nullptr)
 	{
-		xml = L"<CollectItemRule itemId=\"" + _toString<int>(item->id) + L"\" quantity=\"SET\" descriptionName=\"OPTIONAL\" promptName=\"OPTIONAL\"";
-		if(item->getAuxValue() != 0) xml += L" auxValue=\"" + _toString<int>(item->getAuxValue()) + L"\"";
-		if(item->get4JData() != 0) xml += L" dataTag=\"" + _toString<int>(item->get4JData()) + L"\"";
+		xml = L"<CollectItemRule itemId=\"" + std::to_wstring(item->id) + L"\" quantity=\"SET\" descriptionName=\"OPTIONAL\" promptName=\"OPTIONAL\"";
+		if(item->getAuxValue() != 0) xml += L" auxValue=\"" + std::to_wstring(item->getAuxValue()) + L"\"";
+		if(item->get4JData() != 0) xml += L" dataTag=\"" + std::to_wstring(item->get4JData()) + L"\"";
 		xml += L"/>\n";
 	}
 	return xml;

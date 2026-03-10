@@ -14,7 +14,7 @@ HRESULT CScene_TutorialPopup::OnInit( XUIMessageInit* pInitData, BOOL& bHandled 
 {
 	HRESULT hr = S_OK;
 
-	tutorial = (Tutorial *)pInitData->pvInitData;
+	tutorial = static_cast<Tutorial *>(pInitData->pvInitData);
 	m_iPad = tutorial->getPad();
 
 	MapChildControls();
@@ -29,7 +29,7 @@ HRESULT CScene_TutorialPopup::OnInit( XUIMessageInit* pInitData, BOOL& bHandled 
 	m_textFontSize = _fromString<int>( m_fontSizeControl.GetText() );
 	m_fontSizeControl.SetShow(false);
 
-	m_interactScene = NULL;
+	m_interactScene = nullptr;
 	m_lastSceneMovedLeft = false;
 	m_bAllowFade = false;
 
@@ -63,7 +63,7 @@ HRESULT CScene_TutorialPopup::OnTimer(XUIMessageTimer *pData,BOOL& rfHandled)
 
 void CScene_TutorialPopup::UpdateInteractScenePosition(bool visible)
 {
-	if( m_interactScene == NULL ) return;
+	if( m_interactScene == nullptr ) return;
 
 	// 4J-PB - check this players screen section to see if we should allow the animation
 	bool bAllowAnim=false;
@@ -146,8 +146,8 @@ HRESULT CScene_TutorialPopup::_SetDescription(CXuiScene *interactScene, LPCWSTR 
 {	
 	HRESULT hr = S_OK;
 	m_interactScene = interactScene;
-	if( interactScene != m_lastInteractSceneMoved ) m_lastInteractSceneMoved = NULL;
-	if(desc == NULL)
+	if( interactScene != m_lastInteractSceneMoved ) m_lastInteractSceneMoved = nullptr;
+	if(desc == nullptr)
 	{
 		SetShow( false );
 		XuiSetTimer(m_hObj,TUTORIAL_POPUP_MOVE_SCENE_TIMER_ID,TUTORIAL_POPUP_MOVE_SCENE_TIME);
@@ -195,7 +195,7 @@ HRESULT CScene_TutorialPopup::_SetDescription(CXuiScene *interactScene, LPCWSTR 
 		hr = XuiElementGetPosition( m_title, &titlePos );
 
 		BOOL titleShowAtStart = m_title.IsShown();
-		if( title != NULL && title[0] != 0 )
+		if( title != nullptr && title[0] != 0 )
 		{
 			m_title.SetText( title );
 			m_title.SetShow(TRUE);
@@ -241,7 +241,7 @@ HRESULT CScene_TutorialPopup::_SetDescription(CXuiScene *interactScene, LPCWSTR 
 		SetBounds(fWidth, fHeight + heightDiff);
 
 		m_description.GetBounds(&fWidth,&fHeight);
-		m_description.SetBounds(fWidth, (float)(contentDims.nPageHeight + heightDiff));
+		m_description.SetBounds(fWidth, static_cast<float>(contentDims.nPageHeight + heightDiff));
 	}
 	return hr;
 }
@@ -269,7 +269,7 @@ HRESULT CScene_TutorialPopup::SetDescription(int iPad, TutorialPopupInfo *info)
 		parsed = CScene_TutorialPopup::ParseDescription(iPad, parsed);
 		if(parsed.empty())
 		{
-			hr = pThis->_SetDescription( info->interactScene, NULL, NULL, info->allowFade, info->isReminder );
+			hr = pThis->_SetDescription( info->interactScene, nullptr, nullptr, info->allowFade, info->isReminder );
 		}
 		else
 		{
@@ -289,7 +289,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 	if( icon != TUTORIAL_NO_ICON )
 	{
 		bool itemIsFoil = false;
-		itemIsFoil = (shared_ptr<ItemInstance>(new ItemInstance(icon,1,iAuxVal)))->isFoil();
+		itemIsFoil = (std::make_shared<ItemInstance>(icon, 1, iAuxVal))->isFoil();
 		if(!itemIsFoil) itemIsFoil = isFoil;
 
 		m_pCraftingPic->SetIcon(m_iPad, icon,iAuxVal,1,10,31,false,itemIsFoil);
@@ -298,13 +298,13 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 	{
 		wstring openTag(L"{*ICON*}");
 		wstring closeTag(L"{*/ICON*}");
-		int iconTagStartPos = (int)temp.find(openTag);
-		int iconStartPos = iconTagStartPos + (int)openTag.length();
-		if( iconTagStartPos > 0 && iconStartPos < (int)temp.length() )
+		size_t iconTagStartPos = temp.find(openTag);
+		size_t iconStartPos = iconTagStartPos + openTag.length();
+		if( iconTagStartPos > 0 && iconStartPos < temp.length() )
 		{
-			int iconEndPos = (int)temp.find( closeTag, iconStartPos );
+			size_t iconEndPos = temp.find(closeTag, iconStartPos);
 
-			if(iconEndPos > iconStartPos && iconEndPos < (int)temp.length() )
+			if(iconEndPos > iconStartPos && iconEndPos < temp.length() )
 			{
 				wstring id = temp.substr(iconStartPos, iconEndPos - iconStartPos);
 
@@ -322,7 +322,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 				}
 
 				bool itemIsFoil = false;
-				itemIsFoil = (shared_ptr<ItemInstance>(new ItemInstance(iconId,1,iAuxVal)))->isFoil();
+				itemIsFoil = (std::make_shared<ItemInstance>(iconId, 1, iAuxVal))->isFoil();
 				if(!itemIsFoil) itemIsFoil = isFoil;
 
 				m_pCraftingPic->SetIcon(m_iPad, iconId,iAuxVal,1,10,31,false,itemIsFoil);
@@ -443,13 +443,13 @@ wstring CScene_TutorialPopup::_SetImage(wstring &desc)
 
 	wstring openTag(L"{*IMAGE*}");
 	wstring closeTag(L"{*/IMAGE*}");
-	int imageTagStartPos = (int)desc.find(openTag);
-	int imageStartPos = imageTagStartPos + (int)openTag.length();
-	if( imageTagStartPos > 0 && imageStartPos < (int)desc.length() )
+	size_t imageTagStartPos = desc.find(openTag);
+	size_t imageStartPos = imageTagStartPos + openTag.length();
+	if( imageTagStartPos > 0 && imageStartPos < desc.length() )
 	{
-		int imageEndPos = (int)desc.find( closeTag, imageStartPos );
+		size_t imageEndPos = desc.find(closeTag, imageStartPos);
 
-		if(imageEndPos > imageStartPos && imageEndPos < (int)desc.length() )
+		if(imageEndPos > imageStartPos && imageEndPos < desc.length() )
 		{
 			wstring id = desc.substr(imageStartPos, imageEndPos - imageStartPos);
 			m_image.SetImagePath( id.c_str() );
@@ -564,7 +564,7 @@ HRESULT CScene_TutorialPopup::SetSceneVisible(int iPad, bool show)
 	if( XuiClassDerivesFrom( objClass, thisClass ) )
 	{
 		CScene_TutorialPopup *pThis;
-		hr = XuiObjectFromHandle(hObj, (void **) &pThis);
+		hr = XuiObjectFromHandle(hObj, static_cast<void **>(&pThis));
 		if (FAILED(hr))
 			return hr;
 
@@ -593,7 +593,7 @@ bool CScene_TutorialPopup::IsSceneVisible(int iPad)
 	if( XuiClassDerivesFrom( objClass, thisClass ) )
 	{
 		CScene_TutorialPopup *pThis;
-		hr = XuiObjectFromHandle(hObj, (void **) &pThis);
+		hr = XuiObjectFromHandle(hObj, static_cast<void **>(&pThis));
 		if (FAILED(hr))
 			return false;
 

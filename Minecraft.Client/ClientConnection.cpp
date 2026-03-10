@@ -95,7 +95,7 @@ ClientConnection::ClientConnection(Minecraft *minecraft, const wstring& ip, int 
 	}
 	else
 	{
-		connection = NULL;
+		connection = nullptr;
 		delete socket;
 	}
 #endif
@@ -106,9 +106,9 @@ ClientConnection::ClientConnection(Minecraft *minecraft, Socket *socket, int iUs
 	// 4J - added initiliasers
 	random = new Random();
 	done = false;
-	level = NULL;
+	level = nullptr;
 	started = false;
-	savedDataStorage = new SavedDataStorage(NULL);
+	savedDataStorage = new SavedDataStorage(nullptr);
 	maxPlayers = 20;
 
 	this->minecraft = minecraft;
@@ -122,7 +122,7 @@ ClientConnection::ClientConnection(Minecraft *minecraft, Socket *socket, int iUs
 		m_userIndex = iUserIndex;
 	}
 
-	if( socket == NULL )
+	if( socket == nullptr )
 	{
 		socket = new Socket();	// 4J - Local connection
 	}
@@ -134,12 +134,19 @@ ClientConnection::ClientConnection(Minecraft *minecraft, Socket *socket, int iUs
 	}
 	else
 	{
-		connection = NULL;
+		connection = nullptr;
 		// TODO 4J Stu - This will cause issues since the session player owns the socket
 		//delete socket;
 	}
 
 	deferredEntityLinkPackets = vector<DeferredEntityLinkPacket>();
+}
+
+bool ClientConnection::isPrimaryConnection() const
+{
+	// On host, all connections are primary (server is authoritative).
+	// On non-host, only the primary pad processes shared entity state.
+	return g_NetworkManager.IsHost() || m_userIndex == ProfileManager.GetPrimaryPad();
 }
 
 ClientConnection::~ClientConnection()
@@ -157,8 +164,8 @@ void ClientConnection::tick()
 
 INetworkPlayer *ClientConnection::getNetworkPlayer()
 {
-	if( connection != NULL && connection->getSocket() != NULL) return connection->getSocket()->getPlayer();
-	else return NULL;
+	if( connection != nullptr && connection->getSocket() != nullptr) return connection->getSocket()->getPlayer();
+	else return nullptr;
 }
 
 void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
@@ -167,10 +174,10 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 
 	PlayerUID OnlineXuid;
 	ProfileManager.GetXUID(m_userIndex,&OnlineXuid,true); // online xuid
-	MOJANG_DATA *pMojangData = NULL;
-	
+	MOJANG_DATA *pMojangData = nullptr;
+
 	if(!g_NetworkManager.IsLocalGame())
-	{	
+	{
 		pMojangData=app.GetMojangDataForXuid(OnlineXuid);
 	}
 
@@ -208,7 +215,7 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 
 	if(iUserID!=-1)
 	{
-		BYTE *pBuffer=NULL;
+		BYTE *pBuffer=nullptr;
 		DWORD dwSize=0;
 		bool bRes;
 
@@ -222,7 +229,7 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 				// check the file is not already in
 				bRes=app.IsFileInMemoryTextures(wstr);
 				if(!bRes)
-				{			
+				{
 #ifdef _XBOX
 					C4JStorage::ETMSStatus eTMSStatus;
 					eTMSStatus=StorageManager.ReadTMSFile(iUserID,C4JStorage::eGlobalStorage_Title,C4JStorage::eTMS_FileType_Graphic,pMojangData->wchSkin,&pBuffer, &dwSize);
@@ -234,17 +241,17 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 				if(bRes)
 				{
 					app.AddMemoryTextureFile(wstr,pBuffer,dwSize);
-				}				
+				}
 			}
 
 			// a cloak?
 			if(pMojangData->wchCape[0]!=0L)
-			{		
+			{
 				wstring wstr=pMojangData->wchCape;
 				// check the file is not already in
 				bRes=app.IsFileInMemoryTextures(wstr);
 				if(!bRes)
-				{		
+				{
 #ifdef _XBOX
 					C4JStorage::ETMSStatus eTMSStatus;
 					eTMSStatus=StorageManager.ReadTMSFile(iUserID,C4JStorage::eGlobalStorage_Title,C4JStorage::eTMS_FileType_Graphic,pMojangData->wchCape,&pBuffer, &dwSize);
@@ -285,24 +292,28 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 
 
 		Level *dimensionLevel = minecraft->getLevel( packet->dimension );
-		if( dimensionLevel == NULL )
+		if( dimensionLevel == nullptr )
 		{
 			level = new MultiPlayerLevel(this, new LevelSettings(packet->seed, GameType::byId(packet->gameType), false, false, packet->m_newSeaLevel, packet->m_pLevelType, packet->m_xzSize, packet->m_hellScale), packet->dimension, packet->difficulty);
 
 			// 4J Stu - We want to share the SavedDataStorage between levels
 			int otherDimensionId = packet->dimension == 0 ? -1 : 0;
 			Level *activeLevel = minecraft->getLevel(otherDimensionId);
-			if( activeLevel != NULL )
+			if( activeLevel != nullptr )
 			{
 				// Don't need to delete it here as it belongs to a client connection while will delete it when it's done
-				//if( level->savedDataStorage != NULL ) delete level->savedDataStorage;
+				//if( level->savedDataStorage != nullptr ) delete level->savedDataStorage;
 				level->savedDataStorage = activeLevel->savedDataStorage;
 			}
 
 			app.DebugPrintf("ClientConnection - DIFFICULTY --- %d\n",packet->difficulty);
 			level->difficulty = packet->difficulty; // 4J Added
 			level->isClientSide = true;
-			minecraft->setLevel(level);	
+			minecraft->setLevel(level);
+		}
+		else
+		{
+			level = (MultiPlayerLevel *)dimensionLevel;
 		}
 
 		minecraft->player->setPlayerIndex( packet->m_playerIndex );
@@ -341,12 +352,12 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		level = (MultiPlayerLevel *)minecraft->getLevel( packet->dimension );
 		shared_ptr<Player> player;
 
-		if(level==NULL)
+		if(level==nullptr)
 		{
 			int otherDimensionId = packet->dimension == 0 ? -1 : 0;
 			MultiPlayerLevel *activeLevel = minecraft->getLevel(otherDimensionId);
 
-			if(activeLevel == NULL)
+			if(activeLevel == nullptr)
 			{
 				otherDimensionId = packet->dimension == 0 ? 1 : (packet->dimension == -1 ? 1 : -1);
 				activeLevel = minecraft->getLevel(otherDimensionId);
@@ -362,7 +373,7 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 			// 4J Stu - At time of writing ProfileManager.GetGamertag() does not always return the correct name,
 			// if sign-ins are turned off while the player signed in. Using the qnetPlayer instead.
 			// need to have a level before create extra local player
-			MultiPlayerLevel *levelpassedin=(MultiPlayerLevel *)level; 
+			MultiPlayerLevel *levelpassedin=(MultiPlayerLevel *)level;
 			player = minecraft->createExtraLocalPlayer(m_userIndex, networkPlayer->GetOnlineName(), m_userIndex, packet->dimension, this,levelpassedin);
 
 			// need to have a player before the setlevel
@@ -384,7 +395,7 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		player->setPlayerIndex( packet->m_playerIndex );
 		player->setCustomSkin( app.GetPlayerSkinId(m_userIndex) );
 		player->setCustomCape( app.GetPlayerCapeId(m_userIndex) );
-		
+
 
 		BYTE networkSmallId = getSocket()->getSmallId();
 		app.UpdatePlayerInfo(networkSmallId, packet->m_playerIndex, packet->m_uiGamePrivileges);
@@ -396,21 +407,21 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 
 		displayPrivilegeChanges(minecraft->localplayers[m_userIndex],startingPrivileges);
 	}
-	
+
 	maxPlayers = packet->maxPlayers;
-	
+
 	// need to have a player before the setLocalCreativeMode
 	shared_ptr<MultiplayerLocalPlayer> lastPlayer = minecraft->player;
 	minecraft->player = minecraft->localplayers[m_userIndex];
 	((MultiPlayerGameMode *)minecraft->localgameModes[m_userIndex])->setLocalMode(GameType::byId(packet->gameType));
 	minecraft->player = lastPlayer;
-	
+
 	// make sure the UI offsets for this player are set correctly
 	if(iUserID!=-1)
 	{
 		ui.UpdateSelectedItemPos(iUserID);
 	}
-	
+
 	TelemetryManager->RecordLevelStart(m_userIndex, eSen_FriendOrMatch_Playing_With_Invited_Friends, eSen_CompeteOrCoop_Coop_and_Competitive, Minecraft::GetInstance()->getLevel(packet->dimension)->difficulty, app.GetLocalPlayerCount(), g_NetworkManager.GetOnlinePlayerCount());
 }
 
@@ -427,13 +438,14 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 	{
 	case AddEntityPacket::MINECART:
 		e = Minecart::createMinecart(level, x, y, z, packet->data);
+		break;
 	case AddEntityPacket::FISH_HOOK:
 		{
 			// 4J Stu - Brought forward from 1.4 to be able to drop XP from fishing
 			shared_ptr<Entity> owner = getEntity(packet->data);
 
 			// 4J - check all local players to find match
-			if( owner == NULL )
+			if( owner == nullptr )
 			{
 				for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 				{
@@ -448,11 +460,11 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 					}
 				}
 			}
-			
-			if (owner != NULL && owner->instanceof(eTYPE_PLAYER))
+
+			if (owner != nullptr && owner->instanceof(eTYPE_PLAYER))
 			{
 				shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
-				shared_ptr<FishingHook> hook = shared_ptr<FishingHook>( new FishingHook(level, x, y, z, player) );
+				shared_ptr<FishingHook> hook = std::make_shared<FishingHook>(level, x, y, z, player);
 				e = hook;
 				// 4J Stu - Move the player->fishing out of the ctor as we cannot reference 'this'
 				player->fishing = hook;
@@ -461,10 +473,10 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		}
 		break;
 	case AddEntityPacket::ARROW:
-		e = shared_ptr<Entity>( new Arrow(level, x, y, z) );
+		e = std::make_shared<Arrow>(level, x, y, z);
 		break;
 	case AddEntityPacket::SNOWBALL:
-		e = shared_ptr<Entity>( new Snowball(level, x, y, z) );
+		e = std::make_shared<Snowball>(level, x, y, z);
 		break;
 	case AddEntityPacket::ITEM_FRAME:
 		{
@@ -473,64 +485,64 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 			int iz = (int) z;
 		app.DebugPrintf("ClientConnection ITEM_FRAME xyz %d,%d,%d\n",ix,iy,iz);
 		}
-		e = shared_ptr<Entity>(new ItemFrame(level, (int) x, (int) y, (int) z, packet->data));
+		e = std::make_shared<ItemFrame>(level, (int)x, (int)y, (int)z, packet->data);
 		packet->data = 0;
 		setRot = false;
 		break;
 	case AddEntityPacket::THROWN_ENDERPEARL:
-		e = shared_ptr<Entity>( new ThrownEnderpearl(level, x, y, z) );
+		e = std::make_shared<ThrownEnderpearl>(level, x, y, z);
 		break;
 	case AddEntityPacket::EYEOFENDERSIGNAL:
-		e = shared_ptr<Entity>( new EyeOfEnderSignal(level, x, y, z) );
+		e = std::make_shared<EyeOfEnderSignal>(level, x, y, z);
 		break;
 	case AddEntityPacket::FIREBALL:
-		e = shared_ptr<Entity>( new LargeFireball(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0) );
+		e = std::make_shared<LargeFireball>(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::SMALL_FIREBALL:
-		e = shared_ptr<Entity>( new SmallFireball(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0) );
+		e = std::make_shared<SmallFireball>(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::DRAGON_FIRE_BALL:
-		e = shared_ptr<Entity>( new DragonFireball(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0) );
+		e = std::make_shared<DragonFireball>(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::EGG:
-		e = shared_ptr<Entity>( new ThrownEgg(level, x, y, z) );
+		e = std::make_shared<ThrownEgg>(level, x, y, z);
 		break;
 	case AddEntityPacket::THROWN_POTION:
-		e = shared_ptr<Entity>( new ThrownPotion(level, x, y, z, packet->data) );
+		e = std::make_shared<ThrownPotion>(level, x, y, z, packet->data);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::THROWN_EXPBOTTLE:
-		e = shared_ptr<Entity>( new ThrownExpBottle(level, x, y, z) );
+		e = std::make_shared<ThrownExpBottle>(level, x, y, z);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::BOAT:
-		e = shared_ptr<Entity>( new Boat(level, x, y, z) );
+		e = std::make_shared<Boat>(level, x, y, z);
 		break;
 	case AddEntityPacket::PRIMED_TNT:
-		e = shared_ptr<Entity>( new PrimedTnt(level, x, y, z, nullptr) );
+        e = std::make_shared<PrimedTnt>(level, x, y, z, std::shared_ptr<LivingEntity>());
 		break;
 	case AddEntityPacket::ENDER_CRYSTAL:
-		e = shared_ptr<Entity>( new EnderCrystal(level, x, y, z) );
+		e = std::make_shared<EnderCrystal>(level, x, y, z);
 		break;
 	case AddEntityPacket::ITEM:
-		e = shared_ptr<Entity>( new ItemEntity(level, x, y, z) );
+		e = std::make_shared<ItemEntity>(level, x, y, z);
 		break;
 	case AddEntityPacket::FALLING:
-		e = shared_ptr<Entity>( new FallingTile(level, x, y, z, packet->data & 0xFFFF, packet->data >> 16) );
+		e = std::make_shared<FallingTile>(level, x, y, z, packet->data & 0xFFFF, packet->data >> 16);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::WITHER_SKULL:
-		e = shared_ptr<Entity>(new WitherSkull(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0));
+		e = std::make_shared<WitherSkull>(level, x, y, z, packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 		packet->data = 0;
 		break;
 	case AddEntityPacket::FIREWORKS:
-		e = shared_ptr<Entity>(new FireworksRocketEntity(level, x, y, z, nullptr));
+        e = std::make_shared<FireworksRocketEntity>(level, x, y, z, std::shared_ptr<ItemInstance>());
 		break;
 	case AddEntityPacket::LEASH_KNOT:
-		e = shared_ptr<Entity>(new LeashFenceKnotEntity(level, (int) x, (int) y, (int) z));
+		e = std::make_shared<LeashFenceKnotEntity>(level, (int)x, (int)y, (int)z);
 		packet->data = 0;
 		break;
 #ifndef _FINAL_BUILD
@@ -549,7 +561,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		shared_ptr<Entity> owner = getEntity(packet->data);
 
 		// 4J - check all local players to find match
-		if( owner == NULL )
+		if( owner == nullptr )
 		{
 			for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 			{
@@ -565,7 +577,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 			}
 		}
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
-		if (player != NULL)
+		if (player != nullptr)
 		{
 			shared_ptr<FishingHook> hook = shared_ptr<FishingHook>( new FishingHook(level, x, y, z, player) );
 			e = hook;
@@ -574,7 +586,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		}
 		packet->data = 0;
 	}
-	
+
 	if (packet->type == AddEntityPacket::ARROW) e = shared_ptr<Entity>( new Arrow(level, x, y, z) );
 	if (packet->type == AddEntityPacket::SNOWBALL) e = shared_ptr<Entity>( new Snowball(level, x, y, z) );
 	if (packet->type == AddEntityPacket::THROWN_ENDERPEARL) e = shared_ptr<Entity>( new ThrownEnderpearl(level, x, y, z) );
@@ -609,7 +621,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 
 	*/
 
-	if (e != NULL)
+	if (e != nullptr)
 	{
 		e->xp = packet->x;
 		e->yp = packet->y;
@@ -620,22 +632,19 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		e->yRotp = packet->yRot;
 		e->xRotp = packet->xRot;
 
-		if (setRot) 
+		if (setRot)
 		{
 			e->yRot = 0.0f;
 			e->xRot = 0.0f;
 		}
 
 		vector<shared_ptr<Entity> > *subEntities = e->getSubEntities();
-		if (subEntities != NULL)
+		if (subEntities)
 		{
 			int offs = packet->id - e->entityId;
-			//for (int i = 0; i < subEntities.length; i++)
-			for(AUTO_VAR(it, subEntities->begin()); it != subEntities->end(); ++it)
-			{
-				(*it)->entityId += offs;
-				//subEntities[i].entityId += offs;
-				//System.out.println(subEntities[i].entityId);
+            for ( auto it : *subEntities )
+            {
+				it->entityId += offs;
 			}
 		}
 
@@ -664,7 +673,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 				shared_ptr<Entity> owner = getEntity(packet->data);
 
 				// 4J - check all local players to find match
-				if( owner == NULL )
+				if( owner == nullptr )
 				{
 					for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 					{
@@ -679,23 +688,23 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 					}
 				}
 
-				if ( owner != NULL && owner->instanceof(eTYPE_LIVINGENTITY) )
+				if ( owner != nullptr && owner->instanceof(eTYPE_LIVINGENTITY) )
 				{
 					dynamic_pointer_cast<Arrow>(e)->owner = dynamic_pointer_cast<LivingEntity>(owner);
 				}
 			}
 
-			e->lerpMotion(packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);	
+			e->lerpMotion(packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 		}
 
-		// 4J: Check our deferred entity link packets 
+		// 4J: Check our deferred entity link packets
 		checkDeferredEntityLinkPackets(e->entityId);
 	}
 }
 
 void ClientConnection::handleAddExperienceOrb(shared_ptr<AddExperienceOrbPacket> packet)
 {
-	shared_ptr<Entity> e = shared_ptr<ExperienceOrb>( new ExperienceOrb(level, packet->x / 32.0, packet->y / 32.0, packet->z / 32.0, packet->value) );
+	shared_ptr<Entity> e = std::make_shared<ExperienceOrb>(level, packet->x / 32.0, packet->y / 32.0, packet->z / 32.0, packet->value);
 	e->xp = packet->x;
 	e->yp = packet->y;
 	e->zp = packet->z;
@@ -707,12 +716,13 @@ void ClientConnection::handleAddExperienceOrb(shared_ptr<AddExperienceOrbPacket>
 
 void ClientConnection::handleAddGlobalEntity(shared_ptr<AddGlobalEntityPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	double x = packet->x / 32.0;
 	double y = packet->y / 32.0;
 	double z = packet->z / 32.0;
 	shared_ptr<Entity> e;// = nullptr;
-	if (packet->type == AddGlobalEntityPacket::LIGHTNING) e = shared_ptr<LightningBolt>( new LightningBolt(level, x, y, z) );
-	if (e != NULL)
+	if (packet->type == AddGlobalEntityPacket::LIGHTNING) e = std::make_shared<LightningBolt>(level, x, y, z);
+	if (e != nullptr)
 	{
 		e->xp = packet->x;
 		e->yp = packet->y;
@@ -726,21 +736,28 @@ void ClientConnection::handleAddGlobalEntity(shared_ptr<AddGlobalEntityPacket> p
 
 void ClientConnection::handleAddPainting(shared_ptr<AddPaintingPacket> packet)
 {
-	shared_ptr<Painting> painting = shared_ptr<Painting>( new Painting(level, packet->x, packet->y, packet->z, packet->dir, packet->motive) );
+	shared_ptr<Painting> painting = std::make_shared<Painting>(level, packet->x, packet->y, packet->z, packet->dir, packet->motive);
 	level->putEntity(packet->id, painting);
 }
 
 void ClientConnection::handleSetEntityMotion(shared_ptr<SetEntityMotionPacket> packet)
 {
+	if (!isPrimaryConnection())
+	{
+		// Secondary connection: only accept motion for our own local player (knockback)
+		if (minecraft->localplayers[m_userIndex] == NULL ||
+			packet->id != minecraft->localplayers[m_userIndex]->entityId)
+			return;
+	}
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	e->lerpMotion(packet->xa / 8000.0, packet->ya / 8000.0, packet->za / 8000.0);
 }
 
 void ClientConnection::handleSetEntityData(shared_ptr<SetEntityDataPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e != NULL && packet->getUnpackedData() != NULL)
+	if (e != nullptr && packet->getUnpackedData() != nullptr)
 	{
 		e->getEntityData()->assignValues(packet->getUnpackedData());
 	}
@@ -762,6 +779,18 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
+#ifdef _WINDOWS64
+	// Win64 keeps local-player identity separate from network smallId; also guard against creating
+	// a duplicate remote player for a local slot by checking the username directly.
+	for (unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
+	{
+		if (minecraft->localplayers[idx] != nullptr && minecraft->localplayers[idx]->name == packet->name)
+		{
+			app.DebugPrintf("AddPlayerPacket received for local player name %ls\n", packet->name.c_str());
+			return;
+		}
+	}
+#endif
 /*#ifdef _WINDOWS64
 	// On Windows64 all XUIDs are INVALID_XUID so the XUID check above never fires.
 	// packet->m_playerIndex is the server-assigned sequential index (set via LoginPacket),
@@ -769,7 +798,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	// their stored server index rather than using it directly as an array subscript.
 	for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		if(minecraft->localplayers[idx] != NULL &&
+		if(minecraft->localplayers[idx] != nullptr &&
 		   minecraft->localplayers[idx]->getPlayerIndex() == packet->m_playerIndex)
 		{
 			app.DebugPrintf("AddPlayerPacket received for local player (controller %d, server index %d), skipping RemotePlayer creation\n", idx, packet->m_playerIndex);
@@ -783,7 +812,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	double z = packet->z / 32.0;
 	float yRot = packet->yRot * 360 / 256.0f;
 	float xRot = packet->xRot * 360 / 256.0f;
-	shared_ptr<RemotePlayer> player = shared_ptr<RemotePlayer>( new RemotePlayer(minecraft->level, packet->name) );
+	shared_ptr<RemotePlayer> player = std::make_shared<RemotePlayer>(minecraft->level, packet->name);
 	player->xo = player->xOld = player->xp = packet->x;
 	player->yo = player->yOld = player->yp = packet->y;
 	player->zo = player->zOld = player->zp = packet->z;
@@ -795,7 +824,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 #ifdef _DURANGO
 	// On Durango request player display name from network manager
 	INetworkPlayer *networkPlayer = g_NetworkManager.GetPlayerByXuid(player->getXuid());
-	if (networkPlayer != NULL) player->m_displayName = networkPlayer->GetDisplayName();
+	if (networkPlayer != nullptr) player->m_displayName = networkPlayer->GetDisplayName();
 #else
 	// On all other platforms display name is just gamertag so don't check with the network manager
 	player->m_displayName = player->getName();
@@ -803,20 +832,47 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 
 #ifdef _WINDOWS64
 	{
+		IQNetPlayer* matchedQNetPlayer = NULL;
 		PlayerUID pktXuid = player->getXuid();
 		const PlayerUID WIN64_XUID_BASE = (PlayerUID)0xe000d45248242f2e;
 		if (pktXuid >= WIN64_XUID_BASE && pktXuid < WIN64_XUID_BASE + MINECRAFT_NET_MAX_PLAYERS)
 		{
 			BYTE smallId = (BYTE)(pktXuid - WIN64_XUID_BASE);
 			INetworkPlayer* np = g_NetworkManager.GetPlayerBySmallId(smallId);
-			if (np != NULL)
+			if (np != nullptr)
 			{
 				NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
+				matchedQNetPlayer = npx->GetQNetPlayer();
+			}
+		}
+
+		// Current Win64 path: identify QNet player by name and attach packet XUID.
+		if (matchedQNetPlayer == NULL)
+		{
+			for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
+			{
+				BYTE smallId = static_cast<BYTE>(i);
+				INetworkPlayer* np = g_NetworkManager.GetPlayerBySmallId(smallId);
+				if (np == NULL)
+					continue;
+
+				NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
 				IQNetPlayer* qp = npx->GetQNetPlayer();
-				if (qp != NULL && qp->m_gamertag[0] == 0)
+				if (qp != NULL && _wcsicmp(qp->m_gamertag, packet->name.c_str()) == 0)
 				{
 					wcsncpy_s(qp->m_gamertag, 32, packet->name.c_str(), _TRUNCATE);
 				}
+			}
+		}
+
+		if (matchedQNetPlayer != NULL)
+		{
+			// Store packet-authoritative XUID on this network slot so later lookups by XUID
+			// (e.g. remove player, display mapping) work for both legacy and uid.dat clients.
+			matchedQNetPlayer->m_resolvedXuid = pktXuid;
+			if (matchedQNetPlayer->m_gamertag[0] == 0)
+			{
+				wcsncpy_s(matchedQNetPlayer->m_gamertag, 32, packet->name.c_str(), _TRUNCATE);
 			}
 		}
 	}
@@ -827,11 +883,11 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	int item = packet->carriedItem;
 	if (item == 0)
 	{
-		player->inventory->items[player->inventory->selected] = shared_ptr<ItemInstance>(); // NULL;
+		player->inventory->items[player->inventory->selected] = shared_ptr<ItemInstance>(); // nullptr;
 	}
 	else
 	{
-		player->inventory->items[player->inventory->selected] = shared_ptr<ItemInstance>( new ItemInstance(item, 1, 0) );
+		player->inventory->items[player->inventory->selected] = std::make_shared<ItemInstance>(item, 1, 0);
 	}
 	player->absMoveTo(x, y, z, yRot, xRot);
 
@@ -839,36 +895,43 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	player->setCustomSkin( packet->m_skinId );
 	player->setCustomCape( packet->m_capeId );
 	player->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_All, packet->m_uiGamePrivileges);
-	
-	if(!player->customTextureUrl.empty() && player->customTextureUrl.substr(0,3).compare(L"def") != 0 && !app.IsFileInMemoryTextures(player->customTextureUrl))
-	{
-		if( minecraft->addPendingClientTextureRequest(player->customTextureUrl) )
-		{
-			app.DebugPrintf("Client sending TextureAndGeometryPacket to get custom skin %ls for player %ls\n",player->customTextureUrl.c_str(), player->name.c_str());
 
-			send(shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(player->customTextureUrl,NULL,0) ) );
-		}
-	}
+    if (!player->customTextureUrl.empty() && player->customTextureUrl.substr(0, 3).compare(L"def") != 0 && !app.IsFileInMemoryTextures(player->customTextureUrl))
+    {
+        if (minecraft->addPendingClientTextureRequest(player->customTextureUrl))
+        {
+            app.DebugPrintf("Client sending TextureAndGeometryPacket to get custom skin %ls for player %ls\n", player->customTextureUrl.c_str(), player->name.c_str());
+
+            send(std::make_shared<TextureAndGeometryPacket>(
+                player->customTextureUrl,
+                nullptr,
+                static_cast<DWORD>(0)));
+        }
+    }
 	else if(!player->customTextureUrl.empty() && app.IsFileInMemoryTextures(player->customTextureUrl))
 	{
 		// Update the ref count on the memory texture data
-		app.AddMemoryTextureFile(player->customTextureUrl,NULL,0);
+		app.AddMemoryTextureFile(player->customTextureUrl,nullptr,0);
 	}
 
 	app.DebugPrintf("Custom skin for player %ls is %ls\n",player->name.c_str(),player->customTextureUrl.c_str());
-	
+
 	if(!player->customTextureUrl2.empty() && player->customTextureUrl2.substr(0,3).compare(L"def") != 0 && !app.IsFileInMemoryTextures(player->customTextureUrl2))
 	{
 		if( minecraft->addPendingClientTextureRequest(player->customTextureUrl2) )
 		{
 			app.DebugPrintf("Client sending texture packet to get custom cape %ls for player %ls\n",player->customTextureUrl2.c_str(), player->name.c_str());
-			send(shared_ptr<TexturePacket>( new TexturePacket(player->customTextureUrl2,NULL,0) ) );
+            send(std::make_shared<TexturePacket>(
+                player->customTextureUrl2,
+                nullptr, 
+                static_cast<DWORD>(0) 
+                ));
 		}
 	}
 	else if(!player->customTextureUrl2.empty() && app.IsFileInMemoryTextures(player->customTextureUrl2))
 	{
 		// Update the ref count on the memory texture data
-		app.AddMemoryTextureFile(player->customTextureUrl2,NULL,0);
+		app.AddMemoryTextureFile(player->customTextureUrl2,nullptr,0);
 	}
 
 	app.DebugPrintf("Custom cape for player %ls is %ls\n",player->name.c_str(),player->customTextureUrl2.c_str());
@@ -876,7 +939,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	level->putEntity(packet->id, player);
 
 	vector<shared_ptr<SynchedEntityData::DataItem> > *unpackedData = packet->getUnpackedData();
-	if (unpackedData != NULL)
+	if (unpackedData != nullptr)
 	{
 		player->getEntityData()->assignValues(unpackedData);
 	}
@@ -886,7 +949,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 void ClientConnection::handleTeleportEntity(shared_ptr<TeleportEntityPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	e->xp = packet->x;
 	e->yp = packet->y;
 	e->zp = packet->z;
@@ -914,8 +977,9 @@ void ClientConnection::handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> pac
 
 void ClientConnection::handleMoveEntity(shared_ptr<MoveEntityPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	e->xp += packet->xa;
 	e->yp += packet->ya;
 	e->zp += packet->za;
@@ -936,15 +1000,16 @@ void ClientConnection::handleMoveEntity(shared_ptr<MoveEntityPacket> packet)
 void ClientConnection::handleRotateMob(shared_ptr<RotateHeadPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	float yHeadRot = packet->yHeadRot * 360 / 256.f;
 	e->setYHeadRot(yHeadRot);
 }
 
 void ClientConnection::handleMoveEntitySmall(shared_ptr<MoveEntityPacketSmall> packet)
 {
+	if (!isPrimaryConnection()) return;
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	e->xp += packet->xa;
 	e->yp += packet->ya;
 	e->zp += packet->za;
@@ -970,24 +1035,26 @@ void ClientConnection::handleRemoveEntity(shared_ptr<RemoveEntitiesPacket> packe
 		for (int i = 0; i < packet->ids.length; i++)
 		{
 			shared_ptr<Entity> entity = getEntity(packet->ids[i]);
-			if (entity != NULL && entity->GetType() == eTYPE_PLAYER)
+			if (entity != nullptr && entity->GetType() == eTYPE_PLAYER)
 			{
 				shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
-				if (player != NULL)
+				if (player != nullptr)
 				{
 					PlayerUID xuid = player->getXuid();
 					INetworkPlayer* np = g_NetworkManager.GetPlayerByXuid(xuid);
-					if (np != NULL)
+					if (np != nullptr)
 					{
 						NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
 						IQNetPlayer* qp = npx->GetQNetPlayer();
-						if (qp != NULL)
+						if (qp != nullptr)
 						{
 							extern CPlatformNetworkManagerStub* g_pPlatformNetworkManager;
 							g_pPlatformNetworkManager->NotifyPlayerLeaving(qp);
 							qp->m_smallId = 0;
 							qp->m_isRemote = false;
 							qp->m_isHostPlayer = false;
+							// Clear resolved id to avoid stale XUID -> player matches after disconnect.
+							qp->m_resolvedXuid = INVALID_XUID;
 							qp->m_gamertag[0] = 0;
 							qp->SetCustomDataValue(0);
 						}
@@ -1034,7 +1101,7 @@ void ClientConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 	packet->yView = player->y;
 	connection->send(packet);
 	if (!started)
-	{		
+	{
 
 		if(!g_NetworkManager.IsHost() )
 		{
@@ -1049,8 +1116,8 @@ void ClientConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 		player->zOld = player->z;
 
 		started = true;
-		minecraft->setScreen(NULL);
-		
+		minecraft->setScreen(nullptr);
+
 		// Fix for #105852 - TU12: Content: Gameplay: Local splitscreen Players are spawned at incorrect places after re-joining previously saved and loaded "Mass Effect World".
 		// Move this check from Minecraft::createExtraLocalPlayer
 		// 4J-PB - can't call this when this function is called from the qnet thread (GetGameStarted will be false)
@@ -1065,6 +1132,7 @@ void ClientConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 // 4J Added
 void ClientConnection::handleChunkVisibilityArea(shared_ptr<ChunkVisibilityAreaPacket> packet)
 {
+	if (level == NULL) return;
 	for(int z = packet->m_minZ; z <= packet->m_maxZ; ++z)
 		for(int x = packet->m_minX; x <= packet->m_maxX; ++x)
 			level->setChunkVisible(x, z, true);
@@ -1072,11 +1140,13 @@ void ClientConnection::handleChunkVisibilityArea(shared_ptr<ChunkVisibilityAreaP
 
 void ClientConnection::handleChunkVisibility(shared_ptr<ChunkVisibilityPacket> packet)
 {
+	if (level == NULL) return;
 	level->setChunkVisible(packet->x, packet->z, packet->visible);
 }
 
 void ClientConnection::handleChunkTilesUpdate(shared_ptr<ChunkTilesUpdatePacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	// 4J - changed to encode level in packet
 	MultiPlayerLevel *dimensionLevel = (MultiPlayerLevel *)minecraft->levels[packet->levelIdx];
 	if( dimensionLevel )
@@ -1124,7 +1194,7 @@ void ClientConnection::handleChunkTilesUpdate(shared_ptr<ChunkTilesUpdatePacket>
 			// Don't bother setting this to dirty if it isn't going to visually change - we get a lot of
 			// water changing from static to dynamic for instance
 			if(!( ( ( prevTile == Tile::water_Id )		&& ( tile == Tile::calmWater_Id ) ) ||
-				  ( ( prevTile == Tile::calmWater_Id )  && ( tile == Tile::water_Id ) )		|| 
+				  ( ( prevTile == Tile::calmWater_Id )  && ( tile == Tile::water_Id ) )		||
 				  ( ( prevTile == Tile::lava_Id )		&& ( tile == Tile::calmLava_Id ) )	||
 				  ( ( prevTile == Tile::calmLava_Id )	&& ( tile == Tile::calmLava_Id ) ) ||
 				  ( ( prevTile == Tile::calmLava_Id )	&& ( tile == Tile::lava_Id ) ) ) )
@@ -1146,16 +1216,29 @@ void ClientConnection::handleChunkTilesUpdate(shared_ptr<ChunkTilesUpdatePacket>
 
 void ClientConnection::handleBlockRegionUpdate(shared_ptr<BlockRegionUpdatePacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	// 4J - changed to encode level in packet
 	MultiPlayerLevel *dimensionLevel = (MultiPlayerLevel *)minecraft->levels[packet->levelIdx];
 	if( dimensionLevel )
 	{
 		PIXBeginNamedEvent(0,"Handle block region update");
 
+		if(packet->bIsFullChunk && packet->ys == 0)
+		{
+			app.DebugPrintf("[BRUP-CLIENT] *** EMPTY FULL CHUNK received at (%d,%d)! Buffer length=%d\n",
+				packet->x>>4, packet->z>>4, packet->buffer.length);
+		}
+
 		int y1 = packet->y + packet->ys;
 		if(packet->bIsFullChunk)
 		{
 			y1 = Level::maxBuildHeight;
+
+			// Ensure the chunk exists in the cache before writing data.
+			// The ChunkVisibilityAreaPacket that creates chunks can arrive AFTER the first BRUP,
+			// causing getChunk() to return EmptyLevelChunk (whose setBlocksAndData is a no-op).
+			dimensionLevel->setChunkVisible(packet->x >> 4, packet->z >> 4, true);
+
 			if(packet->buffer.length > 0)
 			{
 				PIXBeginNamedEvent(0, "Reordering to XZY");
@@ -1194,6 +1277,7 @@ void ClientConnection::handleBlockRegionUpdate(shared_ptr<BlockRegionUpdatePacke
 
 void ClientConnection::handleTileUpdate(shared_ptr<TileUpdatePacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	// 4J added - using a block of 255 to signify that this is a packet for destroying a tile, where we need to inform the level renderer that we are about to do so.
 	// This is used in creative mode as the point where a tile is first destroyed at the client end of things. Packets formed like this are potentially sent from
 	// ServerPlayerGameMode::destroyBlock
@@ -1253,13 +1337,13 @@ void ClientConnection::handleDisconnect(shared_ptr<DisconnectPacket> packet)
 {
 	connection->close(DisconnectPacket::eDisconnect_Kicked);
 	done = true;
-	
+
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	pMinecraft->connectionDisconnected( m_userIndex , packet->reason );
 	app.SetDisconnectReason( packet->reason );
 
 	app.SetAction(m_userIndex,eAppAction_ExitWorld,(void *)TRUE);
-	//minecraft->setLevel(NULL);
+	//minecraft->setLevel(nullptr);
    //minecraft->setScreen(new DisconnectedScreen(L"disconnect.disconnected", L"disconnect.genericReason", &packet->reason));
 
 }
@@ -1282,14 +1366,14 @@ void ClientConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, 
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		ui.RequestErrorMessage(IDS_EXITING_GAME, IDS_GENERIC_ERROR, uiIDA, 1, ProfileManager.GetPrimaryPad(),&ClientConnection::HostDisconnectReturned,NULL);
+		ui.RequestErrorMessage(IDS_EXITING_GAME, IDS_GENERIC_ERROR, uiIDA, 1, ProfileManager.GetPrimaryPad(),&ClientConnection::HostDisconnectReturned,nullptr);
 	}
 	else
 	{
 		app.SetAction(m_userIndex,eAppAction_ExitWorld,(void *)TRUE);
 	}
 
-	//minecraft->setLevel(NULL);
+	//minecraft->setLevel(nullptr);
 	//minecraft->setScreen(new DisconnectedScreen(L"disconnect.lost", reason, reasonObjects));
 }
 
@@ -1308,6 +1392,7 @@ void ClientConnection::send(shared_ptr<Packet> packet)
 
 void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	shared_ptr<Entity> from = getEntity(packet->itemId);
 	shared_ptr<LivingEntity> to = dynamic_pointer_cast<LivingEntity>(getEntity(packet->playerId));
 
@@ -1327,7 +1412,7 @@ void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> pac
 		}
 	}
 
-	if (to == NULL)
+	if (to == nullptr)
 	{
 		// Don't know if this should ever really happen, but seems safest to try and remove the entity that has been collected even if we can't
 		// create a particle as we don't know what really collected it
@@ -1335,9 +1420,9 @@ void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> pac
 		return;
 	}
 
-	if (from != NULL)
+	if (from != nullptr)
 	{
-		// If this is a local player, then we only want to do processing for it if this connection is associated with the player it is for. In 
+		// If this is a local player, then we only want to do processing for it if this connection is associated with the player it is for. In
 		// particular, we don't want to remove the item entity until we are processing it for the right connection, or else we won't have a valid
 		// "from" reference if we've already removed the item for an earlier processed connection
 		if( isLocalPlayer )
@@ -1349,7 +1434,7 @@ void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> pac
 			// the tutorial for the player that actually picked up the item
 			int playerPad = player->GetXboxPad();
 
-			if( minecraft->localgameModes[playerPad] != NULL )
+			if( minecraft->localgameModes[playerPad] != nullptr )
 			{
 				// 4J-PB - add in the XP orb sound
 				if(from->GetType() == eTYPE_EXPERIENCEORB)
@@ -1363,7 +1448,7 @@ void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> pac
 					level->playSound(from, eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);
 				}
 
-				minecraft->particleEngine->add( shared_ptr<TakeAnimationParticle>( new TakeAnimationParticle(minecraft->level, from, to, -0.5f) ) );
+				minecraft->particleEngine->add(std::make_shared<TakeAnimationParticle>(minecraft->level, from, to, -0.5f));
 				level->removeEntity(packet->itemId);
 			}
 			else
@@ -1376,7 +1461,7 @@ void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> pac
 		else
 		{
 			level->playSound(from, eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);
-			minecraft->particleEngine->add( shared_ptr<TakeAnimationParticle>( new TakeAnimationParticle(minecraft->level, from, to, -0.5f) ) );
+			minecraft->particleEngine->add(std::make_shared<TakeAnimationParticle>(minecraft->level, from, to, -0.5f));
 			level->removeEntity(packet->itemId);
 		}
 	}
@@ -1402,6 +1487,9 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 	switch(packet->m_messageType)
 	{
+	case ChatPacket::e_ChatCustom:
+		message = (packet->m_stringArgs.size() >= 1) ? packet->m_stringArgs[0] : L"";
+		break;
 	case ChatPacket::e_ChatBedOccupied:
 		message = app.GetString(IDS_TILE_BED_OCCUPIED);
 		break;
@@ -1422,7 +1510,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 	case ChatPacket::e_ChatBedMeSleep:
 		message=app.GetString(IDS_TILE_BED_MESLEEP);
 		break;
-	case ChatPacket::e_ChatPlayerJoinedGame:		
+	case ChatPacket::e_ChatPlayerJoinedGame:
 		message=app.GetString(IDS_PLAYER_JOINED);
 		iPos=message.find(L"%s");
 		message.replace(iPos,2,playerDisplayName);
@@ -1537,7 +1625,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 		replaceEntitySource = true;
 		break;
 
-	
+
 	case ChatPacket::e_ChatDeathFellAccidentLadder:
 		message=app.GetString(IDS_DEATH_FELL_ACCIDENT_LADDER);
 		replacePlayer = true;
@@ -1702,7 +1790,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 		message=app.GetString(IDS_MAX_WOLVES_BRED);
 		break;
 
-		// can't shear the mooshroom	
+		// can't shear the mooshroom
 	case ChatPacket::e_ChatPlayerCantShearMooshroom:
 		message=app.GetString(IDS_CANT_SHEAR_MOOSHROOM);
 		break;
@@ -1710,16 +1798,16 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 		// Paintings/Item Frames
 	case ChatPacket::e_ChatPlayerMaxHangingEntities:
 		message=app.GetString(IDS_MAX_HANGINGENTITIES);
-		break;	
+		break;
 		// Enemy spawn eggs in peaceful
 	case ChatPacket::e_ChatPlayerCantSpawnInPeaceful:
 		message=app.GetString(IDS_CANT_SPAWN_IN_PEACEFUL);
-		break;	
+		break;
 
 		// Enemy spawn eggs in peaceful
 	case ChatPacket::e_ChatPlayerMaxBoats:
 		message=app.GetString(IDS_MAX_BOATS);
-		break;	
+		break;
 
 	case ChatPacket::e_ChatCommandTeleportSuccess:
 		message=app.GetString(IDS_COMMAND_TELEPORT_SUCCESS);
@@ -1791,7 +1879,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 void ClientConnection::handleAnimate(shared_ptr<AnimatePacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	if (packet->action == AnimatePacket::SWING)
 	{
 		if (e->instanceof(eTYPE_LIVINGENTITY)) dynamic_pointer_cast<LivingEntity>(e)->swing();
@@ -1809,13 +1897,13 @@ void ClientConnection::handleAnimate(shared_ptr<AnimatePacket> packet)
 	}
 	else if (packet->action == AnimatePacket::CRITICAL_HIT)
 	{
-		shared_ptr<CritParticle> critParticle = shared_ptr<CritParticle>( new CritParticle(minecraft->level, e) );
+		shared_ptr<CritParticle> critParticle = std::make_shared<CritParticle>(minecraft->level, e);
 		critParticle->CritParticlePostConstructor();
 		minecraft->particleEngine->add( critParticle );
 	}
 	else if (packet->action == AnimatePacket::MAGIC_CRITICAL_HIT)
 	{
-		shared_ptr<CritParticle> critParticle = shared_ptr<CritParticle>( new CritParticle(minecraft->level, e, eParticleType_magicCrit) );
+		shared_ptr<CritParticle> critParticle = std::make_shared<CritParticle>(minecraft->level, e, eParticleType_magicCrit);
 		critParticle->CritParticlePostConstructor();
 		minecraft->particleEngine->add(critParticle);
 	}
@@ -1828,7 +1916,7 @@ void ClientConnection::handleAnimate(shared_ptr<AnimatePacket> packet)
 void ClientConnection::handleEntityActionAtPosition(shared_ptr<EntityActionAtPositionPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	if (packet->action == EntityActionAtPositionPacket::START_SLEEP)
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(e);
@@ -1851,7 +1939,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 	BOOL isAtLeastOneFriend = g_NetworkManager.IsHost();
 	BOOL isFriendsWithHost = TRUE;
 	BOOL cantPlayContentRestricted = FALSE;
-	
+
 	if(!g_NetworkManager.IsHost())
 	{
 		// set the game host settings
@@ -1885,10 +1973,10 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 					}
 					if( playerXuid != INVALID_XUID )
 					{
-						// Is this user friends with the host player?			
+						// Is this user friends with the host player?
 						BOOL result;
 						DWORD error;
-						error = XUserAreUsersFriends(idx,&packet->m_playerXuids[packet->m_hostIndex],1,&result,NULL);
+						error = XUserAreUsersFriends(idx,&packet->m_playerXuids[packet->m_hostIndex],1,&result,nullptr);
 						if(error == ERROR_SUCCESS && result != TRUE)
 						{
 							canPlay = FALSE;
@@ -1915,10 +2003,10 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 				}
 				if( playerXuid != INVALID_XUID )
 				{
-					// Is this user friends with the host player?			
+					// Is this user friends with the host player?
 					BOOL result;
 					DWORD error;
-					error = XUserAreUsersFriends(m_userIndex,&packet->m_playerXuids[packet->m_hostIndex],1,&result,NULL);
+					error = XUserAreUsersFriends(m_userIndex,&packet->m_playerXuids[packet->m_hostIndex],1,&result,nullptr);
 					if(error == ERROR_SUCCESS && result != TRUE)
 					{
 						canPlay = FALSE;
@@ -1970,7 +2058,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 						{
 							if( ProfileManager.IsSignedIn(idx) && !ProfileManager.IsGuest(idx) )
 							{
-								error = XUserAreUsersFriends(idx,&packet->m_playerXuids[i],1,&result,NULL);
+								error = XUserAreUsersFriends(idx,&packet->m_playerXuids[i],1,&result,nullptr);
 								if(error == ERROR_SUCCESS && result == TRUE) isAtLeastOneFriend = TRUE;
 							}
 						}
@@ -1998,7 +2086,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 					{
 						if( (!thisQuadrantOnly || m_userIndex == idx) && ProfileManager.IsSignedIn(idx) && !ProfileManager.IsGuest(idx) )
 						{
-							error = XUserAreUsersFriends(idx,&packet->m_playerXuids[i],1,&result,NULL);
+							error = XUserAreUsersFriends(idx,&packet->m_playerXuids[i],1,&result,nullptr);
 							if(error == ERROR_SUCCESS) canPlay &= result;
 						}
 						if(!canPlay) break;
@@ -2021,7 +2109,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 	{
 		bool bChatRestricted=false;
 
-		ProfileManager.GetChatAndContentRestrictions(m_userIndex,true,&bChatRestricted,NULL,NULL);
+		ProfileManager.GetChatAndContentRestrictions(m_userIndex,true,&bChatRestricted,nullptr,nullptr);
 
 		// Chat restricted orbis players can still play online
 #ifndef __ORBIS__
@@ -2030,7 +2118,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 
 		if(m_userIndex == ProfileManager.GetPrimaryPad() )
 		{
-			// Is this user friends with the host player?			
+			// Is this user friends with the host player?
 			bool isFriend = true;
 			unsigned int friendCount = 0;
 #ifdef __PS3__
@@ -2060,7 +2148,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 			requestParam.offset = 0;
 			requestParam.userInfo.userId = ProfileManager.getUserID(ProfileManager.GetPrimaryPad());
 
-			int ret = sce::Toolkit::NP::Friends::Interface::getFriendslist(&friendList, &requestParam, false);	  
+			int ret = sce::Toolkit::NP::Friends::Interface::getFriendslist(&friendList, &requestParam, false);
 			if( ret == 0 )
 			{
 				if( friendList.hasResult() )
@@ -2070,7 +2158,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 			}
 #endif
 			if( ret == 0 )
-			{			
+			{
 				isFriend = false;
 				SceNpId npid;
 				for( unsigned int i = 0; i < friendCount; i++ )
@@ -2110,11 +2198,11 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 		// which seems to be very unstable at the point of starting up the game
 		if(m_userIndex == ProfileManager.GetPrimaryPad())
 		{
-			ProfileManager.GetChatAndContentRestrictions(m_userIndex,false,&bChatRestricted,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(m_userIndex,false,&bChatRestricted,&bContentRestricted,nullptr);
 		}
 		else
 		{
-			ProfileManager.GetChatAndContentRestrictions(m_userIndex,true,&bChatRestricted,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(m_userIndex,true,&bChatRestricted,&bContentRestricted,nullptr);
 		}
 
 		// Chat restricted orbis players can still play online
@@ -2153,7 +2241,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 						isAtLeastOneFriend = true;
 						break;
 					}
-				}				
+				}
 			}
 
 			app.DebugPrintf("ClientConnection::handlePreLogin: User has at least one friend? %s\n", isAtLeastOneFriend ? "Yes" : "No");
@@ -2195,8 +2283,8 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 		DisconnectPacket::eDisconnectReason reason = DisconnectPacket::eDisconnect_NoUGC_Remote;
 #else
 		DisconnectPacket::eDisconnectReason reason = DisconnectPacket::eDisconnect_None;
-#endif		
-		if(m_userIndex == ProfileManager.GetPrimaryPad())			
+#endif
+		if(m_userIndex == ProfileManager.GetPrimaryPad())
 		{
 			if(!isFriendsWithHost) reason = DisconnectPacket::eDisconnect_NotFriendsWithHost;
 			else if(!isAtLeastOneFriend) reason = DisconnectPacket::eDisconnect_NoFriendsInGame;
@@ -2208,7 +2296,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 			app.SetAction(ProfileManager.GetPrimaryPad(),eAppAction_ExitWorld,(void *)TRUE);
 		}
 		else
-		{						
+		{
 			if(!isFriendsWithHost) reason = DisconnectPacket::eDisconnect_NotFriendsWithHost;
 			else if(!canPlayLocal) reason = DisconnectPacket::eDisconnect_NoUGC_Single_Local;
 			else if(cantPlayContentRestricted) reason = DisconnectPacket::eDisconnect_ContentRestricted_Single_Local;
@@ -2221,7 +2309,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 
 			app.SetDisconnectReason( reason );
 
-			// 4J-PB - this locks up on the read and write threads not closing down, because they are trying to lock the incoming critsec when it's already locked by this thread			
+			// 4J-PB - this locks up on the read and write threads not closing down, because they are trying to lock the incoming critsec when it's already locked by this thread
 // 			Minecraft::GetInstance()->connectionDisconnected( m_userIndex , reason );
 // 			done = true;
 // 			connection->flush();
@@ -2278,7 +2366,7 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 #endif
 
 		// On PS3, all non-signed in players (even guests) can get a useful offlineXUID
-#if !(defined __PS3__ || defined _DURANGO ) 
+#if !(defined __PS3__ || defined _DURANGO )
 		if( !ProfileManager.IsGuest( m_userIndex ) )
 #endif
 		{
@@ -2287,8 +2375,8 @@ void ClientConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 		}
 		BOOL allAllowed, friendsAllowed;
 		ProfileManager.AllowedPlayerCreatedContent(m_userIndex,true,&allAllowed,&friendsAllowed);
-		send( shared_ptr<LoginPacket>( new LoginPacket(minecraft->user->name, SharedConstants::NETWORK_PROTOCOL_VERSION, offlineXUID, onlineXUID, (allAllowed!=TRUE && friendsAllowed==TRUE), 
-			packet->m_ugcPlayersVersion, app.GetPlayerSkinId(m_userIndex), app.GetPlayerCapeId(m_userIndex), ProfileManager.IsGuest( m_userIndex ))));
+		send(std::make_shared<LoginPacket>(minecraft->user->name, SharedConstants::NETWORK_PROTOCOL_VERSION, offlineXUID, onlineXUID, (allAllowed != TRUE && friendsAllowed == TRUE),
+                                           packet->m_ugcPlayersVersion, app.GetPlayerSkinId(m_userIndex), app.GetPlayerCapeId(m_userIndex), ProfileManager.IsGuest(m_userIndex)));
 
 		if(!g_NetworkManager.IsHost() )
 		{
@@ -2345,14 +2433,12 @@ void ClientConnection::handleAddMob(shared_ptr<AddMobPacket> packet)
 	mob->xRotp = packet->xRot;
 
 	vector<shared_ptr<Entity> > *subEntities = mob->getSubEntities();
-	if (subEntities != NULL)
+	if (subEntities)
 	{
 		int offs = packet->id - mob->entityId;
-		//for (int i = 0; i < subEntities.length; i++)
-		for(AUTO_VAR(it, subEntities->begin()); it != subEntities->end(); ++it)
-		{
-			//subEntities[i].entityId += offs;
-			(*it)->entityId += offs;
+        for (auto& it : *subEntities )
+        {
+			it->entityId += offs;
 		}
 	}
 
@@ -2367,7 +2453,7 @@ void ClientConnection::handleAddMob(shared_ptr<AddMobPacket> packet)
 	level->putEntity(packet->id, mob);
 
 	vector<shared_ptr<SynchedEntityData::DataItem> > *unpackedData = packet->getUnpackedData();
-	if (unpackedData != NULL)
+	if (unpackedData != nullptr)
 	{
 		mob->getEntityData()->assignValues(unpackedData);
 	}
@@ -2402,10 +2488,10 @@ void ClientConnection::handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> pa
 
 	// 4J: If the destination entity couldn't be found, defer handling of this packet
 	// This was added to support leashing (the entity link packet is sent before the add entity packet)
-	if (destEntity == NULL && packet->destId >= 0)
+	if (destEntity == nullptr && packet->destId >= 0)
 	{
 		// We don't handle missing source entities because it shouldn't happen
-		assert(!(sourceEntity == NULL && packet->sourceId >= 0));
+		assert(!(sourceEntity == nullptr && packet->sourceId >= 0));
 
 		deferredEntityLinkPackets.push_back(DeferredEntityLinkPacket(packet));
 		return;
@@ -2418,16 +2504,16 @@ void ClientConnection::handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> pa
 		{
 			sourceEntity = Minecraft::GetInstance()->localplayers[m_userIndex];
 
-			if (destEntity != NULL && destEntity->instanceof(eTYPE_BOAT)) (dynamic_pointer_cast<Boat>(destEntity))->setDoLerp(false);
+			if (destEntity != nullptr && destEntity->instanceof(eTYPE_BOAT)) (dynamic_pointer_cast<Boat>(destEntity))->setDoLerp(false);
 
-			displayMountMessage = (sourceEntity->riding == NULL && destEntity != NULL);
+			displayMountMessage = (sourceEntity->riding == nullptr && destEntity != nullptr);
 		}
-		else if (destEntity != NULL && destEntity->instanceof(eTYPE_BOAT))
+		else if (destEntity != nullptr && destEntity->instanceof(eTYPE_BOAT))
 		{
 			(dynamic_pointer_cast<Boat>(destEntity))->setDoLerp(true);
 		}
 
-		if (sourceEntity == NULL) return;
+		if (sourceEntity == nullptr) return;
 
 		sourceEntity->ride(destEntity);
 
@@ -2438,12 +2524,12 @@ void ClientConnection::handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> pa
 			minecraft.gui.setOverlayMessage(I18n.get("mount.onboard", Options.getTranslatedKeyMessage(options.keySneak.key)), false);
 		}
 		*/
-	} 
+	}
 	else if (packet->type == SetEntityLinkPacket::LEASH)
 	{
-		if ( (sourceEntity != NULL) && sourceEntity->instanceof(eTYPE_MOB) )
+		if ( (sourceEntity != nullptr) && sourceEntity->instanceof(eTYPE_MOB) )
 		{
-			if (destEntity != NULL)
+			if (destEntity != nullptr)
 			{
 
 				(dynamic_pointer_cast<Mob>(sourceEntity))->setLeashedTo(destEntity, false);
@@ -2459,7 +2545,7 @@ void ClientConnection::handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> pa
 void ClientConnection::handleEntityEvent(shared_ptr<EntityEventPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->entityId);
-	if (e != NULL) e->handleEntityEvent(packet->eventId);
+	if (e != nullptr) e->handleEntityEvent(packet->eventId);
 }
 
 shared_ptr<Entity> ClientConnection::getEntity(int entityId)
@@ -2483,7 +2569,7 @@ void ClientConnection::handleSetHealth(shared_ptr<SetHealthPacket> packet)
 	// We need food
 	if(packet->food < FoodConstants::HEAL_LEVEL - 1)
 	{
-		if(minecraft->localgameModes[m_userIndex] != NULL && !minecraft->localgameModes[m_userIndex]->hasInfiniteItems() )
+		if(minecraft->localgameModes[m_userIndex] != nullptr && !minecraft->localgameModes[m_userIndex]->hasInfiniteItems() )
 		{
 			minecraft->localgameModes[m_userIndex]->getTutorial()->changeTutorialState(e_Tutorial_State_Food_Bar);
 		}
@@ -2507,13 +2593,13 @@ void ClientConnection::handleTexture(shared_ptr<TexturePacket> packet)
 #ifndef _CONTENT_PACKAGE
 			wprintf(L"Client received request for custom texture %ls\n",packet->textureName.c_str());
 #endif
-		PBYTE pbData=NULL;
-		DWORD dwBytes=0;		
+		PBYTE pbData=nullptr;
+		DWORD dwBytes=0;
 		app.GetMemFileDetails(packet->textureName,&pbData,&dwBytes);
 
 		if(dwBytes!=0)
 		{
-			send( shared_ptr<TexturePacket>( new TexturePacket(packet->textureName,pbData,dwBytes) ) );
+			send(std::make_shared<TexturePacket>(packet->textureName, pbData, dwBytes));
 		}
 	}
 	else
@@ -2539,8 +2625,8 @@ void ClientConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 #ifndef _CONTENT_PACKAGE
 		wprintf(L"Client received request for custom texture and geometry %ls\n",packet->textureName.c_str());
 #endif
-		PBYTE pbData=NULL;
-		DWORD dwBytes=0;		
+		PBYTE pbData=nullptr;
+		DWORD dwBytes=0;
 		app.GetMemFileDetails(packet->textureName,&pbData,&dwBytes);
 		DLCSkinFile *pDLCSkinFile = app.m_dlcManager.getSkinFile(packet->textureName);
 
@@ -2550,18 +2636,18 @@ void ClientConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 			{
 				if(pDLCSkinFile->getAdditionalBoxesCount()!=0)
 				{
-					send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->textureName,pbData,dwBytes,pDLCSkinFile) ) );
+					send(std::make_shared<TextureAndGeometryPacket>(packet->textureName, pbData, dwBytes, pDLCSkinFile));
 				}
 				else
 				{
-					send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->textureName,pbData,dwBytes) ) );
+					send(std::make_shared<TextureAndGeometryPacket>(packet->textureName, pbData, dwBytes));
 				}
 			}
 			else
 			{
 				unsigned int uiAnimOverrideBitmask= app.GetAnimOverrideBitmask(packet->dwSkinID);
 
-				send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->textureName,pbData,dwBytes,app.GetAdditionalSkinBoxes(packet->dwSkinID),uiAnimOverrideBitmask) ) );
+				send(std::make_shared<TextureAndGeometryPacket>(packet->textureName, pbData, dwBytes, app.GetAdditionalSkinBoxes(packet->dwSkinID), uiAnimOverrideBitmask));
 			}
 		}
 	}
@@ -2574,9 +2660,9 @@ void ClientConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 		// Add the texture data
 		app.AddMemoryTextureFile(packet->textureName,packet->pbData,packet->dwTextureBytes);
 		// Add the geometry data
-		if(packet->dwBoxC!=0) 
+		if(packet->dwBoxC!=0)
 		{
-			app.SetAdditionalSkinBoxes(packet->dwSkinID,packet->BoxDataA,packet->dwBoxC);	
+			app.SetAdditionalSkinBoxes(packet->dwSkinID,packet->BoxDataA,packet->dwBoxC);
 		}
 		// Add the anim override
 		app.SetAnimOverrideBitmask(packet->dwSkinID,packet->uiAnimOverrideBitmask);
@@ -2589,7 +2675,7 @@ void ClientConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 void ClientConnection::handleTextureChange(shared_ptr<TextureChangePacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if ( (e == NULL) || !e->instanceof(eTYPE_PLAYER) ) return;
+	if ( (e == nullptr) || !e->instanceof(eTYPE_PLAYER) ) return;
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(e);
 
 	bool isLocalPlayer = false;
@@ -2622,7 +2708,7 @@ void ClientConnection::handleTextureChange(shared_ptr<TextureChangePacket> packe
 #endif
 		break;
 	}
-	
+
 	if(!packet->path.empty() && packet->path.substr(0,3).compare(L"def") != 0 && !app.IsFileInMemoryTextures(packet->path))
 	{
 		if( minecraft->addPendingClientTextureRequest(packet->path) )
@@ -2630,22 +2716,25 @@ void ClientConnection::handleTextureChange(shared_ptr<TextureChangePacket> packe
 #ifndef _CONTENT_PACKAGE
 			wprintf(L"handleTextureChange - Client sending texture packet to get custom skin %ls for player %ls\n",packet->path.c_str(), player->name.c_str());
 #endif
-			send(shared_ptr<TexturePacket>( new TexturePacket(packet->path,NULL,0) ) );
+            send(std::make_shared<TexturePacket>(
+                player->customTextureUrl,
+                nullptr,
+                static_cast<DWORD>(0)));
 		}
 	}
 	else if(!packet->path.empty() && app.IsFileInMemoryTextures(packet->path))
 	{
 		// Update the ref count on the memory texture data
-		app.AddMemoryTextureFile(packet->path,NULL,0);
+		app.AddMemoryTextureFile(packet->path,nullptr,0);
 	}
 }
 
 void ClientConnection::handleTextureAndGeometryChange(shared_ptr<TextureAndGeometryChangePacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->id);
-	if (e == NULL) return;
+	if (e == nullptr) return;
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(e);
-	if( e == NULL) return;
+	if( e == nullptr) return;
 
 	bool isLocalPlayer = false;
 	for( int i = 0; i < XUSER_MAX_COUNT; i++ )
@@ -2675,13 +2764,16 @@ void ClientConnection::handleTextureAndGeometryChange(shared_ptr<TextureAndGeome
 #ifndef _CONTENT_PACKAGE
 			wprintf(L"handleTextureAndGeometryChange - Client sending TextureAndGeometryPacket to get custom skin %ls for player %ls\n",packet->path.c_str(), player->name.c_str());
 #endif
-			send(shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(packet->path,NULL,0) ) );
+            send(std::make_shared<TextureAndGeometryPacket>(
+                packet->path,
+				nullptr,
+                static_cast<DWORD>(0)));
 		}
 	}
 	else if(!packet->path.empty() && app.IsFileInMemoryTextures(packet->path))
 	{
 		// Update the ref count on the memory texture data
-		app.AddMemoryTextureFile(packet->path,NULL,0);
+		app.AddMemoryTextureFile(packet->path,nullptr,0);
 
 	}
 }
@@ -2702,12 +2794,12 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		level->removeClientConnection(this, false);
 
 		MultiPlayerLevel *dimensionLevel = (MultiPlayerLevel *)minecraft->getLevel( packet->dimension );
-		if( dimensionLevel == NULL )
+		if( dimensionLevel == nullptr )
 		{
 			dimensionLevel = new MultiPlayerLevel(this, new LevelSettings(packet->mapSeed, packet->playerGameType, false, minecraft->level->getLevelData()->isHardcore(), packet->m_newSeaLevel, packet->m_pLevelType, packet->m_xzSize, packet->m_hellScale), packet->dimension, packet->difficulty);
 
 			// 4J Stu - We want to shared the savedDataStorage between both levels
-			//if( dimensionLevel->savedDataStorage != NULL )
+			//if( dimensionLevel->savedDataStorage != nullptr )
 			//{
 			// Don't need to delete it here as it belongs to a client connection while will delete it when it's done
 			//	delete dimensionLevel->savedDataStorage;+
@@ -2728,7 +2820,7 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		level->removeEntity( shared_ptr<Entity>(minecraft->localplayers[m_userIndex]) );
 
 		level = dimensionLevel;
-		
+
 		// Whilst calling setLevel, make sure that minecraft::player is set up to be correct for this
 		// connection
 		shared_ptr<MultiplayerLocalPlayer> lastPlayer = minecraft->player;
@@ -2737,7 +2829,7 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		minecraft->player = lastPlayer;
 
 		TelemetryManager->RecordLevelExit(m_userIndex, eSen_LevelExitStatus_Succeeded);
-		
+
 		//minecraft->player->dimension = packet->dimension;
 		minecraft->localplayers[m_userIndex]->dimension = packet->dimension;
 		//minecraft->setScreen(new ReceivingLevelScreen(this));
@@ -2747,7 +2839,7 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		TelemetryManager->RecordLevelStart(m_userIndex, eSen_FriendOrMatch_Playing_With_Invited_Friends, eSen_CompeteOrCoop_Coop_and_Competitive, Minecraft::GetInstance()->getLevel(packet->dimension)->difficulty, app.GetLocalPlayerCount(), g_NetworkManager.GetOnlinePlayerCount());
 #endif
 
-		if( minecraft->localgameModes[m_userIndex] != NULL )
+		if( minecraft->localgameModes[m_userIndex] != nullptr )
 		{
 			TutorialMode *gameMode = (TutorialMode *)minecraft->localgameModes[m_userIndex];
 			gameMode->getTutorial()->showTutorialPopup(false);
@@ -2788,12 +2880,12 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		{
 			ui.NavigateToScene(m_userIndex, eUIScene_ConnectingProgress, param);
 		}
-	
+
 		app.SetAction( m_userIndex, eAppAction_WaitForDimensionChangeComplete);
 	}
 
 	//minecraft->respawnPlayer(minecraft->player->GetXboxPad(),true, packet->dimension);
-	
+
 	// Wrap respawnPlayer call up in code to set & restore the player/gamemode etc. as some things
 	// in there assume that we are set up for the player that the respawn is coming in for
 	int oldIndex = minecraft->getLocalPlayerIdx();
@@ -2805,31 +2897,34 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 
 void ClientConnection::handleExplosion(shared_ptr<ExplodePacket> packet)
 {
-	if(!packet->m_bKnockbackOnly)
+	// World modification (block destruction) must only happen once
+	if (isPrimaryConnection())
 	{
-		//app.DebugPrintf("Received ExplodePacket with explosion data\n");
-		PIXBeginNamedEvent(0,"Handling explosion");
-	Explosion *e = new Explosion(minecraft->level, nullptr, packet->x, packet->y, packet->z, packet->r);
-		PIXBeginNamedEvent(0,"Finalizing");
+		if(!packet->m_bKnockbackOnly)
+		{
+			//app.DebugPrintf("Received ExplodePacket with explosion data\n");
+			PIXBeginNamedEvent(0,"Handling explosion");
+		Explosion *e = new Explosion(minecraft->level, nullptr, packet->x, packet->y, packet->z, packet->r);
+			PIXBeginNamedEvent(0,"Finalizing");
 
-		// Fix for #81758 - TCR 006 BAS Non-Interactive Pause: TU9: Performance: Gameplay: After detonating bunch of TNT, game enters unresponsive state for couple of seconds.
-		// The changes we are making here have been decided by the server, so we don't need to add them to the vector that resets tiles changes made
-		// on the client as we KNOW that the server is matching these changes
-		MultiPlayerLevel *mpLevel = (MultiPlayerLevel *)minecraft->level;
-		mpLevel->enableResetChanges(false);
-		// 4J - now directly pass a pointer to the toBlow array in the packet rather than copying around
-		e->finalizeExplosion(true, &packet->toBlow);	
-		mpLevel->enableResetChanges(true);
-		PIXEndNamedEvent();
-		PIXEndNamedEvent();
-		delete e;
-	}
-	else
-	{
-		//app.DebugPrintf("Received ExplodePacket with knockback only data\n");
+			// Fix for #81758 - TCR 006 BAS Non-Interactive Pause: TU9: Performance: Gameplay: After detonating bunch of TNT, game enters unresponsive state for couple of seconds.
+			// The changes we are making here have been decided by the server, so we don't need to add them to the vector that resets tiles changes made
+			// on the client as we KNOW that the server is matching these changes
+			MultiPlayerLevel *mpLevel = (MultiPlayerLevel *)minecraft->level;
+			mpLevel->enableResetChanges(false);
+			// 4J - now directly pass a pointer to the toBlow array in the packet rather than copying around
+			e->finalizeExplosion(true, &packet->toBlow);
+			mpLevel->enableResetChanges(true);
+			PIXEndNamedEvent();
+			PIXEndNamedEvent();
+			delete e;
+		}
 	}
 
+	// Per-player knockback — each connection applies to its own local player
 	//app.DebugPrintf("Adding knockback (%f,%f,%f) for player %d\n", packet->getKnockbackX(), packet->getKnockbackY(), packet->getKnockbackZ(), m_userIndex);
+	if (minecraft->localplayers[m_userIndex] == NULL)
+		return;
 	minecraft->localplayers[m_userIndex]->xd += packet->getKnockbackX();
 	minecraft->localplayers[m_userIndex]->yd += packet->getKnockbackY();
 	minecraft->localplayers[m_userIndex]->zd += packet->getKnockbackZ();
@@ -2839,6 +2934,8 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 {
 	bool failed = false;
 	shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[m_userIndex];
+	if (player == NULL)
+		return;
 	switch(packet->type)
 	{
 	case ContainerOpenPacket::BONUS_CHEST:
@@ -2858,19 +2955,19 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			default: assert(false);						chestString = -1;					break;
 			}
 
-			if( player->openContainer(shared_ptr<SimpleContainer>( new SimpleContainer(chestString, packet->title, packet->customName, packet->size) )))
+			if( player->openContainer(std::make_shared<SimpleContainer>(chestString, packet->title, packet->customName, packet->size)))
 			{
 				player->containerMenu->containerId = packet->containerId;
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::HOPPER:
 		{
-			shared_ptr<HopperTileEntity> hopper = shared_ptr<HopperTileEntity>(new HopperTileEntity());
+			shared_ptr<HopperTileEntity> hopper = std::make_shared<HopperTileEntity>();
 			if (packet->customName) hopper->setCustomName(packet->title);
 			if(player->openHopper(hopper))
 			{
@@ -2878,13 +2975,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::FURNACE:
 		{
-			shared_ptr<FurnaceTileEntity> furnace = shared_ptr<FurnaceTileEntity>(new FurnaceTileEntity());
+			shared_ptr<FurnaceTileEntity> furnace = std::make_shared<FurnaceTileEntity>();
 			if (packet->customName) furnace->setCustomName(packet->title);
 			if(player->openFurnace(furnace))
 			{
@@ -2892,13 +2989,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::BREWING_STAND:
 		{
-			shared_ptr<BrewingStandTileEntity> brewingStand = shared_ptr<BrewingStandTileEntity>(new BrewingStandTileEntity());
+			shared_ptr<BrewingStandTileEntity> brewingStand = std::make_shared<BrewingStandTileEntity>();
 			if (packet->customName) brewingStand->setCustomName(packet->title);
 
 			if( player->openBrewingStand(brewingStand))
@@ -2907,13 +3004,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::DROPPER:
 		{
-			shared_ptr<DropperTileEntity> dropper = shared_ptr<DropperTileEntity>(new DropperTileEntity());
+			shared_ptr<DropperTileEntity> dropper = std::make_shared<DropperTileEntity>();
 			if (packet->customName) dropper->setCustomName(packet->title);
 
 			if( player->openTrap(dropper))
@@ -2922,13 +3019,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::TRAP:
 		{
-			shared_ptr<DispenserTileEntity> dispenser = shared_ptr<DispenserTileEntity>(new DispenserTileEntity());
+			shared_ptr<DispenserTileEntity> dispenser = std::make_shared<DispenserTileEntity>();
 			if (packet->customName) dispenser->setCustomName(packet->title);
 
 			if( player->openTrap(dispenser))
@@ -2937,7 +3034,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
@@ -2949,7 +3046,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
@@ -2961,13 +3058,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;            
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::TRADER_NPC:
 		{
-			shared_ptr<ClientSideMerchant> csm = shared_ptr<ClientSideMerchant>(new ClientSideMerchant(player, packet->title));
+			shared_ptr<ClientSideMerchant> csm = std::make_shared<ClientSideMerchant>(player, packet->title);
 			csm->createContainer();
 			if(player->openTrading(csm, packet->customName ? packet->title : L""))
 			{
@@ -2975,13 +3072,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
 	case ContainerOpenPacket::BEACON:
 		{
-			shared_ptr<BeaconTileEntity> beacon = shared_ptr<BeaconTileEntity>(new BeaconTileEntity());
+			shared_ptr<BeaconTileEntity> beacon = std::make_shared<BeaconTileEntity>();
 			if (packet->customName) beacon->setCustomName(packet->title);
 
 			if(player->openBeacon(beacon))
@@ -2990,7 +3087,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
@@ -3002,7 +3099,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;      
+				failed = true;
 			}
 		}
 		break;
@@ -3019,13 +3116,13 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 				iTitle = IDS_MULE;
 				break;
 			};
-			if(player->openHorseInventory(dynamic_pointer_cast<EntityHorse>(entity), shared_ptr<AnimalChest>(new AnimalChest(iTitle, packet->title, packet->customName, packet->size))))
+			if(player->openHorseInventory(dynamic_pointer_cast<EntityHorse>(entity), std::make_shared<AnimalChest>(iTitle, packet->title, packet->customName, packet->size)))
 			{
 				player->containerMenu->containerId = packet->containerId;
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
@@ -3037,7 +3134,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			}
 			else
 			{
-				failed = true;           
+				failed = true;
 			}
 		}
 		break;
@@ -3054,7 +3151,7 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 		}
 		else
 		{
-			send(shared_ptr<ContainerClosePacket>(new ContainerClosePacket(packet->containerId)));
+			send(std::make_shared<ContainerClosePacket>(packet->containerId));
 		}
 	}
 }
@@ -3074,9 +3171,9 @@ void ClientConnection::handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket>
 			if(packet->slot >= 36 && packet->slot < 36 + 9)
 			{
 				shared_ptr<ItemInstance> lastItem = player->inventoryMenu->getSlot(packet->slot)->getItem();
-				if (packet->item != NULL)
+				if (packet->item != nullptr)
 				{
-					if (lastItem == NULL || lastItem->count < packet->item->count)
+					if (lastItem == nullptr || lastItem->count < packet->item->count)
 					{
 						packet->item->popTime = Inventory::POP_TIME_DURATION;
 					}
@@ -3094,7 +3191,7 @@ void ClientConnection::handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket>
 void ClientConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 {
 	shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[m_userIndex];
-	AbstractContainerMenu *menu = NULL;
+	AbstractContainerMenu *menu = nullptr;
 	if (packet->containerId == AbstractContainerMenu::CONTAINER_ID_INVENTORY)
 	{
 		menu = player->inventoryMenu;
@@ -3103,11 +3200,11 @@ void ClientConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 	{
 		menu = player->containerMenu;
 	}
-	if (menu != NULL)
+	if (menu != nullptr)
 	{
 		if (!packet->accepted)
 		{
-			send( shared_ptr<ContainerAckPacket>( new ContainerAckPacket(packet->containerId, packet->uid, true) ));
+			send(std::make_shared<ContainerAckPacket>(packet->containerId, packet->uid, true));
 		}
 	}
 }
@@ -3115,7 +3212,7 @@ void ClientConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 void ClientConnection::handleContainerContent(shared_ptr<ContainerSetContentPacket> packet)
 {
 	shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[m_userIndex];
-	if (packet->containerId == AbstractContainerMenu::CONTAINER_ID_INVENTORY) 
+	if (packet->containerId == AbstractContainerMenu::CONTAINER_ID_INVENTORY)
 	{
 		player->inventoryMenu->setAll(&packet->items);
 	}
@@ -3128,13 +3225,13 @@ void ClientConnection::handleContainerContent(shared_ptr<ContainerSetContentPack
 void ClientConnection::handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> packet)
 {
 	shared_ptr<TileEntity> tileEntity = level->getTileEntity(packet->x, packet->y, packet->z);
-	if (tileEntity != NULL)
+	if (tileEntity != nullptr)
 	{
 		minecraft->localplayers[m_userIndex]->openTextEdit(tileEntity);
 	}
 	else if (packet->editorType == TileEditorOpenPacket::SIGN)
 	{
-		shared_ptr<SignTileEntity> localSignDummy = shared_ptr<SignTileEntity>(new SignTileEntity());
+		shared_ptr<SignTileEntity> localSignDummy = std::make_shared<SignTileEntity>();
 		localSignDummy->setLevel(level);
 		localSignDummy->x = packet->x;
 		localSignDummy->y = packet->y;
@@ -3145,13 +3242,14 @@ void ClientConnection::handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> pac
 
 void ClientConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	app.DebugPrintf("ClientConnection::handleSignUpdate - ");
 	if (minecraft->level->hasChunkAt(packet->x, packet->y, packet->z))
 	{
 		shared_ptr<TileEntity> te = minecraft->level->getTileEntity(packet->x, packet->y, packet->z);
 
 		// 4J-PB - on a client connecting, the line below fails
-		if (dynamic_pointer_cast<SignTileEntity>(te) != NULL)
+		if (dynamic_pointer_cast<SignTileEntity>(te) != nullptr)
 		{
 			shared_ptr<SignTileEntity> ste = dynamic_pointer_cast<SignTileEntity>(te);
 			for (int i = 0; i < MAX_SIGN_LINES; i++)
@@ -3167,7 +3265,7 @@ void ClientConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 		}
 		else
 		{
-			app.DebugPrintf("dynamic_pointer_cast<SignTileEntity>(te) == NULL\n");
+			app.DebugPrintf("dynamic_pointer_cast<SignTileEntity>(te) == nullptr\n");
 		}
 	}
 	else
@@ -3178,25 +3276,26 @@ void ClientConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 
 void ClientConnection::handleTileEntityData(shared_ptr<TileEntityDataPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	if (minecraft->level->hasChunkAt(packet->x, packet->y, packet->z))
 	{
 		shared_ptr<TileEntity> te = minecraft->level->getTileEntity(packet->x, packet->y, packet->z);
 
-		if (te != NULL)
+		if (te != nullptr)
 		{
-			if (packet->type == TileEntityDataPacket::TYPE_MOB_SPAWNER && dynamic_pointer_cast<MobSpawnerTileEntity>(te) != NULL)
+			if (packet->type == TileEntityDataPacket::TYPE_MOB_SPAWNER && dynamic_pointer_cast<MobSpawnerTileEntity>(te) != nullptr)
 			{
 				dynamic_pointer_cast<MobSpawnerTileEntity>(te)->load(packet->tag);
 			}
-			else if (packet->type == TileEntityDataPacket::TYPE_ADV_COMMAND && dynamic_pointer_cast<CommandBlockEntity>(te) != NULL)
+			else if (packet->type == TileEntityDataPacket::TYPE_ADV_COMMAND && dynamic_pointer_cast<CommandBlockEntity>(te) != nullptr)
 			{
 				dynamic_pointer_cast<CommandBlockEntity>(te)->load(packet->tag);
 			}
-			else if (packet->type == TileEntityDataPacket::TYPE_BEACON && dynamic_pointer_cast<BeaconTileEntity>(te) != NULL)
+			else if (packet->type == TileEntityDataPacket::TYPE_BEACON && dynamic_pointer_cast<BeaconTileEntity>(te) != nullptr)
 			{
 				dynamic_pointer_cast<BeaconTileEntity>(te)->load(packet->tag);
-			} 
-			else if (packet->type == TileEntityDataPacket::TYPE_SKULL && dynamic_pointer_cast<SkullTileEntity>(te) != NULL)
+			}
+			else if (packet->type == TileEntityDataPacket::TYPE_SKULL && dynamic_pointer_cast<SkullTileEntity>(te) != nullptr)
 			{
 				dynamic_pointer_cast<SkullTileEntity>(te)->load(packet->tag);
 			}
@@ -3207,7 +3306,7 @@ void ClientConnection::handleTileEntityData(shared_ptr<TileEntityDataPacket> pac
 void ClientConnection::handleContainerSetData(shared_ptr<ContainerSetDataPacket> packet)
 {
 	onUnhandledPacket(packet);
-	if (minecraft->localplayers[m_userIndex]->containerMenu != NULL && minecraft->localplayers[m_userIndex]->containerMenu->containerId == packet->containerId)
+	if (minecraft->localplayers[m_userIndex]->containerMenu != nullptr && minecraft->localplayers[m_userIndex]->containerMenu->containerId == packet->containerId)
 	{
 		minecraft->localplayers[m_userIndex]->containerMenu->setData(packet->id, packet->value);
 	}
@@ -3216,7 +3315,7 @@ void ClientConnection::handleContainerSetData(shared_ptr<ContainerSetDataPacket>
 void ClientConnection::handleSetEquippedItem(shared_ptr<SetEquippedItemPacket> packet)
 {
 	shared_ptr<Entity> entity = getEntity(packet->entity);
-	if (entity != NULL)
+	if (entity != nullptr)
 	{
 		// 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
 		entity->setEquippedSlot(packet->slot, packet->getItem() );
@@ -3230,6 +3329,7 @@ void ClientConnection::handleContainerClose(shared_ptr<ContainerClosePacket> pac
 
 void ClientConnection::handleTileEvent(shared_ptr<TileEventPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	PIXBeginNamedEvent(0,"Handle tile event\n");
 	minecraft->level->tileEvent(packet->x, packet->y, packet->z, packet->tile, packet->b0, packet->b1);
 	PIXEndNamedEvent();
@@ -3237,12 +3337,13 @@ void ClientConnection::handleTileEvent(shared_ptr<TileEventPacket> packet)
 
 void ClientConnection::handleTileDestruction(shared_ptr<TileDestructionPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	minecraft->level->destroyTileProgress(packet->getEntityId(), packet->getX(), packet->getY(), packet->getZ(), packet->getState());
 }
 
 bool ClientConnection::canHandleAsyncPackets()
 {
-	return minecraft != NULL && minecraft->level != NULL && minecraft->localplayers[m_userIndex] != NULL && level != NULL;
+	return minecraft != nullptr && minecraft->level != nullptr && minecraft->localplayers[m_userIndex] != nullptr && level != nullptr;
 }
 
 void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPacket)
@@ -3251,7 +3352,7 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 	int param = gameEventPacket->param;
 	if (event >= 0 && event < GameEventPacket::EVENT_LANGUAGE_ID_LENGTH)
 	{
-		if (GameEventPacket::EVENT_LANGUAGE_ID[event] > 0)	// 4J - was NULL check
+		if (GameEventPacket::EVENT_LANGUAGE_ID[event] > 0)	// 4J - was nullptr check
 		{
 			minecraft->localplayers[m_userIndex]->displayClientMessage(GameEventPacket::EVENT_LANGUAGE_ID[event]);
 		}
@@ -3273,7 +3374,7 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 	else if (event == GameEventPacket::WIN_GAME)
 	{
 		ui.SetWinUserIndex( (BYTE)gameEventPacket->param );
-		
+
 #ifdef _XBOX
 
 		// turn off the gamertags in splitscreen for the primary player, since they are about to be made fullscreen
@@ -3283,7 +3384,7 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 		ui.ShowOtherPlayersBaseScene(ProfileManager.GetPrimaryPad(), false);
 
 		// This just allows it to be shown
-		if(minecraft->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) minecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
+		if(minecraft->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) minecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
 		// Temporarily make this scene fullscreen
 		CXuiSceneBase::SetPlayerBaseScenePosition( ProfileManager.GetPrimaryPad(), CXuiSceneBase::e_BaseScene_Fullscreen );
 
@@ -3291,8 +3392,8 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 #else
 		app.DebugPrintf("handleGameEvent packet for WIN_GAME - %d\n", m_userIndex);
 		// This just allows it to be shown
-		if(minecraft->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) minecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
-		ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_EndPoem, NULL, eUILayer_Scene, eUIGroup_Fullscreen);
+		if(minecraft->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) minecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
+		ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_EndPoem, nullptr, eUILayer_Scene, eUIGroup_Fullscreen);
 #endif
 	}
 	else if( event == GameEventPacket::START_SAVING )
@@ -3318,6 +3419,7 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 
 void ClientConnection::handleComplexItemData(shared_ptr<ComplexItemDataPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	if (packet->itemType == Item::map->id)
 	{
 		MapItem::getSavedData(packet->itemId, minecraft->level)->handleComplexItemData(packet->data);
@@ -3332,11 +3434,12 @@ void ClientConnection::handleComplexItemData(shared_ptr<ComplexItemDataPacket> p
 
 void ClientConnection::handleLevelEvent(shared_ptr<LevelEventPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	if (packet->type == LevelEvent::SOUND_DRAGON_DEATH)
 	{
 		for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
-			if(minecraft->localplayers[i] != NULL && minecraft->localplayers[i]->level != NULL && minecraft->localplayers[i]->level->dimension->id == 1)
+			if(minecraft->localplayers[i] != nullptr && minecraft->localplayers[i]->level != nullptr && minecraft->localplayers[i]->level->dimension->id == 1)
 			{
 				minecraft->localplayers[i]->awardStat(GenericStats::completeTheEnd(),GenericStats::param_noArgs());
 			}
@@ -3363,7 +3466,7 @@ void ClientConnection::handleAwardStat(shared_ptr<AwardStatPacket> packet)
 void ClientConnection::handleUpdateMobEffect(shared_ptr<UpdateMobEffectPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->entityId);
-	if ( (e == NULL) || !e->instanceof(eTYPE_LIVINGENTITY) ) return;
+	if ( (e == nullptr) || !e->instanceof(eTYPE_LIVINGENTITY) ) return;
 
 	//( dynamic_pointer_cast<LivingEntity>(e) )->addEffect(new MobEffectInstance(packet->effectId, packet->effectDurationTicks, packet->effectAmplifier));
 
@@ -3375,7 +3478,7 @@ void ClientConnection::handleUpdateMobEffect(shared_ptr<UpdateMobEffectPacket> p
 void ClientConnection::handleRemoveMobEffect(shared_ptr<RemoveMobEffectPacket> packet)
 {
 	shared_ptr<Entity> e = getEntity(packet->entityId);
-	if ( (e == NULL) || !e->instanceof(eTYPE_LIVINGENTITY) ) return;
+	if ( (e == nullptr) || !e->instanceof(eTYPE_LIVINGENTITY) ) return;
 
 	( dynamic_pointer_cast<LivingEntity>(e) )->removeEffectNoUpdate(packet->effectId);
 }
@@ -3391,7 +3494,7 @@ void ClientConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
 
 	INetworkPlayer *networkPlayer = g_NetworkManager.GetPlayerBySmallId(packet->m_networkSmallId);
 
-	if(networkPlayer != NULL && networkPlayer->IsHost())
+	if(networkPlayer != nullptr && networkPlayer->IsHost())
 	{
 		// Some settings should always be considered on for the host player
 		Player::enableAllPlayerPrivileges(startingPrivileges,true);
@@ -3402,17 +3505,17 @@ void ClientConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
 	app.UpdatePlayerInfo(packet->m_networkSmallId, packet->m_playerColourIndex, packet->m_playerPrivileges);
 
 	shared_ptr<Entity> entity = getEntity(packet->m_entityId);
-	if(entity != NULL && entity->instanceof(eTYPE_PLAYER))
+	if(entity != nullptr && entity->instanceof(eTYPE_PLAYER))
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
 		player->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_All, packet->m_playerPrivileges);
 	}
-	if(networkPlayer != NULL && networkPlayer->IsLocal())
+	if(networkPlayer != nullptr && networkPlayer->IsLocal())
 	{
 		for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
 			shared_ptr<MultiplayerLocalPlayer> localPlayer = minecraft->localplayers[i];
-			if(localPlayer != NULL && localPlayer->connection != NULL && localPlayer->connection->getNetworkPlayer() == networkPlayer )
+			if(localPlayer != nullptr && localPlayer->connection != nullptr && localPlayer->connection->getNetworkPlayer() == networkPlayer )
 			{
 				localPlayer->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_All,packet->m_playerPrivileges);
 				displayPrivilegeChanges(localPlayer,startingPrivileges);
@@ -3513,7 +3616,7 @@ void ClientConnection::displayPrivilegeChanges(shared_ptr<MultiplayerLocalPlayer
 				case Player::ePlayerGamePrivilege_Invulnerable:
 					if(privOn) message = app.GetString(IDS_PRIV_INVULNERABLE_TOGGLE_ON);
 					else message = app.GetString(IDS_PRIV_INVULNERABLE_TOGGLE_OFF);
-					break;					
+					break;
 				case Player::ePlayerGamePrivilege_CanToggleInvisible:
 					if(privOn) message = app.GetString(IDS_PRIV_CAN_INVISIBLE_TOGGLE_ON);
 					else message = app.GetString(IDS_PRIV_CAN_INVISIBLE_TOGGLE_OFF);
@@ -3539,7 +3642,7 @@ void ClientConnection::displayPrivilegeChanges(shared_ptr<MultiplayerLocalPlayer
 
 void ClientConnection::handleKeepAlive(shared_ptr<KeepAlivePacket> packet)
 {
-	send(shared_ptr<KeepAlivePacket>(new KeepAlivePacket(packet->id)));
+	send(std::make_shared<KeepAlivePacket>(packet->id));
 }
 
 void ClientConnection::handlePlayerAbilities(shared_ptr<PlayerAbilitiesPacket> playerAbilitiesPacket)
@@ -3555,6 +3658,7 @@ void ClientConnection::handlePlayerAbilities(shared_ptr<PlayerAbilitiesPacket> p
 
 void ClientConnection::handleSoundEvent(shared_ptr<LevelSoundPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	minecraft->level->playLocalSound(packet->getX(), packet->getY(), packet->getZ(), packet->getSound(), packet->getVolume(), packet->getPitch(), false);
 }
 
@@ -3587,7 +3691,7 @@ void ClientConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 			UIScene_TradingMenu *screen = (UIScene_TradingMenu *)scene;
 			trader = screen->getMerchant();
 #endif
-			
+
 			MerchantRecipeList *recipeList = MerchantRecipeList::createFromStream(&input);
 			trader->overrideOffers(recipeList);
 		}
@@ -3610,7 +3714,7 @@ void ClientConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 	{
 		for(unsigned int i = 0; i < minecraft->levels.length; ++i)
 		{
-			if( minecraft->levels[i] != NULL )
+			if( minecraft->levels[i] != nullptr )
 			{
 				app.DebugPrintf("ClientConnection::handleServerSettingsChanged - Difficulty = %d",packet->data);
 				minecraft->levels[i]->difficulty = packet->data;
@@ -3644,11 +3748,11 @@ void ClientConnection::handleUpdateProgress(shared_ptr<UpdateProgressPacket> pac
 void ClientConnection::handleUpdateGameRuleProgressPacket(shared_ptr<UpdateGameRuleProgressPacket> packet)
 {
 	LPCWSTR string = app.GetGameRulesString(packet->m_messageId);
-	if(string != NULL)
+	if(string != nullptr)
 	{
 		wstring message(string);
 		message = GameRuleDefinition::generateDescriptionString(packet->m_definitionType,message,packet->m_data.data,packet->m_data.length);
-		if(minecraft->localgameModes[m_userIndex]!=NULL)
+		if(minecraft->localgameModes[m_userIndex]!=nullptr)
 		{
 			minecraft->localgameModes[m_userIndex]->getTutorial()->setMessage(message, packet->m_icon, packet->m_auxValue);
 		}
@@ -3674,7 +3778,7 @@ int ClientConnection::HostDisconnectReturned(void *pParam,int iPad,C4JStorage::E
 
 		DLCPack *pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 		if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))
-		{					
+		{
 			// no upsell, we're about to quit
 			MinecraftServer::getInstance()->setSaveOnExit( false );
 			// flag a app action of exit game
@@ -3694,7 +3798,7 @@ int ClientConnection::HostDisconnectReturned(void *pParam,int iPad,C4JStorage::E
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_CANCEL;
 		uiIDA[1]=IDS_CONFIRM_OK;
-		ui.RequestErrorMessage(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(),&ClientConnection::ExitGameAndSaveReturned,NULL);
+		ui.RequestErrorMessage(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(),&ClientConnection::ExitGameAndSaveReturned,nullptr);
 	}
 	else
 #else
@@ -3709,7 +3813,7 @@ int ClientConnection::HostDisconnectReturned(void *pParam,int iPad,C4JStorage::E
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_CANCEL;
 		uiIDA[1]=IDS_CONFIRM_OK;
-		ui.RequestErrorMessage(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(),&ClientConnection::ExitGameAndSaveReturned,NULL);
+		ui.RequestErrorMessage(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(),&ClientConnection::ExitGameAndSaveReturned,nullptr);
 	}
 	else
 #endif
@@ -3728,7 +3832,7 @@ int ClientConnection::HostDisconnectReturned(void *pParam,int iPad,C4JStorage::E
 int ClientConnection::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
 	// results switched for this dialog
-	if(result==C4JStorage::EMessage_ResultDecline) 
+	if(result==C4JStorage::EMessage_ResultDecline)
 	{
 		//INT saveOrCheckpointId = 0;
 		//bool validSave = StorageManager.GetSaveUniqueNumber(&saveOrCheckpointId);
@@ -3747,7 +3851,7 @@ int ClientConnection::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage::
 	return 0;
 }
 
-// 
+//
 wstring ClientConnection::GetDisplayNameByGamertag(wstring gamertag)
 {
 #ifdef _DURANGO
@@ -3844,7 +3948,7 @@ void ClientConnection::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket>
 
 	if (packet->method == SetPlayerTeamPacket::METHOD_ADD || packet->method == SetPlayerTeamPacket::METHOD_JOIN)
 	{
-		for (int i = 0; i < packet->players.size(); i++)
+		for (size_t i = 0; i < packet->players.size(); i++)
 		{
 			scoreboard->addPlayerToTeam(packet->players[i], team);
 		}
@@ -3852,7 +3956,7 @@ void ClientConnection::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket>
 
 	if (packet->method == SetPlayerTeamPacket::METHOD_LEAVE)
 	{
-		for (int i = 0; i < packet->players.size(); i++)
+		for (size_t i = 0; i < packet->players.size(); i++)
 		{
 			scoreboard->removePlayerFromTeam(packet->players[i], team);
 		}
@@ -3867,6 +3971,7 @@ void ClientConnection::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket>
 
 void ClientConnection::handleParticleEvent(shared_ptr<LevelParticlesPacket> packet)
 {
+	if (!isPrimaryConnection()) return;
 	for (int i = 0; i < packet->getCount(); i++)
 	{
 		double xVarience = random->nextGaussian() * packet->getXDist();
@@ -3887,36 +3992,36 @@ void ClientConnection::handleParticleEvent(shared_ptr<LevelParticlesPacket> pack
 void ClientConnection::handleUpdateAttributes(shared_ptr<UpdateAttributesPacket> packet)
 {
 	shared_ptr<Entity> entity = getEntity(packet->getEntityId());
-	if (entity == NULL) return;
+	if (entity == nullptr) return;
 
 	if ( !entity->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		// Entity is not a living entity!
-		assert(0);			
+		assert(0);
 	}
 
 	BaseAttributeMap *attributes = (dynamic_pointer_cast<LivingEntity>(entity))->getAttributes();
-	unordered_set<UpdateAttributesPacket::AttributeSnapshot *> attributeSnapshots = packet->getValues();		
-	for (AUTO_VAR(it,attributeSnapshots.begin()); it != attributeSnapshots.end(); ++it)
+	unordered_set<UpdateAttributesPacket::AttributeSnapshot *> attributeSnapshots = packet->getValues();
+	for ( UpdateAttributesPacket::AttributeSnapshot *attribute : attributeSnapshots )
 	{
-		UpdateAttributesPacket::AttributeSnapshot *attribute = *it;
 		AttributeInstance *instance = attributes->getInstance(attribute->getId());
 
-		if (instance == NULL)
+		if (instance)
 		{
 			// 4J - TODO: revisit, not familiar with the attribute system, why are we passing in MIN_NORMAL (Java's smallest non-zero value conforming to IEEE Standard 754 (?)) and MAX_VALUE
 			instance = attributes->registerAttribute(new RangedAttribute(attribute->getId(), 0, Double::MIN_NORMAL, Double::MAX_VALUE));
-		}
+			instance->setBaseValue(attribute->getBase());
+			instance->removeModifiers();
+		
+			unordered_set<AttributeModifier *> *modifiers = attribute->getModifiers();
 
-		instance->setBaseValue(attribute->getBase());
-		instance->removeModifiers();
-
-		unordered_set<AttributeModifier *> *modifiers = attribute->getModifiers();
-
-		for (AUTO_VAR(it2,modifiers->begin()); it2 != modifiers->end(); ++it2)
-		{
-			AttributeModifier* modifier = *it2;
-			instance->addModifier(new AttributeModifier(modifier->getId(), modifier->getAmount(), modifier->getOperation() ) );
+			if ( modifiers )
+			{
+				for ( AttributeModifier* modifier : *modifiers )
+				{
+					instance->addModifier(new AttributeModifier(modifier->getId(), modifier->getAmount(), modifier->getOperation()));
+				}
+			}
 		}
 	}
 }
@@ -3926,7 +4031,7 @@ void ClientConnection::checkDeferredEntityLinkPackets(int newEntityId)
 {
 	if (deferredEntityLinkPackets.empty()) return;
 
-	for (int i = 0; i < deferredEntityLinkPackets.size(); i++)
+	for (size_t i = 0; i < deferredEntityLinkPackets.size(); i++)
 	{
 		DeferredEntityLinkPacket *deferred = &deferredEntityLinkPackets[i];
 

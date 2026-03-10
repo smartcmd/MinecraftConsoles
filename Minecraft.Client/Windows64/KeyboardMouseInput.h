@@ -84,6 +84,11 @@ public:
 	void SetScreenCursorHidden(bool hidden) { m_screenWantsCursorHidden = hidden; }
 	bool IsScreenCursorHidden() const { return m_screenWantsCursorHidden; }
 
+	// Text input: buffer characters typed while the native keyboard scene is open
+	void OnChar(wchar_t c);
+	bool ConsumeChar(wchar_t &outChar);
+	void ClearCharBuffer();
+
 	float GetMoveX() const;
 	float GetMoveY() const;
 
@@ -129,8 +134,13 @@ private:
 	bool m_kbmActive;
 
 	bool m_screenWantsCursorHidden;
+
+	static const int CHAR_BUFFER_SIZE = 32;
+	wchar_t m_charBuffer[CHAR_BUFFER_SIZE];
+	int m_charBufferHead;
+	int m_charBufferTail;
 };
 
 extern KeyboardMouseInput g_KBMInput;
 
-#endif // _WINDOWS64
+#endif

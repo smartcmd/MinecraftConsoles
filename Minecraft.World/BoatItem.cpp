@@ -39,7 +39,7 @@ bool BoatItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shar
 	double range = 5;
 	Vec3 *to = from->add(xa * range, ya * range, za * range);
 	HitResult *hr = level->clip(from, to, true);
-	if (hr == NULL) return false;
+	if (hr == nullptr) return false;
 
 	if (hr->type == HitResult::TILE)
 	{
@@ -74,17 +74,16 @@ shared_ptr<ItemInstance> BoatItem::use(shared_ptr<ItemInstance> itemInstance, Le
 	double range = 5;
 	Vec3 *to = from->add(xa * range, ya * range, za * range);
 	HitResult *hr = level->clip(from, to, true);
-	if (hr == NULL) return itemInstance;
+	if (hr == nullptr) return itemInstance;
 
 	// check entity collision
 	Vec3 *b = player->getViewVector(a);
 	bool hitEntity = false;
 	float overlap = 1;
 	vector<shared_ptr<Entity> > *objects = level->getEntities(player, player->bb->expand(b->x * (range), b->y * (range), b->z * (range))->grow(overlap, overlap, overlap));
-	//for (int i = 0; i < objects.size(); i++) {
-	for(AUTO_VAR(it, objects->begin()); it != objects->end(); ++it)
+
+	for( auto& e : *objects )
 	{
-		shared_ptr<Entity> e = *it; //objects.get(i);
 		if (!e->isPickable()) continue;
 
 		float rr = e->getPickRadius();
@@ -108,7 +107,7 @@ shared_ptr<ItemInstance> BoatItem::use(shared_ptr<ItemInstance> itemInstance, Le
 		if (level->getTile(xt, yt, zt) == Tile::topSnow_Id) yt--;
 		if( level->countInstanceOf(eTYPE_BOAT, true) < Level::MAX_XBOX_BOATS )		// 4J - added limit
 		{
-			shared_ptr<Boat> boat = shared_ptr<Boat>( new Boat(level, xt + 0.5f, yt + 1.0f, zt + 0.5f) );
+			shared_ptr<Boat> boat = std::make_shared<Boat>(level, xt + 0.5f, yt + 1.0f, zt + 0.5f);
 			boat->yRot = ((Mth::floor(player->yRot * 4.0F / 360.0F + 0.5) & 0x3) - 1) * 90;
 			if (!level->getCubes(boat, boat->bb->grow(-.1, -.1, -.1))->empty())
 			{

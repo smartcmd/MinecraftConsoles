@@ -3,7 +3,7 @@ using namespace std;
 
 // If we have more than MAX_PLAYER_DATA_SAVES player.dat's then we delete the oldest ones
 // This value can be no higher than MAXIMUM_MAP_SAVE_DATA/3 (3 being the number of dimensions in future versions)
-#define MAX_PLAYER_DATA_SAVES 80
+#define MAX_PLAYER_DATA_SAVES 0x7FFFFFFF
 
 class Player;
 

@@ -41,7 +41,7 @@ float FlippedIcon::getU1(bool adjust/*=false*/) const
 float FlippedIcon::getU(double offset, bool adjust/*=false*/) const
 {
 	float diff = getU1(adjust) - getU0(adjust);
-	return getU0(adjust) + (diff * ((float) offset / SharedConstants::WORLD_RESOLUTION));
+	return getU0(adjust) + (diff * (static_cast<float>(offset) / SharedConstants::WORLD_RESOLUTION));
 }
 
 float FlippedIcon::getV0(bool adjust/*=false*/) const
@@ -59,7 +59,7 @@ float FlippedIcon::getV1(bool adjust/*=false*/) const
 float FlippedIcon::getV(double offset, bool adjust/*=false*/) const
 {
 	float diff = getV1(adjust) - getV0(adjust);
-	return getV0(adjust) + (diff * ((float) offset / SharedConstants::WORLD_RESOLUTION));
+	return getV0(adjust) + (diff * (static_cast<float>(offset) / SharedConstants::WORLD_RESOLUTION));
 }
 
 wstring FlippedIcon::getName() const

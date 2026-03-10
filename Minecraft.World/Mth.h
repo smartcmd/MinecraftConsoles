@@ -10,10 +10,10 @@ public:
 	static const float RADDEG;
 	static const float RAD_TO_GRAD;
 
-	static const __int64 UUID_VERSION = 0x000000000000f000L;
-	static const __int64 UUID_VERSION_TYPE_4 = 0x0000000000004000L;
-	static const __int64 UUID_VARIANT = 0xc000000000000000L;
-	static const __int64 UUID_VARIANT_2 = 0x8000000000000000L;
+	static const int64_t UUID_VERSION = 0x000000000000f000L;
+	static const int64_t UUID_VERSION_TYPE_4 = 0x0000000000004000L;
+	static const int64_t UUID_VARIANT = 0xc000000000000000L;
+	static const int64_t UUID_VARIANT_2 = 0x8000000000000000L;
 private:
 	static float *_sin;
 private:
@@ -25,7 +25,7 @@ public :
 	static float sqrt(float x);
 	static float sqrt(double x);
 	static int floor(float v);
-	static __int64 lfloor(double v);
+	static int64_t lfloor(double v);
 	static int fastFloor(double x);
 	static int floor(double v);
 	static int absFloor(double v);

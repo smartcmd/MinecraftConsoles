@@ -8,7 +8,7 @@
 WaterDropParticle::WaterDropParticle(Level *level, double x, double y, double z) : Particle(level, x, y, z, 0, 0, 0)
 {
     xd *= 0.3f;
-    yd = (float) Math::random() * 0.2f + 0.1f;
+    yd = static_cast<float>(Math::random()) * 0.2f + 0.1f;
     zd *= 0.3f;
 
     rCol = 1.0f;
@@ -19,7 +19,7 @@ WaterDropParticle::WaterDropParticle(Level *level, double x, double y, double z)
     gravity = 0.06f;
 
 	noPhysics = true;	// 4J - optimisation - do we really need collision on these? its really slow...
-    lifetime = (int) (8 / (Math::random() * 0.8 + 0.2));
+    lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2));
 }
 
 void WaterDropParticle::tick()

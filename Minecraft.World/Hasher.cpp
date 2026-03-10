@@ -19,7 +19,7 @@ wstring Hasher::getHash(wstring &name)
 		//return new BigInteger(1, m.digest()).toString(16);
 
 		// TODO 4J Stu - Will this hash us with the same distribution as the MD5?
-		return _toString(std::hash<wstring>{}( s ) );
+		return std::to_wstring(std::hash<wstring>{}( s ) );
 	//}
 	//catch (NoSuchAlgorithmException e)
 	//{

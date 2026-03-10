@@ -28,7 +28,7 @@ IntCache::ThreadStorage::~ThreadStorage()
 	{
 		delete [] allocated[i].data;
 	}
-	for( int i = 0; i < toosmall.size(); i++ )
+	for( size_t i = 0; i < toosmall.size(); i++ )
 	{
 		delete [] toosmall[i].data;
 	}
@@ -36,7 +36,7 @@ IntCache::ThreadStorage::~ThreadStorage()
 
 void IntCache::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 
 	delete tls;
@@ -44,13 +44,13 @@ void IntCache::ReleaseThreadStorage()
 
 intArray IntCache::allocate(int size)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 	if (size <= TINY_CUTOFF)
 	{
 		if (tls->tcache.empty())
 		{
-			intArray result = intArray(TINY_CUTOFF, true);
+			intArray result = intArray(static_cast<unsigned int>(TINY_CUTOFF), true);
 			tls->tallocated.push_back(result);
 			return result;
 		}
@@ -76,7 +76,7 @@ intArray IntCache::allocate(int size)
 		tls->cache.clear();
 		tls->allocated.clear();
 
-		intArray result = intArray(tls->maxSize, true);
+		intArray result = intArray(static_cast<unsigned int>(tls->maxSize), true);
 		tls->allocated.push_back(result);
 		return result;
 	}
@@ -84,7 +84,7 @@ intArray IntCache::allocate(int size)
 	{
 		if (tls->cache.empty())
 		{
-			intArray result = intArray(tls->maxSize, true);
+			intArray result = intArray(static_cast<unsigned int>(tls->maxSize), true);
 			tls->allocated.push_back(result);
 			return result;
 		}
@@ -100,10 +100,10 @@ intArray IntCache::allocate(int size)
 
 void IntCache::releaseAll()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 	// 4J - added - we can now remove the vectors that were deemed as too small (see comment in IntCache::allocate)
-	for( int i = 0; i < tls->toosmall.size(); i++ )
+	for( size_t i = 0; i < tls->toosmall.size(); i++ )
 	{
 		delete [] tls->toosmall[i].data;
 	}
@@ -130,27 +130,27 @@ void IntCache::releaseAll()
 // 4J added so that we can fully reset between levels
 void IntCache::Reset()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	tls->maxSize = TINY_CUTOFF;
-	for( int i = 0; i < tls->allocated.size(); i++ )
+	for( size_t i = 0; i < tls->allocated.size(); i++ )
 	{
 		delete [] tls->allocated[i].data;
 	}
 	tls->allocated.clear();
 
-	for( int i = 0; i < tls->cache.size(); i++ )
+	for( size_t i = 0; i < tls->cache.size(); i++ )
 	{
 		delete [] tls->cache[i].data;
 	}
 	tls->cache.clear();
 
-	for( int i = 0; i < tls->tallocated.size(); i++ )
+	for( size_t i = 0; i < tls->tallocated.size(); i++ )
 	{
 		delete [] tls->tallocated[i].data;
 	}
 	tls->tallocated.clear();
 
-	for( int i = 0; i < tls->tcache.size(); i++ )
+	for( size_t i = 0; i < tls->tcache.size(); i++ )
 	{
 		delete [] tls->tcache[i].data;
 	}

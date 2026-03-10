@@ -21,7 +21,7 @@ const int XUSER_MAX_COUNT = 1;
 const int MINECRAFT_NET_MAX_PLAYERS = 4;
 #else
 const int XUSER_MAX_COUNT = 4;
-const int MINECRAFT_NET_MAX_PLAYERS = 8;
+const int MINECRAFT_NET_MAX_PLAYERS = 256;
 #endif
 
 
@@ -120,7 +120,7 @@ public:
 		else
 		{
 			LeaveCriticalSection(&m_cs);
-			return NULL;
+			return nullptr;
 		}
 	}
 private:
@@ -219,6 +219,7 @@ public:
     BYTE m_smallId;
     bool m_isRemote;
     bool m_isHostPlayer;
+    PlayerUID m_resolvedXuid;
     wchar_t m_gamertag[32];
 private:
 	ULONG_PTR m_customData;
@@ -331,10 +332,10 @@ public:
 #define PIXSetMarkerDeprecated(a, b, ...) PIXSetMarker(a, L ## b, __VA_ARGS__)
 #define PIXAddNamedCounter(a, b) PIXReportCounter( L ## b, a)
 #else
-void PIXAddNamedCounter(int a, char *b, ...);
-void PIXBeginNamedEvent(int a, char *b, ...);
-void PIXEndNamedEvent();
-void PIXSetMarkerDeprecated(int a, char *b, ...);
+inline void PIXAddNamedCounter(int, const char*, ...) {}
+inline void PIXBeginNamedEvent(int, const char*, ...) {}
+inline void PIXEndNamedEvent() {}
+inline void PIXSetMarkerDeprecated(int, const char*, ...) {}
 #endif
 
 void XSetThreadProcessor(HANDLE a, int b);

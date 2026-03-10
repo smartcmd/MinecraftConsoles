@@ -17,35 +17,35 @@ void AddItemRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numAttrs
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_itemId);
-	dos->writeUTF( _toString( m_itemId ) );
+	dos->writeUTF( std::to_wstring( m_itemId ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_quantity);
-	dos->writeUTF( _toString( m_quantity ) );
+	dos->writeUTF( std::to_wstring( m_quantity ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_auxValue);
-	dos->writeUTF( _toString( m_auxValue ) );
+	dos->writeUTF( std::to_wstring( m_auxValue ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_dataTag);
-	dos->writeUTF( _toString( m_dataTag ) );
+	dos->writeUTF( std::to_wstring( m_dataTag ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_slot);
-	dos->writeUTF( _toString( m_slot ) );
+	dos->writeUTF( std::to_wstring( m_slot ) );
 }
 
 void AddItemRuleDefinition::getChildren(vector<GameRuleDefinition *> *children)
 {
 	GameRuleDefinition::getChildren( children );
-	for (AUTO_VAR(it, m_enchantments.begin()); it != m_enchantments.end(); it++)
-		children->push_back( *it );
+	for ( const auto& it : m_enchantments )
+		children->push_back( it );
 }
 
 GameRuleDefinition *AddItemRuleDefinition::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_AddEnchantment)
 	{
 		rule = new AddEnchantmentRuleDefinition();
-		m_enchantments.push_back((AddEnchantmentRuleDefinition *)rule);
+		m_enchantments.push_back(static_cast<AddEnchantmentRuleDefinition *>(rule));
 	}
 	else
 	{
@@ -97,15 +97,15 @@ void AddItemRuleDefinition::addAttribute(const wstring &attributeName, const wst
 bool AddItemRuleDefinition::addItemToContainer(shared_ptr<Container> container, int slotId)
 {
 	bool added = false;
-	if(Item::items[m_itemId] != NULL)
+	if(Item::items[m_itemId] != nullptr)
 	{
-		int quantity = min(m_quantity, Item::items[m_itemId]->getMaxStackSize());
-		shared_ptr<ItemInstance> newItem = shared_ptr<ItemInstance>(new ItemInstance(m_itemId,quantity,m_auxValue) );
+		int quantity = std::min<int>(m_quantity, Item::items[m_itemId]->getMaxStackSize());
+		shared_ptr<ItemInstance> newItem = std::make_shared<ItemInstance>(m_itemId, quantity, m_auxValue);
 		newItem->set4JData(m_dataTag);
 
-		for(AUTO_VAR(it, m_enchantments.begin()); it != m_enchantments.end(); ++it)
+		for( auto& it : m_enchantments )
 		{
-			(*it)->enchantItem(newItem);
+			it->enchantItem(newItem);
 		}
 
 		if(m_slot >= 0 && m_slot < container->getContainerSize() )
@@ -118,7 +118,7 @@ bool AddItemRuleDefinition::addItemToContainer(shared_ptr<Container> container, 
 			container->setItem( slotId, newItem );
 			added = true;
 		}
-		else if(dynamic_pointer_cast<Inventory>(container) != NULL)
+		else if(dynamic_pointer_cast<Inventory>(container) != nullptr)
 		{
 			added = dynamic_pointer_cast<Inventory>(container)->add(newItem);
 		}

@@ -38,7 +38,7 @@ void StructureFeatureSavedData::putFeatureTag(CompoundTag *tag, int chunkX, int 
 
 wstring StructureFeatureSavedData::createFeatureTagId(int chunkX, int chunkZ)
 {
-	return L"[" + _toString<int>(chunkX) + L"," + _toString<int>(chunkZ) + L"]";
+	return L"[" + std::to_wstring(chunkX) + L"," + std::to_wstring(chunkZ) + L"]";
 }
 
 CompoundTag *StructureFeatureSavedData::getFullTag()

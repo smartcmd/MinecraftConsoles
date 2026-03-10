@@ -56,9 +56,9 @@ void UseItemPacket::write(DataOutputStream *dos) //throws IOException
 	dos->write(face);
 
 	writeItem(item, dos);
-	dos->write((int) (clickX * CLICK_ACCURACY));
-	dos->write((int) (clickY * CLICK_ACCURACY));
-	dos->write((int) (clickZ * CLICK_ACCURACY));
+	dos->write(static_cast<int>(clickX * CLICK_ACCURACY));
+	dos->write(static_cast<int>(clickY * CLICK_ACCURACY));
+	dos->write(static_cast<int>(clickZ * CLICK_ACCURACY));
 }
 
 void UseItemPacket::handle(PacketListener *listener)

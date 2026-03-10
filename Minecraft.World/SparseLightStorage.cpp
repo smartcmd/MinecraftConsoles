@@ -28,7 +28,7 @@ SparseLightStorage::SparseLightStorage(bool sky)
 #ifdef _XBOX
 	unsigned char *planeIndices = (unsigned char *)XPhysicalAlloc(128 * 128, MAXULONG_PTR, 4096, PAGE_READWRITE);
 #else
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * 128));
 #endif
 	unsigned char *data = planeIndices + 128;
 	planeIndices[127] = sky ? ALL_15_INDEX : ALL_0_INDEX;
@@ -40,7 +40,7 @@ SparseLightStorage::SparseLightStorage(bool sky)
 
 	// Data and count packs together the pointer to our data and the count of planes allocated - 127 planes allocated in this case
 #pragma warning ( disable : 4826 )
-	dataAndCount = 0x007F000000000000L | (( (__int64) planeIndices ) & 0x0000ffffffffffffL);
+	dataAndCount = 0x007F000000000000L | (( (int64_t) planeIndices ) & 0x0000ffffffffffffL);
 #pragma warning ( default : 4826 )
 #ifdef LIGHT_COMPRESSION_STATS
 	count = 127;
@@ -51,7 +51,7 @@ SparseLightStorage::SparseLightStorage(bool sky, bool isUpper)
 {
 	// Allocate using physical alloc. As this will (by default) return memory from the pool of 4KB pages, the address will in the range of MM_PHYSICAL_4KB_BASE upwards. We can use
 	// this fact to identify the allocation later, and so free it with the corresponding call to XPhysicalFree.
-	unsigned char *planeIndices = (unsigned char *)malloc(128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128));
 	for( int i = 0; i < 128; i++ )
 	{
 		planeIndices[i] = sky ? ALL_15_INDEX : ALL_0_INDEX;
@@ -59,7 +59,7 @@ SparseLightStorage::SparseLightStorage(bool sky, bool isUpper)
 
 	// Data and count packs together the pointer to our data and the count of planes allocated - 0 planes allocated in this case
 #pragma warning ( disable : 4826 )
-	dataAndCount = 0x0000000000000000L | (( (__int64) planeIndices ) & 0x0000ffffffffffffL);
+	dataAndCount = 0x0000000000000000L | (( (int64_t) planeIndices ) & 0x0000ffffffffffffL);
 #pragma warning ( default : 4826 )
 #ifdef LIGHT_COMPRESSION_STATS
 	count = 0;
@@ -70,7 +70,7 @@ SparseLightStorage::~SparseLightStorage()
 {
 	unsigned char *indicesAndData = (unsigned char *)(dataAndCount & 0x0000ffffffffffff);
 	// Determine correct means to free this data - could have been allocated either with XPhysicalAlloc or malloc
-	
+
 #ifdef _XBOX
 	if( (unsigned int)indicesAndData >= MM_PHYSICAL_4KB_BASE )
 	{
@@ -87,17 +87,17 @@ SparseLightStorage::~SparseLightStorage()
 SparseLightStorage::SparseLightStorage(SparseLightStorage *copyFrom)
 {
 	// Extra details of source storage
-	__int64 sourceDataAndCount = copyFrom->dataAndCount;
+	int64_t sourceDataAndCount = copyFrom->dataAndCount;
 	unsigned char *sourceIndicesAndData = (unsigned char *)(sourceDataAndCount & 0x0000ffffffffffff);
 	int sourceCount = (sourceDataAndCount >> 48 ) & 0xffff;
 
 	// Allocate & copy indices ( 128 bytes ) and any allocated planes (128 * count)
-	unsigned char *destIndicesAndData = (unsigned char *)malloc( sourceCount * 128 + 128 );
+	unsigned char *destIndicesAndData = static_cast<unsigned char *>(malloc(sourceCount * 128 + 128));
 
 	// AP - I've moved this to be before the memcpy because of a very strange bug on vita. Sometimes dataAndCount wasn't valid in time when ::get was called.
 	// This should never happen and this isn't a proper solution but fixes it for now.
 #pragma warning ( disable : 4826 )
-	dataAndCount = ( sourceDataAndCount & 0xffff000000000000L ) | ( ((__int64) destIndicesAndData ) & 0x0000ffffffffffffL );
+	dataAndCount = ( sourceDataAndCount & 0xffff000000000000L ) | ( ((int64_t) destIndicesAndData ) & 0x0000ffffffffffffL );
 #pragma warning ( default : 4826 )
 
 	XMemCpy( destIndicesAndData, sourceIndicesAndData, sourceCount * 128 + 128 );
@@ -125,7 +125,7 @@ void SparseLightStorage::setData(byteArray dataIn, unsigned int inOffset)
 	{
 		bool all0 = true;
 		bool all15 = true;
-			
+
 		for( int xz = 0; xz < 256; xz++ )	// 256 in loop as 16 x 16 separate bytes need checked
 		{
 			int pos = ( xz << 7 ) | y;
@@ -150,7 +150,7 @@ void SparseLightStorage::setData(byteArray dataIn, unsigned int inOffset)
 	}
 
 	// Allocate required storage
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * allocatedPlaneCount + 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * allocatedPlaneCount + 128));
 	unsigned char *data = planeIndices + 128;
 	XMemCpy(planeIndices, _planeIndices, 128);
 
@@ -180,9 +180,9 @@ void SparseLightStorage::setData(byteArray dataIn, unsigned int inOffset)
 
 	// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-	__int64 newDataAndCount = ((__int64) planeIndices) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = reinterpret_cast<int64_t>(planeIndices) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((__int64)allocatedPlaneCount) << 48;
+	newDataAndCount |= static_cast<int64_t>(allocatedPlaneCount) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }
@@ -245,7 +245,7 @@ int SparseLightStorage::get(int x, int y, int z)
 {
 	unsigned char *planeIndices, *data;
 	getPlaneIndicesAndData(&planeIndices, &data);
-	
+
 	if( planeIndices[y] == ALL_0_INDEX )
 	{
 		return 0;
@@ -305,14 +305,14 @@ void SparseLightStorage::set(int x, int y, int z, int val)
 
 void SparseLightStorage::setAllBright()
 {
-	unsigned char *planeIndices = (unsigned char *)malloc(128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128));
 	for( int i = 0; i < 128; i++ )
 	{
 		planeIndices[i] = ALL_15_INDEX;
 	}
 	// Data and count packs together the pointer to our data and the count of planes allocated, which is currently zero
 #pragma warning ( disable : 4826 )
-	__int64 newDataAndCount = ( (__int64) planeIndices ) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = ( (int64_t) planeIndices ) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
 
 	updateDataAndCount( newDataAndCount );
@@ -346,7 +346,7 @@ int SparseLightStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, 
 	}
 	ptrdiff_t count = pucIn - &dataIn.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 // Updates the data at offset position dataInOut with a region of lighting information - external ordering compatible with java DataLayer
@@ -375,8 +375,8 @@ int SparseLightStorage::getDataRegion(byteArray dataInOut, int x0, int y0, int z
 		}
 	}
 	ptrdiff_t count = pucOut - &dataInOut.data[offset];
-	
-	return (int)count;
+
+	return static_cast<int>(count);
 }
 
 void SparseLightStorage::addNewPlane(int y)
@@ -385,10 +385,10 @@ void SparseLightStorage::addNewPlane(int y)
 	do
 	{
 		// Get last packed data pointer & count
-		__int64 lastDataAndCount = dataAndCount;
+		int64_t lastDataAndCount = dataAndCount;
 
 		// Unpack count & data pointer
-		int lastLinesUsed = (int)(( lastDataAndCount >> 48 ) & 0xffff);
+		int lastLinesUsed = static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 		unsigned char *lastDataPointer = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 
 		// Find out what to prefill the newly allocated line with
@@ -400,21 +400,21 @@ void SparseLightStorage::addNewPlane(int y)
 		int linesUsed = lastLinesUsed + 1;
 
 		// Allocate new memory storage, copy over anything from old storage, and initialise remainder
-		unsigned char *dataPointer = (unsigned char *)malloc(linesUsed * 128 + 128);
+		unsigned char *dataPointer = static_cast<unsigned char *>(malloc(linesUsed * 128 + 128));
 		XMemCpy( dataPointer, lastDataPointer, 128 * lastLinesUsed + 128);
 		XMemSet( dataPointer + ( 128 * lastLinesUsed ) + 128, prefill, 128 );
 		dataPointer[y] = lastLinesUsed;
 
 		// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-		__int64 newDataAndCount = ((__int64) dataPointer) & 0x0000ffffffffffffL;
+		int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((__int64)linesUsed) << 48;
+		newDataAndCount |= static_cast<int64_t>(linesUsed) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		__int64 lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
-		
+		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+
 		if( lastDataAndCount2 == lastDataAndCount )
 		{
 			success = true;
@@ -457,7 +457,7 @@ void SparseLightStorage::tick()
 	int freeIndex = ( deleteQueueIndex + 1 ) % 3;
 
 //	printf("Free queue: %d, %d\n",deleteQueue[freeIndex].GetEntryCount(),deleteQueue[freeIndex].GetAllocated());
-	unsigned char *toFree = NULL;
+	unsigned char *toFree = nullptr;
 	do
 	{
 		toFree = deleteQueue[freeIndex].Pop();
@@ -479,20 +479,20 @@ void SparseLightStorage::tick()
 }
 
 // Update storage with a new values for dataAndCount, repeating as necessary if other simultaneous writes happen.
-void SparseLightStorage::updateDataAndCount(__int64 newDataAndCount)
+void SparseLightStorage::updateDataAndCount(int64_t newDataAndCount)
 {
 	// Now actually assign this data to the storage. Just repeat until successful, there isn't any useful really that we can merge the results of this
 	// with any other simultaneous writes that might be happening.
 	bool success = false;
 	do
 	{
-		__int64 lastDataAndCount = dataAndCount;
+		int64_t lastDataAndCount = dataAndCount;
 		unsigned char *lastDataPointer = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		__int64 lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
-		
+		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+
 		if( lastDataAndCount2 == lastDataAndCount )
 		{
 			success = true;
@@ -514,7 +514,7 @@ int SparseLightStorage::compress()
 	unsigned char _planeIndices[128];
 	bool needsCompressed = false;
 
-	__int64 lastDataAndCount = dataAndCount;
+	int64_t lastDataAndCount = dataAndCount;
 
 	unsigned char *planeIndices = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 	unsigned char *data = planeIndices + 128;
@@ -560,7 +560,7 @@ int SparseLightStorage::compress()
 
 	if( needsCompressed )
 	{
-		unsigned char *newIndicesAndData = (unsigned char *)malloc( 128 + 128 * planesToAlloc );
+		unsigned char *newIndicesAndData = static_cast<unsigned char *>(malloc(128 + 128 * planesToAlloc));
 		unsigned char *pucData = newIndicesAndData + 128;
 		XMemCpy( newIndicesAndData, _planeIndices, 128 );
 
@@ -575,13 +575,13 @@ int SparseLightStorage::compress()
 
 		// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-		__int64 newDataAndCount = ((__int64) newIndicesAndData) & 0x0000ffffffffffffL;
+		int64_t newDataAndCount = ((int64_t) newIndicesAndData) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((__int64)planesToAlloc) << 48;
+		newDataAndCount |= static_cast<int64_t>(planesToAlloc) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		__int64 lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
 
 		if( lastDataAndCount2 != lastDataAndCount )
 		{
@@ -593,7 +593,7 @@ int SparseLightStorage::compress()
 		{
 			// Success
 			queueForDelete( planeIndices );
-//			printf("Successfully compressed to %d planes, to delete 0x%x\n", planesToAlloc, planeIndices); 
+//			printf("Successfully compressed to %d planes, to delete 0x%x\n", planesToAlloc, planeIndices);
 #ifdef LIGHT_COMPRESSION_STATS
 			count = planesToAlloc;
 #endif
@@ -603,7 +603,7 @@ int SparseLightStorage::compress()
 	}
 	else
 	{
-		return (int)((lastDataAndCount >> 48 ) & 0xffff);
+		return static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 	}
 }
 
@@ -629,14 +629,14 @@ void SparseLightStorage::write(DataOutputStream *dos)
 void SparseLightStorage::read(DataInputStream *dis)
 {
 	int count = dis->readInt();
-	unsigned char *dataPointer = (unsigned char *)malloc(count * 128 + 128);
+	unsigned char *dataPointer = static_cast<unsigned char *>(malloc(count * 128 + 128));
 	byteArray wrapper(dataPointer, count * 128 + 128);
 	dis->readFully(wrapper);
 
 #pragma warning ( disable : 4826 )
-	__int64 newDataAndCount = ((__int64) dataPointer) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((__int64)count) << 48;
+	newDataAndCount |= static_cast<int64_t>(count) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }

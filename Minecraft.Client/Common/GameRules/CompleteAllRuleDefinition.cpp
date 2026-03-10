@@ -28,15 +28,15 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 {
 	int goal = 0;
 	int progress = 0;
-	for(AUTO_VAR(it, rule->m_parameters.begin()); it != rule->m_parameters.end(); ++it)
+	for (auto& it : rule->m_parameters )
 	{
-		if(it->second.isPointer)
+		if(it.second.isPointer)
 		{
-			goal += it->second.gr->getGameRuleDefinition()->getGoal();
-			progress += it->second.gr->getGameRuleDefinition()->getProgress(it->second.gr);
+			goal += it.second.gr->getGameRuleDefinition()->getGoal();
+			progress += it.second.gr->getGameRuleDefinition()->getProgress(it.second.gr);
 		}
 	}
-	if(rule->getConnection() != NULL)
+	if(rule->getConnection() != nullptr)
 	{
 		PacketData data;
 		data.goal = goal;
@@ -44,23 +44,23 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 
 		int icon = -1;
 		int auxValue = 0;
-		
-		if(m_lastRuleStatusChanged != NULL)
-		{	
+
+		if(m_lastRuleStatusChanged != nullptr)
+		{
 			icon = m_lastRuleStatusChanged->getIcon();
 			auxValue = m_lastRuleStatusChanged->getAuxValue();
-			m_lastRuleStatusChanged = NULL;
+			m_lastRuleStatusChanged = nullptr;
 		}
-		rule->getConnection()->send( shared_ptr<UpdateGameRuleProgressPacket>( new UpdateGameRuleProgressPacket(getActionType(), this->m_descriptionId,icon, auxValue, 0,&data,sizeof(PacketData))));
+		rule->getConnection()->send(std::make_shared<UpdateGameRuleProgressPacket>(getActionType(), this->m_descriptionId, icon, auxValue, 0, &data, sizeof(PacketData)));
 	}
 	app.DebugPrintf("Updated CompleteAllRule - Completed %d of %d\n", progress, goal);
 }
 
 wstring CompleteAllRuleDefinition::generateDescriptionString(const wstring &description, void *data, int dataLength)
 {
-	PacketData *values = (PacketData *)data;
+	PacketData *values = static_cast<PacketData *>(data);
 	wstring newDesc = description;
-	newDesc = replaceAll(newDesc,L"{*progress*}",_toString<int>(values->progress));
-	newDesc = replaceAll(newDesc,L"{*goal*}",_toString<int>(values->goal));
+	newDesc = replaceAll(newDesc,L"{*progress*}",std::to_wstring(values->progress));
+	newDesc = replaceAll(newDesc,L"{*goal*}",std::to_wstring(values->goal));
 	return newDesc;
 }

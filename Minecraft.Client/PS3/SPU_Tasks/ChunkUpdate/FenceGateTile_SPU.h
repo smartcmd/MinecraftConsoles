@@ -12,7 +12,7 @@ public:
 	Icon_SPU *getTexture(int face, int data) { 	return TileRef_SPU(wood_Id)->getTexture(face); }
 	static int getDirection(int data)	{ return (data & DIRECTION_MASK); }
 
-	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL) // 4J added forceData, forceEntity param // Brought forward from 1.2.3
+	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr) // 4J added forceData, forceEntity param // Brought forward from 1.2.3
 	{
 		int data = getDirection(level->getData(x, y, z));
 		if (data == Direction::NORTH || data == Direction::SOUTH)

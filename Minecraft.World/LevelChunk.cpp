@@ -54,7 +54,7 @@ void LevelChunk::init(Level *level, int x, int z)
 	biomes = byteArray(16 * 16);
 	for(int i = 0; i < 16 * 16; i++ )
 	{
-		biomes[i] = 0xff;	
+		biomes[i] = 0xff;
 	}
 #ifdef _ENTITIES_RW_SECTION
 	EnterCriticalRWSection(&m_csEntities, true);
@@ -109,12 +109,12 @@ void LevelChunk::init(Level *level, int x, int z)
 	// Optimisation brought forward from 1.8.2, change from int to unsigned char & this special value changed from -999 to 255
 	for(int i = 0; i < 16 * 16; i++ )
 	{
-		rainHeights[i] = 255;	
+		rainHeights[i] = 255;
 	}
 	// 4J - lighting change brought forward from 1.8.2, introduced an array of bools called gapsToRecheck, which are now a single bit in array of nybble flags in this version
 	for(int i = 0; i < 8 * 16; i++ )
 	{
-		columnFlags[i] = 0;		
+		columnFlags[i] = 0;
 	}
 
 	// 4J added - to flag if any emissive tile has been added to this chunk (will be cleared when lighting has been successfully completed for this chunk). Defaulting to true
@@ -123,19 +123,19 @@ void LevelChunk::init(Level *level, int x, int z)
 
 #ifdef _LARGE_WORLDS
 	m_bUnloaded = false; // 4J Added
-	m_unloadedEntitiesTag = NULL;
+	m_unloadedEntitiesTag = nullptr;
 #endif
 }
 
 // This ctor is used for loading a save into
-LevelChunk::LevelChunk(Level *level, int x, int z) : ENTITY_BLOCKS_LENGTH( Level::maxBuildHeight/16 )
+LevelChunk::LevelChunk(Level *level, int x, int z)
 {
 	init(level, x, z);
 	lowerBlocks = new CompressedTileStorage();
-	lowerData = NULL;
-	lowerSkyLight = NULL;
-	lowerBlockLight = NULL;
-	serverTerrainPopulated = NULL;
+	lowerData = nullptr;
+	lowerSkyLight = nullptr;
+	lowerBlockLight = nullptr;
+	serverTerrainPopulated = nullptr;
 
 	if(Level::maxBuildHeight > Level::COMPRESSED_CHUNK_SECTION_HEIGHT)
 	{
@@ -147,10 +147,10 @@ LevelChunk::LevelChunk(Level *level, int x, int z) : ENTITY_BLOCKS_LENGTH( Level
 	}
 	else
 	{
-		upperBlocks = NULL;
-		upperData = NULL;
-		upperSkyLight = NULL;
-		upperBlockLight = NULL;
+		upperBlocks = nullptr;
+		upperData = nullptr;
+		upperSkyLight = nullptr;
+		upperBlockLight = nullptr;
 	}
 
 #ifdef SHARING_ENABLED
@@ -160,14 +160,14 @@ LevelChunk::LevelChunk(Level *level, int x, int z) : ENTITY_BLOCKS_LENGTH( Level
 
 // 4J - note that since we now compress the block storage, the parameter blocks is used as a source of data, but doesn't get used As the source data so needs
 // to be deleted after calling this ctor.
-LevelChunk::LevelChunk(Level *level, byteArray blocks, int x, int z) : ENTITY_BLOCKS_LENGTH( Level::maxBuildHeight/16 )
+LevelChunk::LevelChunk(Level *level, byteArray blocks, int x, int z)
 {
 	init(level, x, z);
 
 	// We'll be creating this as "empty" when this ctor is called on the client, as a result of a chunk becoming visible (but we don't have the data yet for it).
 	// In this case, we want to keep memory usage down and so create all data as empty/compressed as possible. On the client we get the full data for the chunk as a single
 	// update in a block region update packet, and so there is a single point where it is good to compress the data.
-	bool createEmpty = ( blocks.data == NULL );
+	bool createEmpty = ( blocks.data == nullptr );
 
 	if( createEmpty )
 	{
@@ -189,7 +189,7 @@ LevelChunk::LevelChunk(Level *level, byteArray blocks, int x, int z) : ENTITY_BL
 	//    skyLight = new DataLayer(blocks.length, level->depthBits);
 	//    blockLight = new DataLayer(blocks.length, level->depthBits);
 
-	if(Level::maxBuildHeight > Level::COMPRESSED_CHUNK_SECTION_HEIGHT) 
+	if(Level::maxBuildHeight > Level::COMPRESSED_CHUNK_SECTION_HEIGHT)
 	{
 		if(blocks.length > Level::COMPRESSED_CHUNK_SECTION_TILES) upperBlocks = new CompressedTileStorage(blocks,Level::COMPRESSED_CHUNK_SECTION_TILES);
 		else upperBlocks = new CompressedTileStorage(true);
@@ -199,13 +199,13 @@ LevelChunk::LevelChunk(Level *level, byteArray blocks, int x, int z) : ENTITY_BL
 	}
 	else
 	{
-		upperBlocks = NULL;
-		upperData = NULL;
-		upperSkyLight = NULL;
-		upperBlockLight = NULL;
+		upperBlocks = nullptr;
+		upperData = nullptr;
+		upperSkyLight = nullptr;
+		upperBlockLight = nullptr;
 	}
 
-	serverTerrainPopulated = NULL;
+	serverTerrainPopulated = nullptr;
 #ifdef SHARING_ENABLED
 	sharingTilesAndData = false;
 #endif
@@ -213,7 +213,7 @@ LevelChunk::LevelChunk(Level *level, byteArray blocks, int x, int z) : ENTITY_BL
 
 // 4J - this ctor added to be able to make a levelchunk that shares its underlying block data between the server chunk cache & the multiplayer chunk cache.
 // The original version this is shared from owns all the data that is shared into this copy, so it isn't deleted in the dtor.
-LevelChunk::LevelChunk(Level *level, int x, int z, LevelChunk *lc) : ENTITY_BLOCKS_LENGTH( Level::maxBuildHeight/16 )
+LevelChunk::LevelChunk(Level *level, int x, int z, LevelChunk *lc)
 {
 	init(level, x, z);
 
@@ -237,7 +237,7 @@ LevelChunk::LevelChunk(Level *level, int x, int z, LevelChunk *lc) : ENTITY_BLOC
 	this->data = new SparseDataStorage(lc->data);
 	this->skyLight = new SparseLightStorage(lc->skyLight);
 	this->blockLight = new SparseLightStorage(lc->blockLight);
-	serverTerrainPopulated = NULL;
+	serverTerrainPopulated = nullptr;
 #endif
 }
 
@@ -296,8 +296,8 @@ void LevelChunk::stopSharingTilesAndData()
 	}
 	else
 	{
-		upperBlocks = NULL;
-		upperData = NULL;
+		upperBlocks = nullptr;
+		upperData = nullptr;
 	}
 
 	/*
@@ -394,7 +394,7 @@ void LevelChunk::startSharingTilesAndData(int forceMs)
 	else
 	{
 		// Only force if it has been more than forceMs milliseconds since we last wanted to unshare this chunk
-		__int64 timenow = System::currentTimeMillis();
+		int64_t timenow = System::currentTimeMillis();
 		if( ( timenow - lastUnsharedTime ) < forceMs )
 		{
 			LeaveCriticalSection(&m_csSharing);
@@ -531,7 +531,7 @@ void LevelChunk::recalcHeightmapOnly()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = static_cast<byte>(y);
 			if (y < min) min = y;
 		}
 
@@ -588,7 +588,7 @@ void LevelChunk::recalcHeightmap()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = static_cast<byte>(y);
 			if (y < min) min = y;
 			if (y < lowestHeightmap) lowestHeightmap = y;
 
@@ -705,7 +705,7 @@ void LevelChunk::recheckGaps(bool bForce)
 	// 4J added - otherwise we can end up doing a very broken kind of lighting since for an empty chunk, the heightmap is all zero, but it
 	// still has an x and z of 0 which means that the level->getHeightmap references in here find a real chunk near the origin, and then attempt
 	// to light massive gaps between the height of 0 and whatever heights are in those.
-	if( isEmpty() ) return;		
+	if( isEmpty() ) return;
 
 	// 4J added
 	int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
@@ -773,7 +773,7 @@ void LevelChunk::lightGap(int x, int z, int source)
 	{
 		lightGap(x, z, source, height + 1);
 	}
-	else if (height < source) 
+	else if (height < source)
 	{
 		lightGap(x, z, height, source + 1);
 	}
@@ -811,7 +811,7 @@ void LevelChunk::recalcHeight(int x, int yStart, int z)
 	if (y == yOld) return;
 
 	//    level->lightColumnChanged(x, z, y, yOld);		// 4J - this call moved below & corrected - see comment further down
-	heightmap[z << 4 | x] = (byte) y;
+	heightmap[z << 4 | x] = static_cast<byte>(y);
 
 	if (y < minHeight)
 	{
@@ -900,7 +900,7 @@ void LevelChunk::recalcHeight(int x, int yStart, int z)
 /**
 * The purpose of this method is to allow the EmptyLevelChunk to be all air
 * but still block light. See EmptyLevelChunk.java
-* 
+*
 * @param x
 * @param y
 * @param z
@@ -919,12 +919,12 @@ int LevelChunk::getTile(int x, int y, int z)
 
 bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 {
-	byte tile = (byte) _tile;
+	byte tile = static_cast<byte>(_tile);
 
 	// Optimisation brought forward from 1.8.2, change from int to unsigned char & this special value changed from -999 to 255
 	int slot = z << 4 | x;
 
-	if (y >= ((int)rainHeights[slot]) - 1)
+	if (y >= static_cast<int>(rainHeights[slot]) - 1)
 	{
 		rainHeights[slot] = 255;
 	}
@@ -939,7 +939,7 @@ bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 	{
 		// 4J Stu - Need to do this here otherwise double chests don't always work correctly
 		shared_ptr<TileEntity> te = getTileEntity(x, y, z);
-		if (te != NULL)
+		if (te != nullptr)
 		{
 			te->clearCache();
 		}
@@ -1032,17 +1032,17 @@ bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 			}
 		}
 		// AP - changed the method of EntityTile detection cos it's well slow on Vita mate
-		//		if (_tile > 0 && dynamic_cast<EntityTile *>(Tile::tiles[_tile]) != NULL)
-		if (_tile > 0 && Tile::tiles[_tile] != NULL && Tile::tiles[_tile]->isEntityTile())
+		//		if (_tile > 0 && dynamic_cast<EntityTile *>(Tile::tiles[_tile]) != nullptr)
+		if (_tile > 0 && Tile::tiles[_tile] != nullptr && Tile::tiles[_tile]->isEntityTile())
 		{
 			shared_ptr<TileEntity> te = getTileEntity(x, y, z);
-			if (te == NULL)
+			if (te == nullptr)
 			{
 				te = dynamic_cast<EntityTile *>(Tile::tiles[_tile])->newTileEntity(level);
 				//app.DebugPrintf("%s: Setting tile id %d, created tileEntity type %d\n", level->isClientSide?"Client":"Server", _tile, te->GetType());
 				level->setTileEntity(xOffs, y, zOffs, te);
 			}
-			if (te != NULL)
+			if (te != nullptr)
 			{
 				//app.DebugPrintf("%s: Setting tile id %d, found tileEntity type %d\n", level->isClientSide?"Client":"Server", _tile, te->GetType());
 				te->clearCache();
@@ -1050,11 +1050,11 @@ bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 		}
 	}
 	// AP - changed the method of EntityTile detection cos it's well slow on Vita mate
-	//	else if (old > 0 && dynamic_cast<EntityTile *>(Tile::tiles[old]) != NULL)
-	else if (old > 0 && Tile::tiles[_tile] != NULL && Tile::tiles[_tile]->isEntityTile())
+	//	else if (old > 0 && dynamic_cast<EntityTile *>(Tile::tiles[old]) != nullptr)
+	else if (old > 0 && Tile::tiles[_tile] != nullptr && Tile::tiles[_tile]->isEntityTile())
 	{
 		shared_ptr<TileEntity> te = getTileEntity(x, y, z);
-		if (te != NULL)
+		if (te != nullptr)
 		{
 			te->clearCache();
 		}
@@ -1091,10 +1091,10 @@ bool LevelChunk::setData(int x, int y, int z, int val, int mask, bool *maskedBit
 
 	data->set(x, y % Level::COMPRESSED_CHUNK_SECTION_HEIGHT, z, val);
 	int _tile = getTile(x, y, z);
-	if (_tile > 0 && dynamic_cast<EntityTile *>( Tile::tiles[_tile] ) != NULL)
+	if (_tile > 0 && dynamic_cast<EntityTile *>( Tile::tiles[_tile] ) != nullptr)
 	{
 		shared_ptr<TileEntity> te = getTileEntity(x, y, z);
-		if (te != NULL)
+		if (te != nullptr)
 		{
 			te->clearCache();
 			te->data = val;
@@ -1240,7 +1240,7 @@ void LevelChunk::removeEntity(shared_ptr<Entity> e, int yc)
 #endif
 
 	// 4J - was entityBlocks[yc]->remove(e);
-	AUTO_VAR(it, find(entityBlocks[yc]->begin(),entityBlocks[yc]->end(),e));
+	auto it = find(entityBlocks[yc]->begin(), entityBlocks[yc]->end(), e);
 	if( it != entityBlocks[yc]->end() )
 	{
 		entityBlocks[yc]->erase(it);
@@ -1250,7 +1250,7 @@ void LevelChunk::removeEntity(shared_ptr<Entity> e, int yc)
 		// MGH - have to sort this C++11 code
 		static bool bShowMsg = true;
 		if(bShowMsg)
-		{ 
+		{
 			app.DebugPrintf("Need to add C++11 shrink_to_fit for PS3\n");
 			bShowMsg = false;
 		}
@@ -1292,7 +1292,7 @@ shared_ptr<TileEntity> LevelChunk::getTileEntity(int x, int y, int z)
 	//shared_ptr<TileEntity> tileEntity = tileEntities[pos];
 	EnterCriticalSection(&m_csTileEntities);
 	shared_ptr<TileEntity> tileEntity = nullptr;
-	AUTO_VAR(it, tileEntities.find(pos));
+	auto it = tileEntities.find(pos);
 
 	if (it == tileEntities.end())
 	{
@@ -1310,7 +1310,7 @@ shared_ptr<TileEntity> LevelChunk::getTileEntity(int x, int y, int z)
 		//EntityTile *et = (EntityTile *) Tile::tiles[t];
 		//et->onPlace(level, this->x * 16 + x, y, this->z * 16 + z);
 
-		//if (tileEntity == NULL)
+		//if (tileEntity == nullptr)
 		//{
 		tileEntity = dynamic_cast<EntityTile *>(Tile::tiles[t])->newTileEntity(level);
 		level->setTileEntity(this->x * 16 + x, y, this->z * 16 + z, tileEntity);
@@ -1320,8 +1320,8 @@ shared_ptr<TileEntity> LevelChunk::getTileEntity(int x, int y, int z)
 
 		// 4J Stu - It should have been inserted by now, but check to be sure
 		EnterCriticalSection(&m_csTileEntities);
-		AUTO_VAR(newIt, tileEntities.find(pos));
-		if (newIt != tileEntities.end())
+        auto newIt = tileEntities.find(pos);
+        if (newIt != tileEntities.end())
 		{
 			tileEntity = newIt->second;
 		}
@@ -1332,7 +1332,7 @@ shared_ptr<TileEntity> LevelChunk::getTileEntity(int x, int y, int z)
 		tileEntity = it->second;
 		LeaveCriticalSection(&m_csTileEntities);
 	}
-	if (tileEntity != NULL && tileEntity->isRemoved())
+	if (tileEntity != nullptr && tileEntity->isRemoved())
 	{
 		EnterCriticalSection(&m_csTileEntities);
 		tileEntities.erase(pos);
@@ -1371,8 +1371,8 @@ void LevelChunk::setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileE
 		app.DebugPrintf("Attempted to place a tile entity where there was no entity tile!\n");
 		return;
 	}
-	AUTO_VAR(it, tileEntities.find(pos) );
-	if(it != tileEntities.end()) it->second->setRemoved();
+    auto it = tileEntities.find(pos);
+    if(it != tileEntities.end()) it->second->setRemoved();
 
 	tileEntity->clearRemoved();
 
@@ -1393,12 +1393,12 @@ void LevelChunk::removeTileEntity(int x, int y, int z)
 		//       removeThis.setRemoved();
 		//   }
 		EnterCriticalSection(&m_csTileEntities);
-		AUTO_VAR(it, tileEntities.find(pos));
-		if( it != tileEntities.end() )
+        auto it = tileEntities.find(pos);
+        if( it != tileEntities.end() )
 		{
 			shared_ptr<TileEntity> te = tileEntities[pos];
 			tileEntities.erase(pos);
-			if( te != NULL )
+			if( te != nullptr )
 			{
 				if(level->isClientSide)
 				{
@@ -1421,13 +1421,13 @@ void LevelChunk::load()
 		if(m_bUnloaded && m_unloadedEntitiesTag)
 		{
 			ListTag<CompoundTag> *entityTags = (ListTag<CompoundTag> *) m_unloadedEntitiesTag->getList(L"Entities");
-			if (entityTags != NULL)
+			if (entityTags != nullptr)
 			{
 				for (int i = 0; i < entityTags->size(); i++)
 				{
 					CompoundTag *teTag = entityTags->get(i);
 					shared_ptr<Entity> ent = EntityIO::loadStatic(teTag, level);
-					if (ent != NULL)
+					if (ent != nullptr)
 					{
 						ent->onLoadedFromSave();
 						addEntity(ent);
@@ -1436,29 +1436,29 @@ void LevelChunk::load()
 			}
 
 			ListTag<CompoundTag> *tileEntityTags = (ListTag<CompoundTag> *) m_unloadedEntitiesTag->getList(L"TileEntities");
-			if (tileEntityTags != NULL)
+			if (tileEntityTags != nullptr)
 			{
 				for (int i = 0; i < tileEntityTags->size(); i++)
 				{
 					CompoundTag *teTag = tileEntityTags->get(i);
 					shared_ptr<TileEntity> te = TileEntity::loadStatic(teTag);
-					if (te != NULL)
+					if (te != nullptr)
 					{
 						addTileEntity(te);
 					}
 				}
 			}
 			delete m_unloadedEntitiesTag;
-			m_unloadedEntitiesTag = NULL;
+			m_unloadedEntitiesTag = nullptr;
 			m_bUnloaded = false;
 		}
 #endif
 
 		vector< shared_ptr<TileEntity> > values;
 		EnterCriticalSection(&m_csTileEntities);
-		for( AUTO_VAR(it, tileEntities.begin()); it != tileEntities.end(); it++ )
+		for(auto& it : tileEntities)
 		{
-			values.push_back(it->second);
+			values.push_back(it.second);
 		}
 		LeaveCriticalSection(&m_csTileEntities);
 		level->addAllPendingTileEntities(values);
@@ -1492,10 +1492,10 @@ void LevelChunk::unload(bool unloadTileEntities)	// 4J - added parameter
 	if( unloadTileEntities )
 	{
 		EnterCriticalSection(&m_csTileEntities);
-		for( AUTO_VAR(it, tileEntities.begin()); it != tileEntities.end(); it++ )
+		for(auto& it : tileEntities)
 		{
 			// 4J-PB -m 1.7.3 was it->second->setRemoved();
-			level->markForRemoval(it->second);
+			level->markForRemoval(it.second);
 		}
 		LeaveCriticalSection(&m_csTileEntities);
 	}
@@ -1531,16 +1531,13 @@ void LevelChunk::unload(bool unloadTileEntities)	// 4J - added parameter
 			EnterCriticalSection(&m_csEntities);
 			for (int i = 0; i < ENTITY_BLOCKS_LENGTH; i++)
 			{
-				AUTO_VAR(itEnd, entityBlocks[i]->end());
-				for( vector<shared_ptr<Entity> >::iterator it = entityBlocks[i]->begin(); it != itEnd; it++ )
+				for(auto& e : *entityBlocks[i])
 				{
-					shared_ptr<Entity> e = *it;
 					CompoundTag *teTag = new CompoundTag();
 					if (e->save(teTag))
 					{
 						entityTags->add(teTag);
 					}
-
 				}
 
 				// Clear out this list
@@ -1554,13 +1551,10 @@ void LevelChunk::unload(bool unloadTileEntities)	// 4J - added parameter
 			PIXBeginNamedEvent(0,"Saving tile entities");
 			ListTag<CompoundTag> *tileEntityTags = new ListTag<CompoundTag>();
 
-			AUTO_VAR(itEnd,tileEntities.end());
-			for( unordered_map<TilePos, shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq>::iterator it = tileEntities.begin();
-				it != itEnd; it++)
+			for(auto& it : tileEntities)
 			{
-				shared_ptr<TileEntity> te = it->second;
 				CompoundTag *teTag = new CompoundTag();
-				te->save(teTag);
+				it.second->save(teTag);
 				tileEntityTags->add(teTag);
 			}
 			// Clear out the tileEntities list
@@ -1632,20 +1626,18 @@ void LevelChunk::getEntities(shared_ptr<Entity> except, AABB *bb, vector<shared_
 	{
 		vector<shared_ptr<Entity> > *entities = entityBlocks[yc];
 
-		AUTO_VAR(itEnd, entities->end());
-		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+		for (auto& e : *entities)
 		{
-			shared_ptr<Entity> e = *it; //entities->at(i);
-			if (e != except && e->bb->intersects(bb) && (selector == NULL || selector->matches(e)))
+			if ( e && e != except && e->bb->intersects(bb) && (selector == nullptr || selector->matches(e)))
 			{
 				es.push_back(e);
 				vector<shared_ptr<Entity> > *subs = e->getSubEntities();
-				if (subs != NULL)
+				if (subs != nullptr)
 				{
-					for (int j = 0; j < subs->size(); j++)
+					for (const auto& sub : *subs)
 					{
-						e = subs->at(j);
-						if (e != except && e->bb->intersects(bb) && (selector == NULL || selector->matches(e)))
+						e = sub;
+						if ( e && e != except && e->bb->intersects(bb) && (selector == nullptr || selector->matches(e)))
 						{
 							es.push_back(e);
 						}
@@ -1689,11 +1681,8 @@ void LevelChunk::getEntitiesOfClass(const type_info& ec, AABB *bb, vector<shared
 	{
 		vector<shared_ptr<Entity> > *entities = entityBlocks[yc];
 
-		AUTO_VAR(itEnd, entities->end());
-		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+		for (auto& e : *entities)
 		{
-			shared_ptr<Entity> e = *it; //entities->at(i);
-
 			bool isAssignableFrom = false;
 			// Some special cases where the base class is a general type that our class may be derived from, otherwise do a direct comparison of type_info
 			if			( ec==typeid(Player)		)	isAssignableFrom = e->instanceof(eTYPE_PLAYER);
@@ -1704,10 +1693,10 @@ void LevelChunk::getEntitiesOfClass(const type_info& ec, AABB *bb, vector<shared
 			else if		( ec==typeid(Minecart)		)   isAssignableFrom = e->instanceof(eTYPE_MINECART);
 			else if		( ec==typeid(Monster)		)	isAssignableFrom = e->instanceof(eTYPE_MONSTER);
 			else if		( ec==typeid(Zombie)		)	isAssignableFrom = e->instanceof(eTYPE_ZOMBIE);
-			else if(e != NULL && ec == typeid(*(e.get())) ) isAssignableFrom = true;
+			else if(e != nullptr && ec == typeid(*(e.get())) ) isAssignableFrom = true;
 			if (isAssignableFrom && e->bb->intersects(bb))
 			{
-				if (selector == NULL || selector->matches(e))
+				if (selector == nullptr || selector->matches(e))
 				{
 					es.push_back(e);
 				}
@@ -1730,7 +1719,7 @@ int LevelChunk::countEntities()
 #endif
 	for (int yc = 0; yc < ENTITY_BLOCKS_LENGTH; yc++)
 	{
-		entityCount += (int)entityBlocks[yc]->size();
+		entityCount += static_cast<int>(entityBlocks[yc]->size());
 	}
 #ifdef _ENTITIES_RW_SECTION
 	LeaveCriticalRWSection(&m_csEntities, false);
@@ -1824,7 +1813,7 @@ bool LevelChunk::testSetBlocksAndData(byteArray data, int x0, int y0, int z0, in
 
 void LevelChunk::tileUpdatedCallback(int x, int y, int z, void *param, int yparam)
 {
-	LevelChunk *lc = (LevelChunk *)param;
+	LevelChunk *lc = static_cast<LevelChunk *>(param);
 	int xx = lc->x * 16 + x;
 	int yy = y + yparam;
 	int zz = lc->z * 16 + z;
@@ -1860,8 +1849,8 @@ int LevelChunk::setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1,
 	int compressedHeight = Level::COMPRESSED_CHUNK_SECTION_HEIGHT;
 
 	// 4J - replaced block storage as now uses CompressedTileStorage
-	if(y0 < Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += lowerBlocks->setDataRegion( data, x0, y0, z0, x1, min(compressedHeight, y1), z1, p, includeLighting ? NULL : tileUpdatedCallback, this, 0 );
-	if(y1 > Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += upperBlocks->setDataRegion( data, x0, max(y0-compressedHeight,0), z0, x1, y1-Level::COMPRESSED_CHUNK_SECTION_HEIGHT, z1, p, includeLighting ? NULL : tileUpdatedCallback, this, Level::COMPRESSED_CHUNK_SECTION_HEIGHT );
+	if(y0 < Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += lowerBlocks->setDataRegion( data, x0, y0, z0, x1, min(compressedHeight, y1), z1, p, includeLighting ? nullptr : tileUpdatedCallback, this, 0 );
+	if(y1 > Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += upperBlocks->setDataRegion( data, x0, max(y0-compressedHeight,0), z0, x1, y1-Level::COMPRESSED_CHUNK_SECTION_HEIGHT, z1, p, includeLighting ? nullptr : tileUpdatedCallback, this, Level::COMPRESSED_CHUNK_SECTION_HEIGHT );
 	/*
 	for (int x = x0; x < x1; x++)
 	for (int z = z0; z < z1; z++)
@@ -1875,8 +1864,8 @@ int LevelChunk::setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1,
 	recalcHeightmapOnly();
 
 	// 4J - replaced data storage as now uses SparseDataStorage
-	if(y0 < Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += lowerData->setDataRegion( data, x0, y0, z0, x1, min(compressedHeight, y1), z1, p, includeLighting ? NULL : tileUpdatedCallback, this, 0 );
-	if(y1 > Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += upperData->setDataRegion( data, x0, max(y0-compressedHeight,0), z0, x1, y1-Level::COMPRESSED_CHUNK_SECTION_HEIGHT, z1, p, includeLighting ? NULL : tileUpdatedCallback, this, Level::COMPRESSED_CHUNK_SECTION_HEIGHT );
+	if(y0 < Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += lowerData->setDataRegion( data, x0, y0, z0, x1, min(compressedHeight, y1), z1, p, includeLighting ? nullptr : tileUpdatedCallback, this, 0 );
+	if(y1 > Level::COMPRESSED_CHUNK_SECTION_HEIGHT) p += upperData->setDataRegion( data, x0, max(y0-compressedHeight,0), z0, x1, y1-Level::COMPRESSED_CHUNK_SECTION_HEIGHT, z1, p, includeLighting ? nullptr : tileUpdatedCallback, this, Level::COMPRESSED_CHUNK_SECTION_HEIGHT );
 
 	if( includeLighting )
 	{
@@ -1929,9 +1918,9 @@ int LevelChunk::setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1,
 	}
 	*/
 
-	for(AUTO_VAR(it, tileEntities.begin()); it != tileEntities.end(); ++it)
+	for(auto& it : tileEntities)
 	{
-		it->second->clearCache();
+		it.second->clearCache();
 	}
 	//        recalcHeightmap();
 
@@ -1951,7 +1940,7 @@ void LevelChunk::setCheckAllLight()
 	checkLightPosition = 0;
 }
 
-Random *LevelChunk::getRandom(__int64 l)
+Random *LevelChunk::getRandom(int64_t l)
 {
 	return new Random((level->getSeed() + x * x * 4987142 + x * 5947611 + z * z * 4392871l + z * 389711) ^ l);
 }
@@ -2011,7 +2000,7 @@ void LevelChunk::checkChests(ChunkSource *source, int x, int z )
 					{
 						int xOffs = x * 16 + xx;
 						int zOffs = z * 16 + zz;
-						ChestTile *tile = (ChestTile *)Tile::tiles[Tile::chest_Id];
+						ChestTile *tile = static_cast<ChestTile *>(Tile::tiles[Tile::chest_Id]);
 						tile->recalcLockDir( level, xOffs, yy, zOffs );
 						level->checkLight(xOffs, yy, zOffs, true);
 					}
@@ -2058,7 +2047,7 @@ void LevelChunk::reloadBiomes()
 		for(unsigned int z = 0; z < 16; ++z)
 		{
 			Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
-			biomes[(z << 4) | x] = (byte) ( (biome->id) & 0xff);
+			biomes[(z << 4) | x] = static_cast<byte>((biome->id) & 0xff);
 		}
 	}
 }
@@ -2070,9 +2059,9 @@ Biome *LevelChunk::getBiome(int x, int z, BiomeSource *biomeSource)
 	{
 		Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
 		value = biome->id;
-		biomes[(z << 4) | x] = (byte) (value & 0xff);
+		biomes[(z << 4) | x] = static_cast<byte>(value & 0xff);
 	}
-	if (Biome::biomes[value] == NULL)
+	if (Biome::biomes[value] == nullptr)
 	{
 		return Biome::plains;
 	}
@@ -2086,7 +2075,7 @@ byteArray LevelChunk::getBiomes()
 
 void LevelChunk::setBiomes(byteArray biomes)
 {
-	if(this->biomes.data != NULL) delete[] this->biomes.data;
+	if(this->biomes.data != nullptr) delete[] this->biomes.data;
 	this->biomes = biomes;
 }
 
@@ -2167,8 +2156,8 @@ void LevelChunk::getDataData(byteArray data)
 // Set data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setDataData(byteArray data)
 {
-	if( lowerData == NULL ) lowerData = new SparseDataStorage();
-	if( upperData == NULL ) upperData = new SparseDataStorage(true);
+	if( lowerData == nullptr ) lowerData = new SparseDataStorage();
+	if( upperData == nullptr ) upperData = new SparseDataStorage(true);
 	lowerData->setData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperData->setData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
@@ -2190,8 +2179,8 @@ void LevelChunk::getBlockLightData(byteArray data)
 // Set sky light data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setSkyLightData(byteArray data)
 {
-	if( lowerSkyLight == NULL ) lowerSkyLight = new SparseLightStorage(true);
-	if( upperSkyLight == NULL ) upperSkyLight = new SparseLightStorage(true,true);
+	if( lowerSkyLight == nullptr ) lowerSkyLight = new SparseLightStorage(true);
+	if( upperSkyLight == nullptr ) upperSkyLight = new SparseLightStorage(true,true);
 	lowerSkyLight->setData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperSkyLight->setData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
@@ -2199,8 +2188,8 @@ void LevelChunk::setSkyLightData(byteArray data)
 // Set block light data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setBlockLightData(byteArray data)
 {
-	if( lowerBlockLight == NULL ) lowerBlockLight = new SparseLightStorage(false);
-	if( upperBlockLight == NULL ) upperBlockLight = new SparseLightStorage(false, true);
+	if( lowerBlockLight == nullptr ) lowerBlockLight = new SparseLightStorage(false);
+	if( upperBlockLight == nullptr ) upperBlockLight = new SparseLightStorage(false, true);
 	lowerBlockLight->setData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperBlockLight->setData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
@@ -2216,7 +2205,7 @@ void LevelChunk::setSkyLightDataAllBright()
 void LevelChunk::compressLighting()
 {
 	// The lighting data is now generally not shared between host & local client, but is for a while at the start of level creation (until the point where the chunk data would be transferred by network
-	// data for remote clients). We'll therefore either be compressing a shared copy here or one of the server or client copies depending on 
+	// data for remote clients). We'll therefore either be compressing a shared copy here or one of the server or client copies depending on
 	lowerSkyLight->compress();
 	upperSkyLight->compress();
 	lowerBlockLight->compress();
@@ -2226,8 +2215,8 @@ void LevelChunk::compressLighting()
 void LevelChunk::compressBlocks()
 {
 #ifdef SHARING_ENABLED
-	CompressedTileStorage *blocksToCompressLower = NULL;
-	CompressedTileStorage *blocksToCompressUpper = NULL;
+	CompressedTileStorage *blocksToCompressLower = nullptr;
+	CompressedTileStorage *blocksToCompressUpper = nullptr;
 
 	// If we're the host machine, and this is the client level, then we only want to do this if we are sharing data. This means that we will be compressing the data that is shared from the server.
 	// No point trying to compress the local client copy of the data if the data is unshared, since we'll be throwing this data away again anyway once we share with the server again.
@@ -2304,24 +2293,24 @@ void LevelChunk::readCompressedBlockData(DataInputStream *dis)
 
 void LevelChunk::readCompressedDataData(DataInputStream *dis)
 {
-	if( lowerData == NULL ) lowerData = new SparseDataStorage();
-	if( upperData == NULL ) upperData = new SparseDataStorage(true);
+	if( lowerData == nullptr ) lowerData = new SparseDataStorage();
+	if( upperData == nullptr ) upperData = new SparseDataStorage(true);
 	lowerData->read(dis);
 	upperData->read(dis);
 }
 
 void LevelChunk::readCompressedSkyLightData(DataInputStream *dis)
 {
-	if( lowerSkyLight == NULL ) lowerSkyLight = new SparseLightStorage(true);
-	if( upperSkyLight == NULL ) upperSkyLight = new SparseLightStorage(true,true);
+	if( lowerSkyLight == nullptr ) lowerSkyLight = new SparseLightStorage(true);
+	if( upperSkyLight == nullptr ) upperSkyLight = new SparseLightStorage(true,true);
 	lowerSkyLight->read(dis);
 	upperSkyLight->read(dis);
 }
 
 void LevelChunk::readCompressedBlockLightData(DataInputStream *dis)
 {
-	if( lowerBlockLight == NULL ) lowerBlockLight = new SparseLightStorage(false);
-	if( upperBlockLight == NULL ) upperBlockLight = new SparseLightStorage(false, true);
+	if( lowerBlockLight == nullptr ) lowerBlockLight = new SparseLightStorage(false);
+	if( upperBlockLight == nullptr ) upperBlockLight = new SparseLightStorage(false, true);
 	lowerBlockLight->read(dis);
 	upperBlockLight->read(dis);
 }
@@ -2330,8 +2319,8 @@ void LevelChunk::readCompressedBlockLightData(DataInputStream *dis)
 void LevelChunk::compressData()
 {
 #ifdef SHARING_ENABLED
-	SparseDataStorage *dataToCompressLower = NULL;
-	SparseDataStorage *dataToCompressUpper = NULL;
+	SparseDataStorage *dataToCompressLower = nullptr;
+	SparseDataStorage *dataToCompressUpper = nullptr;
 
 	// If we're the host machine, and this is the client level, then we only want to do this if we are sharing data. This means that we will be compressing the data that is shared from the server.
 	// No point trying to compress the local client copy of the data if the data is unshared, since we'll be throwing this data away again anyway once we share with the server again.
@@ -2532,7 +2521,7 @@ void LevelChunk::reorderBlocksAndDataToXZY(int y0, int xs, int ys, int zs, byteA
 	//setBlocksAndData(*data, x0, y0, z0, x1, y1, z1, p);
 
 	//// If it is a full chunk, we'll need to rearrange into the order the rest of the game expects
-	//if( xs == 16 && ys == 128 && zs == 16 && ( ( x & 15 ) == 0 ) && ( y == 0 ) && ( ( z & 15 ) == 0 ) ) 
+	//if( xs == 16 && ys == 128 && zs == 16 && ( ( x & 15 ) == 0 ) && ( y == 0 ) && ( ( z & 15 ) == 0 ) )
 	//{
 	//	byteArray newBuffer = byteArray(81920);
 	//	for( int x = 0; x < 16; x++ )

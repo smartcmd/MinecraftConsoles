@@ -22,18 +22,18 @@ void NamedAreaRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numAtt
 	dos->writeUTF(m_name);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x0);
-	dos->writeUTF(_toString(m_area->x0));
+	dos->writeUTF(std::to_wstring(m_area->x0));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y0);
-	dos->writeUTF(_toString(m_area->y0));
+	dos->writeUTF(std::to_wstring(m_area->y0));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z0);
-	dos->writeUTF(_toString(m_area->z0));
+	dos->writeUTF(std::to_wstring(m_area->z0));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x1);
-	dos->writeUTF(_toString(m_area->x1));
+	dos->writeUTF(std::to_wstring(m_area->x1));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y1);
-	dos->writeUTF(_toString(m_area->y1));
+	dos->writeUTF(std::to_wstring(m_area->y1));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z1);
-	dos->writeUTF(_toString(m_area->z1));
+	dos->writeUTF(std::to_wstring(m_area->z1));
 }
 
 void NamedAreaRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)

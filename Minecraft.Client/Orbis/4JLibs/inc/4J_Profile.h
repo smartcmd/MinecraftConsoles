@@ -120,7 +120,7 @@ public:
 	// ACHIEVEMENTS & AWARDS
 
 	void				RegisterAward(int iAwardNumber,int iGamerconfigID, eAwardType eType, bool bLeaderboardAffected=false, 
-										CXuiStringTable*pStringTable=NULL, int iTitleStr=-1, int iTextStr=-1, int iAcceptStr=-1, char *pszThemeName=NULL, unsigned int uiThemeSize=0L);
+										CXuiStringTable*pStringTable=nullptr, int iTitleStr=-1, int iTextStr=-1, int iAcceptStr=-1, char *pszThemeName=nullptr, unsigned int uiThemeSize=0L);
 	int					GetAwardId(int iAwardNumber);
 	eAwardType			GetAwardType(int iAwardNumber);
 	bool				CanBeAwarded(int iQuadrant, int iAwardNumber);

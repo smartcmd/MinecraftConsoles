@@ -27,20 +27,16 @@ ExplodePacket::ExplodePacket(double x, double y, double z, float r, unordered_se
 	this->r = r;
 	m_bKnockbackOnly = knockBackOnly;
 
-	if(toBlow != NULL)
+	if(toBlow != nullptr)
 	{
 		this->toBlow.assign(toBlow->begin(),toBlow->end());
-		//for( AUTO_VAR(it, toBlow->begin()); it != toBlow->end(); it++ )
-		//{
-		//	this->toBlow.push_back(*it);
-		//}
 	}
 
-	if (knockback != NULL)
+	if (knockback != nullptr)
 	{
-		knockbackX = (float) knockback->x;
-		knockbackY = (float) knockback->y;
-		knockbackZ = (float) knockback->z;
+		knockbackX = static_cast<float>(knockback->x);
+		knockbackY = static_cast<float>(knockback->y);
+		knockbackZ = static_cast<float>(knockback->z);
 	}
 }
 
@@ -56,14 +52,16 @@ void ExplodePacket::read(DataInputStream *dis) //throws IOException
 		r = dis->readFloat();
 		int count = dis->readInt();
 
-		int xp = (int)x;
-		int yp = (int)y;
-		int zp = (int)z;
+		if (count < 0 || count > 32768) count = 0;
+
+		int xp = static_cast<int>(x);
+		int yp = static_cast<int>(y);
+		int zp = static_cast<int>(z);
 		for (int i=0; i<count; i++) 
 		{
-			int xx = ((signed char)dis->readByte())+xp;
-			int yy = ((signed char)dis->readByte())+yp;
-			int zz = ((signed char)dis->readByte())+zp;
+			int xx = static_cast<signed char>(dis->readByte())+xp;
+			int yy = static_cast<signed char>(dis->readByte())+yp;
+			int zz = static_cast<signed char>(dis->readByte())+zp;
 			toBlow.push_back( TilePos(xx, yy, zz) );
 		}
 	}
@@ -83,19 +81,14 @@ void ExplodePacket::write(DataOutputStream *dos) //throws IOException
 		dos->writeDouble(y);
 		dos->writeDouble(z);
 		dos->writeFloat(r);
-		dos->writeInt((int)toBlow.size());
+		dos->writeInt(static_cast<int>(toBlow.size()));
 
-		int xp = (int)x;
-		int yp = (int)y;
-		int zp = (int)z;
+		int xp = static_cast<int>(x);
+		int yp = static_cast<int>(y);
+		int zp = static_cast<int>(z);
 
-		//(Myset::const_iterator it = c1.begin(); 
-		//it != c1.end(); ++it) 
-	
-		for( AUTO_VAR(it, toBlow.begin()); it != toBlow.end(); it++ )
+		for ( const TilePos& tp : toBlow )
 		{
-			TilePos tp = *it;
-
 			int xx = tp.x-xp;
 			int yy = tp.y-yp;
 			int zz = tp.z-zp;
@@ -117,7 +110,7 @@ void ExplodePacket::handle(PacketListener *listener)
 
 int ExplodePacket::getEstimatedSize() 
 {
-	return 8*3+4+4+(int)toBlow.size()*3+12;
+	return 8*3+4+4+static_cast<int>(toBlow.size())*3+12;
 }
 
 float ExplodePacket::getKnockbackX()

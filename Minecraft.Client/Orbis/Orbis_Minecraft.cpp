@@ -32,6 +32,7 @@
 //#include "NetworkManager.h"
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -67,7 +68,7 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 };
 
 //-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time 
+// Time             Since fAppTime is a float, we need to keep the quadword app time
 //                  as a LARGE_INTEGER so that we don't lose precision after running
 //                  for a long time.
 //-------------------------------------------------------------------------------------
@@ -84,7 +85,7 @@ void DefineActions(void)
 	// The app needs to define the actions required, and the possible mappings for these
 
 	// Split into Menu actions, and in-game actions
-	
+
 	if(InputManager.IsCircleCrossSwapped())
 	{
 		InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_A,							_PS4_JOY_BUTTON_O);
@@ -140,7 +141,7 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_LEFT,				_PS4_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_RIGHT,				_PS4_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_UP,				_PS4_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);		
+	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);
 
 	if(InputManager.IsCircleCrossSwapped())
 	{
@@ -198,7 +199,7 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_LEFT,				_PS4_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_RIGHT,				_PS4_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_UP,				_PS4_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);
 
 	if(InputManager.IsCircleCrossSwapped())
 	{
@@ -255,7 +256,7 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_LEFT,				_PS4_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_RIGHT,				_PS4_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_UP,				_PS4_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_PS4_JOY_BUTTON_DPAD_DOWN);
 
 	// Vita remote play map
 	if(InputManager.IsCircleCrossSwapped())
@@ -278,7 +279,7 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_DOWN,						_PS4_JOY_BUTTON_DPAD_DOWN	| _PS4_JOY_BUTTON_LSTICK_DOWN);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_LEFT,						_PS4_JOY_BUTTON_DPAD_LEFT	| _PS4_JOY_BUTTON_LSTICK_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_RIGHT,						_PS4_JOY_BUTTON_DPAD_RIGHT	| _PS4_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_PAUSEMENU,					_PS4_JOY_BUTTON_OPTIONS);	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_PAUSEMENU,					_PS4_JOY_BUTTON_OPTIONS);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_OTHER_STICK_UP,				_PS4_JOY_BUTTON_RSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_OTHER_STICK_DOWN,			_PS4_JOY_BUTTON_RSTICK_DOWN);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,ACTION_MENU_OTHER_STICK_LEFT,			_PS4_JOY_BUTTON_RSTICK_LEFT);
@@ -300,11 +301,11 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_LOOK_RIGHT,				_PS4_JOY_BUTTON_RSTICK_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_LOOK_UP,				_PS4_JOY_BUTTON_RSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_LOOK_DOWN,				_PS4_JOY_BUTTON_RSTICK_DOWN);
-	
+
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_INVENTORY,				_PS4_JOY_BUTTON_TRIANGLE);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_PAUSEMENU,				_PS4_JOY_BUTTON_OPTIONS);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_DROP,					_PS4_JOY_BUTTON_O);	
-	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_CRAFTING,				_PS4_JOY_BUTTON_SQUARE);	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_DROP,					_PS4_JOY_BUTTON_O);
+	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_CRAFTING,				_PS4_JOY_BUTTON_SQUARE);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_GAME_INFO,				_PS4_JOY_BUTTON_TOUCHPAD);
 
 	InputManager.SetGameJoypadMaps(MAP_STYLE_3,MINECRAFT_ACTION_USE,					_PS4_JOY_BUTTON_L1);
@@ -326,7 +327,7 @@ void DefineActions(void)
 }
 
 #if 0
-HRESULT InitD3D( IDirect3DDevice9 **ppDevice, 
+HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	D3DPRESENT_PARAMETERS *pd3dPP )
 {
 	IDirect3D9 *pD3D;
@@ -353,16 +354,16 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	//pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
 	//ERR[D3D]: Can't set D3DPRESENTFLAG_NO_LETTERBOX when wide-screen is enabled
 	//	in the launcher/dashboard.
-	if(g_bWidescreen) 
+	if(g_bWidescreen)
 		pd3dPP->Flags=0;
-	else 
+	else
 		pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
 
 	// Create the device.
 	return pD3D->CreateDevice(
-		0, 
+		0,
 		D3DDEVTYPE_HAL,
-		NULL,
+		nullptr,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
 		pd3dPP,
 		ppDevice );
@@ -381,16 +382,16 @@ void MemSect(int sect)
 #endif
 
 #ifndef __ORBIS__
-HINSTANCE               g_hInst = NULL;
-HWND                    g_hWnd = NULL;
+HINSTANCE               g_hInst = nullptr;
+HWND                    g_hWnd = nullptr;
 D3D_DRIVER_TYPE         g_driverType = D3D_DRIVER_TYPE_NULL;
 D3D_FEATURE_LEVEL       g_featureLevel = D3D_FEATURE_LEVEL_11_0;
-ID3D11Device*           g_pd3dDevice = NULL;
-ID3D11DeviceContext*    g_pImmediateContext = NULL;
-IDXGISwapChain*         g_pSwapChain = NULL;
-ID3D11RenderTargetView* g_pRenderTargetView = NULL;
-ID3D11DepthStencilView* g_pDepthStencilView = NULL;
-ID3D11Texture2D*		g_pDepthStencilBuffer = NULL;
+ID3D11Device*           g_pd3dDevice = nullptr;
+ID3D11DeviceContext*    g_pImmediateContext = nullptr;
+IDXGISwapChain*         g_pSwapChain = nullptr;
+ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
+ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
+ID3D11Texture2D*		g_pDepthStencilBuffer = nullptr;
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -455,7 +456,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
 	wcex.hIcon			= LoadIcon(hInstance, "Minecraft");
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor		= LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= "Minecraft";
 	wcex.lpszClassName	= "MinecraftClass";
@@ -479,7 +480,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    g_hInst = hInstance; // Store instance handle in our global variable
 
    g_hWnd = CreateWindow("MinecraftClass", "Minecraft", WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!g_hWnd)
    {
@@ -543,7 +544,7 @@ HRESULT InitDevice()
     for( UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++ )
     {
         g_driverType = driverTypes[driverTypeIndex];
-        hr = D3D11CreateDeviceAndSwapChain( NULL, g_driverType, NULL, createDeviceFlags, featureLevels, numFeatureLevels,
+        hr = D3D11CreateDeviceAndSwapChain( nullptr, g_driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
                                             D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &g_featureLevel, &g_pImmediateContext );
         if( HRESULT_SUCCEEDED( hr ) )
             break;
@@ -552,14 +553,14 @@ HRESULT InitDevice()
         return hr;
 
     // Create a render target view
-    ID3D11Texture2D* pBackBuffer = NULL;
+    ID3D11Texture2D* pBackBuffer = nullptr;
     hr = g_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
     if( FAILED( hr ) )
         return hr;
 
 	// Create a depth stencil buffer
     D3D11_TEXTURE2D_DESC descDepth;
-    
+
     descDepth.Width = width;
     descDepth.Height = height;
     descDepth.MipLevels = 1;
@@ -571,7 +572,7 @@ HRESULT InitDevice()
     descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
     descDepth.CPUAccessFlags = 0;
     descDepth.MiscFlags = 0;
-    hr = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer); 
+    hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencilBuffer);
 
     D3D11_DEPTH_STENCIL_VIEW_DESC descDSView;
     descDSView.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -580,7 +581,7 @@ HRESULT InitDevice()
 
     hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &descDSView, &g_pDepthStencilView);
 
-    hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, NULL, &g_pRenderTargetView );
+    hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, nullptr, &g_pRenderTargetView );
     pBackBuffer->Release();
     if( FAILED( hr ) )
         return hr;
@@ -773,7 +774,7 @@ int main(int argc, const char *argv[] )
     MSG msg = {0};
     while( WM_QUIT != msg.message )
     {
-        if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+        if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
         {
             TranslateMessage( &msg );
             DispatchMessage( &msg );
@@ -808,14 +809,14 @@ int main(int argc, const char *argv[] )
 	}
 
 	// Initialize the application, assuming sharing of the d3d interface.
-	hr = app.InitShared( pDevice, &d3dpp, 
+	hr = app.InitShared( pDevice, &d3dpp,
 		XuiPNGTextureLoader );
 
 	if ( FAILED(hr) )
 	{
 		app.DebugPrintf
 			( "Failed initializing application.\n" );
-		
+
 		return -1;
 	}
 
@@ -919,7 +920,7 @@ int main(int argc, const char *argv[] )
 	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,(LPVOID)&app,"");
 	StorageManager.SetSaveTitleExtraFileSuffix(app.GetString(IDS_SAVE_SUBTITLE_SUFFIX));
 	StorageManager.SetDLCInfoMap(app.GetSonyDLCMap());
-	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
+	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't nullptr
 	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
@@ -939,7 +940,7 @@ int main(int argc, const char *argv[] )
     }
 
     // Create an XAudio2 mastering voice (utilized by XHV2 when voice data is mixed to main speakers)
-    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, NULL);
+    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, nullptr);
     if ( FAILED( hr ) )
     {
         app.DebugPrintf( "Creating XAudio2 mastering voice failed (err = 0x%08x)!\n", hr );
@@ -992,9 +993,9 @@ int main(int argc, const char *argv[] )
 	StorageManager.SetOptionsFolderTitle((WCHAR *)app.GetString(IDS_OPTIONSFILE));
 	StorageManager.SetCorruptSaveName((WCHAR *)app.GetString(IDS_CORRUPTSAVE_TITLE));
 #if (defined _FINAL_BUILD) || (defined _ART_BUILD)
-	StorageManager.SetGameSaveFolderPrefix(app.GetSaveFolderPrefix());		
+	StorageManager.SetGameSaveFolderPrefix(app.GetSaveFolderPrefix());
 #else
-	// Use debug directory to prevent debug saves being loaded/edited in package build (since debug can't edit package save games this causes various problems) 
+	// Use debug directory to prevent debug saves being loaded/edited in package build (since debug can't edit package save games this causes various problems)
 	StorageManager.SetGameSaveFolderPrefix("DEBUG01899");
 #endif
 	StorageManager.SetMaxSaves(99);
@@ -1030,7 +1031,7 @@ int main(int argc, const char *argv[] )
 
 	// set a function to be called when the ethernet is disconnected, so we can back out if required
 	ProfileManager.SetNotificationsCallback(&CConsoleMinecraftApp::NotificationsCallback,(LPVOID)&app);
-	
+
 #endif
 	// set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
 	ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback,(LPVOID)&app);
@@ -1064,13 +1065,13 @@ int main(int argc, const char *argv[] )
 
 	if(XNuiGetHardwareStatus()!=0)
 	{
-		// If the Kinect Sensor is not physically connected, this function returns 0. 
-		NuiInitialize(NUI_INITIALIZE_FLAG_USES_HIGH_QUALITY_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | 
+		// If the Kinect Sensor is not physically connected, this function returns 0.
+		NuiInitialize(NUI_INITIALIZE_FLAG_USES_HIGH_QUALITY_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH |
 			NUI_INITIALIZE_FLAG_EXTRAPOLATE_FLOOR_PLANE | NUI_INITIALIZE_FLAG_USES_FITNESS | NUI_INITIALIZE_FLAG_NUI_GUIDE_DISABLED | NUI_INITIALIZE_FLAG_SUPPRESS_AUTOMATIC_UI,NUI_INITIALIZE_DEFAULT_HARDWARE_THREAD );
 	}
 
 	// Sentient !
-	hr = TelemetryManager->Init();  
+	hr = TelemetryManager->Init();
 
 
 #endif
@@ -1080,7 +1081,7 @@ int main(int argc, const char *argv[] )
 	AABB::CreateNewThreadStorage();
 	Vec3::CreateNewThreadStorage();
 	IntCache::CreateNewThreadStorage();
-	Compression::CreateNewThreadStorage();	
+	Compression::CreateNewThreadStorage();
 	OldChunkStorage::CreateNewThreadStorage();
 	Level::enableLightingCache();
 	Tile::CreateNewThreadStorage();
@@ -1089,8 +1090,8 @@ int main(int argc, const char *argv[] )
 
 	// Minecraft::main () used to call Minecraft::Start, but this takes ~2.5 seconds, so now running this in another thread
 	// so we can do some basic renderer calls whilst it is happening. This is at attempt to stop getting TRC failure on SubmitDone taking > 5 seconds on boot
-	C4JThread *minecraftThread = new C4JThread(&StartMinecraftThreadProc, NULL, "Running minecraft start");
-	minecraftThread->Run();	
+	C4JThread *minecraftThread = new C4JThread(&StartMinecraftThreadProc, nullptr, "Running minecraft start");
+	minecraftThread->Run();
 	do
 	{
 		RenderManager.StartFrame();
@@ -1121,7 +1122,7 @@ int main(int argc, const char *argv[] )
 #endif
 	// set the default profile values
 	for(int i=0;i<XUSER_MAX_COUNT;i++)
-	{	
+	{
 		app.SetDefaultOptions(StorageManager.GetDashboardProfileSettings(i),i);
 	}
 #if 0
@@ -1194,7 +1195,7 @@ int main(int argc, const char *argv[] )
 	// We should track down why though...
 	app.DebugPrintf("---init sound engine()\n");
 
-	pMinecraft->soundEngine->init(NULL);
+	pMinecraft->soundEngine->init(nullptr);
 
 	while (TRUE)
 	{
@@ -1227,7 +1228,7 @@ int main(int argc, const char *argv[] )
 		PIXBeginNamedEvent(0,"Social network manager tick");
 //		CSocialManager::Instance()->Tick();
 		PIXEndNamedEvent();
-		
+
 		// Tick sentient.
 		PIXBeginNamedEvent(0,"Sentient tick");
 		MemSect(37);
@@ -1241,7 +1242,7 @@ int main(int argc, const char *argv[] )
 
 		LeaderboardManager::Instance()->Tick();
 		// Render game graphics.
-		if(app.GetGameStarted()) 
+		if(app.GetGameStarted())
 		{
 			pMinecraft->run_middle();
 			app.SetAppPaused( g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
@@ -1249,7 +1250,7 @@ int main(int argc, const char *argv[] )
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();
@@ -1302,6 +1303,9 @@ int main(int argc, const char *argv[] )
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 
@@ -1324,7 +1328,7 @@ int main(int argc, const char *argv[] )
 
 		for(int i=0;i<8;i++)
 		{
-			if(RenderStateA2[i]!=RenderStateA[i]) 
+			if(RenderStateA2[i]!=RenderStateA[i])
 			{
 				//printf("Reseting RenderStateA[%d] after a XUI render\n",i);
 				pDevice->SetRenderState(RenderStateModes[i],RenderStateA[i]);
@@ -1332,7 +1336,7 @@ int main(int argc, const char *argv[] )
 		}
 		for(int i=0;i<5;i++)
 		{
-			if(SamplerStateA2[i]!=SamplerStateA[i]) 
+			if(SamplerStateA2[i]!=SamplerStateA[i])
 			{
 				//printf("Reseting SamplerStateA[%d] after a XUI render\n",i);
 				pDevice->SetSamplerState(0,SamplerStateModes[i],SamplerStateA[i]);
@@ -1364,7 +1368,7 @@ int main(int argc, const char *argv[] )
 #ifdef _DEBUG_MENUS_ENABLED
 					if(app.DebugSettingsOn())
 					{
-						app.ActionDebugMask(i);		
+						app.ActionDebugMask(i);
 					}
 					else
 					{
@@ -1390,7 +1394,7 @@ int main(int argc, const char *argv[] )
 		for(int i=0;i<XUSER_MAX_COUNT;i++)
 		{
 			if(bOptionsNoSpace==false)
-			{			
+			{
 				if(app.GetOptionsCallbackStatus(i)==C4JStorage::eOptions_Callback_Write_Fail_NoSpace)
 				{
 					// get the game to bring up the save space handling
@@ -1422,7 +1426,7 @@ int main(int argc, const char *argv[] )
 		if(!ProfileManager.IsFullVersion())
 		{
 			// display the trial timer
-			if(app.GetGameStarted()) 
+			if(app.GetGameStarted())
 			{
 				// 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
 				if(app.IsAppPaused())
@@ -1487,7 +1491,7 @@ uint8_t *mallocAndCreateUTF8ArrayFromString(int iID)
 uint8_t * AddRichPresenceString(int iID)
 {
 	uint8_t *strUtf8 = mallocAndCreateUTF8ArrayFromString(iID);
-	if( strUtf8 != NULL )
+	if( strUtf8 != nullptr )
 	{
 		vRichPresenceStrings.push_back(strUtf8);
 	}
@@ -1497,7 +1501,7 @@ uint8_t * AddRichPresenceString(int iID)
 void FreeRichPresenceStrings()
 {
 	uint8_t *strUtf8;
-	for(int i=0;i<vRichPresenceStrings.size();i++)
+	for(size_t i=0;i<vRichPresenceStrings.size();i++)
 	{
 		strUtf8=vRichPresenceStrings.at(i);
 		free(strUtf8);
@@ -1522,7 +1526,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 {
 	if( !trackStarted )
 	{
-		void *p = XMemAllocDefault(dwSize,dwAllocAttributes); 
+		void *p = XMemAllocDefault(dwSize,dwAllocAttributes);
 		size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
 		totalAllocGen += realSize;
 		return p;
@@ -1530,7 +1534,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 
 	EnterCriticalSection(&memCS);
 
-	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes); 
+	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes);
 	size_t realSize = XMemSizeDefault(p,dwAllocAttributes) - 16;
 
 	if( trackEnable )
@@ -1556,7 +1560,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 			trackEnable = true;
 		}
 	}
-	 
+
 	LeaveCriticalSection(&memCS);
 
 	return p;
@@ -1591,7 +1595,7 @@ void WINAPI XMemFree(PVOID pAddress, DWORD dwAllocAttributes)
 	if( pAddress )
 	{
 		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-		
+
 		if(trackEnable)
 		{
 			int sect = *(((unsigned char *)pAddress)+realSize);
@@ -1627,7 +1631,7 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{
@@ -1675,7 +1679,7 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{

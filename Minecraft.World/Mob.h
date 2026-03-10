@@ -27,7 +27,7 @@ class Mob : public LivingEntity
 public:
 	// 4J-PB - added to replace (e instanceof Type), avoiding dynamic casts
 	eINSTANCEOF GetType()						{ return eTYPE_MOB;}
-	static Entity *create(Level *level) { return NULL; }
+	static Entity *create(Level *level) { return nullptr; }
 
 public:
 	static const float MAX_WEARING_ARMOR_CHANCE;

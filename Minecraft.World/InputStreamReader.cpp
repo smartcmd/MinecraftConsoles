@@ -39,7 +39,7 @@ int InputStreamReader::read(wchar_t cbuf[], unsigned int offset, unsigned int le
 	unsigned int charsRead = 0;
 	for( unsigned int i = offset; i < offset + length; i++ )
 	{
-		wchar_t value = (wchar_t)stream->readUTFChar();
+		wchar_t value = static_cast<wchar_t>(stream->readUTFChar());
 		if( value != -1 )
 		{
 			cbuf[i] = value;

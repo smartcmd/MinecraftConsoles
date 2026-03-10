@@ -17,9 +17,9 @@
 
 // To meet these requirements, this class is now implemented using a lock-free system, implemented using a read-copy-update (RCU) type algorithm. Some details...
 
-// (1) The storage details for the class are now packed into a single __int64, which contains both a pointer to the data that is required and a count of how many planes worth
+// (1) The storage details for the class are now packed into a single int64_t, which contains both a pointer to the data that is required and a count of how many planes worth
 //     of storage are allocated. This allows the full storage to be updated atomically using compare and exchange operations (implemented with InterlockedCompareExchangeRelease64).
-// (2) The data pointer referenced in this __int64 points to an area of memory which is 128 + 128 * plane_count bytes long, where the first 128 bytes stoere the plane indices, and
+// (2) The data pointer referenced in this int64_t points to an area of memory which is 128 + 128 * plane_count bytes long, where the first 128 bytes stoere the plane indices, and
 //     the rest of the data is variable in size to accomodate however many planes are required to be stored
 // (3) The RCU bit of the algorithm means that any read operations don't need to do any checks or locks at all. When the data needs to be updated, a copy of it is made and updated,
 //     then an attempt is made to swap the new data in - if this succeeds then the old data pointer is deleted later at some point where we know nothing will be reading from it anymore.
@@ -33,7 +33,7 @@ class SparseDataStorage_SPU
 {
 private:
 //	unsigned char	planeIndices[128];
-	unsigned char* m_pData;	
+	unsigned char* m_pData;
 
 //	unsigned char	*data;
 //	unsigned int	allocatedPlaneCount;

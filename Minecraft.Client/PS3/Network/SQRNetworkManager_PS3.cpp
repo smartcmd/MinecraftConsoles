@@ -19,8 +19,8 @@
 #include "..\PS3Extras\PS3Strings.h"
 #include "PS3\Network\SonyRemoteStorage_PS3.h"
 
-int (* SQRNetworkManager_PS3::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;
-void * SQRNetworkManager_PS3::s_SignInCompleteParam = NULL;
+int (* SQRNetworkManager_PS3::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = nullptr;
+void * SQRNetworkManager_PS3::s_SignInCompleteParam = nullptr;
 SceNpBasicPresenceDetails2 SQRNetworkManager_PS3::s_lastPresenceInfo = { 0 };
 int SQRNetworkManager_PS3::s_resendPresenceCountdown = 0;
 bool SQRNetworkManager_PS3::s_presenceStatusDirty = false;
@@ -36,7 +36,7 @@ bool SQRNetworkManager_PS3::m_bCallPSNSignInCallback=false;
 //unsigned int SQRNetworkManager_PS3::RoomSyncData::playerCount = 0;
 
 // This maps internal to extern states, and needs to match element-by-element the eSQRNetworkManagerInternalState enumerated type
-const SQRNetworkManager_PS3::eSQRNetworkManagerState SQRNetworkManager_PS3::m_INTtoEXTStateMappings[SQRNetworkManager_PS3::SNM_INT_STATE_COUNT] = 
+const SQRNetworkManager_PS3::eSQRNetworkManagerState SQRNetworkManager_PS3::m_INTtoEXTStateMappings[SQRNetworkManager_PS3::SNM_INT_STATE_COUNT] =
 {
 	SNM_STATE_INITIALISING,			// SNM_INT_STATE_UNINITIALISED
 	SNM_STATE_INITIALISING,			// SNM_INT_STATE_SIGNING_IN
@@ -96,15 +96,15 @@ SQRNetworkManager_PS3::SQRNetworkManager_PS3(ISQRNetworkManagerListener *listene
 	m_isInSession = false;
 	m_offlineGame = false;
 	m_offlineSQR = false;
-	m_aServerId = NULL;
-	m_gameBootInvite = NULL;
+	m_aServerId = nullptr;
+	m_gameBootInvite = nullptr;
 	m_onlineStatus = false;
 	m_bLinkDisconnected = false;
 
 	InitializeCriticalSection(&m_csRoomSyncData);
 	InitializeCriticalSection(&m_csPlayerState);
 	InitializeCriticalSection(&m_csStateChangeQueue);
-	
+
 	sys_event_port_create(&m_basicEventPort, SYS_EVENT_PORT_LOCAL, SYS_EVENT_PORT_NO_NAME);
 
 	sys_event_queue_attribute_t queue_attr = {SYS_SYNC_PRIORITY, SYS_PPU_QUEUE};
@@ -134,7 +134,7 @@ void SQRNetworkManager_PS3::Initialise()
 		SetState(SNM_INT_STATE_INITIALISE_FAILED);
 		return;
 	}
-	
+
 	//Initialize libnetctl
 	ret = cellNetCtlInit();
 #else
@@ -151,7 +151,7 @@ void SQRNetworkManager_PS3::Initialise()
 
 	// Initialise RUDP
 #ifdef __PS3__
-	ret = cellRudpInit(NULL);
+	ret = cellRudpInit(nullptr);
 #else
 	const int RUDP_POOL_SIZE = (500 * 1024);		// TODO - find out what we need, this size is copied from library reference
 	uint8_t *rudp_pool = (uint8_t *)malloc(RUDP_POOL_SIZE);
@@ -175,7 +175,7 @@ void SQRNetworkManager_PS3::Initialise()
 
 	memset(&netstart_param, 0, sizeof(netstart_param));
 	netstart_param.size = sizeof(netstart_param);
-	netstart_param.type = CELL_NET_CTL_NETSTART_TYPE_NP; 
+	netstart_param.type = CELL_NET_CTL_NETSTART_TYPE_NP;
 
 	SetState(SNM_INT_STATE_SIGNING_IN);
 	ret = cellNetCtlNetStartDialogLoadAsync(&netstart_param);
@@ -258,7 +258,7 @@ void SQRNetworkManager_PS3::InitialiseAfterOnline()
 		if( s_SignInCompleteCallbackFn )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,0);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		return;
 	}
@@ -268,7 +268,7 @@ void SQRNetworkManager_PS3::InitialiseAfterOnline()
 	int ret = 0;
 	if( !m_matching2initialised)
 	{
-		ret = sceNpMatching2Init2(0, 0, NULL);
+		ret = sceNpMatching2Init2(0, 0, nullptr);
 	}
 #else
 	SceNpMatching2InitializeParameter initParam;
@@ -305,7 +305,7 @@ void SQRNetworkManager_PS3::InitialiseAfterOnline()
 	}
 	app.DebugPrintf("SQRNetworkManager::InitialiseAfterOnline - matching context is now valid\n");
 	m_matchingContextValid = true;
-	
+
 	bool bRet = RegisterCallbacks();
 	if( ( !bRet ) || ForceErrorPoint( SNM_FORCE_ERROR_REGISTER_CALLBACKS ) )
 	{
@@ -339,7 +339,7 @@ void SQRNetworkManager_PS3::Tick()
 	if( ( m_gameBootInvite ) && ( s_safeToRespondToGameBootInvite ) )
 	{
 		m_listener->HandleInviteReceived( ProfileManager.GetPrimaryPad(), m_gameBootInvite );
-		m_gameBootInvite = NULL;
+		m_gameBootInvite = nullptr;
 	}
 
 	ErrorHandlingTick();
@@ -399,12 +399,12 @@ void SQRNetworkManager_PS3::Tick()
 		if( s_signInCompleteCallbackIfFailed )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		else if(s_SignInCompleteCallbackFn)
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-			s_SignInCompleteCallbackFn = NULL;
+			s_SignInCompleteCallbackFn = nullptr;
 		}
 	}
 }
@@ -421,7 +421,7 @@ void SQRNetworkManager_PS3::ErrorHandlingTick()
 				{
 					s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 				}
-				s_SignInCompleteCallbackFn  = NULL;
+				s_SignInCompleteCallbackFn  = nullptr;
 			}
 			app.DebugPrintf("Network error: SNM_INT_STATE_INITIALISE_FAILED\n");
 			if( m_isInSession && m_offlineGame) // m_offlineSQR )  // MGH - changed this to m_offlineGame, as m_offlineSQR can be true when running an online game but the init has failed because the servers are down
@@ -459,7 +459,7 @@ void SQRNetworkManager_PS3::ErrorHandlingTick()
 			DeleteServerContext();
 			break;
 	}
-	
+
 }
 
 // Start hosting a game, by creating a room & joining it. We explicity create a server context here (via GetServerContext) as Sony suggest that
@@ -519,7 +519,7 @@ void SQRNetworkManager_PS3::UpdateExternalRoomData()
 {
 	if( m_offlineGame ) return;
 	if( m_isHosting )
-	{	
+	{
 		SceNpMatching2SetRoomDataExternalRequest reqParam;
 		memset( &reqParam, 0, sizeof(reqParam) );
 		reqParam.roomId = m_room;
@@ -531,7 +531,7 @@ void SQRNetworkManager_PS3::UpdateExternalRoomData()
 		reqParam.roomBinAttrExternalNum = 1;
 		reqParam.roomBinAttrExternal = &roomBinAttr;
 
-		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 		app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2SetRoomDataExternal returns 0x%x, number of players %d\n",ret,((char *)m_joinExtData)[174]);
 		if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_SET_EXTERNAL_ROOM_DATA ) )
 		{
@@ -564,7 +564,7 @@ bool SQRNetworkManager_PS3::FriendRoomManagerSearch()
 	for( int i = 0; i < m_searchResultCount; i++ )
 	{
 		free(m_aSearchResultRoomExtDataReceived[i]);
-		m_aSearchResultRoomExtDataReceived[i] = NULL;
+		m_aSearchResultRoomExtDataReceived[i] = nullptr;
 	}
 
 	m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_COUNT;
@@ -639,7 +639,7 @@ void SQRNetworkManager_PS3::FriendSearchTick()
 		{
 			m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_INFO;
 			delete m_getFriendCountThread;
-			m_getFriendCountThread = NULL;
+			m_getFriendCountThread = nullptr;
 			FriendRoomManagerSearch2();
 		}
 	}
@@ -655,13 +655,13 @@ int SQRNetworkManager_PS3::BasicEventThreadProc( void *lpParameter )
 	do
 	{
 		sys_event_queue_receive(manager->m_basicEventQueue, &event, 0);
-	
+
 		// If the sys_event_t we've sent here from the handler has a non-zero data1 element, this is to signify that we should terminate the thread
 		if( event.data1 == 0 )
 		{
 			int iEvent;
 			SceNpUserInfo from;
-			uint8_t buffer[SCE_NP_BASIC_MAX_MESSAGE_SIZE]; 
+			uint8_t buffer[SCE_NP_BASIC_MAX_MESSAGE_SIZE];
 			size_t bufferSize = SCE_NP_BASIC_MAX_MESSAGE_SIZE;
 			int ret = sceNpBasicGetEvent(&iEvent, &from, &buffer, &bufferSize);
 			if( ret == 0 )
@@ -669,7 +669,7 @@ int SQRNetworkManager_PS3::BasicEventThreadProc( void *lpParameter )
 				if( iEvent == SCE_NP_BASIC_EVENT_INCOMING_BOOTABLE_INVITATION )
 				{
 					// 4J Stu - Don't do this here as it can be very disruptive to gameplay. Players can bring this up from LoadOrJoinMenu, PauseMenu and InGameInfoMenu
-					//sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID); 
+					//sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID);
 				}
 				if( iEvent == SCE_NP_BASIC_EVENT_RECV_INVITATION_RESULT )
 				{
@@ -697,7 +697,7 @@ int SQRNetworkManager_PS3::GetFriendsThreadProc( void* lpParameter )
 		// This is likely when friend list hasn't been received from the server yet - will be returning SCE_NP_BASIC_ERROR_BUSY in this case
 		manager->m_friendCount = 0;
 	}
-	
+
 
 	// There shouldn't ever be more than 100 friends returned but limit here just in case
 	if( manager->m_friendCount > 100 ) manager->m_friendCount = 100;
@@ -711,8 +711,8 @@ int SQRNetworkManager_PS3::GetFriendsThreadProc( void* lpParameter )
 		memset(&userInfo, 0x00, sizeof(userInfo));
 		memset(&presenceDetails, 0x00, sizeof(presenceDetails));
 		presenceDetails.struct_size = sizeof(presenceDetails);
-		
-		int ret = sceNpBasicGetFriendPresenceByIndex2( i, &userInfo, &presenceDetails, 0 );		
+
+		int ret = sceNpBasicGetFriendPresenceByIndex2( i, &userInfo, &presenceDetails, 0 );
 
 		if( ( ret == 0 ) && ( !manager->ForceErrorPoint( SNM_FORCE_ERROR_GET_FRIEND_LIST_ENTRY ) ) )
 		{
@@ -778,7 +778,7 @@ bool SQRNetworkManager_PS3::IsReadyToPlayOrIdle()
 
 
 // Consider as "in session" from the moment that a game is created or joined, until the point where the game itself has been told via state change that we are now idle. The
-// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and 
+// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and
 // it also requires that it is informed of the state changes leading up to not being in the session, before this should report false.
 bool SQRNetworkManager_PS3::IsInSession()
 {
@@ -813,7 +813,7 @@ SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerByIndex(int idx)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -830,7 +830,7 @@ SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerBySmallId(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerByXuid(PlayerUID xuid)
@@ -846,7 +846,7 @@ SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerByXuid(PlayerUID xuid)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetLocalPlayerByUserIndex(int idx)
@@ -862,7 +862,7 @@ SQRNetworkPlayer *SQRNetworkManager_PS3::GetLocalPlayerByUserIndex(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetHostPlayer()
@@ -875,11 +875,11 @@ SQRNetworkPlayer *SQRNetworkManager_PS3::GetHostPlayer()
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerIfReady(SQRNetworkPlayer *player)
 {
-	if( player == NULL ) return NULL;
+	if( player == nullptr ) return nullptr;
 
 	if( player->IsReady() ) return player;
 
-	return NULL;
+	return nullptr;
 }
 
 // Update state internally
@@ -930,7 +930,7 @@ bool SQRNetworkManager_PS3::JoinRoom(SQRNetworkManager_PS3::SessionSearchResult 
 {
 	// Set up the presence info we would like to synchronise out when we have fully joined the game
 	CPlatformNetworkManagerSony::SetSQRPresenceInfoFromExtData(&s_lastPresenceSyncInfo, searchResult->m_extData, searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId);
-	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, NULL);
+	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, nullptr);
 }
 
 // Join room with a specified roomId. This is used when joining from an invite, as well as by the previous method
@@ -950,7 +950,7 @@ bool SQRNetworkManager_PS3::JoinRoom(SceNpMatching2RoomId roomId, SceNpMatching2
 	m_localPlayerJoinMask = localPlayerMask;
 	m_localPlayerCount = 0;
 	m_localPlayerJoined = 0;
-	
+
 	for( int i = 0; i < MAX_LOCAL_PLAYER_COUNT; i++ )
 	{
 		if( localPlayerMask & ( 1 << i ) ) m_localPlayerCount++;
@@ -996,7 +996,7 @@ void SQRNetworkManager_PS3::LeaveRoom(bool bActuallyLeaveRoom)
 			reqParam.roomId = m_room;
 
 			SetState(SNM_INT_STATE_LEAVING);
-			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, NULL, &m_leaveRoomRequestId );
+			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, nullptr, &m_leaveRoomRequestId );
 			if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_LEAVE_ROOM) )
 			{
 				SetState(SNM_INT_STATE_LEAVING_FAILED);
@@ -1090,7 +1090,7 @@ bool SQRNetworkManager_PS3::AddLocalPlayerByUserIndex(int idx)
 
 		memset(&reqParam, 0, sizeof(reqParam));
 		memset(&binAttr, 0, sizeof(binAttr));
-					
+
 		binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 		binAttr.ptr = &m_localPlayerJoinMask;
 		binAttr.size = sizeof(m_localPlayerJoinMask);
@@ -1100,7 +1100,7 @@ bool SQRNetworkManager_PS3::AddLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternalNum = 1;
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL) )
 		{
@@ -1148,7 +1148,7 @@ bool SQRNetworkManager_PS3::RemoveLocalPlayerByUserIndex(int idx)
 				// And do any adjusting necessary to the mappings from this room data, to the SQRNetworkPlayers.
 				// This will also delete the SQRNetworkPlayer and do all the callbacks that requires etc.
 				MapRoomSlotPlayers(roomSlotPlayerCount);
-				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 
 				// Sync this back out to our networked clients...
 				SyncRoomData();
@@ -1174,7 +1174,7 @@ bool SQRNetworkManager_PS3::RemoveLocalPlayerByUserIndex(int idx)
 
 		memset(&reqParam, 0, sizeof(reqParam));
 		memset(&binAttr, 0, sizeof(binAttr));
-					
+
 		binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 		binAttr.ptr = &m_localPlayerJoinMask;
 		binAttr.size = sizeof(m_localPlayerJoinMask);
@@ -1184,7 +1184,7 @@ bool SQRNetworkManager_PS3::RemoveLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternalNum = 1;
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL2) )
 		{
@@ -1197,7 +1197,7 @@ bool SQRNetworkManager_PS3::RemoveLocalPlayerByUserIndex(int idx)
 	}
 }
 
-// Bring up a Gui to send an invite so a player that the user can select. This invite will contain the room Id so that 
+// Bring up a Gui to send an invite so a player that the user can select. This invite will contain the room Id so that
 void SQRNetworkManager_PS3::SendInviteGUI()
 {
 	SceNpBasicMessageDetails msg;
@@ -1216,7 +1216,7 @@ void SQRNetworkManager_PS3::SendInviteGUI()
 	msg.mainType = SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE;
 	msg.subType = SCE_NP_BASIC_MESSAGE_INVITE_SUBTYPE_ACTION_ACCEPT;
 	msg.msgFeatures = SCE_NP_BASIC_MESSAGE_FEATURES_BOOTABLE;
-	msg.npids = NULL;
+	msg.npids = nullptr;
 	msg.count = 0;
 
 	uint8_t *subject = mallocAndCreateUTF8ArrayFromString(IDS_INVITATION_SUBJECT_MAX_18_CHARS);
@@ -1270,8 +1270,8 @@ bool SQRNetworkManager_PS3::UpdateInviteData(SQRNetworkManager_PS3::PresenceSync
 // and there's a period when starting up the host game where it doesn't accurately know the memberId for its own local players
 void SQRNetworkManager_PS3::FindOrCreateNonNetworkPlayer(int slot, int playerType, SceNpMatching2RoomMemberId memberId, int localPlayerIdx, int smallId)
 {
-	for(AUTO_VAR(it, m_vecTempPlayers.begin()); it != m_vecTempPlayers.end(); it++ )
-	{
+    for (auto it = m_vecTempPlayers.begin(); it != m_vecTempPlayers.end(); it++)
+    {
 		if( ((*it)->m_type == playerType ) && ( (*it)->m_localPlayerIdx == localPlayerIdx ) )
 		{
 			if( ( playerType != SQRNetworkPlayer::SNP_TYPE_REMOTE ) || ( (*it)->m_roomMemberId == memberId ) )
@@ -1284,7 +1284,7 @@ void SQRNetworkManager_PS3::FindOrCreateNonNetworkPlayer(int slot, int playerTyp
 		}
 	}
 	// Create the player - non-network players can be considered complete as soon as we create them as we aren't waiting on their network connections becoming complete, so can flag them as such and notify via callback
-	PlayerUID *pUID = NULL;
+	PlayerUID *pUID = nullptr;
 	PlayerUID localUID;
 	if( ( playerType == SQRNetworkPlayer::SNP_TYPE_LOCAL ) ||
 		m_isHosting && ( playerType == SQRNetworkPlayer::SNP_TYPE_HOST ) )
@@ -1329,7 +1329,7 @@ void SQRNetworkManager_PS3::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 {
 	EnterCriticalSection(&m_csRoomSyncData);
 
-	// If we pass an explicit roomSlotPlayerCount, it is because we are removing a player, and this is the count of slots that there were *before* the removal. 
+	// If we pass an explicit roomSlotPlayerCount, it is because we are removing a player, and this is the count of slots that there were *before* the removal.
 	bool zeroLastSlot = false;
 	if( roomSlotPlayerCount == -1 )
 	{
@@ -1351,7 +1351,7 @@ void SQRNetworkManager_PS3::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_REMOTE )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1407,7 +1407,7 @@ void SQRNetworkManager_PS3::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_LOCAL )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1433,7 +1433,7 @@ void SQRNetworkManager_PS3::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				}
 				else
 				{
-					FindOrCreateNonNetworkPlayer( i, SQRNetworkPlayer::SNP_TYPE_REMOTE, m_roomSyncData.players[i].m_roomMemberId, m_roomSyncData.players[i].m_localIdx, m_roomSyncData.players[i].m_smallId);					
+					FindOrCreateNonNetworkPlayer( i, SQRNetworkPlayer::SNP_TYPE_REMOTE, m_roomSyncData.players[i].m_roomMemberId, m_roomSyncData.players[i].m_localIdx, m_roomSyncData.players[i].m_smallId);
 					m_aRoomSlotPlayers[i]->SetUID(m_roomSyncData.players[i].m_UID);  // On client, UIDs flow from m_roomSyncData->player data
 				}
 			}
@@ -1441,8 +1441,8 @@ void SQRNetworkManager_PS3::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 	}
 	// Clear up any non-network players that are no longer required - this would be a good point to notify of players leaving when we support that
 	// FindOrCreateNonNetworkPlayer will have pulled any players that we Do need out of m_vecTempPlayers, so the ones that are remaining are no longer in the game
-	for(AUTO_VAR(it, m_vecTempPlayers.begin()); it != m_vecTempPlayers.end(); it++ )
-	{
+    for (auto it = m_vecTempPlayers.begin(); it != m_vecTempPlayers.end(); it++)
+    {
 		if( m_listener )
 		{
 			m_listener->HandlePlayerLeaving(*it);
@@ -1499,7 +1499,7 @@ void SQRNetworkManager_PS3::UpdatePlayersFromRoomSyncUIDs()
 }
 
 // Host only - add remote players to our internal storage of player slots, and synchronise this with other room members.
-bool SQRNetworkManager_PS3::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==NULL*/ )
+bool SQRNetworkManager_PS3::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==nullptr*/ )
 {
 	assert( m_isHosting );
 
@@ -1526,7 +1526,7 @@ bool SQRNetworkManager_PS3::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId 
 	}
 
 	// We want to keep all players from a particular machine together, so search through the room sync data to see if we can find
-	// any pre-existing players from this machine. 
+	// any pre-existing players from this machine.
 	int firstIdx = -1;
 	for( int i = 0; i < m_roomSyncData.getPlayerCount(); i++ )
 	{
@@ -1618,7 +1618,7 @@ void SQRNetworkManager_PS3::RemoveRemotePlayersAndSync( SceNpMatching2RoomMember
 			}
 			// Zero last element, that isn't part of the currently sized array anymore
 			memset(&m_roomSyncData.players[m_roomSyncData.getPlayerCount()],0,sizeof(PlayerSyncData));
-			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 		}
 		else
 		{
@@ -1629,7 +1629,7 @@ void SQRNetworkManager_PS3::RemoveRemotePlayersAndSync( SceNpMatching2RoomMember
 
 	// Update mapping from the room slot players to SQRNetworkPlayer instances
 	MapRoomSlotPlayers();
-	
+
 
 	// And then synchronise this out to all other machines
 	SyncRoomData();
@@ -1643,8 +1643,8 @@ void SQRNetworkManager_PS3::RemoveNetworkPlayers( int mask )
 {
 	assert( !m_isHosting );
 
-	for(AUTO_VAR(it, m_RudpCtxToPlayerMap.begin()); it != m_RudpCtxToPlayerMap.end(); )
-	{
+    for (auto it = m_RudpCtxToPlayerMap.begin(); it != m_RudpCtxToPlayerMap.end();)
+    {
 		SQRNetworkPlayer *player = it->second;
 		if( (player->m_roomMemberId == m_localMemberId ) && ( ( 1 << player->m_localPlayerIdx ) & mask ) )
 		{
@@ -1660,14 +1660,14 @@ void SQRNetworkManager_PS3::RemoveNetworkPlayers( int mask )
 			{
 				if( m_aRoomSlotPlayers[i] == player )
 				{
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 			// And delete the reference from the ctx->player map
 			it = m_RudpCtxToPlayerMap.erase(it);
 
 			// Delete the player itself and the mapping from context to player map as this context is no longer valid
-			delete player;		
+			delete player;
 		}
 		else
 		{
@@ -1711,7 +1711,7 @@ void SQRNetworkManager_PS3::SyncRoomData()
 	roomBinAttr.size = sizeof( m_roomSyncData );
 	reqParam.roomBinAttrInternalNum = 1;
 	reqParam.roomBinAttrInternal = &roomBinAttr;
-	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 }
 
 // Check if the matching context is valid, and if not attempt to create one. If to do this requires starting an asynchronous process, then sets the internal state to the state passed in
@@ -1724,7 +1724,7 @@ bool SQRNetworkManager_PS3::GetMatchingContext(eSQRNetworkManagerInternalState a
 	int ret = 0;
 	if( !m_matching2initialised)
 	{
-		ret = sceNpMatching2Init2(0, 0, NULL);
+		ret = sceNpMatching2Init2(0, 0, nullptr);
 	}
 	if( ret < 0 )
 	{
@@ -1770,7 +1770,7 @@ bool SQRNetworkManager_PS3::GetMatchingContext(eSQRNetworkManagerInternalState a
 		app.DebugPrintf("SQRNetworkManager::GetMatchingContext - sceNpMatching2ContextStartAsync failed with code 0x%08x\n", ret);
 		return false;
 	}
-	
+
 	app.DebugPrintf("SQRNetworkManager::GetMatchingContext - matching context is now valid\n");
 	m_matchingContextValid = true;
 	return true;
@@ -1778,7 +1778,7 @@ bool SQRNetworkManager_PS3::GetMatchingContext(eSQRNetworkManagerInternalState a
 
 // Starts the process of obtaining a server context. This is an asynchronous operation, at the end of which (if successful), we'll be creating
 // a room. General procedure followed here is as suggested by Sony - we get a list of servers, then pick a random one, and see if it is available.
-// If not we just cycle round trying other random ones until we either find an available one or fail. 
+// If not we just cycle round trying other random ones until we either find an available one or fail.
 bool SQRNetworkManager_PS3::GetServerContext()
 {
 	assert(m_state == SNM_INT_STATE_IDLE);
@@ -1797,13 +1797,13 @@ bool SQRNetworkManager_PS3::GetServerContext()
 bool SQRNetworkManager_PS3::GetServerContext2()
 {
 	// Get list of server IDs of servers allocated to the application
-	int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, NULL, 0 );
+	int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, nullptr, 0 );
 	// If an error is returned here, we need to destroy and recerate our server - if this goes ok we should come back through this path again
 	if( ( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_UNAVAILABLE ) ||		// This error has been seen (occasionally) in a normal working environment
 		( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED ) )				// Also checking for this as a means of simulating the previous error
 	{
 		sceNpMatching2DestroyContext(m_matchingContext);
-		m_matchingContextValid = false;		
+		m_matchingContextValid = false;
 		if( !GetMatchingContext(SNM_INT_STATE_HOSTING_STARTING_MATCHING_CONTEXT) ) return false;
 		// If this caused an async thing to be started up, then we've done as much as we can here - the rest of the code will happen when the async matching 2 context starting completes
 		// ( event SCE_NP_MATCHING2_CONTEXT_EVENT_Start is received )
@@ -1852,7 +1852,7 @@ bool SQRNetworkManager_PS3::GetServerContext(SceNpMatching2ServerId serverId)
 	{
 		// Get list of server IDs of servers allocated to the application. We don't actually need to do this, but it is as good a way as any to try a matching2 service and check that
 		// the context *really* is valid.
-		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, NULL, 0 );
+		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, nullptr, 0 );
 		// If an error is returned here, we need to destroy and recerate our server - if this goes ok we should come back through this path again
 		if( ( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_UNAVAILABLE ) ||		// This error has been seen (occasionally) in a normal working environment
 			( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED ) )				// Also checking for this as a means of simulating the previous error
@@ -1860,7 +1860,7 @@ bool SQRNetworkManager_PS3::GetServerContext(SceNpMatching2ServerId serverId)
 			app.DebugPrintf("SQRNetworkManager::GetServerContext - sceNpMatching2GetServerIdListLocal failed with error 0x%08x\n", serverCount);
 			int ret = sceNpMatching2DestroyContext(m_matchingContext);
 			app.DebugPrintf("SQRNetworkManager::GetServerContext - sceNpMatching2DestroyContext returned 0x%08x\n", ret);
-			m_matchingContextValid = false;		
+			m_matchingContextValid = false;
 			if( !GetMatchingContext(SNM_INT_STATE_JOINING_STARTING_MATCHING_CONTEXT) )
 			{
 				app.DebugPrintf("SQRNetworkManager::GetServerContext - Failed due to no matching context after recreating\n");
@@ -1906,7 +1906,7 @@ void SQRNetworkManager_PS3::ServerContextTick()
 				reqParam.serverId = m_serverId;
 				SetState((m_state==SNM_INT_STATE_HOSTING_SERVER_FOUND)?SNM_INT_STATE_HOSTING_SERVER_SEARCH_CREATING_CONTEXT:SNM_INT_STATE_JOINING_SERVER_SEARCH_CREATING_CONTEXT);
 				// Found a server - now try and create a context for it
-				int ret = sceNpMatching2CreateServerContext( m_matchingContext, &reqParam, NULL, &m_serverContextRequestId );
+				int ret = sceNpMatching2CreateServerContext( m_matchingContext, &reqParam, nullptr, &m_serverContextRequestId );
 				if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_SERVER_CONTEXT) )
 				{
 					SetState((m_state==SNM_INT_STATE_HOSTING_SERVER_FOUND)?SNM_INT_STATE_HOSTING_SERVER_SEARCH_FAILED:SNM_INT_STATE_JOINING_SERVER_SEARCH_FAILED);
@@ -1958,7 +1958,7 @@ void SQRNetworkManager_PS3::RoomCreateTick()
 				SetState(SNM_INT_STATE_HOSTING_CREATE_ROOM_CREATING_ROOM);
 				app.DebugPrintf(CMinecraftApp::USER_RR,">> Creating room start\n");
 				s_roomStartTime = System::currentTimeMillis();
-				int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, NULL, &m_createRoomRequestId );
+				int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, nullptr, &m_createRoomRequestId );
 				if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_JOIN_ROOM) )
 				{
 					SetState(SNM_INT_STATE_HOSTING_CREATE_ROOM_FAILED);
@@ -2003,7 +2003,7 @@ void SQRNetworkManager_PS3::NetworkPlayerConnectionComplete(SQRNetworkPlayer *pl
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2029,7 +2029,7 @@ void SQRNetworkManager_PS3::NetworkPlayerSmallIdAllocated(SQRNetworkPlayer *play
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2047,7 +2047,7 @@ void SQRNetworkManager_PS3::NetworkPlayerInitialDataReceived(SQRNetworkPlayer *p
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2063,7 +2063,7 @@ void SQRNetworkManager_PS3::HandlePlayerJoined(SQRNetworkPlayer *player)
 {
 	if( m_listener )
 	{
-		m_listener->HandlePlayerJoined( player );	
+		m_listener->HandlePlayerJoined( player );
 	}
 	// On client, keep a count of how many local players we have told the game about. We can only transition to telling the game that we are playing once the room is set up And all the local players are valid to use.
 	if( !m_isHosting )
@@ -2105,7 +2105,7 @@ bool SQRNetworkManager_PS3::SelectRandomServer()
 
 	// Kick off the search - we'll get a callback to DefaultRequestCallback with the result from this
 	app.DebugPrintf(CMinecraftApp::USER_RR,"Kicking off sceNpMatching2GetServerInfo for server id %d\n",reqParam.serverId);
-	int ret = sceNpMatching2GetServerInfo( m_matchingContext, &reqParam, NULL, &m_serverSearchRequestId);
+	int ret = sceNpMatching2GetServerInfo( m_matchingContext, &reqParam, nullptr, &m_serverSearchRequestId);
 	if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_GET_SERVER_INFO) )
 	{
 		// Jump straight to an error state for this server
@@ -2125,7 +2125,7 @@ void SQRNetworkManager_PS3::DeleteServerContext()
 		reqParam.serverId = m_serverId;
 		m_serverContextValid = false;
 		SetState(SNM_INT_STATE_SERVER_DELETING_CONTEXT);
-		int ret = sceNpMatching2DeleteServerContext( m_matchingContext, &reqParam, NULL, &m_serverContextRequestId );
+		int ret = sceNpMatching2DeleteServerContext( m_matchingContext, &reqParam, nullptr, &m_serverContextRequestId );
 		if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_DELETE_SERVER_CONTEXT) )
 		{
 			ResetToIdle();
@@ -2160,11 +2160,11 @@ bool SQRNetworkManager_PS3::CreateRudpConnections(SceNpMatching2RoomId roomId, S
 	sinp2pLocal.sin_family = AF_INET;
 	sinp2pLocal.sin_port = htons(SCE_NP_PORT);
 //	sinp2pLocal.sin_addr = netInfo.localAddr;
-				
+
 	// ... and then the peer
 	memset(&sinp2pPeer, 0, sizeof(sinp2pPeer));
 	sinp2pPeer.sin_family = AF_INET;
-				
+
 	ret = sceNpMatching2SignalingGetConnectionStatus(m_matchingContext, roomId, peerMemberId, &connStatus, &sinp2pPeer.sin_addr, &sinp2pPeer.sin_port);
 	app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2SignalingGetConnectionStatus returned 0x%x, connStatus %d peer add:0x%x peer port:0x%x\n",ret, connStatus,sinp2pPeer.sin_addr,sinp2pPeer.sin_port);
 
@@ -2203,7 +2203,7 @@ bool SQRNetworkManager_PS3::CreateRudpConnections(SceNpMatching2RoomId roomId, S
 		if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_RUDP_CONTEXT) ) return false;
 		if( m_isHosting )
 		{
-			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, NULL );
+			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, nullptr );
 		}
 		else
 		{
@@ -2232,24 +2232,24 @@ bool SQRNetworkManager_PS3::CreateRudpConnections(SceNpMatching2RoomId roomId, S
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerFromRudpCtx(int rudpCtx)
 {
-	AUTO_VAR(it,m_RudpCtxToPlayerMap.find(rudpCtx));
-	if( it != m_RudpCtxToPlayerMap.end() )
+    auto it = m_RudpCtxToPlayerMap.find(rudpCtx);
+    if( it != m_RudpCtxToPlayerMap.end() )
 	{
 		return it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_PS3::GetPlayerFromRoomMemberAndLocalIdx(int roomMember, int localIdx)
 {
-	for(AUTO_VAR(it, m_RudpCtxToPlayerMap.begin()); it != m_RudpCtxToPlayerMap.end(); it++ )
-	{
+    for (auto it = m_RudpCtxToPlayerMap.begin(); it != m_RudpCtxToPlayerMap.end(); it++)
+    {
 		if( (it->second->m_roomMemberId == roomMember ) && ( it->second->m_localPlayerIdx == localIdx ) )
 		{
 			return it->second;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2329,7 +2329,7 @@ void SQRNetworkManager_PS3::ContextCallback(SceNpMatching2ContextId  id, SceNpMa
 					manager->m_state == SNM_INT_STATE_JOINING_STARTING_MATCHING_CONTEXT)
 				{
 
-					// matching context failed to start (this can happen when you block the IP addresses of the matching servers on your router 
+					// matching context failed to start (this can happen when you block the IP addresses of the matching servers on your router
 					// agent-0101.ww.sp-int.matching.playstation.net (198.107.157.191)
 					// static-resource.sp-int.community.playstation.net (203.105.77.140)
 					manager->SetState(SNM_INT_STATE_INITIALISE_FAILED);
@@ -2342,7 +2342,7 @@ void SQRNetworkManager_PS3::ContextCallback(SceNpMatching2ContextId  id, SceNpMa
 			{
 
 				manager->SetState( SNM_INT_STATE_IDLE );
-				manager->GetExtDataForRoom(0, NULL, NULL, NULL);
+				manager->GetExtDataForRoom(0, nullptr, nullptr, nullptr);
 				break;
 			}
 
@@ -2373,7 +2373,7 @@ void SQRNetworkManager_PS3::ContextCallback(SceNpMatching2ContextId  id, SceNpMa
 // 				if(s_SignInCompleteCallbackFn)
 // 				{
 // 					s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-// 					s_SignInCompleteCallbackFn = NULL;
+// 					s_SignInCompleteCallbackFn = nullptr;
 // 				}
 
 
@@ -2510,7 +2510,7 @@ void SQRNetworkManager_PS3::DefaultRequestCallback(SceNpMatching2ContextId id, S
 		}
 	}
 
-	// If there was some problem getting data, then silently ignore as we don't want to go any further with a NULL data pointer, and this will just be indicating that the networking context
+	// If there was some problem getting data, then silently ignore as we don't want to go any further with a nullptr data pointer, and this will just be indicating that the networking context
 	// is invalid which will be picked up elsewhere to shut everything down properly
 	if( dataError )
 	{
@@ -2706,7 +2706,7 @@ void SQRNetworkManager_PS3::DefaultRequestCallback(SceNpMatching2ContextId id, S
 					// Set flag to indicate whether we were kicked for being out of room or not
 					reqParam.optData.data[0] = isFull ? 1 : 0;
 					reqParam.optData.len = 1;
-					int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, NULL, &manager->m_kickRequestId);
+					int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, nullptr, &manager->m_kickRequestId);
 					app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2KickoutRoomMember returns error 0x%x\n",ret);
 					break;
 				}
@@ -2773,7 +2773,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 #endif
 {
 	SQRNetworkManager_PS3 *manager = (SQRNetworkManager_PS3 *)arg;
-	
+
 	bool gotEventData = false;
 	switch( event )
 	{
@@ -2814,7 +2814,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 		case SCE_NP_MATCHING2_ROOM_EVENT_RoomDestroyed:
 			{
 				SonyVoiceChat::signalRoomDestroyed();
-				SceNpMatching2RoomUpdateInfo *pUpdateInfo=NULL;
+				SceNpMatching2RoomUpdateInfo *pUpdateInfo=nullptr;
 
 				if( dataSize <= SCE_NP_MATCHING2_EVENT_DATA_MAX_SIZE_RoomUpdateInfo )
 				{
@@ -2910,7 +2910,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 						int oldMask = manager->GetOldMask( pRoomMemberData->newRoomMemberDataInternal->memberId );
 						int addedMask = manager->GetAddedMask(playerMask, oldMask );
 						int removedMask = manager->GetRemovedMask(playerMask, oldMask );
-						
+
 						if( addedMask != 0 )
 						{
 							bool success = manager->AddRemotePlayersAndSync( pRoomMemberData->newRoomMemberDataInternal->memberId, addedMask );
@@ -2927,7 +2927,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 
 								memset(&reqParam, 0, sizeof(reqParam));
 								memset(&binAttr, 0, sizeof(binAttr));
-					
+
 								binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 								binAttr.ptr = &oldMask;
 								binAttr.size = sizeof(oldMask);
@@ -2937,7 +2937,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 								reqParam.roomMemberBinAttrInternalNum = 1;
 								reqParam.roomMemberBinAttrInternal = &binAttr;
 
-								int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, NULL, &manager->m_setRoomMemberInternalDataRequestId );
+								int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, nullptr, &manager->m_setRoomMemberInternalDataRequestId );
 							}
 						}
 
@@ -2983,7 +2983,7 @@ void SQRNetworkManager_PS3::RoomEventCallback(SceNpMatching2ContextId id, SceNpM
 							}
 						}
 					}
-					
+
 				}
 			}
 			break;
@@ -3037,7 +3037,7 @@ void SQRNetworkManager_PS3::SignallingCallback(SceNpMatching2ContextId ctxId, Sc
 					reqParam.attrId = attrs;
 					reqParam.attrIdNum = 1;
 
-					sceNpMatching2GetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, NULL, &manager->m_roomMemberDataRequestId);
+					sceNpMatching2GetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, nullptr, &manager->m_roomMemberDataRequestId);
 				}
 				else
 				{
@@ -3079,7 +3079,7 @@ void SQRNetworkManager_PS3::ManagerCallback(int event, int result, void *arg)
 			manager->InitialiseAfterOnline();
 			break;
 		case SCE_NP_MANAGER_EVENT_GOT_TICKET:
-			{			
+			{
 				// Let the profile Manager deal with any tickets
 				SonyRemoteStorage_PS3* pRemote = (SonyRemoteStorage_PS3*)app.getRemoteStorage();
 				if(pRemote->isWaitingForTicket())
@@ -3118,7 +3118,7 @@ void SQRNetworkManager_PS3::SysUtilCallback(uint64_t status, uint64_t param, voi
 					{
 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 					}
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 				return;
 			}
@@ -3133,7 +3133,7 @@ void SQRNetworkManager_PS3::SysUtilCallback(uint64_t status, uint64_t param, voi
 					{
 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 					}
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 			}
 
@@ -3204,7 +3204,7 @@ void SQRNetworkManager_PS3::RudpContextCallback(int ctx_id, int event_id, int er
 						if( dataSize >= sizeof(SQRNetworkPlayer::InitSendData) )
 						{
 							SQRNetworkPlayer::InitSendData ISD;
-							unsigned int bytesRead = cellRudpRead( ctx_id, &ISD, sizeof(SQRNetworkPlayer::InitSendData), 0, NULL );
+							unsigned int bytesRead = cellRudpRead( ctx_id, &ISD, sizeof(SQRNetworkPlayer::InitSendData), 0, nullptr );
 							if( bytesRead == sizeof(SQRNetworkPlayer::InitSendData) )
 							{
 								manager->NetworkPlayerInitialDataReceived(playerFrom, &ISD);
@@ -3225,7 +3225,7 @@ void SQRNetworkManager_PS3::RudpContextCallback(int ctx_id, int event_id, int er
 				if( dataSize > 0 )
 				{
 					unsigned char *data = new unsigned char [ dataSize ];
-					unsigned int bytesRead = cellRudpRead( ctx_id, data, dataSize, 0, NULL );
+					unsigned int bytesRead = cellRudpRead( ctx_id, data, dataSize, 0, nullptr );
 					if( bytesRead > 0 )
 					{
 						SQRNetworkPlayer *playerFrom, *playerTo;
@@ -3241,7 +3241,7 @@ void SQRNetworkManager_PS3::RudpContextCallback(int ctx_id, int event_id, int er
 							playerFrom = manager->m_aRoomSlotPlayers[0];
 							playerTo = manager->GetPlayerFromRudpCtx( ctx_id );
 						}
-						if( ( playerFrom != NULL ) && ( playerTo != NULL ) )
+						if( ( playerFrom != nullptr ) && ( playerTo != nullptr ) )
 						{
 							manager->m_listener->HandleDataReceived( playerFrom, playerTo, data, bytesRead );
 						}
@@ -3306,7 +3306,7 @@ void SQRNetworkManager_PS3::ServerContextValid_CreateRoom()
 	int ret = -1;
 	if( !ForceErrorPoint(SNM_FORCE_ERROR_GET_WORLD_INFO_LIST) )
 	{
-		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, NULL, &m_getWorldRequestId);
+		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, nullptr, &m_getWorldRequestId);
 	}
 	if (ret < 0)
 	{
@@ -3335,7 +3335,7 @@ void SQRNetworkManager_PS3::ServerContextValid_JoinRoom()
 	reqParam.roomMemberBinAttrInternalNum = 1;
 	reqParam.roomMemberBinAttrInternal = &binAttr;
 
-	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, NULL, &m_joinRoomRequestId );
+	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, nullptr, &m_joinRoomRequestId );
 	if ( (ret < 0) || ForceErrorPoint(SNM_FORCE_ERROR_JOIN_ROOM) )
 	{
 		if( ret == SCE_NP_MATCHING2_SERVER_ERROR_NAT_TYPE_MISMATCH)
@@ -3386,9 +3386,9 @@ void SQRNetworkManager_PS3::GetExtDataForRoom( SceNpMatching2RoomId roomId, void
 	static SceNpMatching2RoomId aRoomId[1];
 	static SceNpMatching2AttributeId attr[1];
 
-	// All parameters will be NULL if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
-	// NULL parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
-	if( extData != NULL )
+	// All parameters will be nullptr if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
+	// nullptr parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
+	if( extData != nullptr )
 	{
 		aRoomId[0] = roomId;
 		attr[0] = SCE_NP_MATCHING2_ROOM_BIN_ATTR_EXTERNAL_1_ID;
@@ -3412,14 +3412,14 @@ void SQRNetworkManager_PS3::GetExtDataForRoom( SceNpMatching2RoomId roomId, void
 		return;
 	}
 
-	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 	if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 	{
 		app.DebugPrintf("Having to recreate matching context, setting state to SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT\n");
 		return;
 	}
 
-	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, NULL, &m_roomDataExternalListRequestId );
+	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, nullptr, &m_roomDataExternalListRequestId );
 
 	// If we hadn't properly detected that a matching context was unvailable, we might still get an error indicating that it is from the previous call. Handle similarly, but we need
 	// to destroy the context first.
@@ -3427,14 +3427,14 @@ void SQRNetworkManager_PS3::GetExtDataForRoom( SceNpMatching2RoomId roomId, void
 		( ret == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED ) )			// Also checking for this as a means of simulating the previous error
 	{
 		sceNpMatching2DestroyContext(m_matchingContext);
-		m_matchingContextValid = false;		
+		m_matchingContextValid = false;
 		if( !GetMatchingContext(SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT) )
 		{
 			// No matching context, and failed to try and make one. We're really broken here.
 			m_FriendSessionUpdatedFn(false, m_pParamFriendSessionUpdated);
 			return;
 		};
-		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 		if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 		{
 			return;
@@ -3454,7 +3454,7 @@ bool SQRNetworkManager_PS3::ForceErrorPoint(eSQRForceError error)
 	return false;
 }
 #else
-bool SQRNetworkManager_PS3::aForceError[SNM_FORCE_ERROR_COUNT] = 
+bool SQRNetworkManager_PS3::aForceError[SNM_FORCE_ERROR_COUNT] =
 {
 		false, // SNM_FORCE_ERROR_NP2_INIT
 		false, // SNM_FORCE_ERROR_NET_INITIALIZE_NETWORK
@@ -3530,7 +3530,7 @@ void SQRNetworkManager_PS3::AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(voi
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 	}
 }

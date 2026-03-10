@@ -13,14 +13,14 @@ TripWireTile::TripWireTile(int id) : Tile(id, Material::decoration, isSolidRende
 
 int TripWireTile::getTickDelay(Level *level)
 {
-	// 4J:	Increased (x2); quick update caused problems with shared 
+	// 4J:	Increased (x2); quick update caused problems with shared
 	//		data between client and server.
 	return 20; // 10;
 }
 
 AABB *TripWireTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool TripWireTile::blocksLight()
@@ -106,7 +106,7 @@ void TripWireTile::playerWillDestroy(Level *level, int x, int y, int z, int data
 {
 	if (level->isClientSide) return;
 
-	if (player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::shears_Id)
+	if (player->getSelectedItem() != nullptr && player->getSelectedItem()->id == Item::shears_Id)
 	{
 		level->setData(x, y, z, data | MASK_DISARMED, Tile::UPDATE_NONE);
 	}
@@ -164,15 +164,14 @@ void TripWireTile::checkPressed(Level *level, int x, int y, int z)
 	int data = level->getData(x, y, z);
 	bool wasPressed = (data & MASK_POWERED) == MASK_POWERED;
 	bool shouldBePressed = false;
-	
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1));
 	if (!entities->empty())
 	{
-		for (AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+		for (auto& e : *entities)
 		{
-			shared_ptr<Entity> e = *it;
-			if (!e->isIgnoringTileTriggers())
+			if ( e && !e->isIgnoringTileTriggers())
 			{
 				shouldBePressed = true;
 				break;

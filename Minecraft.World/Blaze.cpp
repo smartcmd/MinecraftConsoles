@@ -42,7 +42,7 @@ void Blaze::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, static_cast<byte>(0));
 }
 
 int Blaze::getAmbientSound()
@@ -84,10 +84,10 @@ void Blaze::aiStep()
 		if (nextHeightOffsetChangeTick <= 0)
 		{
 			nextHeightOffsetChangeTick = SharedConstants::TICKS_PER_SECOND * 5;
-			allowedHeightOffset = .5f + (float) random->nextGaussian() * 3;
+			allowedHeightOffset = .5f + static_cast<float>(random->nextGaussian()) * 3;
 		}
 
-		if (getAttackTarget() != NULL && (getAttackTarget()->y + getAttackTarget()->getHeadHeight()) > (y + getHeadHeight() + allowedHeightOffset))
+		if (getAttackTarget() != nullptr && (getAttackTarget()->y + getAttackTarget()->getHeadHeight()) > (y + getHeadHeight() + allowedHeightOffset))
 		{
 			yd = yd + (.3f - yd) * .3f;
 		}
@@ -149,10 +149,10 @@ void Blaze::checkHurtTarget(shared_ptr<Entity> target, float d)
 			{
 				float sqd = sqrt(d) * .5f;
 
-				level->levelEvent(nullptr, LevelEvent::SOUND_BLAZE_FIREBALL, (int) x, (int) y, (int) z, 0);
+				level->levelEvent(nullptr, LevelEvent::SOUND_BLAZE_FIREBALL, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 				//                    level.playSound(this, "mob.ghast.fireball", getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
 				for (int i = 0; i < 1; i++) {
-					shared_ptr<SmallFireball> ie = shared_ptr<SmallFireball>( new SmallFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xd + random->nextGaussian() * sqd, yd, zd + random->nextGaussian() * sqd) );
+					shared_ptr<SmallFireball> ie = std::make_shared<SmallFireball>(level, dynamic_pointer_cast<Mob>(shared_from_this()), xd + random->nextGaussian() * sqd, yd, zd + random->nextGaussian() * sqd);
 					//                        Vec3 v = getViewVector(1);
 					//                        ie.x = x + v.x * 1.5;
 					ie->y = y + bbHeight / 2 + 0.5f;
@@ -162,7 +162,7 @@ void Blaze::checkHurtTarget(shared_ptr<Entity> target, float d)
 			}
 
 		}
-		yRot = (float) (atan2(zd, xd) * 180 / PI) - 90;
+		yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
 
 		holdGround = true;
 	}

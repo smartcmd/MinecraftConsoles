@@ -8,7 +8,7 @@
 #include "HitResult.h"
 
 DWORD AABB::tlsIdx = 0;
-AABB::ThreadStorage *AABB::tlsDefault = NULL;
+AABB::ThreadStorage *AABB::tlsDefault = nullptr;
 
 AABB::ThreadStorage::ThreadStorage()
 {
@@ -25,7 +25,7 @@ AABB::ThreadStorage::~ThreadStorage()
 void AABB::CreateNewThreadStorage()
 {
 	ThreadStorage *tls = new ThreadStorage();
-	if(tlsDefault == NULL )
+	if(tlsDefault == nullptr )
 	{
 		tlsIdx = TlsAlloc();
 		tlsDefault = tls;
@@ -41,35 +41,35 @@ void AABB::UseDefaultThreadStorage()
 
 void AABB::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
 }
 
-AABB *AABB::newPermanent(double x0, double y0, double z0, double x1, double y1, double z1) 
+AABB *AABB::newPermanent(double x0, double y0, double z0, double x1, double y1, double z1)
 {
 	return new AABB(x0, y0, z0, x1, y1, z1);
 }
 
-void AABB::clearPool() 
+void AABB::clearPool()
 {
 }
 
-void AABB::resetPool() 
+void AABB::resetPool()
 {
 }
 
-AABB *AABB::newTemp(double x0, double y0, double z0, double x1, double y1, double z1) 
+AABB *AABB::newTemp(double x0, double y0, double z0, double x1, double y1, double z1)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	AABB *thisAABB = &tls->pool[tls->poolPointer];
 	thisAABB->set(x0, y0, z0, x1, y1, z1);
 	tls->poolPointer = ( tls->poolPointer + 1 ) % ThreadStorage::POOL_SIZE;
 	return thisAABB;
 }
 
-AABB::AABB(double x0, double y0, double z0, double x1, double y1, double z1) 
+AABB::AABB(double x0, double y0, double z0, double x1, double y1, double z1)
 {
 	this->x0 = x0;
 	this->y0 = y0;
@@ -80,7 +80,7 @@ AABB::AABB(double x0, double y0, double z0, double x1, double y1, double z1)
 }
 
 
-AABB *AABB::set(double x0, double y0, double z0, double x1, double y1, double z1) 
+AABB *AABB::set(double x0, double y0, double z0, double x1, double y1, double z1)
 {
 	this->x0 = x0;
 	this->y0 = y0;
@@ -91,7 +91,7 @@ AABB *AABB::set(double x0, double y0, double z0, double x1, double y1, double z1
 	return this;
 }
 
-AABB *AABB::expand(double xa, double ya, double za) 
+AABB *AABB::expand(double xa, double ya, double za)
 {
 	double _x0 = x0;
 	double _y0 = y0;
@@ -112,7 +112,7 @@ AABB *AABB::expand(double xa, double ya, double za)
 	return AABB::newTemp(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-AABB *AABB::grow(double xa, double ya, double za) 
+AABB *AABB::grow(double xa, double ya, double za)
 {
 	double _x0 = x0 - xa;
 	double _y0 = y0 - ya;
@@ -136,22 +136,22 @@ AABB *AABB::minmax(AABB *other)
 	return newTemp(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-AABB *AABB::cloneMove(double xa, double ya, double za) 
+AABB *AABB::cloneMove(double xa, double ya, double za)
 {
 	return AABB::newTemp(x0 + xa, y0 + ya, z0 + za, x1 + xa, y1 + ya, z1 + za);
 }
 
-double AABB::clipXCollide(AABB *c, double xa) 
+double AABB::clipXCollide(AABB *c, double xa)
 {
 	if (c->y1 <= y0 || c->y0 >= y1) return xa;
 	if (c->z1 <= z0 || c->z0 >= z1) return xa;
 
-	if (xa > 0 && c->x1 <= x0) 
+	if (xa > 0 && c->x1 <= x0)
 	{
 		double max = x0 - c->x1;
 		if (max < xa) xa = max;
 	}
-	if (xa < 0 && c->x0 >= x1) 
+	if (xa < 0 && c->x0 >= x1)
 	{
 		double max = x1 - c->x0;
 		if (max > xa) xa = max;
@@ -165,12 +165,12 @@ double AABB::clipYCollide(AABB *c, double ya)
 	if (c->x1 <= x0 || c->x0 >= x1) return ya;
 	if (c->z1 <= z0 || c->z0 >= z1) return ya;
 
-	if (ya > 0 && c->y1 <= y0) 
+	if (ya > 0 && c->y1 <= y0)
 	{
 		double max = y0 - c->y1;
 		if (max < ya) ya = max;
 	}
-	if (ya < 0 && c->y0 >= y1) 
+	if (ya < 0 && c->y0 >= y1)
 	{
 		double max = y1 - c->y0;
 		if (max > ya) ya = max;
@@ -179,17 +179,17 @@ double AABB::clipYCollide(AABB *c, double ya)
 	return ya;
 }
 
-double AABB::clipZCollide(AABB *c, double za) 
+double AABB::clipZCollide(AABB *c, double za)
 {
 	if (c->x1 <= x0 || c->x0 >= x1) return za;
 	if (c->y1 <= y0 || c->y0 >= y1) return za;
 
-	if (za > 0 && c->z1 <= z0) 
+	if (za > 0 && c->z1 <= z0)
 	{
 		double max = z0 - c->z1;
 		if (max < za) za = max;
 	}
-	if (za < 0 && c->z0 >= z1) 
+	if (za < 0 && c->z0 >= z1)
 	{
 		double max = z1 - c->z0;
 		if (max > za) za = max;
@@ -198,7 +198,7 @@ double AABB::clipZCollide(AABB *c, double za)
 	return za;
 }
 
-bool AABB::intersects(AABB *c) 
+bool AABB::intersects(AABB *c)
 {
 	if (c->x1 <= x0 || c->x0 >= x1) return false;
 	if (c->y1 <= y0 || c->y0 >= y1) return false;
@@ -206,7 +206,7 @@ bool AABB::intersects(AABB *c)
 	return true;
 }
 
-bool AABB::intersectsInner(AABB *c) 
+bool AABB::intersectsInner(AABB *c)
 {
 	if (c->x1 < x0 || c->x0 > x1) return false;
 	if (c->y1 < y0 || c->y0 > y1) return false;
@@ -214,7 +214,7 @@ bool AABB::intersectsInner(AABB *c)
 	return true;
 }
 
-AABB *AABB::move(double xa, double ya, double za) 
+AABB *AABB::move(double xa, double ya, double za)
 {
 	x0 += xa;
 	y0 += ya;
@@ -225,7 +225,7 @@ AABB *AABB::move(double xa, double ya, double za)
 	return this;
 }
 
-bool AABB::intersects(double x02, double y02, double z02, double x12, double y12, double z12) 
+bool AABB::intersects(double x02, double y02, double z02, double x12, double y12, double z12)
 {
 	if (x12 <= x0 || x02 >= x1) return false;
 	if (y12 <= y0 || y02 >= y1) return false;
@@ -233,7 +233,7 @@ bool AABB::intersects(double x02, double y02, double z02, double x12, double y12
 	return true;
 }
 
-bool AABB::contains(Vec3 *p) 
+bool AABB::contains(Vec3 *p)
 {
 	if (p->x <= x0 || p->x >= x1) return false;
 	if (p->y <= y0 || p->y >= y1) return false;
@@ -242,7 +242,7 @@ bool AABB::contains(Vec3 *p)
 }
 
 // 4J Added
-bool AABB::containsIncludingLowerBound(Vec3 *p) 
+bool AABB::containsIncludingLowerBound(Vec3 *p)
 {
 	if (p->x < x0 || p->x >= x1) return false;
 	if (p->y < y0 || p->y >= y1) return false;
@@ -250,7 +250,7 @@ bool AABB::containsIncludingLowerBound(Vec3 *p)
 	return true;
 }
 
-double AABB::getSize() 
+double AABB::getSize()
 {
 	double xs = x1 - x0;
 	double ys = y1 - y0;
@@ -258,7 +258,7 @@ double AABB::getSize()
 	return (xs + ys + zs) / 3.0f;
 }
 
-AABB *AABB::shrink(double xa, double ya, double za) 
+AABB *AABB::shrink(double xa, double ya, double za)
 {
 	double _x0 = x0 + xa;
 	double _y0 = y0 + ya;
@@ -270,12 +270,12 @@ AABB *AABB::shrink(double xa, double ya, double za)
 	return AABB::newTemp(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-AABB *AABB::copy() 
+AABB *AABB::copy()
 {
 	return AABB::newTemp(x0, y0, z0, x1, y1, z1);
 }
 
-HitResult *AABB::clip(Vec3 *a, Vec3 *b) 
+HitResult *AABB::clip(Vec3 *a, Vec3 *b)
 {
 	Vec3 *xh0 = a->clipX(b, x0);
 	Vec3 *xh1 = a->clipX(b, x1);
@@ -286,23 +286,23 @@ HitResult *AABB::clip(Vec3 *a, Vec3 *b)
 	Vec3 *zh0 = a->clipZ(b, z0);
 	Vec3 *zh1 = a->clipZ(b, z1);
 
-	if (!containsX(xh0)) xh0 = NULL;
-	if (!containsX(xh1)) xh1 = NULL;
-	if (!containsY(yh0)) yh0 = NULL;
-	if (!containsY(yh1)) yh1 = NULL;
-	if (!containsZ(zh0)) zh0 = NULL;
-	if (!containsZ(zh1)) zh1 = NULL;
+	if (!containsX(xh0)) xh0 = nullptr;
+	if (!containsX(xh1)) xh1 = nullptr;
+	if (!containsY(yh0)) yh0 = nullptr;
+	if (!containsY(yh1)) yh1 = nullptr;
+	if (!containsZ(zh0)) zh0 = nullptr;
+	if (!containsZ(zh1)) zh1 = nullptr;
 
-	Vec3 *closest = NULL;
+	Vec3 *closest = nullptr;
 
-	if (xh0 != NULL && (closest == NULL || a->distanceToSqr(xh0) < a->distanceToSqr(closest))) closest = xh0;
-	if (xh1 != NULL && (closest == NULL || a->distanceToSqr(xh1) < a->distanceToSqr(closest))) closest = xh1;
-	if (yh0 != NULL && (closest == NULL || a->distanceToSqr(yh0) < a->distanceToSqr(closest))) closest = yh0;
-	if (yh1 != NULL && (closest == NULL || a->distanceToSqr(yh1) < a->distanceToSqr(closest))) closest = yh1;
-	if (zh0 != NULL && (closest == NULL || a->distanceToSqr(zh0) < a->distanceToSqr(closest))) closest = zh0;
-	if (zh1 != NULL && (closest == NULL || a->distanceToSqr(zh1) < a->distanceToSqr(closest))) closest = zh1;
+	if (xh0 != nullptr && (closest == nullptr || a->distanceToSqr(xh0) < a->distanceToSqr(closest))) closest = xh0;
+	if (xh1 != nullptr && (closest == nullptr || a->distanceToSqr(xh1) < a->distanceToSqr(closest))) closest = xh1;
+	if (yh0 != nullptr && (closest == nullptr || a->distanceToSqr(yh0) < a->distanceToSqr(closest))) closest = yh0;
+	if (yh1 != nullptr && (closest == nullptr || a->distanceToSqr(yh1) < a->distanceToSqr(closest))) closest = yh1;
+	if (zh0 != nullptr && (closest == nullptr || a->distanceToSqr(zh0) < a->distanceToSqr(closest))) closest = zh0;
+	if (zh1 != nullptr && (closest == nullptr || a->distanceToSqr(zh1) < a->distanceToSqr(closest))) closest = zh1;
 
-	if (closest == NULL) return NULL;
+	if (closest == nullptr) return nullptr;
 
 	int face = -1;
 
@@ -317,26 +317,26 @@ HitResult *AABB::clip(Vec3 *a, Vec3 *b)
 }
 
 
-bool AABB::containsX(Vec3 *v) 
+bool AABB::containsX(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->y >= y0 && v->y <= y1 && v->z >= z0 && v->z <= z1;
 }
 
-bool AABB::containsY(Vec3 *v) 
+bool AABB::containsY(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->x >= x0 && v->x <= x1 && v->z >= z0 && v->z <= z1;
 }
 
-bool AABB::containsZ(Vec3 *v) 
+bool AABB::containsZ(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->x >= x0 && v->x <= x1 && v->y >= y0 && v->y <= y1;
 }
 
 
-void AABB::set(AABB *b) 
+void AABB::set(AABB *b)
 {
 	x0 = b->x0;
 	y0 = b->y0;
@@ -346,9 +346,9 @@ void AABB::set(AABB *b)
 	z1 = b->z1;
 }
 
-wstring AABB::toString() 
+wstring AABB::toString()
 {
-	return L"box[" + _toString<double>(x0) + L", " + _toString<double>(y0) + L", " + _toString<double>(z0) + L" -> " + 
-		_toString<double>(x1) + L", " + _toString<double>(y1) + L", " + _toString<double>(z1) + L"]";
+	return L"box[" + std::to_wstring(x0) + L", " + std::to_wstring(y0) + L", " + std::to_wstring(z0) + L" -> " +
+		std::to_wstring(x1) + L", " + std::to_wstring(y1) + L", " + std::to_wstring(z1) + L"]";
 }
 

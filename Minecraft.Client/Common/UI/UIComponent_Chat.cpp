@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIComponent_Chat.h"
+#include "UISplitScreenHelpers.h"
 #include "..\..\Minecraft.h"
 #include "..\..\Gui.h"
 
@@ -46,7 +47,7 @@ void UIComponent_Chat::handleTimerComplete(int id)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	
 	bool anyVisible = false;
-	if(pMinecraft->localplayers[m_iPad]!= NULL)
+	if(pMinecraft->localplayers[m_iPad]!= nullptr)
 	{
 		Gui *pGui = pMinecraft->gui;
 		//DWORD messagesToDisplay = min( CHAT_LINES_COUNT, pGui->getMessagesCount(m_iPad) );
@@ -55,10 +56,16 @@ void UIComponent_Chat::handleTimerComplete(int id)
 			float opacity = pGui->getOpacity(m_iPad, i);
 			if( opacity > 0 )
 			{
+#ifdef _WINDOWS64
+				// Chat drawn by Gui::render with color codes. Hides Iggy chat to avoid double chats.
+				m_controlLabelBackground[i].setOpacity(0);
+				m_labelChatText[i].setOpacity(0);
+				m_labelChatText[i].setLabel(L"");
+#else
 				m_controlLabelBackground[i].setOpacity(opacity);
 				m_labelChatText[i].setOpacity(opacity);
 				m_labelChatText[i].setLabel( pGui->getMessage(m_iPad,i) );
-
+#endif
 				anyVisible = true;
 			}
 			else
@@ -96,15 +103,15 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -114,32 +121,42 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 		S32 tileWidth = width;
 		S32 tileHeight = height;
 
+		bool needsYTile = false;
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			tileHeight = (S32)(ui.getScreenHeight());
+			tileHeight = static_cast<S32>(ui.getScreenHeight());
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
-			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
+			needsYTile = true;
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
+		F32 scale;
+		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+
+		// For vertical split, scale down to fit the full SWF height when the
+		// window is shorter than the movie (same fix as HUD).
+		if(!needsYTile && m_movieHeight > 0)
+		{
+			F32 scaleH = (F32)tileHeight / (F32)m_movieHeight;
+			if(scaleH < scale)
+				scale = scaleH;
+		}
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
 		IggyPlayerDrawTilesStart ( getMovie() );
-		
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 		IggyPlayerDrawTile ( getMovie() ,
@@ -147,7 +164,7 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else

@@ -54,7 +54,7 @@ typedef struct _MapDataMappings_old
 	void setMapping(int id, PlayerUID xuid, int dimension);
 } MapDataMappings_old;
 
-class DirectoryLevelStorage : public LevelStorage, public PlayerIO 
+class DirectoryLevelStorage : public LevelStorage, public PlayerIO
 {
 private:
 	/* 4J Jev, Probably no need for this as theres no exceptions being thrown.
@@ -65,7 +65,7 @@ private:
 	const ConsoleSavePath playerDir;
     //const File dataDir;
 	const ConsoleSavePath dataDir;
-    const __int64 sessionId;
+    const int64_t sessionId;
 	const wstring levelId;
 
 	static const wstring sc_szPlayerDir;
@@ -75,7 +75,7 @@ private:
 	{
 		friend class DirectoryLevelStorage;
 	private:
-		unordered_map<__int64, short> m_mappings;
+		unordered_map<int64_t, short> m_mappings;
 
 	public:
 		void addMapping(int id, int centreX, int centreZ, int dimension, int scale);
@@ -92,7 +92,7 @@ private:
 #else
 	MapDataMappings m_mapDataMappings;
 	MapDataMappings m_saveableMapDataMappings;
-#endif	
+#endif
 	bool m_bHasLoadedMapDataMappings;
 
 	unordered_map<wstring, ByteArrayOutputStream *> m_cachedSaveData;

@@ -16,12 +16,12 @@
 UIScene_DLCOffersMenu::UIScene_DLCOffersMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	m_bProductInfoShown=false;
-	DLCOffersParam *param=(DLCOffersParam *)initData;
+	DLCOffersParam *param=static_cast<DLCOffersParam *>(initData);
 	m_iProductInfoIndex=param->iType;
 	m_iCurrentDLC=0;
 	m_iTotalDLC=0;
 #if defined(__PS3__) || defined(__ORBIS__) || defined (__PSVITA__)
-	m_pvProductInfo=NULL;
+	m_pvProductInfo=nullptr;
 #endif
 	m_bAddAllDLCButtons=true;
 
@@ -51,7 +51,7 @@ UIScene_DLCOffersMenu::UIScene_DLCOffersMenu(int iPad, void *initData, UILayer *
 	}
 
 #ifdef _DURANGO
-	m_pNoImageFor_DLC = NULL;
+	m_pNoImageFor_DLC = nullptr;
 	// If we don't yet have this DLC, we need to display a timer
 	m_bDLCRequiredIsRetrieved=false;
 	m_bIgnorePress=true;
@@ -103,7 +103,7 @@ void UIScene_DLCOffersMenu::handleTimerComplete(int id)
 
 int UIScene_DLCOffersMenu::ExitDLCOffersMenu(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_DLCOffersMenu* pClass = (UIScene_DLCOffersMenu*)pParam;
+	UIScene_DLCOffersMenu* pClass = static_cast<UIScene_DLCOffersMenu *>(pParam);
 
 #if defined __ORBIS__ || defined __PSVITA__
 	app.GetCommerce()->HidePsStoreIcon();
@@ -191,13 +191,13 @@ void UIScene_DLCOffersMenu::handleInput(int iPad, int key, bool repeat, bool pre
 	switch(iTextC)
 	{
 	case 0:
-		m_labelHTMLSellText.init("Voici un fantastique mini-pack de 24 apparences pour personnaliser votre personnage Minecraft et vous mettre dans l'ambiance des fêtes de fin d'année.<br><br>1-4 joueurs<br>2-8 joueurs en réseau<br><br>  Cet article fait l’objet d’une licence ou d’une sous-licence de Sony Computer Entertainment America, et est soumis aux conditions générales du service du réseau, au contrat d’utilisateur, aux restrictions d’utilisation de cet article et aux autres conditions applicables, disponibles sur le site www.us.playstation.com/support/useragreements. Si vous ne souhaitez pas accepter ces conditions, ne téléchargez pas ce produit. Cet article peut être utilisé avec un maximum de deux systèmes PlayStation®3 activés associés à ce compte Sony Entertainment Network. <br><br>'Minecraft' est une marque commerciale de Notch Development AB.");
+		m_labelHTMLSellText.init("Voici un fantastique mini-pack de 24 apparences pour personnaliser votre personnage Minecraft et vous mettre dans l'ambiance des fï¿½tes de fin d'annï¿½e.<br><br>1-4 joueurs<br>2-8 joueurs en rï¿½seau<br><br>  Cet article fait lï¿½objet dï¿½une licence ou dï¿½une sous-licence de Sony Computer Entertainment America, et est soumis aux conditions gï¿½nï¿½rales du service du rï¿½seau, au contrat dï¿½utilisateur, aux restrictions dï¿½utilisation de cet article et aux autres conditions applicables, disponibles sur le site www.us.playstation.com/support/useragreements. Si vous ne souhaitez pas accepter ces conditions, ne tï¿½lï¿½chargez pas ce produit. Cet article peut ï¿½tre utilisï¿½ avec un maximum de deux systï¿½mes PlayStationï¿½3 activï¿½s associï¿½s ï¿½ ce compte Sony Entertainment Network.ï¿½<br><br>'Minecraft' est une marque commerciale de Notch Development AB.");
 		break;
 	case 1:
-		m_labelHTMLSellText.init("Un fabuloso minipack de 24 aspectos para personalizar tu personaje de Minecraft y ponerte a tono con las fiestas.<br><br>1-4 jugadores<br>2-8 jugadores en red<br><br>  Sony Computer Entertainment America le concede la licencia o sublicencia de este artículo, que está sujeto a los términos de servicio y al acuerdo de usuario de la red. Las restricciones de uso de este artículo, así como otros términos aplicables, se encuentran en www.us.playstation.com/support/useragreements. Si no desea aceptar todos estos términos, no descargue este artículo. Este artículo puede usarse en hasta dos sistemas PlayStation®3 activados asociados con esta cuenta de Sony Entertainment Network. <br><br>'Minecraft' es una marca comercial de Notch Development AB.");
+		m_labelHTMLSellText.init("Un fabuloso minipack de 24 aspectos para personalizar tu personaje de Minecraft y ponerte a tono con las fiestas.<br><br>1-4 jugadores<br>2-8 jugadores en red<br><br>  Sony Computer Entertainment America le concede la licencia o sublicencia de este artï¿½culo, que estï¿½ sujeto a los tï¿½rminos de servicio y al acuerdo de usuario de la red. Las restricciones de uso de este artï¿½culo, asï¿½ como otros tï¿½rminos aplicables, se encuentran en www.us.playstation.com/support/useragreements. Si no desea aceptar todos estos tï¿½rminos, no descargue este artï¿½culo. Este artï¿½culo puede usarse en hasta dos sistemas PlayStationï¿½3 activados asociados con esta cuenta de Sony Entertainment Network.ï¿½<br><br>'Minecraft' es una marca comercial de Notch Development AB.");
 		break;
 	case 2:
-		m_labelHTMLSellText.init("Este é um incrível pacote com 24 capas para personalizar seu personagem no Minecraft e entrar no clima de final de ano.<br><br>1-4 Jogadores<br>Jogadores em rede 2-8<br><br>  Este item está sendo licenciado ou sublicenciado para você pela Sony Computer Entertainment America e está sujeito aos Termos de Serviço da Rede e Acordo do Usuário, as restrições de uso deste item e outros termos aplicáveis estão localizados em www.us.playstation.com/support/useragreements. Caso não queira aceitar todos esses termos, não baixe este item. Este item pode ser usado com até 2 sistemas PlayStation®3 ativados associados a esta Conta de Rede Sony Entertainment. <br><br>'Minecraft' é uma marca registrada da Notch Development AB");
+		m_labelHTMLSellText.init("Este ï¿½ um incrï¿½vel pacote com 24 capas para personalizar seu personagem no Minecraft e entrar no clima de final de ano.<br><br>1-4 Jogadores<br>Jogadores em rede 2-8<br><br>  Este item estï¿½ sendo licenciado ou sublicenciado para vocï¿½ pela Sony Computer Entertainment America e estï¿½ sujeito aos Termos de Serviï¿½o da Rede e Acordo do Usuï¿½rio, as restriï¿½ï¿½es de uso deste item e outros termos aplicï¿½veis estï¿½o localizados em www.us.playstation.com/support/useragreements. Caso nï¿½o queira aceitar todos esses termos, nï¿½o baixe este item. Este item pode ser usado com atï¿½ 2 sistemas PlayStationï¿½3 ativados associados a esta Conta de Rede Sony Entertainment.ï¿½<br><br>'Minecraft' ï¿½ uma marca registrada da Notch Development AB");
 		break;
 	}
 	iTextC++;
@@ -208,7 +208,7 @@ void UIScene_DLCOffersMenu::handleInput(int iPad, int key, bool repeat, bool pre
 	case ACTION_MENU_OTHER_STICK_DOWN:
 	case ACTION_MENU_OTHER_STICK_UP:
 	// don't pass down PageUp or PageDown because this will cause conflicts between the buttonlist and scrollable html text component
-	//case ACTION_MENU_PAGEUP:	
+	//case ACTION_MENU_PAGEUP:
 	//case ACTION_MENU_PAGEDOWN:
 		sendInputToMovie(key, repeat, pressed, released);
 		break;
@@ -217,7 +217,7 @@ void UIScene_DLCOffersMenu::handleInput(int iPad, int key, bool repeat, bool pre
 
 void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_OffersList:
 		{
@@ -235,7 +235,7 @@ void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 
 #ifdef __PS3__
 			// is the item purchasable?
-			if(info.purchasabilityFlag==1) 
+			if(info.purchasabilityFlag==1)
 			{
 				// can be bought
 				app.Checkout(info.skuId);
@@ -249,7 +249,7 @@ void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 			}
 #else // __ORBIS__
 			// is the item purchasable?
-			if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED) 
+			if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED)
 			{
 				// can be bought
 				app.Checkout(info.skuId);
@@ -261,13 +261,13 @@ void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 #endif // __PS3__
 #elif defined _XBOX_ONE
 			int iIndex = (int)childId;
-			StorageManager.InstallOffer(1,StorageManager.GetOffer(iIndex).wszProductID,NULL,NULL);
+			StorageManager.InstallOffer(1,StorageManager.GetOffer(iIndex).wszProductID,nullptr,nullptr);
 #else
-			int iIndex = (int)childId;
+			int iIndex = static_cast<int>(childId);
 
 			ULONGLONG ullIndexA[1];
 			ullIndexA[0]=StorageManager.GetOffer(iIndex).qwOfferID;
-			StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+			StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 #endif
 		}
 		break;
@@ -280,7 +280,7 @@ void UIScene_DLCOffersMenu::handleSelectionChanged(F64 selectedId)
 }
 
 void UIScene_DLCOffersMenu::handleFocusChange(F64 controlId, F64 childId)
-{	
+{
 	app.DebugPrintf("UIScene_DLCOffersMenu::handleFocusChange\n");
 
 #ifdef __PSVITA__
@@ -305,7 +305,7 @@ void UIScene_DLCOffersMenu::handleFocusChange(F64 controlId, F64 childId)
 
 #if defined __PSVITA__ || defined __ORBIS__
 	if(m_pvProductInfo)
-	{	
+	{
 		m_bIsSelected = true;
 		vector<SonyCommerce::ProductInfo >::iterator it = m_pvProductInfo->begin();
 		string teststring;
@@ -315,7 +315,7 @@ void UIScene_DLCOffersMenu::handleFocusChange(F64 controlId, F64 childId)
 		}
 
 		SonyCommerce::ProductInfo info = *it;
-		if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED) 
+		if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED)
 		{
 			m_bHasPurchased=false;
 		}
@@ -343,10 +343,10 @@ void UIScene_DLCOffersMenu::tick()
 		{
 			m_bAddAllDLCButtons=false;
 			// add the categories to the list box
-			if(m_pvProductInfo==NULL)
+			if(m_pvProductInfo==nullptr)
 			{
 				m_pvProductInfo=app.GetProductList(m_iProductInfoIndex);
-				if(m_pvProductInfo==NULL)
+				if(m_pvProductInfo==nullptr)
 				{
 					m_iTotalDLC=0;
 					// need to display text to say no downloadable content available yet
@@ -379,7 +379,7 @@ void UIScene_DLCOffersMenu::tick()
 
 #ifdef __PS3__
 				// is the item purchasable?
-				if(info.purchasabilityFlag==1) 
+				if(info.purchasabilityFlag==1)
 				{
 					// can be bought
 					app.DebugPrintf("Adding DLC (%s) - not bought\n",teststring.c_str());
@@ -397,7 +397,7 @@ void UIScene_DLCOffersMenu::tick()
 				}
 #else // __ORBIS__
 				// is the item purchasable?
-				if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED) 
+				if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED)
 				{
 					// can be bought
 					m_buttonListOffers.addItem(teststring,false,i);
@@ -445,13 +445,13 @@ void UIScene_DLCOffersMenu::tick()
 
 						// does the DLC info have an image?
 						if(pSONYDLCInfo && pSONYDLCInfo->dwImageBytes!=0)
-						{ 
+						{
 							pbImageData=pSONYDLCInfo->pbImageData;
 							iImageDataBytes=pSONYDLCInfo->dwImageBytes;
 							bDeleteData=false; // we'll clean up the local LDC images
-						}	
+						}
 						else
-#endif					
+#endif
 						if(info.imageUrl[0]!=0)
 						{
 							SonyHttp::getDataFromURL(info.imageUrl,(void **)&pbImageData,&iImageDataBytes);
@@ -460,7 +460,7 @@ void UIScene_DLCOffersMenu::tick()
 
 						if(iImageDataBytes!=0)
 						{
-							// set the image	
+							// set the image
 							registerSubstitutionTexture(textureName,pbImageData,iImageDataBytes,bDeleteData);
 							m_bitmapIconOfferImage.setTextureName(textureName);
 							// 4J Stu - Don't delete this
@@ -497,25 +497,25 @@ void UIScene_DLCOffersMenu::tick()
 					m_labelOffers.setLabel(app.GetString(IDS_NO_DLCCATEGORIES));
 				}
 			}
-			
+
 			m_Timer.setVisible(false);
 			m_bProductInfoShown=true;
 		}
 	}
 	else
 	{
-#ifdef __PSVITA__			
+#ifdef __PSVITA__
 		// MGH - fixes bug 5768 on Vita - should be extended properly to work for other platforms
 		if((SonyCommerce_Vita::getPurchasabilityUpdated()) && app.GetCommerceProductListRetrieved()&& app.GetCommerceProductListInfoRetrieved() && m_iTotalDLC > 0)
 		{
-			
-			{	
+
+			{
 				vector<SonyCommerce::ProductInfo >::iterator it = m_pvProductInfo->begin();
 				for(int i=0;i<m_iTotalDLC;i++)
 				{
 					SonyCommerce::ProductInfo info = *it;
 					// is the item purchasable?
-					if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED) 
+					if(info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED)
 					{
 						// can be bought
 						m_buttonListOffers.showTick(i, false);
@@ -577,11 +577,11 @@ void UIScene_DLCOffersMenu::tick()
 
 				// does the DLC info have an image?
 				if(pSONYDLCInfo->dwImageBytes!=0)
-				{ 
+				{
 					pbImageData=pSONYDLCInfo->pbImageData;
 					iImageDataBytes=pSONYDLCInfo->dwImageBytes;
 					bDeleteData=false; // we'll clean up the local LDC images
-				}				
+				}
 				else
 #endif
 				{
@@ -601,7 +601,7 @@ void UIScene_DLCOffersMenu::tick()
 				else
 				{
 					m_bitmapIconOfferImage.setTextureName(L"");
-				}			
+				}
 			}
 			else
 			{
@@ -620,7 +620,7 @@ void UIScene_DLCOffersMenu::tick()
 		{
 			// DLCContentRetrieved is to see if the type of content has been retrieved - and on Durango there is only type 0 - XMARKETPLACE_OFFERING_TYPE_CONTENT
 			if(app.DLCContentRetrieved(e_Marketplace_Content))
-			{	
+			{
 				m_bDLCRequiredIsRetrieved=true;
 
 				// Retrieve the info
@@ -660,29 +660,10 @@ void UIScene_DLCOffersMenu::tick()
 			}
 		}
 	}
-
-// 	if(m_bBitmapOfferIconDisplayed==false)
-// 	{
-// 		// do we have it yet?
-// 		if
-// 	}
-	// retrieve the icons for the DLC
-// 	if(m_vIconRetrieval.size()>0)
-// 	{
-// 		// for each icon, request it, and remove it from the list
-// 		// the callback for the retrieval will update the display if needed
-// 
-// 		AUTO_VAR(itEnd, m_vIconRetrieval.end());
-// 		for (AUTO_VAR(it, m_vIconRetrieval.begin()); it != itEnd; it++)
-// 		{
-// 
-// 		}
-// 
-// 	}
 #endif
 }
 
-#if defined _XBOX_ONE 
+#if defined _XBOX_ONE
 void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 {
 	MARKETPLACE_CONTENTOFFER_INFO xOffer;
@@ -709,7 +690,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 			// Check that this is in the list of known DLC
 			DLC_INFO *pDLC=app.GetDLCInfoForFullOfferID(xOffer.wszProductID);
 
-			if(pDLC!=NULL)
+			if(pDLC!=nullptr)
 			{
 				OrderA[uiDLCCount].uiContentIndex=i;
 				OrderA[uiDLCCount++].uiSortIndex=pDLC->uiSortIndex;
@@ -719,7 +700,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 				app.DebugPrintf("Unknown offer - %ls\n",xOffer.wszOfferName);
 			}
 		}
-		
+
 		qsort( OrderA, uiDLCCount, sizeof(SORTINDEXSTRUCT), OrderSortFunction );
 
 		for(int i = 0; i < uiDLCCount; i++)
@@ -729,7 +710,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 			// Check that this is in the list of known DLC
 			DLC_INFO *pDLC=app.GetDLCInfoForFullOfferID(xOffer.wszProductID);
 
-			if(pDLC==NULL)
+			if(pDLC==nullptr)
 			{
 				// skip this one
 				app.DebugPrintf("Unknown offer - %ls\n",xOffer.wszOfferName);
@@ -737,7 +718,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 			}
 
 			if(pDLC->eDLCType==(eDLCContentType)m_iProductInfoIndex)
-			{		
+			{
 				wstring wstrTemp=xOffer.wszOfferName;
 
 				// 4J-PB - Rog requested we remove the Minecraft at the start of the name. It's required for the Bing search, but gets in the way here
@@ -755,7 +736,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 				// find the DLC in the installed packages
 				XCONTENT_DATA *pContentData=StorageManager.GetInstalledDLC(xOffer.wszProductID);
 
-				if(pContentData!=NULL)
+				if(pContentData!=nullptr)
 				{
 					m_buttonListOffers.addItem(wstrTemp,!pContentData->bTrialLicense,OrderA[i].uiContentIndex);
 				}
@@ -774,7 +755,7 @@ void UIScene_DLCOffersMenu::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 					* We've filtered results out from the list, need to keep track
 					* of the 'actual' list index.
 					*/
-				iCount++;			
+				iCount++;
 			}
 		}
 
@@ -828,13 +809,13 @@ bool UIScene_DLCOffersMenu::UpdateDisplay(MARKETPLACE_CONTENTOFFER_INFO& xOffer)
 	DLC_INFO *dlc = app.GetDLCInfoForFullOfferID(xOffer.wszOfferName);
 #endif
 
-	if (dlc != NULL)
+	if (dlc != nullptr)
 	{
 		WCHAR *cString = dlc->wchBanner;
 
 
 		// is the file in the local DLC images?
-		// is the file in the TMS XZP?	 
+		// is the file in the TMS XZP?
 		//int iIndex = app.GetLocalTMSFileIndex(cString, true);
 
 		if(dlc->dwImageBytes!=0)
@@ -862,8 +843,8 @@ bool UIScene_DLCOffersMenu::UpdateDisplay(MARKETPLACE_CONTENTOFFER_INFO& xOffer)
 			else
 			{
 				if(hasRegisteredSubstitutionTexture(cString)==false)
-				{				
-					BYTE *pData=NULL;
+				{
+					BYTE *pData=nullptr;
 					DWORD dwSize=0;
 					app.GetMemFileDetails(cString,&pData,&dwSize);
 					// set the image
@@ -879,12 +860,12 @@ bool UIScene_DLCOffersMenu::UpdateDisplay(MARKETPLACE_CONTENTOFFER_INFO& xOffer)
 					m_bitmapIconOfferImage.setTextureName(cString);
 				}
 				bImageAvailable=true;
-			}			
+			}
 		}
 
 		m_labelHTMLSellText.setLabel(xOffer.wszSellText);
 
-		// set the price info	
+		// set the price info
 		m_labelPriceTag.setVisible(true);
 		m_labelPriceTag.setLabel(xOffer.wszCurrencyPrice);
 
@@ -923,7 +904,7 @@ void UIScene_DLCOffersMenu::HandleDLCInstalled()
 }
 
 // void UIScene_DLCOffersMenu::HandleDLCMountingComplete()
-// {	
+// {
 //	app.DebugPrintf(4,"UIScene_SkinSelectMenu::HandleDLCMountingComplete\n");
 //}
 

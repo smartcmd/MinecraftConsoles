@@ -10,7 +10,7 @@ UIComponent_DebugUIMarketingGuide::UIComponent_DebugUIMarketingGuide(int iPad, v
 	IggyDataValue result;
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (F64)0;	// WIN64
+	value[0].number = static_cast<F64>(0);	// WIN64
 #if defined _XBOX
 	value[0].number = (F64)1;
 #elif defined _DURANGO
@@ -22,7 +22,7 @@ UIComponent_DebugUIMarketingGuide::UIComponent_DebugUIMarketingGuide(int iPad, v
 #elif defined __PSVITA__
 	value[0].number = (F64)5;
 #elif defined _WINDOWS64
-	value[0].number = (F64)0;
+	value[0].number = static_cast<F64>(0);
 #endif
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetPlatform , 1 , value );
 }

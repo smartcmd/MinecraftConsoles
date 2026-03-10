@@ -17,7 +17,7 @@ void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, d
 
     glPushMatrix();
 
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     glEnable(GL_RESCALE_NORMAL);
     glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
     int xi = 1;
@@ -39,17 +39,17 @@ void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, d
     glRotatef(-entityRenderDispatcher->playerRotX, 1, 0, 0);
     t->begin();
     t->normal(0, 1, 0);
-    t->vertexUV((float)(0 - xo), (float)( 0 - yo), (float)( 0), (float)( u0), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( 0 - yo), (float)( 0), (float)( u1), (float)( v1));
-    t->vertexUV((float)(r - xo), (float)( 1 - yo), (float)( 0), (float)( u1), (float)( v0));
-    t->vertexUV((float)(0 - xo), (float)( 1 - yo), (float)( 0), (float)( u0), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u0), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( 0 - yo), static_cast<float>(0), (float)( u1), (float)( v1));
+    t->vertexUV((float)(r - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u1), (float)( v0));
+    t->vertexUV((float)(0 - xo), (float)( 1 - yo), static_cast<float>(0), (float)( u0), (float)( v0));
     t->end();
 
     glDisable(GL_RESCALE_NORMAL);
     glPopMatrix();
 
 
-    if (hook->owner != NULL)
+    if (hook->owner != nullptr)
 	{
         float swing = hook->owner->getAttackAnim(a);
         float swing2 = (float) Mth::sin(sqrt(swing) * PI);
@@ -82,9 +82,9 @@ void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, d
         double yh = hook->yo + (hook->y - hook->yo) * a + 4 / 16.0f;
         double zh = hook->zo + (hook->z - hook->zo) * a;
 
-        double xa = (float) (xp - xh);
-        double ya = (float) (yp - yh);
-        double za = (float) (zp - zh);
+        double xa = static_cast<float>(xp - xh);
+        double ya = static_cast<float>(yp - yh);
+        double za = static_cast<float>(zp - zh);
 
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_LIGHTING);
@@ -93,8 +93,8 @@ void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, d
         int steps = 16;
         for (int i = 0; i <= steps; i++)
 		{
-            float aa = i / (float) steps;
-            t->vertex((float)(x + xa * aa), (float)( y + ya * (aa * aa + aa) * 0.5 + 4 / 16.0f), (float)( z + za * aa));
+            float aa = i / static_cast<float>(steps);
+            t->vertex(static_cast<float>(x + xa * aa), static_cast<float>(y + ya * (aa * aa + aa) * 0.5 + 4 / 16.0f), static_cast<float>(z + za * aa));
         }
         t->end();
         glEnable(GL_LIGHTING);

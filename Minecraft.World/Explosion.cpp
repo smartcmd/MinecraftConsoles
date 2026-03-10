@@ -29,9 +29,9 @@ Explosion::Explosion(Level *level, shared_ptr<Entity> source, double x, double y
 Explosion::~Explosion()
 {
 	delete random;
-	for(AUTO_VAR(it, hitPlayers.begin()); it != hitPlayers.end(); ++it)
+	for( auto& it : hitPlayers )
 	{
-		delete it->second;
+		delete it.second;
 	}
 }
 
@@ -72,10 +72,10 @@ void Explosion::explode()
 					if (t > 0)
 					{
 						Tile *tile = Tile::tiles[t];
-						float resistance = source != NULL ? source->getTileExplosionResistance(this, level, xt, yt, zt, tile) : tile->getExplosionResistance(source);
+						float resistance = source != nullptr ? source->getTileExplosionResistance(this, level, xt, yt, zt, tile) : tile->getExplosionResistance(source);
 						remainingPower -= (resistance + 0.3f) * stepSize;
 					}
-					if (remainingPower > 0&& (source == NULL || source->shouldTileExplode(this, level, xt, yt, zt, t, remainingPower)))
+					if (remainingPower > 0&& (source == nullptr || source->shouldTileExplode(this, level, xt, yt, zt, t, remainingPower)))
 					{
 						toBlow.insert(TilePos(xt, yt, zt));
 					}
@@ -105,17 +105,14 @@ void Explosion::explode()
 	vector<shared_ptr<Entity> > entities(levelEntities->begin(), levelEntities->end() );
 	Vec3 *center = Vec3::newTemp(x, y, z);
 
-	AUTO_VAR(itEnd, entities.end());
-	for (AUTO_VAR(it, entities.begin()); it != itEnd; it++)
+	for ( auto& e : entities )
 	{
-		shared_ptr<Entity> e = *it; //entities->at(i);
-
 		// 4J Stu - If the entity is not in a block that would be blown up, then they should not be damaged
 		// Fix for #46606 - TU5: Content: Gameplay: The player can be damaged and killed by explosions behind obsidian walls
 		bool canDamage = false;
-		for(AUTO_VAR(it2, toBlow.begin()); it2 != toBlow.end(); ++it2)
+		for ( auto& it2 : toBlow )
 		{
-			if(e->bb->intersects(it2->x,it2->y,it2->z,it2->x + 1,it2->y + 1,it2->z + 1))
+			if(e->bb->intersects(it2.x,it2.y,it2.z,it2.x + 1,it2.y + 1,it2.z + 1))
 			{
 				canDamage = true;
 				break;
@@ -146,7 +143,7 @@ void Explosion::explode()
 
 			double sp = level->getSeenPercent(center, e->bb);
 			double pow = (1 - dist) * sp;
-			if(canDamage) e->hurt(DamageSource::explosion(this), (int) ((pow * pow + pow) / 2 * 8 * r + 1));
+			if(canDamage) e->hurt(DamageSource::explosion(this), static_cast<int>((pow * pow + pow) / 2 * 8 * r + 1));
 
 			double kbPower = ProtectionEnchantment::getExplosionKnockbackAfterDampener(e, pow);
 			e->xd += xa *kbPower;
@@ -166,7 +163,7 @@ void Explosion::explode()
 }
 
 
-void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlowDirect/*=NULL*/)		// 4J - added toBlowDirect parameter
+void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlowDirect/*=nullptr*/)		// 4J - added toBlowDirect parameter
 {
 	level->playSound(x, y, z, eSoundType_RANDOM_EXPLODE, 4, (1 + (level->random->nextFloat() - level->random->nextFloat()) * 0.2f) * 0.7f);
 	if (r < 2 || !destroyBlocks)
@@ -188,11 +185,11 @@ void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlo
 		app.DebugPrintf("Finalizing explosion size %d\n",toBlow.size());
 		static const int MAX_EXPLODE_PARTICLES = 50;
 		// 4J - try and make at most MAX_EXPLODE_PARTICLES pairs of particles
-		int fraction = (int)toBlowArray->size() / MAX_EXPLODE_PARTICLES;
+		int fraction = static_cast<int>(toBlowArray->size()) / MAX_EXPLODE_PARTICLES;
 		if( fraction == 0 ) fraction = 1;
 		size_t j = toBlowArray->size() - 1;
 		//for (size_t j = toBlowArray->size() - 1; j >= 0; j--)
-		for(AUTO_VAR(it,toBlowArray->rbegin()); it != toBlowArray->rend(); ++it)
+		for (auto it = toBlowArray->rbegin(); it != toBlowArray->rend(); ++it)
 		{
 			TilePos *tp = &(*it); //&toBlowArray->at(j);
 			int xt = tp->x;
@@ -249,8 +246,7 @@ void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlo
 
 	if (fire)
 	{
-		//for (size_t j = toBlowArray->size() - 1; j >= 0; j--)
-		for(AUTO_VAR(it,toBlowArray->rbegin()); it != toBlowArray->rend(); ++it)
+		for (auto it = toBlowArray->rbegin(); it != toBlowArray->rend(); ++it)
 		{
 			TilePos *tp = &(*it); //&toBlowArray->at(j);
 			int xt = tp->x;
@@ -266,7 +262,7 @@ void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlo
 	}
 
 	PIXEndNamedEvent();
-	if( toBlowDirect == NULL )	delete toBlowArray;
+	if( toBlowDirect == nullptr )	delete toBlowArray;
 }
 
 Explosion::playerVec3Map *Explosion::getHitPlayers()
@@ -276,7 +272,7 @@ Explosion::playerVec3Map *Explosion::getHitPlayers()
 
 Vec3 *Explosion::getHitPlayerKnockback( shared_ptr<Player> player )
 {
-	AUTO_VAR(it, hitPlayers.find(player));
+	auto it = hitPlayers.find(player);
 
 	if(it == hitPlayers.end() ) return Vec3::newTemp(0.0,0.0,0.0);
 
@@ -285,7 +281,7 @@ Vec3 *Explosion::getHitPlayerKnockback( shared_ptr<Player> player )
 
 shared_ptr<LivingEntity> Explosion::getSourceMob()
 {
-	if (source == NULL) return nullptr;
+	if (source == nullptr) return nullptr;
 	if (source->instanceof(eTYPE_PRIMEDTNT)) return dynamic_pointer_cast<PrimedTnt>(source)->getOwner();
 	if (source->instanceof(eTYPE_LIVINGENTITY)) return dynamic_pointer_cast<LivingEntity>(source);
 	return nullptr;

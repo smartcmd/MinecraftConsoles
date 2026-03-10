@@ -68,6 +68,7 @@ public:
 	shared_ptr<ItemInstance> getResourceItem(int type,int iAuxVal);
 
 	bool hasResource(int type);
+	int countResource(int type, int auxVal);
 	void swapSlots(int from, int to);
 	bool add(shared_ptr<ItemInstance> item);
 	shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);

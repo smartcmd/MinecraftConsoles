@@ -65,7 +65,7 @@ int Direction::RELATIVE_DIRECTION_FACING[4][6] =
 
 int Direction::getDirection(double xd, double zd)
 {
-	if (Mth::abs((float) xd) > Mth::abs((float) zd))
+	if (Mth::abs(static_cast<float>(xd)) > Mth::abs(static_cast<float>(zd)))
 	{
 		if (xd > 0)
 		{

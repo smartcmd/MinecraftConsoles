@@ -116,7 +116,7 @@ public:
 	void Initialise(IDirect3DDevice9 *pDevice);
 	void InitialiseContext();
 	void Present();
-	void Clear(int flags, D3DRECT *pRect = NULL);
+	void Clear(int flags, D3DRECT *pRect = nullptr);
 	void SetClearColour(D3DCOLOR colour);
 	bool IsWidescreen();
 	bool IsHiDef();

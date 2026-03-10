@@ -14,12 +14,12 @@ AttributeInstance *ServersideAttributeMap::getInstance(Attribute *attribute)
 AttributeInstance *ServersideAttributeMap::getInstance(eATTRIBUTE_ID id)
 {
 	AttributeInstance *result = BaseAttributeMap::getInstance(id);
-	
+
 	// 4J: Removed legacy name
 	// If we didn't find it, search by legacy name
-	/*if (result == NULL)
+	/*if (result == nullptr)
 	{
-		AUTO_VAR(it, attributesByLegacy.find(name));
+		auto it = attributesByLegacy.find(name);
 		if(it != attributesByLegacy.end())
 		{
 			result = it->second;
@@ -31,19 +31,19 @@ AttributeInstance *ServersideAttributeMap::getInstance(eATTRIBUTE_ID id)
 
 AttributeInstance *ServersideAttributeMap::registerAttribute(Attribute *attribute)
 {
-	AUTO_VAR(it,attributesById.find(attribute->getId()));
-	if (it != attributesById.end())
+    auto it = attributesById.find(attribute->getId());
+    if (it != attributesById.end())
 	{
 		return it->second;
 	}
 
 	AttributeInstance *instance = new ModifiableAttributeInstance(this, attribute);
 	attributesById.insert(std::pair<eATTRIBUTE_ID, AttributeInstance *>(attribute->getId(), instance));
-	
+
 	// 4J: Removed legacy name
 	// If this is a ranged attribute also add to legacy name map
 	/*RangedAttribute *rangedAttribute = dynamic_cast<RangedAttribute*>(attribute);
-	if (rangedAttribute != NULL && rangedAttribute->getImportLegacyName() != L"")
+	if (rangedAttribute != nullptr && rangedAttribute->getImportLegacyName() != L"")
 	{
 		attributesByLegacy.insert(std::pair<wstring, AttributeInstance*>(rangedAttribute->getImportLegacyName(), instance));
 	}*/
@@ -69,9 +69,13 @@ unordered_set<AttributeInstance *> *ServersideAttributeMap::getSyncableAttribute
 	unordered_set<AttributeInstance *> *result = new unordered_set<AttributeInstance *>();
 	vector<AttributeInstance *> atts;
 	getAttributes(atts);
-	for (int i = 0; i < atts.size(); i++)
+	for (size_t i = 0; i < atts.size(); i++)
 	{
 		AttributeInstance *instance = atts.at(i);
+		if (instance == nullptr)
+		{
+			continue;
+		}
 
 		if (instance->getAttribute()->isClientSyncable())
 		{

@@ -186,7 +186,7 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 
 	int baseColor = colourTable->getColor( eMinecraftColour_Potion_BaseColour );
 
-	if (effects == NULL || effects->empty())
+	if (effects == nullptr || effects->empty())
 	{
 		return baseColor;
 	}
@@ -197,16 +197,15 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 	float count = 0;
 
 	//for (MobEffectInstance effect : effects){
-	for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+	for(auto& effect : *effects)
 	{
-		MobEffectInstance *effect = *it;
 		int potionColor = colourTable->getColor( MobEffect::effects[effect->getId()]->getColor() );
 
 		for (int potency = 0; potency <= effect->getAmplifier(); potency++)
 		{
-			red += (float) ((potionColor >> 16) & 0xff) / 255.0f;
-			green += (float) ((potionColor >> 8) & 0xff) / 255.0f;
-			blue += (float) ((potionColor >> 0) & 0xff) / 255.0f;
+			red += static_cast<float>((potionColor >> 16) & 0xff) / 255.0f;
+			green += static_cast<float>((potionColor >> 8) & 0xff) / 255.0f;
+			blue += static_cast<float>((potionColor >> 0) & 0xff) / 255.0f;
 			count++;
 		}
 	}
@@ -215,14 +214,13 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 	green = (green / count) * 255.0f;
 	blue = (blue / count) * 255.0f;
 
-	return ((int) red) << 16 | ((int) green) << 8 | ((int) blue);
+	return static_cast<int>(red) << 16 | static_cast<int>(green) << 8 | static_cast<int>(blue);
 }
 
 bool PotionBrewing::areAllEffectsAmbient(vector<MobEffectInstance *> *effects)
 {
-	for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+	for(auto& effect : *effects)
 	{
-		MobEffectInstance *effect = *it;
 		if (!effect->isAmbient()) return false;
 	}
 
@@ -233,18 +231,17 @@ int PotionBrewing::getColorValue(int brew, bool includeDisabledEffects)
 {
 	if (!includeDisabledEffects)
 	{
-		AUTO_VAR(colIt, cachedColors.find(brew));
-		if (colIt != cachedColors.end())
+        auto colIt = cachedColors.find(brew);
+        if (colIt != cachedColors.end())
 		{
 			return colIt->second;//cachedColors.get(brew);
 		}
 		vector<MobEffectInstance *> *effects = getEffects(brew, false);
 		int color = getColorValue(effects);
-		if(effects != NULL)
+		if(effects != nullptr)
 		{
-			for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+			for(auto& effect : *effects)
 			{
-				MobEffectInstance *effect = *it;
 				delete effect;
 			}
 			delete effects;
@@ -328,16 +325,16 @@ int PotionBrewing::parseEffectFormulaValue(const wstring &definition, int start,
 	}
 
 	// split by and
-	int andIndex = (int)definition.find_first_of(L'&', start);
-	if (andIndex >= 0 && andIndex < end)
+	size_t andIndex = definition.find_first_of(L'&', start);
+	if (andIndex != wstring::npos && andIndex < static_cast<size_t>(end))
 	{
-		int leftSide = parseEffectFormulaValue(definition, start, andIndex - 1, brew);
+		int leftSide = parseEffectFormulaValue(definition, start, static_cast<int>(andIndex) - 1, brew);
 		if (leftSide <= 0)
 		{
 			return 0;
 		}
 
-		int rightSide = parseEffectFormulaValue(definition, andIndex + 1, end, brew);
+		int rightSide = parseEffectFormulaValue(definition, static_cast<int>(andIndex) + 1, end, brew);
 		if (rightSide <= 0)
 		{
 			return 0;
@@ -416,16 +413,16 @@ int PotionBrewing::parseEffectFormulaValue(const wstring &definition, int start,
 	}
 
 	// split by or
-	int orIndex = definition.find_first_of(L'|', start);
-	if (orIndex >= 0 && orIndex < end)
+	size_t orIndex = definition.find_first_of(L'|', start);
+	if (orIndex != wstring::npos && orIndex < static_cast<size_t>(end))
 	{
-		int leftSide = parseEffectFormulaValue(definition, start, orIndex - 1, brew);
+		int leftSide = parseEffectFormulaValue(definition, start, static_cast<int>(orIndex) - 1, brew);
 		if (leftSide > 0)
 		{
 			return leftSide;
 		}
 
-		int rightSide = parseEffectFormulaValue(definition, orIndex + 1, end, brew);
+		int rightSide = parseEffectFormulaValue(definition, static_cast<int>(orIndex) + 1, end, brew);
 		if (rightSide > 0)
 		{
 			return rightSide;
@@ -433,10 +430,10 @@ int PotionBrewing::parseEffectFormulaValue(const wstring &definition, int start,
 		return 0;
 	}
 	// split by and
-	int andIndex = definition.find_first_of(L'&', start);
-	if (andIndex >= 0 && andIndex < end)
+	size_t andIndex = definition.find_first_of(L'&', start);
+	if (andIndex != wstring::npos && andIndex < static_cast<size_t>(end))
 	{
-		int leftSide = parseEffectFormulaValue(definition, start, andIndex - 1, brew);
+		int leftSide = parseEffectFormulaValue(definition, start, static_cast<int>(andIndex) - 1, brew);
 		if (leftSide <= 0)
 		{
 			return 0;
@@ -555,33 +552,33 @@ int PotionBrewing::parseEffectFormulaValue(const wstring &definition, int start,
 
 vector<MobEffectInstance *> *PotionBrewing::getEffects(int brew, bool includeDisabledEffects)
 {
-	vector<MobEffectInstance *> *list = NULL;
+	vector<MobEffectInstance *> *list = nullptr;
 
 	//for (MobEffect effect : MobEffect.effects)
 	for(unsigned int i = 0; i < MobEffect::NUM_EFFECTS; ++i)
 	{
 		MobEffect *effect = MobEffect::effects[i];
-		if (effect == NULL || (effect->isDisabled() && !includeDisabledEffects))
+		if (effect == nullptr || (effect->isDisabled() && !includeDisabledEffects))
 		{
 			continue;
 		}
 		//wstring durationString = potionEffectDuration.get(effect->getId());
-		AUTO_VAR(effIt, potionEffectDuration.find(effect->getId()));
-		if ( effIt == potionEffectDuration.end() )
+        auto effIt = potionEffectDuration.find(effect->getId());
+        if ( effIt == potionEffectDuration.end() )
 		{
 			continue;
 		}
 		wstring durationString = effIt->second;
 
-		int duration = parseEffectFormulaValue(durationString, 0, (int)durationString.length(), brew);
+		int duration = parseEffectFormulaValue(durationString, 0, static_cast<int>(durationString.length()), brew);
 		if (duration > 0)
 		{
 			int amplifier = 0;
-			AUTO_VAR(ampIt, potionEffectAmplifier.find(effect->getId()));
-			if (ampIt != potionEffectAmplifier.end())
-			{				
+            auto ampIt = potionEffectAmplifier.find(effect->getId());
+            if (ampIt != potionEffectAmplifier.end())
+			{
 				wstring amplifierString = ampIt->second;
-				amplifier = parseEffectFormulaValue(amplifierString, 0, (int)amplifierString.length(), brew);
+				amplifier = parseEffectFormulaValue(amplifierString, 0, static_cast<int>(amplifierString.length()), brew);
 				if (amplifier < 0)
 				{
 					amplifier = 0;
@@ -597,15 +594,15 @@ vector<MobEffectInstance *> *PotionBrewing::getEffects(int brew, bool includeDis
 				// 3, 8, 13, 18.. minutes
 				duration = (SharedConstants::TICKS_PER_SECOND * 60) * (duration * 3 + (duration - 1) * 2);
 				duration >>= amplifier;
-				duration = (int) Math::round((double) duration * effect->getDurationModifier());
+				duration = static_cast<int>(Math::round((double)duration * effect->getDurationModifier()));
 
 				if ((brew & THROWABLE_MASK) != 0)
 				{
-					duration = (int) Math::round((double) duration * .75 + .5);
+					duration = static_cast<int>(Math::round((double)duration * .75 + .5));
 				}
 			}
 
-			if (list == NULL)
+			if (list == nullptr)
 			{
 				list = new vector<MobEffectInstance *>();
 			}
@@ -759,7 +756,7 @@ int PotionBrewing::applyBrew(int currentBrew, const wstring &formula)
 {
 
 	int start = 0;
-	int end = (int)formula.length();
+	int end = static_cast<int>(formula.length());
 
 	bool hasValue = false;
 	bool isNot = false;

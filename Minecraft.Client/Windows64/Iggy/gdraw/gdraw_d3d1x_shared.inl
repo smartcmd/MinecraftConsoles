@@ -196,16 +196,16 @@ static void safe_release(T *&p)
 {
    if (p) {
       p->Release();
-      p = NULL;
+      p = nullptr;
    }
 }
 
-static void report_d3d_error(HRESULT hr, char *call, char *context)
+static void report_d3d_error(HRESULT hr, const char *call, const char *context)
 {
    if (hr == E_OUTOFMEMORY)
-      IggyGDrawSendWarning(NULL, "GDraw D3D out of memory in %s%s", call, context);
+      IggyGDrawSendWarning(nullptr, "GDraw D3D out of memory in %s%s", call, context);
    else
-      IggyGDrawSendWarning(NULL, "GDraw D3D error in %s%s: 0x%08x", call, context, hr);
+      IggyGDrawSendWarning(nullptr, "GDraw D3D error in %s%s: 0x%08x", call, context, hr);
 }
 
 static void unbind_resources(void)
@@ -214,13 +214,13 @@ static void unbind_resources(void)
 
    // unset active textures and vertex/index buffers,
    // to make sure there are no dangling refs
-   static ID3D1X(ShaderResourceView) *no_views[3] = { 0 };
-   ID3D1X(Buffer) *no_vb = NULL;
+   static ID3D1X(ShaderResourceView) *no_views[3] = { nullptr };
+   ID3D1X(Buffer) *no_vb = nullptr;
    UINT no_offs = 0;
 
    d3d->PSSetShaderResources(0, 3, no_views);
    d3d->IASetVertexBuffers(0, 1, &no_vb, &no_offs, &no_offs);
-   d3d->IASetIndexBuffer(NULL, DXGI_FORMAT_UNKNOWN, 0);
+   d3d->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 }
 
 static void api_free_resource(GDrawHandle *r)
@@ -251,11 +251,11 @@ static void RADLINK gdraw_UnlockHandles(GDrawStats * /*stats*/)
 
 static void *start_write_dyn(DynBuffer *buf, U32 size)
 {
-   U8 *ptr = NULL;
+   U8 *ptr = nullptr;
 
    if (size > buf->size) {
-      IggyGDrawSendWarning(NULL, "GDraw dynamic vertex buffer usage of %d bytes in one call larger than buffer size %d", size, buf->size);
-      return NULL;
+      IggyGDrawSendWarning(nullptr, "GDraw dynamic vertex buffer usage of %d bytes in one call larger than buffer size %d", size, buf->size);
+      return nullptr;
    }
 
    // update statistics
@@ -270,7 +270,7 @@ static void *start_write_dyn(DynBuffer *buf, U32 size)
    // discard buffer whenever the current write position is 0;
    // done this way so that if a DISCARD Map() were to fail, we would
    // just keep retrying the next time around.
-   ptr = (U8 *) map_buffer(gdraw->d3d_context, buf->buffer, buf->write_pos == 0);
+   ptr = static_cast<U8 *>(map_buffer(gdraw->d3d_context, buf->buffer, buf->write_pos == 0));
    if (ptr) {
       ptr += buf->write_pos; // we return pointer to write position in buffer
       buf->alloc_pos = buf->write_pos + size; // bump alloc position
@@ -373,19 +373,19 @@ extern GDrawTexture *gdraw_D3D1X_(WrappedTextureCreate)(ID3D1X(ShaderResourceVie
 {
    GDrawStats stats={0};
    GDrawHandle *p = gdraw_res_alloc_begin(gdraw->texturecache, 0, &stats); // it may need to free one item to give us a handle
-   p->handle.tex.d3d = NULL;
+   p->handle.tex.d3d = nullptr;
    p->handle.tex.d3d_view = tex_view;
-   p->handle.tex.d3d_rtview = NULL;
+   p->handle.tex.d3d_rtview = nullptr;
    p->handle.tex.w = 1;
    p->handle.tex.h = 1;
-   gdraw_HandleCacheAllocateEnd(p, 0, NULL, GDRAW_HANDLE_STATE_user_owned);
+   gdraw_HandleCacheAllocateEnd(p, 0, nullptr, GDRAW_HANDLE_STATE_user_owned);
    return (GDrawTexture *) p;
 }
 
 extern void gdraw_D3D1X_(WrappedTextureChange)(GDrawTexture *tex, ID3D1X(ShaderResourceView) *tex_view)
 {
    GDrawHandle *p = (GDrawHandle *) tex;
-   p->handle.tex.d3d = NULL;
+   p->handle.tex.d3d = nullptr;
    p->handle.tex.d3d_view = tex_view;
 }
 
@@ -407,12 +407,12 @@ static void RADLINK gdraw_SetTextureUniqueID(GDrawTexture *tex, void *old_id, vo
 
 static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height, gdraw_texture_format format, U32 flags, GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *stats)
 {
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    DXGI_FORMAT dxgi_fmt;
    S32 bpp, size = 0, nmips = 0;
 
    if (width >= 16384 || height >= 16384) {
-      IggyGDrawSendWarning(NULL, "GDraw texture size too large (%d x %d), dimension limit is 16384", width, height);
+      IggyGDrawSendWarning(nullptr, "GDraw texture size too large (%d x %d), dimension limit is 16384", width, height);
       return false;
    }
 
@@ -433,7 +433,7 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
    // try to allocate memory for the client to write to
    p->texture_data = (U8 *) IggyGDrawMalloc(size);
    if (!p->texture_data) {
-      IggyGDrawSendWarning(NULL, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
+      IggyGDrawSendWarning(nullptr, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
       return false;
    }
 
@@ -446,9 +446,9 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
 
    t->handle.tex.w = width;
    t->handle.tex.h = height;
-   t->handle.tex.d3d = NULL;
-   t->handle.tex.d3d_view = NULL;
-   t->handle.tex.d3d_rtview = NULL;
+   t->handle.tex.d3d = nullptr;
+   t->handle.tex.d3d_view = nullptr;
+   t->handle.tex.d3d_rtview = nullptr;
 
    p->texture_type = GDRAW_TEXTURE_TYPE_rgba;
    p->p0 = t;
@@ -474,11 +474,11 @@ static rrbool RADLINK gdraw_MakeTextureMore(GDraw_MakeTexture_ProcessingInfo * /
 
 static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *stats)
 {
-   GDrawHandle *t = (GDrawHandle *) p->p0;
+   GDrawHandle *t = static_cast<GDrawHandle *>(p->p0);
    D3D1X_(SUBRESOURCE_DATA) mipdata[24];
    S32 i, w, h, nmips, bpp;
    HRESULT hr = S_OK;
-   char *failed_call;
+   const char *failed_call;
    U8 *ptr;
 
    // generate mip maps and set up descriptors for them
@@ -512,7 +512,7 @@ static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingI
 
    // and create a corresponding shader resource view
    failed_call = "CreateShaderResourceView";
-   hr = gdraw->d3d_device->CreateShaderResourceView(t->handle.tex.d3d, NULL, &t->handle.tex.d3d_view);
+   hr = gdraw->d3d_device->CreateShaderResourceView(t->handle.tex.d3d, nullptr, &t->handle.tex.d3d_view);
 
 done:
    if (!FAILED(hr)) {
@@ -525,7 +525,7 @@ done:
       safe_release(t->handle.tex.d3d_view);
 
       gdraw_HandleCacheAllocateFail(t);
-      t = NULL;
+      t = nullptr;
       report_d3d_error(hr, failed_call, " while creating texture");
    }
 
@@ -554,8 +554,8 @@ static void RADLINK gdraw_UpdateTextureEnd(GDrawTexture *t, void * /*unique_id*/
 static void RADLINK gdraw_FreeTexture(GDrawTexture *tt, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *t = (GDrawHandle *) tt;
-   assert(t != NULL); // @GDRAW_ASSERT
-   if (t->owner == unique_id || unique_id == NULL) {
+   assert(t != nullptr); // @GDRAW_ASSERT
+   if (t->owner == unique_id || unique_id == nullptr) {
       if (t->cache == &gdraw->rendertargets) {
          gdraw_HandleCacheUnlock(t);
          // cache it by simply not freeing it
@@ -595,7 +595,7 @@ static void RADLINK gdraw_SetAntialiasTexture(S32 width, U8 *rgba)
       return;
    }
 
-   hr = gdraw->d3d_device->CreateShaderResourceView(gdraw->aa_tex, NULL, &gdraw->aa_tex_view);
+   hr = gdraw->d3d_device->CreateShaderResourceView(gdraw->aa_tex, nullptr, &gdraw->aa_tex_view);
    if (FAILED(hr)) {
       report_d3d_error(hr, "CreateShaderResourceView", " while creating texture");
       safe_release(gdraw->aa_tex);
@@ -616,8 +616,8 @@ static rrbool RADLINK gdraw_MakeVertexBufferBegin(void *unique_id, gdraw_vformat
    if (p->vertex_data && p->index_data) {
       GDrawHandle *vb = gdraw_res_alloc_begin(gdraw->vbufcache, vbuf_size + ibuf_size, stats);
       if (vb) {
-         vb->handle.vbuf.verts = NULL;
-         vb->handle.vbuf.inds = NULL;
+         vb->handle.vbuf.verts = nullptr;
+         vb->handle.vbuf.inds = nullptr;
 
          p->vertex_data_length = vbuf_size;
          p->index_data_length = ibuf_size;
@@ -643,7 +643,7 @@ static rrbool RADLINK gdraw_MakeVertexBufferMore(GDraw_MakeVertexBuffer_Processi
 
 static GDrawVertexBuffer * RADLINK gdraw_MakeVertexBufferEnd(GDraw_MakeVertexBuffer_ProcessingInfo *p, GDrawStats * /*stats*/)
 {
-   GDrawHandle *vb = (GDrawHandle *) p->p0;
+   GDrawHandle *vb = static_cast<GDrawHandle *>(p->p0);
 
    HRESULT hr;
    D3D1X_(BUFFER_DESC) vbdesc = { static_cast<U32>(p->vertex_data_length), D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_VERTEX_BUFFER), 0U, 0U };
@@ -661,7 +661,7 @@ static GDrawVertexBuffer * RADLINK gdraw_MakeVertexBufferEnd(GDraw_MakeVertexBuf
       safe_release(vb->handle.vbuf.inds);
 
       gdraw_HandleCacheAllocateFail(vb);
-      vb = NULL;
+      vb = nullptr;
 
       report_d3d_error(hr, "CreateBuffer", " creating vertex buffer");
    } else {
@@ -682,7 +682,7 @@ static rrbool RADLINK gdraw_TryLockVertexBuffer(GDrawVertexBuffer *vb, void *uni
 static void RADLINK gdraw_FreeVertexBuffer(GDrawVertexBuffer *vb, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *h = (GDrawHandle *) vb;
-   assert(h != NULL); // @GDRAW_ASSERT
+   assert(h != nullptr); // @GDRAW_ASSERT
    if (h->owner == unique_id)
       gdraw_res_free(h, stats);
 }
@@ -700,7 +700,7 @@ static void RADLINK gdraw_DescribeVertexBuffer(GDrawVertexBuffer *vbuf, GDraw_Ve
 
 static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 {
-   char *failed_call;
+   const char *failed_call;
 
    // try to recycle LRU rendertarget
    GDrawHandle *t = gdraw_HandleCacheGetLRU(&gdraw->rendertargets);
@@ -712,31 +712,31 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
    // ran out of RTs, allocate a new one
    S32 size = gdraw->frametex_width * gdraw->frametex_height * 4;
    if (gdraw->rendertargets.bytes_free < size) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: hit size limit of %d bytes", gdraw->rendertargets.total_bytes);
-      return NULL;
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: hit size limit of %d bytes", gdraw->rendertargets.total_bytes);
+      return nullptr;
    }
 
    t = gdraw_HandleCacheAllocateBegin(&gdraw->rendertargets);
    if (!t) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: hit handle limit");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: hit handle limit");
       return t;
    }
 
    D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(gdraw->frametex_width), static_cast<U32>(gdraw->frametex_height), 1U, 1U, DXGI_FORMAT_R8G8B8A8_UNORM, { 1, 0 },
       D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_SHADER_RESOURCE) | D3D1X_(BIND_RENDER_TARGET), 0U, 0U };
 
-   t->handle.tex.d3d = NULL;
-   t->handle.tex.d3d_view = NULL;
-   t->handle.tex.d3d_rtview = NULL;
+   t->handle.tex.d3d = nullptr;
+   t->handle.tex.d3d_view = nullptr;
+   t->handle.tex.d3d_rtview = nullptr;
 
-   HRESULT hr = gdraw->d3d_device->CreateTexture2D(&desc, NULL, &t->handle.tex.d3d);
+   HRESULT hr = gdraw->d3d_device->CreateTexture2D(&desc, nullptr, &t->handle.tex.d3d);
    failed_call = "CreateTexture2D";
    if (!FAILED(hr)) {
-      hr = gdraw->d3d_device->CreateShaderResourceView(t->handle.tex.d3d, NULL, &t->handle.tex.d3d_view);
+      hr = gdraw->d3d_device->CreateShaderResourceView(t->handle.tex.d3d, nullptr, &t->handle.tex.d3d_view);
       failed_call = "CreateTexture2D";
    }
    if (!FAILED(hr)) {
-      hr = gdraw->d3d_device->CreateRenderTargetView(t->handle.tex.d3d, NULL, &t->handle.tex.d3d_rtview);
+      hr = gdraw->d3d_device->CreateRenderTargetView(t->handle.tex.d3d, nullptr, &t->handle.tex.d3d_rtview);
       failed_call = "CreateRenderTargetView";
    }
 
@@ -748,7 +748,7 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 
       report_d3d_error(hr, failed_call, " creating rendertarget");
 
-      return NULL;
+      return nullptr;
    }
 
    gdraw_HandleCacheAllocateEnd(t, size, (void *) 1, GDRAW_HANDLE_STATE_locked);
@@ -762,16 +762,16 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 static ID3D1X(DepthStencilView) *get_rendertarget_depthbuffer(GDrawStats *stats)
 {
    if (!gdraw->depth_buffer[1]) {
-      char *failed_call;
+      const char *failed_call;
       assert(!gdraw->rt_depth_buffer);
 
       D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(gdraw->frametex_width), static_cast<U32>(gdraw->frametex_height), 1U, 1U, DXGI_FORMAT_D24_UNORM_S8_UINT, { 1, 0 },
          D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_DEPTH_STENCIL), 0U, 0U };
 
-      HRESULT hr = gdraw->d3d_device->CreateTexture2D(&desc, NULL, &gdraw->rt_depth_buffer);
+      HRESULT hr = gdraw->d3d_device->CreateTexture2D(&desc, nullptr, &gdraw->rt_depth_buffer);
       failed_call = "CreateTexture2D";
       if (!FAILED(hr)) {
-         hr = gdraw->d3d_device->CreateDepthStencilView(gdraw->rt_depth_buffer, NULL, &gdraw->depth_buffer[1]);
+         hr = gdraw->d3d_device->CreateDepthStencilView(gdraw->rt_depth_buffer, nullptr, &gdraw->depth_buffer[1]);
          failed_call = "CreateDepthStencilView while creating rendertarget";
       }
 
@@ -861,7 +861,7 @@ static void disable_scissor(int force)
 
 static void set_viewport_raw(S32 x, S32 y, S32 w, S32 h)
 {
-   D3D1X_(VIEWPORT) vp = { (ViewCoord) x, (ViewCoord) y, (ViewCoord) w, (ViewCoord) h, 0.0f, 1.0f };
+   D3D1X_(VIEWPORT) vp = { static_cast<ViewCoord>(x), static_cast<ViewCoord>(y), static_cast<ViewCoord>(w), static_cast<ViewCoord>(h), 0.0f, 1.0f };
    gdraw->d3d_context->RSSetViewports(1, &vp);
    gdraw->cview.x = x;
    gdraw->cview.y = y;
@@ -891,8 +891,8 @@ static void set_projection_raw(S32 x0, S32 x1, S32 y0, S32 y1)
 {
    gdraw->projection[0] = 2.0f / (x1-x0);
    gdraw->projection[1] = 2.0f / (y1-y0);
-   gdraw->projection[2] = (x1+x0)/(F32)(x0-x1);
-   gdraw->projection[3] = (y1+y0)/(F32)(y0-y1);
+   gdraw->projection[2] = (x1+x0)/static_cast<F32>(x0 - x1);
+   gdraw->projection[3] = (y1+y0)/static_cast<F32>(y0 - y1);
 
    set_projection_base();
 }
@@ -996,6 +996,9 @@ void gdraw_D3D1X_(SetTileOrigin)(ID3D1X(RenderTargetView) *main_rt, ID3D1X(Depth
 
 static void RADLINK gdraw_SetViewSizeAndWorldScale(S32 w, S32 h, F32 scalex, F32 scaley)
 {
+   static S32 s_lastW = 0, s_lastH = 0;
+   static F32 s_lastSx = 0, s_lastSy = 0;
+
    memset(gdraw->frame, 0, sizeof(gdraw->frame));
    gdraw->cur = gdraw->frame;
    gdraw->fw = w;
@@ -1113,7 +1116,7 @@ static void set_render_target(GDrawStats *stats)
       gdraw->d3d_context->OMSetRenderTargets(1, &target, gdraw->depth_buffer[0]);
       gdraw->d3d_context->RSSetState(gdraw->raster_state[gdraw->main_msaa]);
    } else {
-      ID3D1X(DepthStencilView) *depth = NULL;
+      ID3D1X(DepthStencilView) *depth = nullptr;
       if (gdraw->cur->flags & (GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_id | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_stencil))
          depth = get_rendertarget_depthbuffer(stats);
 
@@ -1128,15 +1131,15 @@ static void set_render_target(GDrawStats *stats)
 static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_texture_format /*format*/, U32 flags, void *owner, GDrawStats *stats)
 {
    GDrawFramebufferState *n = gdraw->cur+1;
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    if (gdraw->tw == 0 || gdraw->th == 0) {
-      IggyGDrawSendWarning(NULL, "GDraw warning: w=0,h=0 rendertarget");
+      IggyGDrawSendWarning(nullptr, "GDraw warning: w=0,h=0 rendertarget");
       return false;
    }
 
    if (n >= &gdraw->frame[MAX_RENDER_STACK_DEPTH]) {
       assert(0);
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
       return false;
    }
 
@@ -1150,10 +1153,10 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
 
    n->flags = flags;
    n->color_buffer = t;
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
    ++gdraw->cur;
-   gdraw->cur->cached = owner != NULL;
+   gdraw->cur->cached = owner != nullptr;
    if (owner) {
       gdraw->cur->base_x = region->x0;
       gdraw->cur->base_y = region->y0;
@@ -1164,7 +1167,7 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    set_render_target(stats);
    assert(gdraw->frametex_width >= gdraw->tw && gdraw->frametex_height >= gdraw->th); // @GDRAW_ASSERT
 
-   S32 k = (S32) (t - gdraw->rendertargets.handle);
+   S32 k = static_cast<S32>(t - gdraw->rendertargets.handle);
 
    if (region) {
       gswf_recti r;
@@ -1190,7 +1193,7 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
 
       if (r.x1 <= r.x0 || r.y1 <= r.y0) { // region doesn't intersect with current tile
          --gdraw->cur;
-         gdraw_FreeTexture((GDrawTexture *) t, 0, stats);
+         gdraw_FreeTexture((GDrawTexture *) t, nullptr, stats);
          // note: don't send a warning since this will happen during regular tiled rendering
          return false;
       }
@@ -1224,17 +1227,17 @@ static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *stats)
 {
    GDrawFramebufferState *n =   gdraw->cur;
    GDrawFramebufferState *m = --gdraw->cur;
-   if (gdraw->tw == 0 || gdraw->th == 0) return 0;
+   if (gdraw->tw == 0 || gdraw->th == 0) return nullptr;
 
    if (n >= &gdraw->frame[MAX_RENDER_STACK_DEPTH])
-      return 0; // already returned a warning in Begin
+      return nullptr; // already returned a warning in Begin
 
    assert(m >= gdraw->frame);  // bug in Iggy -- unbalanced
 
    if (m != gdraw->frame) {
-      assert(m->color_buffer != NULL); // @GDRAW_ASSERT
+      assert(m->color_buffer != nullptr); // @GDRAW_ASSERT
    }
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
    // switch back to old render target
    set_render_target(stats);
@@ -1284,15 +1287,15 @@ static void RADLINK gdraw_ClearID(void)
 // assuming the depth buffer has been mappped to 0..1
 static F32 depth_from_id(S32 id)
 {
-   return 1.0f - ((F32) id + 1.0f) / MAX_DEPTH_VALUE;
+   return 1.0f - (static_cast<F32>(id) + 1.0f) / MAX_DEPTH_VALUE;
 }
 
 static void set_texture(S32 texunit, GDrawTexture *tex, rrbool nearest, S32 wrap)
 {
    ID3D1XContext *d3d = gdraw->d3d_context;
 
-   if (tex == NULL) {
-      ID3D1X(ShaderResourceView) *notex = NULL;
+   if (tex == nullptr) {
+      ID3D1X(ShaderResourceView) *notex = nullptr;
       d3d->PSSetShaderResources(texunit, 1, &notex);
    } else {
       GDrawHandle *h = (GDrawHandle *) tex;
@@ -1303,7 +1306,7 @@ static void set_texture(S32 texunit, GDrawTexture *tex, rrbool nearest, S32 wrap
 
 static void RADLINK gdraw_Set3DTransform(F32 *mat)
 {
-   if (mat == NULL)
+   if (mat == nullptr)
       gdraw->use_3d = 0;
    else {
       gdraw->use_3d = 1;
@@ -1319,7 +1322,7 @@ static int set_renderstate_full(S32 vertex_format, GDrawRenderState *r, GDrawSta
    set_vertex_shader(d3d, gdraw->vert[vertex_format].vshader);
    
    // set vertex shader constants
-   if (VertexVars *vvars = (VertexVars *) map_buffer(gdraw->d3d_context, gdraw->cb_vertex, true)) {
+   if (VertexVars *vvars = static_cast<VertexVars *>(map_buffer(gdraw->d3d_context, gdraw->cb_vertex, true))) {
       F32 depth = depth_from_id(r->id);
       if (!r->use_world_space)
          gdraw_ObjectSpace(vvars->world[0], r->o2w, depth, 0.0f);
@@ -1366,9 +1369,9 @@ static int set_renderstate_full(S32 vertex_format, GDrawRenderState *r, GDrawSta
          // in stencil set mode, prefer not doing any shading at all
          // but if alpha test is on, we need to make an exception
 
-#ifndef GDRAW_D3D11_LEVEL9 // level9 can't do NULL PS it seems
+#ifndef GDRAW_D3D11_LEVEL9 // level9 can't do nullptr PS it seems
          if (which != GDRAW_TEXTURE_alpha_test)
-            program = NULL;
+            program = nullptr;
          else
 #endif
          {
@@ -1384,7 +1387,7 @@ static int set_renderstate_full(S32 vertex_format, GDrawRenderState *r, GDrawSta
    set_texture(0, r->tex[0], r->nearest0, r->wrap0);
 
    // pixel shader constants
-   if (PixelCommonVars *pvars = (PixelCommonVars *) map_buffer(gdraw->d3d_context, gdraw->cb_ps_common, true)) {
+   if (PixelCommonVars *pvars = static_cast<PixelCommonVars *>(map_buffer(gdraw->d3d_context, gdraw->cb_ps_common, true))) {
       memcpy(pvars->color_mul, r->color, 4*sizeof(float));
 
       if (r->cxf_add) {
@@ -1478,13 +1481,13 @@ static int vertsize[GDRAW_vformat__basic_count] = {
 //   Draw triangles with a given renderstate
 //
 
-static void tag_resources(void *r1, void *r2=NULL, void *r3=NULL, void *r4=NULL)
+static void tag_resources(void *r1, void *r2=nullptr, void *r3=nullptr, void *r4=nullptr)
 {
    U64 now = gdraw->frame_counter;
-   if (r1) ((GDrawHandle *) r1)->fence.value = now;
-   if (r2) ((GDrawHandle *) r2)->fence.value = now;
-   if (r3) ((GDrawHandle *) r3)->fence.value = now;
-   if (r4) ((GDrawHandle *) r4)->fence.value = now;
+   if (r1) static_cast<GDrawHandle *>(r1)->fence.value = now;
+   if (r2) static_cast<GDrawHandle *>(r2)->fence.value = now;
+   if (r3) static_cast<GDrawHandle *>(r3)->fence.value = now;
+   if (r4) static_cast<GDrawHandle *>(r4)->fence.value = now;
 }
 
 static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimitive *p, GDrawVertexBuffer *buf, GDrawStats *stats)
@@ -1501,10 +1504,10 @@ static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimiti
    d3d->IASetInputLayout(gdraw->inlayout[vfmt]);
 
    if (vb) {
-      UINT offs = (UINT) (UINTa) p->vertices;
+      UINT offs = static_cast<UINT>((UINTa)p->vertices);
 
       d3d->IASetVertexBuffers(0, 1, &vb->handle.vbuf.verts, &stride, &offs);
-      d3d->IASetIndexBuffer(vb->handle.vbuf.inds, DXGI_FORMAT_R16_UINT, (UINT) (UINTa) p->indices);
+      d3d->IASetIndexBuffer(vb->handle.vbuf.inds, DXGI_FORMAT_R16_UINT, static_cast<UINT>((UINTa)p->indices));
       d3d->DrawIndexed(p->num_indices, 0, 0);
    } else if (p->indices) {
       U32 vbytes = p->num_vertices * stride;
@@ -1581,10 +1584,10 @@ static void set_pixel_constant(F32 *constant, F32 x, F32 y, F32 z, F32 w)
 static void do_screen_quad(gswf_recti *s, const F32 *tc, GDrawStats *stats)
 {
    ID3D1XContext *d3d = gdraw->d3d_context;
-   F32 px0 = (F32) s->x0, py0 = (F32) s->y0, px1 = (F32) s->x1, py1 = (F32) s->y1;
+   F32 px0 = static_cast<F32>(s->x0), py0 = static_cast<F32>(s->y0), px1 = static_cast<F32>(s->x1), py1 = static_cast<F32>(s->y1);
 
    // generate vertex data
-   gswf_vertex_xyst *vert = (gswf_vertex_xyst *) start_write_dyn(&gdraw->dyn_vb, 4 * sizeof(gswf_vertex_xyst));
+   gswf_vertex_xyst *vert = static_cast<gswf_vertex_xyst *>(start_write_dyn(&gdraw->dyn_vb, 4 * sizeof(gswf_vertex_xyst)));
    if (!vert)
       return;
 
@@ -1595,7 +1598,7 @@ static void do_screen_quad(gswf_recti *s, const F32 *tc, GDrawStats *stats)
    UINT offs = end_write_dyn(&gdraw->dyn_vb);
    UINT stride = sizeof(gswf_vertex_xyst);
 
-   if (VertexVars *vvars = (VertexVars *) map_buffer(gdraw->d3d_context, gdraw->cb_vertex, true)) {
+   if (VertexVars *vvars = static_cast<VertexVars *>(map_buffer(gdraw->d3d_context, gdraw->cb_vertex, true))) {
       gdraw_PixelSpace(vvars->world[0]);
       memcpy(vvars->x3d, gdraw->projmat, 12*sizeof(F32));
       unmap_buffer(gdraw->d3d_context, gdraw->cb_vertex);
@@ -1629,7 +1632,7 @@ static void manual_clear(gswf_recti *r, GDrawStats *stats)
    set_projection_raw(0, gdraw->frametex_width, gdraw->frametex_height, 0);
    set_pixel_shader(d3d, gdraw->clear_ps.pshader);
 
-   if (PixelCommonVars *pvars = (PixelCommonVars *) map_buffer(gdraw->d3d_context, gdraw->cb_ps_common, true)) {
+   if (PixelCommonVars *pvars = static_cast<PixelCommonVars *>(map_buffer(gdraw->d3d_context, gdraw->cb_ps_common, true))) {
       memset(pvars, 0, sizeof(*pvars));
       unmap_buffer(gdraw->d3d_context, gdraw->cb_ps_common);
       d3d->PSSetConstantBuffers(0, 1, &gdraw->cb_ps_common);
@@ -1643,7 +1646,7 @@ static void gdraw_DriverBlurPass(GDrawRenderState *r, int taps,  float *data, gs
    set_texture(0, r->tex[0], false, GDRAW_WRAP_clamp);
 
    set_pixel_shader(gdraw->d3d_context, gdraw->blur_prog[taps].pshader);
-   PixelParaBlur *para = (PixelParaBlur *) start_ps_constants(gdraw->cb_blur);
+   PixelParaBlur *para = static_cast<PixelParaBlur *>(start_ps_constants(gdraw->cb_blur));
    memcpy(para->clamp, clamp, 4 * sizeof(float));
    memcpy(para->tap, data, taps * 4 * sizeof(float));
    end_ps_constants(gdraw->cb_blur);
@@ -1654,13 +1657,13 @@ static void gdraw_DriverBlurPass(GDrawRenderState *r, int taps,  float *data, gs
 
 static void gdraw_Colormatrix(GDrawRenderState *r, gswf_recti *s, float *tc, GDrawStats *stats)
 {
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, 0, stats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, stats))
       return;
 
    set_texture(0, r->tex[0], false, GDRAW_WRAP_clamp);
    set_pixel_shader(gdraw->d3d_context, gdraw->colormatrix.pshader);
 
-   PixelParaColorMatrix *para = (PixelParaColorMatrix *) start_ps_constants(gdraw->cb_colormatrix);
+   PixelParaColorMatrix *para = static_cast<PixelParaColorMatrix *>(start_ps_constants(gdraw->cb_colormatrix));
    memcpy(para->data, r->shader_data, 5 * 4 * sizeof(float));
    end_ps_constants(gdraw->cb_colormatrix);
 
@@ -1672,7 +1675,7 @@ static void gdraw_Colormatrix(GDrawRenderState *r, gswf_recti *s, float *tc, GDr
 static gswf_recti *get_valid_rect(GDrawTexture *tex)
 {
    GDrawHandle *h = (GDrawHandle *) tex;
-   S32 n = (S32) (h - gdraw->rendertargets.handle);
+   S32 n = static_cast<S32>(h - gdraw->rendertargets.handle);
    assert(n >= 0 && n <= MAX_RENDER_STACK_DEPTH+1);
    return &gdraw->rt_valid[n];
 }
@@ -1690,7 +1693,7 @@ static void set_clamp_constant(F32 *constant, GDrawTexture *tex)
 
 static void gdraw_Filter(GDrawRenderState *r, gswf_recti *s, float *tc, int isbevel, GDrawStats *stats)
 {
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, NULL, stats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, stats))
       return;
 
    set_texture(0, r->tex[0], false, GDRAW_WRAP_clamp);
@@ -1698,12 +1701,12 @@ static void gdraw_Filter(GDrawRenderState *r, gswf_recti *s, float *tc, int isbe
    set_texture(2, r->tex[2], false, GDRAW_WRAP_clamp);
    set_pixel_shader(gdraw->d3d_context, gdraw->filter_prog[isbevel][r->filter_mode].pshader);
 
-   PixelParaFilter *para = (PixelParaFilter *) start_ps_constants(gdraw->cb_filter);
+   PixelParaFilter *para = static_cast<PixelParaFilter *>(start_ps_constants(gdraw->cb_filter));
    set_clamp_constant(para->clamp0, r->tex[0]);
    set_clamp_constant(para->clamp1, r->tex[1]);
    set_pixel_constant(para->color, r->shader_data[0], r->shader_data[1], r->shader_data[2], r->shader_data[3]);
    set_pixel_constant(para->color2, r->shader_data[8], r->shader_data[9], r->shader_data[10], r->shader_data[11]);
-   set_pixel_constant(para->tc_off, -r->shader_data[4] / (F32)gdraw->frametex_width, -r->shader_data[5] / (F32)gdraw->frametex_height, r->shader_data[6], 0);
+   set_pixel_constant(para->tc_off, -r->shader_data[4] / static_cast<F32>(gdraw->frametex_width), -r->shader_data[5] / static_cast<F32>(gdraw->frametex_height), r->shader_data[6], 0);
    end_ps_constants(gdraw->cb_filter);
 
    do_screen_quad(s, tc, stats);
@@ -1725,10 +1728,10 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
    if (s.x1 < s.x0 || s.y1 < s.y0)
       return;
 
-   tc[0] = (s.x0 - gdraw->tx0p) / (F32) gdraw->frametex_width;
-   tc[1] = (s.y0 - gdraw->ty0p) / (F32) gdraw->frametex_height;
-   tc[2] = (s.x1 - gdraw->tx0p) / (F32) gdraw->frametex_width;
-   tc[3] = (s.y1 - gdraw->ty0p) / (F32) gdraw->frametex_height;
+   tc[0] = (s.x0 - gdraw->tx0p) / static_cast<F32>(gdraw->frametex_width);
+   tc[1] = (s.y0 - gdraw->ty0p) / static_cast<F32>(gdraw->frametex_height);
+   tc[2] = (s.x1 - gdraw->tx0p) / static_cast<F32>(gdraw->frametex_width);
+   tc[3] = (s.y1 - gdraw->ty0p) / static_cast<F32>(gdraw->frametex_height);
 
    // clear to known render state
    d3d->OMSetBlendState(gdraw->blend_state[GDRAW_BLEND_none], four_zeros, ~0u);
@@ -1778,7 +1781,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
             assert(0);
       }
    } else {
-      GDrawHandle *blend_tex = NULL;
+      GDrawHandle *blend_tex = nullptr;
 
       // for crazy blend modes, we need to read back from the framebuffer
       // and do the blending in the pixel shader. we do this with copies
@@ -1811,10 +1814,10 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
             d3d->PSSetSamplers(1, 1, &gdraw->sampler_state[0][GDRAW_WRAP_clamp]);
 
             // calculate texture coordinate remapping
-            rescale1[0] = gdraw->frametex_width / (F32) texdesc.Width;
-            rescale1[1] = gdraw->frametex_height / (F32) texdesc.Height;
-            rescale1[2] = (gdraw->vx - gdraw->tx0 + gdraw->tx0p) / (F32) texdesc.Width;
-            rescale1[3] = (gdraw->vy - gdraw->ty0 + gdraw->ty0p) / (F32) texdesc.Height;
+            rescale1[0] = gdraw->frametex_width / static_cast<F32>(texdesc.Width);
+            rescale1[1] = gdraw->frametex_height / static_cast<F32>(texdesc.Height);
+            rescale1[2] = (gdraw->vx - gdraw->tx0 + gdraw->tx0p) / static_cast<F32>(texdesc.Width);
+            rescale1[3] = (gdraw->vy - gdraw->ty0 + gdraw->ty0p) / static_cast<F32>(texdesc.Height);
          } else {
             D3D1X_(BOX) box = { 0,0,0,0,0,1 };
             S32 dx = 0, dy = 0;
@@ -1847,7 +1850,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
       do_screen_quad(&s, tc, stats);
       tag_resources(r->tex[0], r->tex[1]);
       if (blend_tex)
-         gdraw_FreeTexture((GDrawTexture *) blend_tex, 0, stats);
+         gdraw_FreeTexture((GDrawTexture *) blend_tex, nullptr, stats);
    }
 }
 
@@ -1862,18 +1865,18 @@ static void destroy_shader(ProgramWithCachedVariableLocations *p)
 {
    if (p->pshader) {
       p->pshader->Release();
-      p->pshader = NULL;
+      p->pshader = nullptr;
    }
 }
 
 static ID3D1X(Buffer) *create_dynamic_buffer(U32 size, U32 bind)
 {
    D3D1X_(BUFFER_DESC) desc = { size, D3D1X_(USAGE_DYNAMIC), bind, D3D1X_(CPU_ACCESS_WRITE), 0 };
-   ID3D1X(Buffer) *buf = NULL;
-   HRESULT hr = gdraw->d3d_device->CreateBuffer(&desc, NULL, &buf);
+   ID3D1X(Buffer) *buf = nullptr;
+   HRESULT hr = gdraw->d3d_device->CreateBuffer(&desc, nullptr, &buf);
    if (FAILED(hr)) {
       report_d3d_error(hr, "CreateBuffer", " creating dynamic vertex buffer");
-      buf = NULL;
+      buf = nullptr;
    }
    return buf;
 }
@@ -1910,7 +1913,7 @@ static void create_all_shaders_and_state(void)
       HRESULT hr = d3d->CreateInputLayout(vformats[i].desc, vformats[i].nelem, vsh->bytecode, vsh->size, &gdraw->inlayout[i]);
       if (FAILED(hr)) {
          report_d3d_error(hr, "CreateInputLayout", "");
-         gdraw->inlayout[i] = NULL;
+         gdraw->inlayout[i] = nullptr;
       }
    }
 
@@ -2029,11 +2032,11 @@ static void create_all_shaders_and_state(void)
       hr = gdraw->d3d_device->CreateBuffer(&bufdesc, &data, &gdraw->quad_ib);
       if (FAILED(hr)) {
          report_d3d_error(hr, "CreateBuffer", " for constants");
-         gdraw->quad_ib = NULL;
+         gdraw->quad_ib = nullptr;
       }
       IggyGDrawFree(inds);
    } else
-      gdraw->quad_ib = NULL;
+      gdraw->quad_ib = nullptr;
 }
 
 static void destroy_all_shaders_and_state()
@@ -2106,7 +2109,7 @@ static void free_gdraw()
    if (gdraw->texturecache) IggyGDrawFree(gdraw->texturecache);
    if (gdraw->vbufcache) IggyGDrawFree(gdraw->vbufcache);
    IggyGDrawFree(gdraw);
-   gdraw = NULL;
+   gdraw = nullptr;
 }
 
 static bool alloc_dynbuffer(U32 size)
@@ -2142,7 +2145,7 @@ static bool alloc_dynbuffer(U32 size)
    gdraw->max_quad_vert_count = RR_MIN(size / sizeof(gswf_vertex_xyst), QUAD_IB_COUNT * 4);
    gdraw->max_quad_vert_count &= ~3; // must be multiple of four
 
-   return gdraw->dyn_vb.buffer != NULL && gdraw->dyn_ib.buffer != NULL;
+   return gdraw->dyn_vb.buffer != nullptr && gdraw->dyn_ib.buffer != nullptr;
 }
 
 int gdraw_D3D1X_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S32 num_bytes)
@@ -2181,7 +2184,7 @@ int gdraw_D3D1X_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S3
             IggyGDrawFree(gdraw->texturecache);
          }
          gdraw->texturecache = make_handle_cache(GDRAW_D3D1X_(RESOURCE_texture));
-         return gdraw->texturecache != NULL;
+         return gdraw->texturecache != nullptr;
 
       case GDRAW_D3D1X_(RESOURCE_vertexbuffer):
          if (gdraw->vbufcache) {
@@ -2189,7 +2192,7 @@ int gdraw_D3D1X_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S3
             IggyGDrawFree(gdraw->vbufcache);
          }
          gdraw->vbufcache = make_handle_cache(GDRAW_D3D1X_(RESOURCE_vertexbuffer));
-         return gdraw->vbufcache != NULL;
+         return gdraw->vbufcache != nullptr;
 
       case GDRAW_D3D1X_(RESOURCE_dynbuffer):
          unbind_resources();
@@ -2205,7 +2208,7 @@ int gdraw_D3D1X_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S3
 static GDrawFunctions *create_context(ID3D1XDevice *dev, ID3D1XContext *ctx, S32 w, S32 h)
 {
    gdraw = (GDraw *) IggyGDrawMalloc(sizeof(*gdraw));
-   if (!gdraw) return NULL;
+   if (!gdraw) return nullptr;
 
    memset(gdraw, 0, sizeof(*gdraw));
 
@@ -2220,7 +2223,7 @@ static GDrawFunctions *create_context(ID3D1XDevice *dev, ID3D1XContext *ctx, S32
 
    if (!gdraw->texturecache || !gdraw->vbufcache || !alloc_dynbuffer(gdraw_limits[GDRAW_D3D1X_(RESOURCE_dynbuffer)].num_bytes)) {
       free_gdraw();
-      return NULL;
+      return nullptr;
    }
 
    create_all_shaders_and_state();
@@ -2291,7 +2294,7 @@ void gdraw_D3D1X_(DestroyContext)(void)
       if (gdraw->texturecache)   gdraw_res_flush(gdraw->texturecache, &stats);
       if (gdraw->vbufcache)      gdraw_res_flush(gdraw->vbufcache, &stats);
 
-      gdraw->d3d_device = NULL;
+      gdraw->d3d_device = nullptr;
    }
 
    free_gdraw();
@@ -2354,7 +2357,7 @@ void RADLINK gdraw_D3D1X_(GetResourceUsageStats)(gdraw_resourcetype type, S32 *h
       case GDRAW_D3D1X_(RESOURCE_texture):         cache = gdraw->texturecache; break;
       case GDRAW_D3D1X_(RESOURCE_vertexbuffer):    cache = gdraw->vbufcache; break;
       case GDRAW_D3D1X_(RESOURCE_dynbuffer):       *handles_used = 0; *bytes_used = gdraw->last_dyn_maxalloc; return;
-      default:                                     cache = NULL; break;
+      default:                                     cache = nullptr; break;
    }
 
    *handles_used = *bytes_used = 0;
@@ -2384,15 +2387,15 @@ static S32 num_pixels(S32 w, S32 h, S32 mipmaps)
 
 GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, S32 /*len*/, IggyFileTextureRaw *texture)
 {
-   char *failed_call="";
-   U8 *free_data = 0;
-   GDrawTexture *t=0;
+   const char *failed_call="";
+   U8 *free_data = nullptr;
+   GDrawTexture *t=nullptr;
    S32 width, height, mipmaps, size, blk;
-   ID3D1X(Texture2D) *tex=0;
-   ID3D1X(ShaderResourceView) *view=0;
+   ID3D1X(Texture2D) *tex=nullptr;
+   ID3D1X(ShaderResourceView) *view=nullptr;
 
    DXGI_FORMAT d3dfmt;
-   D3D1X_(SUBRESOURCE_DATA) mipdata[24] = { 0 };
+   D3D1X_(SUBRESOURCE_DATA) mipdata[24] = { nullptr };
    S32 k;
 
    HRESULT hr = S_OK;
@@ -2405,67 +2408,71 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
    D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(width), static_cast<U32>(height), static_cast<U32>(mipmaps), 1U, DXGI_FORMAT_UNKNOWN, { 1, 0 },
       D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0U, 0U };
 
+   bool done = false;
+
    switch (texture->format) {
       case IFT_FORMAT_rgba_8888   : size= 4; d3dfmt = DXGI_FORMAT_R8G8B8A8_UNORM; break;
       case IFT_FORMAT_DXT1        : size= 8; d3dfmt = DXGI_FORMAT_BC1_UNORM; blk = 4; break;
       case IFT_FORMAT_DXT3        : size=16; d3dfmt = DXGI_FORMAT_BC2_UNORM; blk = 4; break;
       case IFT_FORMAT_DXT5        : size=16; d3dfmt = DXGI_FORMAT_BC3_UNORM; blk = 4; break;
       default: {
-         IggyGDrawSendWarning(NULL, "GDraw .iggytex raw texture format %d not supported by hardware", texture->format);
-         goto done;
+         IggyGDrawSendWarning(nullptr, "GDraw .iggytex raw texture format %d not supported by hardware", texture->format);
+         done = true;
       }
    }
 
-   desc.Format = d3dfmt;
-
-   U8 *data = resource_file + texture->file_offset;
-
-   if (texture->format == IFT_FORMAT_i_8 || texture->format == IFT_FORMAT_i_4) {
-      // convert from intensity to luma+alpha
-      S32 i;
-      S32 total_size = 2 * num_pixels(width,height,mipmaps);
-
-      free_data = (U8 *) IggyGDrawMalloc(total_size);
-      if (!free_data) {
-         IggyGDrawSendWarning(NULL, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
-         goto done;
-      }
-
-      U8 *cur = free_data;
-
-      for (k=0; k < mipmaps; ++k) {
-         S32 w = RR_MAX(width >> k, 1);
-         S32 h = RR_MAX(height >> k, 1);
-         for (i=0; i < w*h; ++i) {
-            cur[0] = cur[1] = *data++;
-            cur += 2;
+   if (!done) {
+      desc.Format = d3dfmt;
+      
+      U8 *data = resource_file + texture->file_offset;
+      
+      if (texture->format == IFT_FORMAT_i_8 || texture->format == IFT_FORMAT_i_4) {
+         // convert from intensity to luma+alpha
+         S32 i;
+         S32 total_size = 2 * num_pixels(width,height,mipmaps);
+      
+         free_data = (U8 *) IggyGDrawMalloc(total_size);
+         if (!free_data) {
+            IggyGDrawSendWarning(nullptr, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
+            done = true;
+         } else {
+            U8 *cur = free_data;
+            
+            for (k=0; k < mipmaps; ++k) {
+               S32 w = RR_MAX(width >> k, 1);
+               S32 h = RR_MAX(height >> k, 1);
+               for (i=0; i < w*h; ++i) {
+                  cur[0] = cur[1] = *data++;
+                  cur += 2;
+               }
+            }
+            data = free_data;
          }
       }
-      data = free_data;
+      
+      if (!done) {
+         for (k=0; k < mipmaps; ++k) {
+            S32 w = RR_MAX(width >> k, 1);
+            S32 h = RR_MAX(height >> k, 1);
+            S32 blkw = (w + blk-1) / blk;
+            S32 blkh = (h + blk-1) / blk;
+         
+            mipdata[k].pSysMem     = data;
+            mipdata[k].SysMemPitch = blkw * size;
+            data += blkw * blkh * size;
+         }
+         
+         failed_call = "CreateTexture2D";
+         hr = gdraw->d3d_device->CreateTexture2D(&desc, mipdata, &tex);
+         if (!FAILED(hr)) {
+             failed_call = "CreateShaderResourceView for texture creation";
+             hr = gdraw->d3d_device->CreateShaderResourceView(tex, nullptr, &view);
+             if (!FAILED(hr))
+                 t = gdraw_D3D1X_(WrappedTextureCreate)(view);
+         }
+      }
    }
 
-   for (k=0; k < mipmaps; ++k) {
-      S32 w = RR_MAX(width >> k, 1);
-      S32 h = RR_MAX(height >> k, 1);
-      S32 blkw = (w + blk-1) / blk;
-      S32 blkh = (h + blk-1) / blk;
-
-      mipdata[k].pSysMem     = data;
-      mipdata[k].SysMemPitch = blkw * size;
-      data += blkw * blkh * size;
-   }
-
-   failed_call = "CreateTexture2D";
-   hr = gdraw->d3d_device->CreateTexture2D(&desc, mipdata, &tex);
-   if (FAILED(hr)) goto done;
-
-   failed_call = "CreateShaderResourceView for texture creation";
-   hr = gdraw->d3d_device->CreateShaderResourceView(tex, NULL, &view);
-   if (FAILED(hr)) goto done;
-
-   t = gdraw_D3D1X_(WrappedTextureCreate)(view);
-
-done:
    if (FAILED(hr)) {
       report_d3d_error(hr, failed_call, "");
    }
@@ -2479,14 +2486,14 @@ done:
       if (tex)
          tex->Release();
    } else {
-      ((GDrawHandle *) t)->handle.tex.d3d = tex;
+      reinterpret_cast<GDrawHandle *>(t)->handle.tex.d3d = tex;
    }
    return t;
 }
 
 void RADLINK gdraw_D3D1X_(DestroyTextureFromResource)(GDrawTexture *tex)
 {
-   GDrawHandle *h = (GDrawHandle *) tex;
+   GDrawHandle *h = reinterpret_cast<GDrawHandle *>(tex);
    safe_release(h->handle.tex.d3d_view);
    safe_release(h->handle.tex.d3d);
    gdraw_D3D1X_(WrappedTextureDestroy)(tex);

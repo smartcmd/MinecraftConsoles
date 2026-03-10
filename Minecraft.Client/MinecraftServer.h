@@ -18,7 +18,11 @@ class LevelType;
 class ProgressRenderer;
 class CommandDispatcher;
 
+#if defined(_WINDOWS64)
+#define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 0 // Removed slow queue because at large player counts, chunks stopped appearing
+#else
 #define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 250
+#endif
 
 #if defined _XBOX_ONE || defined _XBOX || defined __ORBIS__ || defined __PS3__ || defined __PSVITA__
 #define _ACK_CHUNK_SEND_THROTTLING
@@ -48,9 +52,9 @@ typedef struct _NetworkGameInitData
 	_NetworkGameInitData()
 	{
 		seed = 0;
-		saveData = NULL;
+		saveData = nullptr;
 		settings = 0;
-		levelGen = NULL;
+		levelGen = nullptr;
 		texturePackId = 0;
 		findSeed = false;
 		xzSize = LEVEL_LEGACY_WIDTH;
@@ -138,7 +142,6 @@ private:
     bool loadLevel(LevelStorageSource *storageSource, const wstring& name, __int64 levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
     void setProgress(const wstring& status, int progress);
     void endProgress();
-    void saveAllChunks();
 	void saveGameRules();
     void stopServer(bool didInit);
 #ifdef _LARGE_WORLDS
@@ -152,6 +155,8 @@ public:
 	PlayerList *getPlayers();
 	void setPlayers(PlayerList *players);
 	ServerConnection *getConnection();
+	void saveAllChunks();
+	void saveWorldToDisk();
 	bool isAnimals();
 	void setAnimals(bool animals);
 	bool isNpcsEnabled();
@@ -234,9 +239,9 @@ public:
 
 public:
 	static PlayerList *getPlayerList() { if( server != NULL ) return server->players; else return NULL; }
-	static void SetTimeOfDay(__int64 time) { setTimeOfDayAtEndOfTick = true; setTimeOfDay = time; }
-	static void SetTime(__int64 time) { setTimeAtEndOfTick = true; setTime = time; }
-	
+	static void SetTimeOfDay(int64_t time) { setTimeOfDayAtEndOfTick = true; setTimeOfDay = time; }
+	static void SetTime(int64_t time) { setTimeAtEndOfTick = true; setTime = time; }
+
 	C4JThread::Event* m_serverPausedEvent;
 private:
 	// 4J Added

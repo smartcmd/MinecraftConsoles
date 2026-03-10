@@ -44,8 +44,8 @@ bool JustGrSource::ready() { return true; }
 
 LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 {
-	m_spawnPos = NULL;
-	m_stringTable = NULL;
+	m_spawnPos = nullptr;
+	m_stringTable = nullptr;
 
 	m_hasLoadedData = false;
 
@@ -56,34 +56,35 @@ LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 	m_minY = INT_MAX;
 	m_bRequiresGameRules = false;
 
-	m_pbBaseSaveData = NULL;
+	m_pbBaseSaveData = nullptr;
 	m_dwBaseSaveSize = 0;
 
-	m_parentDLCPack = parentPack;	
+	m_parentDLCPack = parentPack;
 	m_bLoadingData = false;
 }
 
 LevelGenerationOptions::~LevelGenerationOptions()
 {
 	clearSchematics();
-	if(m_spawnPos != NULL) delete m_spawnPos;
-	for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end(); ++it)
+	if(m_spawnPos != nullptr) delete m_spawnPos;
+	for (auto& it : m_schematicRules )
 	{
-		delete *it;
-	}
-	for(AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); ++it)
-	{
-		delete *it;
+		delete it;
 	}
 
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
+	for (auto& it : m_structureRules )
 	{
-		delete *it;
+		delete it;
 	}
 
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
+	for (auto& it : m_biomeOverrides )
 	{
-		delete *it;
+		delete it;
+	}
+
+	for (auto& it : m_features )
+	{
+		delete it;
 	}
 
 	if (m_stringTable)
@@ -100,16 +101,16 @@ void LevelGenerationOptions::writeAttributes(DataOutputStream *dos, UINT numAttr
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnX);
-	dos->writeUTF(_toString(m_spawnPos->x));
+	dos->writeUTF(std::to_wstring(m_spawnPos->x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnY);
-	dos->writeUTF(_toString(m_spawnPos->y));
+	dos->writeUTF(std::to_wstring(m_spawnPos->y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnZ);
-	dos->writeUTF(_toString(m_spawnPos->z));
+	dos->writeUTF(std::to_wstring(m_spawnPos->z));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_seed);
-	dos->writeUTF(_toString(m_seed));
+	dos->writeUTF(std::to_wstring(m_seed));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_flatworld);
-	dos->writeUTF(_toString(m_useFlatWorld));
+	dos->writeUTF(std::to_wstring(m_useFlatWorld));
 }
 
 void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
@@ -117,42 +118,49 @@ void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
 	GameRuleDefinition::getChildren(children);
 
 	vector<ApplySchematicRuleDefinition *> used_schematics;
-	for (AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end(); it++)
-		if ( !(*it)->isComplete() )
-			used_schematics.push_back( *it );
+	for (auto& it : m_schematicRules )
+		if ( it && !it->isComplete() )
+			used_schematics.push_back( it );
 
-	for(AUTO_VAR(it, m_structureRules.begin()); it!=m_structureRules.end(); it++)
-		children->push_back( *it );
-	for(AUTO_VAR(it, used_schematics.begin()); it!=used_schematics.end(); it++)
-		children->push_back( *it );
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
-		children->push_back( *it );
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
-		children->push_back( *it );
+	for (auto& it : m_structureRules)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : used_schematics)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : m_biomeOverrides)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : m_features)
+		if ( it )
+			children->push_back( it );
 }
 
 GameRuleDefinition *LevelGenerationOptions::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_ApplySchematic)
 	{
 		rule = new ApplySchematicRuleDefinition(this);
-		m_schematicRules.push_back((ApplySchematicRuleDefinition *)rule);
+		m_schematicRules.push_back(static_cast<ApplySchematicRuleDefinition *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_GenerateStructure)
 	{
 		rule = new ConsoleGenerateStructure();
-		m_structureRules.push_back((ConsoleGenerateStructure *)rule);
+		m_structureRules.push_back(static_cast<ConsoleGenerateStructure *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_BiomeOverride)
 	{
 		rule = new BiomeOverride();
-		m_biomeOverrides.push_back((BiomeOverride *)rule);
+		m_biomeOverrides.push_back(static_cast<BiomeOverride *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_StartFeature)
 	{
 		rule = new StartFeature();
-		m_features.push_back((StartFeature *)rule);
+		m_features.push_back(static_cast<StartFeature *>(rule));
 	}
 	else
 	{
@@ -167,26 +175,26 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 {
 	if(attributeName.compare(L"seed") == 0)
 	{
-		m_seed = _fromString<__int64>(attributeValue);
+		m_seed = _fromString<int64_t>(attributeValue);
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter m_seed=%I64d\n",m_seed);
 	}
 	else if(attributeName.compare(L"spawnX") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->x = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnX=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnY") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->y = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnY=%d\n",value);
 	}
 	else if(attributeName.compare(L"spawnZ") == 0)
 	{
-		if(m_spawnPos == NULL) m_spawnPos = new Pos();
+		if(m_spawnPos == nullptr) m_spawnPos = new Pos();
 		int value = _fromString<int>(attributeValue);
 		m_spawnPos->z = value;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter spawnZ=%d\n",value);
@@ -195,7 +203,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 	{
 		if(attributeValue.compare(L"true") == 0) m_useFlatWorld = true;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter flatworld=%s\n",m_useFlatWorld?"TRUE":"FALSE");
-	}	
+	}
 	else if(attributeName.compare(L"saveName") == 0)
 	{
 		wstring string(attributeValue);
@@ -218,7 +226,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter displayName=%ls\n", getDisplayName());
 	}
 	else if(attributeName.compare(L"texturePackId") == 0)
-	{	
+	{
 		setRequiredTexturePackId( _fromString<unsigned int>(attributeValue) );
 		setRequiresTexturePack( true );
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter texturePackId=%0x\n", getRequiredTexturePackId());
@@ -249,23 +257,18 @@ void LevelGenerationOptions::processSchematics(LevelChunk *chunk)
 {
 	PIXBeginNamedEvent(0,"Processing schematics for chunk (%d,%d)", chunk->x, chunk->z);
 	AABB *chunkBox = AABB::newTemp(chunk->x*16,0,chunk->z*16,chunk->x*16 + 16,Level::maxBuildHeight,chunk->z*16 + 16);
-	for( AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
-	{
-		ApplySchematicRuleDefinition *rule = *it;
+	for( ApplySchematicRuleDefinition *rule : m_schematicRules )
 		rule->processSchematic(chunkBox, chunk);
-	}
 
 	int cx = (chunk->x << 4);
 	int cz = (chunk->z << 4);
 
-	for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+	for ( ConsoleGenerateStructure *structureStart : m_structureRules )
 	{
-		ConsoleGenerateStructure *structureStart = *it;
-
 		if (structureStart->getBoundingBox()->intersects(cx, cz, cx + 15, cz + 15))
 		{
 			BoundingBox *bb = new BoundingBox(cx, cz, cx + 15, cz + 15);
-			structureStart->postProcess(chunk->level, NULL, bb);
+			structureStart->postProcess(chunk->level, nullptr, bb);
 			delete bb;
 		}
 	}
@@ -276,9 +279,8 @@ void LevelGenerationOptions::processSchematicsLighting(LevelChunk *chunk)
 {
 	PIXBeginNamedEvent(0,"Processing schematics (lighting) for chunk (%d,%d)", chunk->x, chunk->z);
 	AABB *chunkBox = AABB::newTemp(chunk->x*16,0,chunk->z*16,chunk->x*16 + 16,Level::maxBuildHeight,chunk->z*16 + 16);
-	for( AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+	for ( ApplySchematicRuleDefinition *rule : m_schematicRules )
 	{
-		ApplySchematicRuleDefinition *rule = *it;
 		rule->processSchematicLighting(chunkBox, chunk);
 	}
 	PIXEndNamedEvent();
@@ -292,16 +294,14 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 	// a) ores generally being below ground/sea level and b) tutorial world additions generally being above ground/sea level
 	if(!m_bHaveMinY)
 	{
-		for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+		for ( ApplySchematicRuleDefinition *rule : m_schematicRules )
 		{
-			ApplySchematicRuleDefinition *rule = *it;
 			int minY = rule->getMinY();
 			if(minY < m_minY) m_minY = minY;
 		}
 
-		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+		for ( ConsoleGenerateStructure *structureStart : m_structureRules )
 		{
-			ConsoleGenerateStructure *structureStart = *it;			
 			int minY = structureStart->getMinY();
 			if(minY < m_minY) m_minY = minY;
 		}
@@ -313,18 +313,16 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 	if( y1 < m_minY ) return false;
 
 	bool intersects = false;
-	for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+	for( ApplySchematicRuleDefinition *rule : m_schematicRules )
 	{
-		ApplySchematicRuleDefinition *rule = *it;
 		intersects = rule->checkIntersects(x0,y0,z0,x1,y1,z1);
 		if(intersects) break;
 	}
 
 	if(!intersects)
 	{
-		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+		for( ConsoleGenerateStructure *structureStart : m_structureRules )
 		{
-			ConsoleGenerateStructure *structureStart = *it;			
 			intersects = structureStart->checkIntersects(x0,y0,z0,x1,y1,z1);
 			if(intersects) break;
 		}
@@ -335,9 +333,9 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 
 void LevelGenerationOptions::clearSchematics()
 {
-	for(AUTO_VAR(it, m_schematics.begin()); it != m_schematics.end(); ++it)
+	for ( auto& it : m_schematics )
 	{
-		delete it->second;
+		delete it.second;
 	}
 	m_schematics.clear();
 }
@@ -345,7 +343,7 @@ void LevelGenerationOptions::clearSchematics()
 ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &filename, PBYTE pbData, DWORD dwLen)
 {
 	// If we have already loaded this, just return
-	AUTO_VAR(it, m_schematics.find(filename));
+	auto it = m_schematics.find(filename);
 	if(it != m_schematics.end())
 	{
 #ifndef _CONTENT_PACKAGE
@@ -355,7 +353,7 @@ ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &f
 		return it->second;
 	}
 
-	ConsoleSchematicFile *schematic = NULL;
+	ConsoleSchematicFile *schematic = nullptr;
 	byteArray data(pbData,dwLen);
 	ByteArrayInputStream bais(data);
 	DataInputStream dis(&bais);
@@ -368,9 +366,9 @@ ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &f
 
 ConsoleSchematicFile *LevelGenerationOptions::getSchematicFile(const wstring &filename)
 {
-	ConsoleSchematicFile *schematic = NULL;
+	ConsoleSchematicFile *schematic = nullptr;
 	// If we have already loaded this, just return
-	AUTO_VAR(it, m_schematics.find(filename));
+	auto it = m_schematics.find(filename);
 	if(it != m_schematics.end())
 	{
 		schematic = it->second;
@@ -381,7 +379,7 @@ ConsoleSchematicFile *LevelGenerationOptions::getSchematicFile(const wstring &fi
 void LevelGenerationOptions::releaseSchematicFile(const wstring &filename)
 {
 	// 4J Stu - We don't want to delete them when done, but probably want to keep a set of active schematics for the current world
-	//AUTO_VAR(it, m_schematics.find(filename));
+	// auto it = m_schematics.find(filename);
 	//if(it != m_schematics.end())
 	//{
 	//	ConsoleSchematicFile *schematic = it->second;
@@ -401,7 +399,7 @@ void LevelGenerationOptions::loadStringTable(StringTable *table)
 
 LPCWSTR LevelGenerationOptions::getString(const wstring &key)
 {
-	if(m_stringTable == NULL)
+	if(m_stringTable == nullptr)
 	{
 		return L"";
 	}
@@ -413,10 +411,9 @@ LPCWSTR LevelGenerationOptions::getString(const wstring &key)
 
 void LevelGenerationOptions::getBiomeOverride(int biomeId, BYTE &tile, BYTE &topTile)
 {
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
+	for ( BiomeOverride *bo : m_biomeOverrides )
 	{
-		BiomeOverride *bo = *it;
-		if(bo->isBiome(biomeId))
+		if ( bo && bo->isBiome(biomeId) )
 		{
 			bo->getTileValues(tile,topTile);
 			break;
@@ -428,9 +425,8 @@ bool LevelGenerationOptions::isFeatureChunk(int chunkX, int chunkZ, StructureFea
 {
 	bool isFeature = false;
 
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
+	for( StartFeature *sf : m_features )
 	{
-		StartFeature *sf = *it;
 		if(sf->isFeatureChunk(chunkX, chunkZ, feature, orientation))
 		{
 			isFeature = true;
@@ -444,23 +440,23 @@ unordered_map<wstring, ConsoleSchematicFile *> *LevelGenerationOptions::getUnfin
 {
 	// Clean schematic rules.
 	unordered_set<wstring> usedFiles = unordered_set<wstring>();
-	for (AUTO_VAR(it, m_schematicRules.begin()); it!=m_schematicRules.end(); it++)
-		if ( !(*it)->isComplete() )
-			usedFiles.insert( (*it)->getSchematicName() );
+	for ( auto& it : m_schematicRules )
+		if ( !it->isComplete() )
+			usedFiles.insert( it->getSchematicName() );
 
 	// Clean schematic files.
-	unordered_map<wstring, ConsoleSchematicFile *> *out 
+	unordered_map<wstring, ConsoleSchematicFile *> *out
 		= new unordered_map<wstring, ConsoleSchematicFile *>();
-	for (AUTO_VAR(it, usedFiles.begin()); it!=usedFiles.end(); it++)
-		out->insert( pair<wstring, ConsoleSchematicFile *>(*it, getSchematicFile(*it)) );
+	for ( auto& it : usedFiles )
+		out->insert( pair<wstring, ConsoleSchematicFile *>(it, getSchematicFile(it)) );
 
-	return out;		
+	return out;
 }
 
 void LevelGenerationOptions::loadBaseSaveData()
 {
 	int mountIndex = -1;
-	if(m_parentDLCPack != NULL) mountIndex = m_parentDLCPack->GetDLCMountIndex();
+	if(m_parentDLCPack != nullptr) mountIndex = m_parentDLCPack->GetDLCMountIndex();
 
 	if(mountIndex > -1)
 	{
@@ -472,7 +468,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 		{
 			// corrupt DLC
 			setLoadedData();
-			app.DebugPrintf("Failed to mount LGO DLC %d for pad %d\n",mountIndex,ProfileManager.GetPrimaryPad());	
+			app.DebugPrintf("Failed to mount LGO DLC %d for pad %d\n",mountIndex,ProfileManager.GetPrimaryPad());
 		}
 		else
 		{
@@ -489,7 +485,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 
 int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask)
 {
-	LevelGenerationOptions *lgo = (LevelGenerationOptions *)pParam;
+	LevelGenerationOptions *lgo = static_cast<LevelGenerationOptions *>(pParam);
 	lgo->m_bLoadingData = false;
 	if(dwErr!=ERROR_SUCCESS)
 	{
@@ -503,7 +499,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 		int gameRulesCount = lgo->m_parentDLCPack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 		for(int i = 0; i < gameRulesCount; ++i)
 		{
-			DLCGameRulesHeader *dlcFile = (DLCGameRulesHeader *) lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+			DLCGameRulesHeader *dlcFile = static_cast<DLCGameRulesHeader *>(lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 
 			if (!dlcFile->getGrfPath().empty())
 			{
@@ -517,10 +513,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						pchFilename, // file name
 						GENERIC_READ, // access mode
 						0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-						NULL, // Unused
+						nullptr, // Unused
 						OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 						FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-						NULL // Unsupported
+						nullptr // Unsupported
 						);
 #else
 					const char *pchFilename=wstringtofilename(grf.getPath());
@@ -528,10 +524,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						pchFilename, // file name
 						GENERIC_READ, // access mode
 						0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-						NULL, // Unused
+						nullptr, // Unused
 						OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 						FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-						NULL // Unsupported
+						nullptr // Unsupported
 						);
 #endif
 
@@ -540,7 +536,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 						DWORD dwFileSize = grf.length();
 						DWORD bytesRead;
 						PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-						BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,NULL);
+						BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,nullptr);
 						if(bSuccess==FALSE)
 						{
 							app.FatalLoadError();
@@ -569,10 +565,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 					pchFilename, // file name
 					GENERIC_READ, // access mode
 					0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-					NULL, // Unused
+					nullptr, // Unused
 					OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 					FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-					NULL // Unsupported
+					nullptr // Unsupported
 					);
 #else
 				const char *pchFilename=wstringtofilename(save.getPath());
@@ -580,18 +576,18 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 					pchFilename, // file name
 					GENERIC_READ, // access mode
 					0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-					NULL, // Unused
+					nullptr, // Unused
 					OPEN_EXISTING , // how to create // TODO 4J Stu - Assuming that the file already exists if we are opening to read from it
 					FILE_FLAG_SEQUENTIAL_SCAN, // file attributes
-					NULL // Unsupported
+					nullptr // Unsupported
 					);
 #endif
 
 				if( fileHandle != INVALID_HANDLE_VALUE )
 				{
-					DWORD bytesRead,dwFileSize = GetFileSize(fileHandle,NULL);
+					DWORD bytesRead,dwFileSize = GetFileSize(fileHandle,nullptr);
 					PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-					BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,NULL);
+					BOOL bSuccess = ReadFile(fileHandle,pbData,dwFileSize,&bytesRead,nullptr);
 					if(bSuccess==FALSE)
 					{
 						app.FatalLoadError();
@@ -604,7 +600,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 			}
 
 		}
-#ifdef _DURANGO			
+#ifdef _DURANGO
 		DWORD result = StorageManager.UnmountInstalledDLC(L"WPACK");
 #else
 		DWORD result = StorageManager.UnmountInstalledDLC("WPACK");
@@ -619,18 +615,17 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 
 void LevelGenerationOptions::reset_start()
 {
-	for (	AUTO_VAR( it, m_schematicRules.begin());
-		it != m_schematicRules.end();
-		it++	)
+	for ( auto& it : m_schematicRules )
 	{
-		(*it)->reset();
+		if ( it )
+			it->reset();
 	}
 }
 
 void LevelGenerationOptions::reset_finish()
 {
-	//if (m_spawnPos)				{ delete m_spawnPos; m_spawnPos = NULL; }
-	//if (m_stringTable)			{ delete m_stringTable; m_stringTable = NULL; }
+	//if (m_spawnPos)				{ delete m_spawnPos; m_spawnPos = nullptr; }
+	//if (m_stringTable)			{ delete m_stringTable; m_stringTable = nullptr; }
 
 	if (isFromDLC())
 	{
@@ -651,7 +646,7 @@ bool LevelGenerationOptions::requiresTexturePack() { return info()->requiresText
 UINT LevelGenerationOptions::getRequiredTexturePackId() { return info()->getRequiredTexturePackId(); }
 
 wstring LevelGenerationOptions::getDefaultSaveName()
-{ 
+{
 	switch (getSrc())
 	{
 	case eSrc_fromSave:		return getString( info()->getDefaultSaveName() );
@@ -661,7 +656,7 @@ wstring LevelGenerationOptions::getDefaultSaveName()
 	return L"";
 }
 LPCWSTR LevelGenerationOptions::getWorldName()
-{ 
+{
 	switch (getSrc())
 	{
 	case eSrc_fromSave:		return getString( info()->getWorldName() );
@@ -699,13 +694,13 @@ bool LevelGenerationOptions::ready() { return info()->ready(); }
 
 void LevelGenerationOptions::setBaseSaveData(PBYTE pbData, DWORD dwSize) { m_pbBaseSaveData = pbData; m_dwBaseSaveSize = dwSize; }
 PBYTE LevelGenerationOptions::getBaseSaveData(DWORD &size) { size = m_dwBaseSaveSize; return m_pbBaseSaveData; }
-bool LevelGenerationOptions::hasBaseSaveData() { return m_dwBaseSaveSize > 0 && m_pbBaseSaveData != NULL; }
-void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete m_pbBaseSaveData; m_pbBaseSaveData = NULL; m_dwBaseSaveSize = 0; }
+bool LevelGenerationOptions::hasBaseSaveData() { return m_dwBaseSaveSize > 0 && m_pbBaseSaveData != nullptr; }
+void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete m_pbBaseSaveData; m_pbBaseSaveData = nullptr; m_dwBaseSaveSize = 0; }
 
 bool LevelGenerationOptions::hasLoadedData() { return m_hasLoadedData; }
 void LevelGenerationOptions::setLoadedData() { m_hasLoadedData = true; }
 
-__int64 LevelGenerationOptions::getLevelSeed() { return m_seed; }
+int64_t LevelGenerationOptions::getLevelSeed() { return m_seed; }
 int LevelGenerationOptions::getLevelHasBeenInCreative() { return m_bHasBeenInCreative; }
 Pos *LevelGenerationOptions::getSpawnPos() { return m_spawnPos; }
 bool LevelGenerationOptions::getuseFlatWorld() { return m_useFlatWorld; }

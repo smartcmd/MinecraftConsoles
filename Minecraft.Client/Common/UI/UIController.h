@@ -3,6 +3,7 @@ using namespace std;
 #include "IUIController.h"
 #include "UIEnums.h"
 #include "UIGroup.h"
+#include <random>
 
 class UIAbstractBitmapFont;
 class UIBitmapFont;
@@ -15,7 +16,7 @@ class UIControl;
 class UIController : public IUIController
 {
 public:
-	static __int64 iggyAllocCount;
+	static int64_t iggyAllocCount;
 
 	// MGH - added to prevent crash loading Iggy movies while the skins were being reloaded
 	static CRITICAL_SECTION ms_reloadSkinCS;
@@ -29,7 +30,7 @@ private:
 	CRITICAL_SECTION m_navigationLock;
 
 	static const int UI_REPEAT_KEY_DELAY_MS = 300; // How long from press until the first repeat
-	static const int UI_REPEAT_KEY_REPEAT_RATE_MS = 100; // How long in between repeats	
+	static const int UI_REPEAT_KEY_REPEAT_RATE_MS = 100; // How long in between repeats
 	DWORD m_actionRepeatTimer[XUSER_MAX_COUNT][ACTION_MAX_MENU+1];
 
 	float m_fScreenWidth;
@@ -49,7 +50,7 @@ private:
 		eFont_Korean,
 
 	};
-	
+
 	// 4J-JEV: It's important that currentFont == targetFont, unless updateCurrentLanguage is going to be called.
 	EFont m_eCurrentFont, m_eTargetFont;
 
@@ -63,6 +64,9 @@ private:
 	UITTFFont *m_mcTTFFont;
 	UIBitmapFont *m_moj7, *m_moj11;
 
+	std::mt19937 m_randomGenerator;
+	std::uniform_real_distribution<float> m_randomDistribution;
+
 public:
 	void setCleanupOnReload();
 	void updateCurrentFont();
@@ -72,7 +76,7 @@ private:
 	// 4J-PB - ui element type for PSVita touch control
 #ifdef __PSVITA__
 
-	typedef struct  
+	typedef struct
 	{
 		UIControl *pControl;
 		S32 x1,y1,x2,y2;
@@ -97,9 +101,8 @@ private:
 		eLibrary_Tooltips,
 		eLibrary_Default,
 
-#if ( defined(_WINDOWS64) )
-	// 4J Stu - Load the 720/480 skins so that we have something to fallback on during development
-#ifndef _FINAL_BUILD
+#if defined(_WINDOWS64)
+		// Non-HD skin libraries needed by 720p/480p scene SWFs.
 		eLibraryFallback_Platform,
 		eLibraryFallback_GraphicsDefault,
 		eLibraryFallback_GraphicsHUD,
@@ -111,7 +114,6 @@ private:
 		eLibraryFallback_HUD,
 		eLibraryFallback_Tooltips,
 		eLibraryFallback_Default,
-#endif
 #endif
 
 		eLibrary_Count,
@@ -137,7 +139,7 @@ private:
 
 	C4JRender::eViewportType m_currentRenderViewport;
 	bool m_bCustomRenderPosition;
-	
+
 	static DWORD				m_dwTrialTimerLimitSecs;
 
 	unordered_map<wstring, byteArray> m_substitutionTextures;
@@ -145,7 +147,7 @@ private:
 	typedef struct _CachedMovieData
 	{
 		byteArray m_ba;
-		__int64 m_expiry;
+		int64_t m_expiry;
 	} CachedMovieData;
 	unordered_map<wstring, CachedMovieData> m_cachedMovieData;
 
@@ -160,6 +162,8 @@ private:
 	unsigned int m_winUserIndex;
 	EUIScene m_mouseDraggingSliderScene;
 	int m_mouseDraggingSliderId;
+	bool m_mouseClickConsumedByScene;
+	bool m_bMouseHoverHorizontalList;
 	int m_lastHoverMouseX;
 	int m_lastHoverMouseY;
 	//bool m_bSysUIShowing;
@@ -167,7 +171,7 @@ private:
 	C4JThread *m_reloadSkinThread;
 	bool m_navigateToHomeOnReload;
 	int m_accumulatedTicks;
-	__uint64 m_lastUiSfx; // Tracks time (ms) of last UI sound effect
+	uint64_t m_lastUiSfx; // Tracks time (ms) of last UI sound effect
 
 	D3D11_RECT m_customRenderingClearRect;
 
@@ -211,7 +215,7 @@ protected:
 	void postInit();
 
 
-public:	
+public:
 	CRITICAL_SECTION m_Allocatorlock;
 	void SetupFont();
 	bool PendingFontChange();
@@ -243,7 +247,7 @@ private:
 	void tickInput();
 	void handleInput();
 	void handleKeyPress(unsigned int iPad, unsigned int key);
-	
+
 protected:
 	static rrbool RADLINK ExternalFunctionCallback( void * user_callback_data , Iggy * player , IggyExternalFunctionCallUTF16 * call );
 
@@ -251,6 +255,7 @@ public:
 	// RENDERING
 	float getScreenWidth() { return m_fScreenWidth; }
 	float getScreenHeight() { return m_fScreenHeight; }
+	void updateScreenSize(S32 w, S32 h) { m_fScreenWidth = (float)w; m_fScreenHeight = (float)h; app.DebugPrintf("[UI-INIT] updateScreenSize: %d x %d\n", w, h); }
 
 	virtual void render() = 0;
 	void getRenderDimensions(C4JRender::eViewportType viewport, S32 &width, S32 &height);
@@ -287,7 +292,7 @@ protected:
 	static GDrawTexture * RADLINK TextureSubstitutionCreateCallback( void * user_callback_data , IggyUTF16 * texture_name , S32 * width , S32 * height , void **destroy_callback_data );
 	static void RADLINK TextureSubstitutionDestroyCallback( void * user_callback_data , void * destroy_callback_data , GDrawTexture * handle );
 
-	virtual GDrawTexture *getSubstitutionTexture(int textureId) { return NULL; }
+	virtual GDrawTexture *getSubstitutionTexture(int textureId) { return nullptr; }
 	virtual void destroySubstitutionTexture(void *destroyCallBackData, GDrawTexture *handle) {}
 
 public:
@@ -296,7 +301,7 @@ public:
 
 public:
 	// NAVIGATION
-	bool NavigateToScene(int iPad, EUIScene scene, void *initData = NULL, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD);
+	bool NavigateToScene(int iPad, EUIScene scene, void *initData = nullptr, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD);
 	bool NavigateBack(int iPad, bool forceUsePad = false, EUIScene eScene = eUIScene_COUNT, EUILayer eLayer = eUILayer_COUNT);
 	void NavigateToHomeMenu();
 	UIScene *GetTopScene(int iPad, EUILayer layer = eUILayer_Scene, EUIGroup group = eUIGroup_PAD);
@@ -313,7 +318,7 @@ private:
 public:
 	void CloseAllPlayersScenes();
 	void CloseUIScenes(int iPad, bool forceIPad = false);
-	
+
 	virtual bool IsPauseMenuDisplayed(int iPad);
 	virtual bool IsContainerMenuDisplayed(int iPad);
 	virtual bool IsIgnorePlayerJoinMenuDisplayed(int iPad);
@@ -376,14 +381,14 @@ public:
 	virtual void HidePressStart();
 	void ClearPressStart();
 
-	virtual C4JStorage::EMessageResult RequestAlertMessage(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=NULL,LPVOID lpParam=NULL, WCHAR *pwchFormatString=NULL);
-	virtual C4JStorage::EMessageResult RequestErrorMessage(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=NULL,LPVOID lpParam=NULL, WCHAR *pwchFormatString=NULL);
+	virtual C4JStorage::EMessageResult RequestAlertMessage(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=nullptr,LPVOID lpParam=nullptr, WCHAR *pwchFormatString=nullptr);
+	virtual C4JStorage::EMessageResult RequestErrorMessage(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=nullptr,LPVOID lpParam=nullptr, WCHAR *pwchFormatString=nullptr);
 private:
 	virtual C4JStorage::EMessageResult RequestMessageBox(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad,int( *Func)(LPVOID,int,const C4JStorage::EMessageResult),LPVOID lpParam, WCHAR *pwchFormatString,DWORD dwFocusButton, bool bIsError);
 
 public:
-	C4JStorage::EMessageResult RequestUGCMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = NULL, LPVOID lpParam = NULL);
-	C4JStorage::EMessageResult RequestContentRestrictedMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = NULL, LPVOID lpParam = NULL);
+	C4JStorage::EMessageResult RequestUGCMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = nullptr, LPVOID lpParam = nullptr);
+	C4JStorage::EMessageResult RequestContentRestrictedMessageBox(UINT title = -1, UINT message = -1, int iPad = -1, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult) = nullptr, LPVOID lpParam = nullptr);
 
 	virtual void SetWinUserIndex(unsigned int iPad);
 	unsigned int GetWinUserIndex();

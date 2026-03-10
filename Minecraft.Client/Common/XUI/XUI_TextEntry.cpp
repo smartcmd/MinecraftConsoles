@@ -24,7 +24,7 @@ HRESULT CScene_TextEntry::Init_Commands()
 HRESULT CScene_TextEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	MapChildControls();
-	XuiTextInputParams *params = (XuiTextInputParams *)pInitData->pvInitData;
+	XuiTextInputParams *params = static_cast<XuiTextInputParams *>(pInitData->pvInitData);
 	m_iPad=params->iPad;
 	m_wchInitialChar=params->wch;
 	delete params;
@@ -53,7 +53,7 @@ HRESULT CScene_TextEntry::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyVal
 	if(pValueChangedData->nValue==10)
 	{
 		LPCWSTR pText = m_EditText.GetText();
-		
+
 		if(pText)
 		{
 			wstring wText = pText;
@@ -61,7 +61,7 @@ HRESULT CScene_TextEntry::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyVal
 		}
 
 		app.NavigateBack(m_iPad);
-		rfHandled = TRUE;		
+		rfHandled = TRUE;
 	}
 
 	return S_OK;
@@ -86,7 +86,7 @@ HRESULT CScene_TextEntry::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled
 
 			app.NavigateBack(m_iPad);
 			rfHandled = TRUE;
-		}		
+		}
 		break;
 
 	case VK_PAD_B:
@@ -113,8 +113,8 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 	swscanf_s(wsText.c_str(), L"%s", wchCommand,40);
 #endif
 
-	AUTO_VAR(it, m_CommandSet.find(wchCommand));
-	if(it != m_CommandSet.end())
+    auto it = m_CommandSet.find(wchCommand);
+    if(it != m_CommandSet.end())
 	{
 		// found it
 
@@ -125,7 +125,7 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 		case eCommand_Teleport:
 			{
 				int x,z;
-				
+
 #ifdef __PS3__
 				// 4J Stu - The Xbox version uses swscanf_s which isn't available in GCC.
 				swscanf(wsText.c_str(), L"%40s%c%d%c%d", wchCommand,wchSep,&x,wchSep,&z);
@@ -146,9 +146,9 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 			}
 			break;
 		case eCommand_Give:
-			{		
+			{
 				int iItem,iCount;
-				
+
 #ifdef __PS3__
 				// 4J Stu - The Xbox version uses swscanf_s which isn't available in GCC.
 				swscanf(wsText.c_str(), L"%40s%c%d%c%d", wchCommand,wchSep,&iItem,wchSep,&iCount);

@@ -26,7 +26,7 @@ StitchedTexture *StitchedTexture::create(const wstring &name)
 StitchedTexture::StitchedTexture(const wstring &name, const wstring &filename) : name(name)
 {
 	// 4J Initialisers
-	source = NULL;
+	source = nullptr;
 	rotated = false;
 	x = 0;
 	y = 0;
@@ -40,20 +40,23 @@ StitchedTexture::StitchedTexture(const wstring &name, const wstring &filename) :
 	heightTranslation = 0.0f;
 	frame = 0;
 	subFrame = 0;
-	frameOverride = NULL;
+	frameOverride = nullptr;
 	flags = 0;
-	frames = NULL;
+	frames = nullptr;
 	m_fileName = filename;
 }
 
 void StitchedTexture::freeFrameTextures()
 {
-	if( frames ) 
+	if ( frames )
 	{
-		for(AUTO_VAR(it, frames->begin()); it != frames->end(); ++it)
+		for (auto& frame : *frames)
 		{
-			TextureManager::getInstance()->unregisterTexture(L"", *it);
-			delete *it;
+			if ( frame )
+			{
+				TextureManager::getInstance()->unregisterTexture(L"", frame);
+				delete frame;
+			}
 		}
 		delete frames;
 	}
@@ -61,9 +64,10 @@ void StitchedTexture::freeFrameTextures()
 
 StitchedTexture::~StitchedTexture()
 {
-	for(AUTO_VAR(it, frames->begin()); it != frames->end(); ++it)
+	for(auto& frame : *frames)
 	{
-		delete *it;
+		if ( frame )
+			delete frame;
 	}
 	delete frames;
 }
@@ -90,10 +94,10 @@ void StitchedTexture::init(Texture *source, vector<Texture *> *frames, int x, in
 	float marginX = 0.0f; //0.01f / source->getWidth();
 	float marginY = 0.0f; //0.01f / source->getHeight();
 
-	this->u0 = x / (float) source->getWidth() + marginX;
-	this->u1 = (x + width) / (float) source->getWidth() - marginX;
-	this->v0 = y / (float) source->getHeight() + marginY;
-	this->v1 = (y + height) / (float) source->getHeight() - marginY;
+	this->u0 = x / static_cast<float>(source->getWidth()) + marginX;
+	this->u1 = (x + width) / static_cast<float>(source->getWidth()) - marginX;
+	this->v0 = y / static_cast<float>(source->getHeight()) + marginY;
+	this->v1 = (y + height) / static_cast<float>(source->getHeight()) - marginY;
 
 #ifndef _CONTENT_PACKAGE
 	bool addBreakpoint = false;
@@ -108,8 +112,8 @@ void StitchedTexture::init(Texture *source, vector<Texture *> *frames, int x, in
 	}
 #endif
 
-	this->widthTranslation = width / (float) SharedConstants::WORLD_RESOLUTION;
-	this->heightTranslation = height / (float) SharedConstants::WORLD_RESOLUTION;
+	this->widthTranslation = width / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
+	this->heightTranslation = height / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
 }
 
 void StitchedTexture::replaceWith(StitchedTexture *texture)
@@ -152,7 +156,7 @@ float StitchedTexture::getU1(bool adjust/*=false*/) const
 float StitchedTexture::getU(double offset, bool adjust/*=false*/) const
 {
 	float diff = getU1(adjust) - getU0(adjust);
-	return getU0(adjust) + (diff * ((float) offset / SharedConstants::WORLD_RESOLUTION));
+	return getU0(adjust) + (diff * (static_cast<float>(offset) / SharedConstants::WORLD_RESOLUTION));
 }
 
 float StitchedTexture::getV0(bool adjust/*=false*/) const
@@ -168,7 +172,7 @@ float StitchedTexture::getV1(bool adjust/*=false*/) const
 float StitchedTexture::getV(double offset, bool adjust/*=false*/) const
 {
 	float diff = getV1(adjust) - getV0(adjust);
-	return getV0(adjust) + (diff * ((float) offset / SharedConstants::WORLD_RESOLUTION));
+	return getV0(adjust) + (diff * (static_cast<float>(offset) / SharedConstants::WORLD_RESOLUTION));
 }
 
 wstring StitchedTexture::getName() const
@@ -188,7 +192,7 @@ int StitchedTexture::getSourceHeight() const
 
 void StitchedTexture::cycleFrames()
 {
-	if (frameOverride != NULL)
+	if (frameOverride != nullptr)
 	{
 		pair<int, int> current = frameOverride->at(frame);
 		subFrame++;
@@ -241,15 +245,15 @@ int StitchedTexture::getFrames()
 * 4*10,3,2,1,
 * 0
 * </code> or similar
-* 
+*
 * @param bufferedReader
 */
 void StitchedTexture::loadAnimationFrames(BufferedReader *bufferedReader)
 {
-	if(frameOverride != NULL)
+	if(frameOverride != nullptr)
 	{
 		delete frameOverride;
-		frameOverride = NULL;
+		frameOverride = nullptr;
 	}
 	frame = 0;
 	subFrame = 0;
@@ -265,20 +269,19 @@ void StitchedTexture::loadAnimationFrames(BufferedReader *bufferedReader)
 		{
 			std::vector<std::wstring> tokens = stringSplit(line, L',');
 			//for (String token : tokens)
-			for(AUTO_VAR(it, tokens.begin()); it != tokens.end(); ++it)
+			for( const auto& token : tokens)
 			{
-				wstring token = *it;
 				int multiPos = token.find_first_of('*');
 				if (multiPos > 0)
 				{
 					int frame = _fromString<int>(token.substr(0, multiPos));
 					int count = _fromString<int>(token.substr(multiPos + 1));
-					results->push_back( intPairVector::value_type(frame, count));
+					results->emplace_back(frame, count);
 				}
 				else
 				{
 					int tokenVal = _fromString<int>(token);
-					results->push_back( intPairVector::value_type(tokenVal, 1));
+					results->emplace_back(tokenVal, 1);
 				}
 			}
 		}
@@ -300,10 +303,10 @@ void StitchedTexture::loadAnimationFrames(BufferedReader *bufferedReader)
 
 void StitchedTexture::loadAnimationFrames(const wstring &string)
 {
-	if(frameOverride != NULL)
+	if(frameOverride != nullptr)
 	{
 		delete frameOverride;
-		frameOverride = NULL;
+		frameOverride = nullptr;
 	}
 	frame = 0;
 	subFrame = 0;
@@ -311,21 +314,22 @@ void StitchedTexture::loadAnimationFrames(const wstring &string)
 	intPairVector *results = new intPairVector();
 
 	std::vector<std::wstring> tokens = stringSplit(trimString(string), L',');
-	//for (String token : tokens)
-	for(AUTO_VAR(it, tokens.begin()); it != tokens.end(); ++it)
+
+	wstring token;
+	for(auto& it : tokens)
 	{
-		wstring token = trimString(*it);
+		token = trimString(it);
 		int multiPos = token.find_first_of('*');
 		if (multiPos > 0)
 		{
 			int frame = _fromString<int>(token.substr(0, multiPos));
 			int count = _fromString<int>(token.substr(multiPos + 1));
-			results->push_back( intPairVector::value_type(frame, count));
+			results->emplace_back(frame, count);
 		}
 		else if(!token.empty())
 		{
 			int tokenVal = _fromString<int>(token);
-			results->push_back( intPairVector::value_type(tokenVal, 1));
+			results->emplace_back(tokenVal, 1);
 		}
 	}
 

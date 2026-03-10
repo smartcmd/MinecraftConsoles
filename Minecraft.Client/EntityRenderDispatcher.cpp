@@ -87,7 +87,7 @@ double EntityRenderDispatcher::xOff = 0.0;
 double EntityRenderDispatcher::yOff = 0.0;
 double EntityRenderDispatcher::zOff = 0.0;
 
-EntityRenderDispatcher *EntityRenderDispatcher::instance = NULL;
+EntityRenderDispatcher *EntityRenderDispatcher::instance = nullptr;
 
 void EntityRenderDispatcher::staticCtor()
 {
@@ -169,10 +169,9 @@ EntityRenderDispatcher::EntityRenderDispatcher()
 	renderers[eTYPE_LIGHTNINGBOLT] = new LightningBoltRenderer();
 	glDisable(GL_LIGHTING);
 
-	AUTO_VAR(itEnd, renderers.end());
-	for( classToRendererMap::iterator it = renderers.begin(); it != itEnd; it++ )
+	for( auto& it : renderers )
 	{
-		it->second->init(this);
+		it.second->init(this);
 	}
 
 	isGuiRender = false;	// 4J added
@@ -182,7 +181,7 @@ EntityRenderer *EntityRenderDispatcher::getRenderer(eINSTANCEOF e)
 {
 	if( (e & eTYPE_PLAYER) == eTYPE_PLAYER) e = eTYPE_PLAYER;
 	//EntityRenderer * r = renderers[e];
-	AUTO_VAR(it, renderers.find( e )); // 4J Stu - The .at and [] accessors insert elements if they don't exist
+	auto it = renderers.find(e); // 4J Stu - The .at and [] accessors insert elements if they don't exist
 
 	if( it == renderers.end() )
 	{
@@ -223,7 +222,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 			int data = level->getData(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 
 			int direction = data & 3;
-			playerRotY = (float)(direction * 90 + 180);
+			playerRotY = static_cast<float>(direction * 90 + 180);
 			playerRotX = 0;
 		}
 	} else {
@@ -235,6 +234,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 	if (pl->ThirdPersonView() == 2)
 	{
 		playerRotY += 180;
+		playerRotX = -playerRotX;
 	}
 
 	xPlayer = player->xOld + (player->x - player->xOld) * a;
@@ -245,6 +245,11 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 
 void EntityRenderDispatcher::render(shared_ptr<Entity> entity, float a)
 {
+	if (entity == nullptr)
+	{
+		return;
+	}
+
 	double x = entity->xOld + (entity->x - entity->xOld) * a;
 	double y = entity->yOld + (entity->y - entity->yOld) * a;
 	double z = entity->zOld + (entity->z - entity->zOld) * a;
@@ -281,7 +286,7 @@ void EntityRenderDispatcher::render(shared_ptr<Entity> entity, float a)
 void EntityRenderDispatcher::render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame, bool bRenderPlayerShadow)
 {
 	EntityRenderer *renderer = getRenderer(entity);
-	if (renderer != NULL)
+	if (renderer != nullptr)
 	{	
 		renderer->SetItemFrame(bItemFrame);
 
@@ -305,10 +310,9 @@ Font *EntityRenderDispatcher::getFont()
 
 void EntityRenderDispatcher::registerTerrainTextures(IconRegister *iconRegister)
 {
-	//for (EntityRenderer<? extends Entity> renderer : renderers.values())
-	for(AUTO_VAR(it, renderers.begin()); it != renderers.end(); ++it)
+	for( auto& it : renderers )
 	{
-		EntityRenderer *renderer = it->second;
+		EntityRenderer *renderer = it.second;
 		renderer->registerTerrainTextures(iconRegister);
 	}
 }

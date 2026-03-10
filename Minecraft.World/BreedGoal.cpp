@@ -25,12 +25,12 @@ bool BreedGoal::canUse()
 {
 	if (!animal->isInLove()) return false;
 	partner = weak_ptr<Animal>(getFreePartner());
-	return partner.lock() != NULL;
+	return partner.lock() != nullptr;
 }
 
 bool BreedGoal::canContinueToUse()
 {
-	return partner.lock() != NULL && partner.lock()->isAlive() && partner.lock()->isInLove() && loveTime < 20 * 3;
+	return partner.lock() != nullptr && partner.lock()->isAlive() && partner.lock()->isInLove() && loveTime < 20 * 3;
 }
 
 void BreedGoal::stop()
@@ -53,16 +53,19 @@ shared_ptr<Animal> BreedGoal::getFreePartner()
 	vector<shared_ptr<Entity> > *others = level->getEntitiesOfClass(typeid(*animal), animal->bb->grow(r, r, r));
 	double dist = Double::MAX_VALUE;
 	shared_ptr<Animal> partner = nullptr;
-	for(AUTO_VAR(it, others->begin()); it != others->end(); ++it)
+	if ( others )
 	{
-		shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(*it);
-		if (animal->canMate(p) && animal->distanceToSqr(p) < dist)
+		for ( auto& it : *others )
 		{
-			partner = p;
-			dist = animal->distanceToSqr(p);
+			shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(it);
+			if ( p && animal->canMate(p) && animal->distanceToSqr(p) < dist)
+			{
+				partner = p;
+				dist = animal->distanceToSqr(p);
+			}
 		}
+		delete others;
 	}
-	delete others;
 	return partner;
 }
 
@@ -71,21 +74,21 @@ void BreedGoal::breed()
 	shared_ptr<AgableMob> offspring = animal->getBreedOffspring(partner.lock());
 	animal->setDespawnProtected();
 	partner.lock()->setDespawnProtected();
-	if (offspring == NULL)
+	if (offspring == nullptr)
 	{
-		// This will be NULL if we've hit our limits for spawning any particular type of animal... reset things as normally as we can, without actually producing any offspring
+		// This will be nullptr if we've hit our limits for spawning any particular type of animal... reset things as normally as we can, without actually producing any offspring
 		animal->resetLove();
 		partner.lock()->resetLove();
 		return;
 	}
 
 	shared_ptr<Player> loveCause = animal->getLoveCause();
-	if (loveCause == NULL && partner.lock()->getLoveCause() != NULL)
+	if (loveCause == nullptr && partner.lock()->getLoveCause() != nullptr)
 	{
 		loveCause = partner.lock()->getLoveCause();
 	}
 
-	if (loveCause != NULL)
+	if (loveCause != nullptr)
 	{
 		// Record mob bred stat.
 		loveCause->awardStat(GenericStats::breedEntity(offspring->GetType()),GenericStats::param_breedEntity(offspring->GetType()));
@@ -115,5 +118,5 @@ void BreedGoal::breed()
 			* animal->bbWidth * 2 - animal->bbWidth, xa, ya, za);
 	}
 	// 4J-PB - Fix for 106869- Customer Encountered: TU12: Content: Gameplay: Breeding animals does not give any Experience Orbs.
-	level->addEntity( shared_ptr<ExperienceOrb>( new ExperienceOrb(level, animal->x, animal->y, animal->z, random->nextInt(7) + 1) ) );
+	level->addEntity(std::make_shared<ExperienceOrb>(level, animal->x, animal->y, animal->z, random->nextInt(7) + 1));
 }

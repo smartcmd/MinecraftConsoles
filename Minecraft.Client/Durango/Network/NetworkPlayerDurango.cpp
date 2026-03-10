@@ -4,7 +4,7 @@
 NetworkPlayerDurango::NetworkPlayerDurango(DQRNetworkPlayer *qnetPlayer)
 {
 	m_dqrPlayer = qnetPlayer;
-	m_pSocket = NULL;
+	m_pSocket = nullptr;
 }
 
 unsigned char NetworkPlayerDurango::GetSmallId()
@@ -14,12 +14,12 @@ unsigned char NetworkPlayerDurango::GetSmallId()
 
 void NetworkPlayerDurango::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority)
 {
-	m_dqrPlayer->SendData( ((NetworkPlayerDurango *)player)->m_dqrPlayer, pvData, dataSize );
+	m_dqrPlayer->SendData( static_cast<NetworkPlayerDurango *>(player)->m_dqrPlayer, pvData, dataSize );
 }
 
 bool NetworkPlayerDurango::IsSameSystem(INetworkPlayer *player)
 {
-	return m_dqrPlayer->IsSameSystem(((NetworkPlayerDurango *)player)->m_dqrPlayer);
+	return m_dqrPlayer->IsSameSystem(static_cast<NetworkPlayerDurango *>(player)->m_dqrPlayer);
 }
 
 int NetworkPlayerDurango::GetSendQueueSizeBytes( INetworkPlayer *player, bool lowPriority )

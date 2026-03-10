@@ -9,7 +9,7 @@ public:
 	static const int TOP_SLOT_BIT = 8;
 
 	HalfSlabTile_SPU(int id) : Tile_SPU(id) {}
-	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL);	// 4J added forceData, forceEntity param
+	virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr);	// 4J added forceData, forceEntity param
 	virtual void updateDefaultShape();
 	virtual bool isSolidRender(bool isServerLevel);
 	virtual bool shouldRenderFace(ChunkRebuildData *level, int x, int y, int z, int face);

@@ -21,9 +21,9 @@ int FireworksChargeItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer
 	if (spriteLayer == 1)
 	{
 		Tag *colorTag = getExplosionTagField(item, FireworksItem::TAG_E_COLORS);
-		if (colorTag != NULL)
+		if (colorTag != nullptr)
 		{
-			IntArrayTag *colors = (IntArrayTag *) colorTag;
+			IntArrayTag *colors = static_cast<IntArrayTag *>(colorTag);
 			if (colors->data.length == 1)
 			{
 				return colors->data[0];
@@ -58,12 +58,12 @@ Tag *FireworksChargeItem::getExplosionTagField(shared_ptr<ItemInstance> instance
 	if (instance->hasTag())
 	{
 		CompoundTag *explosion = instance->getTag()->getCompound(FireworksItem::TAG_EXPLOSION);
-		if (explosion != NULL)
+		if (explosion != nullptr)
 		{
 			return explosion->get(field);
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void FireworksChargeItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced)
@@ -71,7 +71,7 @@ void FireworksChargeItem::appendHoverText(shared_ptr<ItemInstance> itemInstance,
 	if (itemInstance->hasTag())
 	{
 		CompoundTag *explosion = itemInstance->getTag()->getCompound(FireworksItem::TAG_EXPLOSION);
-		if (explosion != NULL)
+		if (explosion != nullptr)
 		{
 			appendHoverText(explosion, lines);
 		}

@@ -23,7 +23,7 @@ shared_ptr<ItemInstance> EmptyMapItem::use(shared_ptr<ItemInstance> itemInstance
 
 	//data.setDirty();
 
-	shared_ptr<ItemInstance> map = shared_ptr<ItemInstance>( new ItemInstance(Item::map, 1, -1) );
+	shared_ptr<ItemInstance> map = std::make_shared<ItemInstance>(Item::map, 1, -1);
 	Item::map->onCraftedBy(map, level, player);
 
 	itemInstance->count--;

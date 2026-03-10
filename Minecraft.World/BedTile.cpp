@@ -16,9 +16,9 @@ BedTile::BedTile(int id) : DirectionalTile(id, Material::cloth, isSolidRender())
 {
 	setShape();
 
-	iconEnd = NULL;
-	iconSide = NULL;
-	iconTop = NULL;
+	iconEnd = nullptr;
+	iconSide = nullptr;
+	iconTop = nullptr;
 }
 
 // 4J Added override
@@ -108,10 +108,8 @@ bool BedTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, 
 	if (isOccupied(data))
 	{
 		shared_ptr<Player> sleepingPlayer = nullptr;
-		AUTO_VAR(itEnd, level->players.end());
-		for (AUTO_VAR(it, level->players.begin()); it != itEnd; it++ )
+		for ( auto& p : level->players )
 		{
-			shared_ptr<Player> p = *it;
 			if (p->isSleeping())
 			{
 				Pos pos = p->bedPosition;
@@ -122,7 +120,7 @@ bool BedTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, 
 			}
 		}
 
-		if (sleepingPlayer == NULL)
+		if (sleepingPlayer == nullptr)
 		{
 			setOccupied(level, x, y, z, false);
 		}
@@ -311,7 +309,7 @@ Pos *BedTile::findStandUpPosition(Level *level, int x, int y, int z, int skipCou
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void BedTile::spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonus)

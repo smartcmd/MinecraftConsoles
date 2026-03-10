@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_ConnectingProgress::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	ConnectionProgressParams *param = (ConnectionProgressParams *)pInitData->pvInitData;
+	ConnectionProgressParams *param = static_cast<ConnectionProgressParams *>(pInitData->pvInitData);
 	m_iPad = param->iPad;
 	MapChildControls();
 
@@ -203,7 +203,7 @@ HRESULT CScene_ConnectingProgress::OnTimer( XUIMessageTimer *pTimer, BOOL& bHand
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
 #ifdef _XBOX
-			StorageManager.RequestMessageBox( IDS_CONNECTION_FAILED, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			StorageManager.RequestMessageBox( IDS_CONNECTION_FAILED, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 #endif
 			exitReasonStringId = -1;
 

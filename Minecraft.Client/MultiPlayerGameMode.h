@@ -42,7 +42,7 @@ private:
 	bool sameDestroyTarget(int x, int y, int z);
 	void ensureHasSentCarriedItem();
 public:
-    virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, Vec3 *hit, bool bTestUseOnly=false, bool *pbUsedItem=NULL);
+    virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, Vec3 *hit, bool bTestUseOnly=false, bool *pbUsedItem=nullptr);
     virtual bool useItem(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
     virtual shared_ptr<MultiplayerLocalPlayer> createPlayer(Level *level);
     virtual void attack(shared_ptr<Player> player, shared_ptr<Entity> entity);
@@ -65,5 +65,5 @@ public:
 	// 4J Stu - Added for tutorial checks
 	virtual bool isInputAllowed(int mapping) { return true; }
 	virtual bool isTutorial() { return false; }
-	virtual Tutorial *getTutorial() { return NULL; }
+	virtual Tutorial *getTutorial() { return nullptr; }
 };

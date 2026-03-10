@@ -39,7 +39,7 @@ int user_malloc_init_for_tls(void)
 		return 1;
 	}
 
-	addr = NULL;
+	addr = nullptr;
 	//E Map direct memory to the process address space
 	//J ダイレクトメモリをプロセスアドレス空間にマップする
 	res = sceKernelMapDirectMemory(&addr, HEAP_SIZE, SCE_KERNEL_PROT_CPU_READ | SCE_KERNEL_PROT_CPU_WRITE, 0, s_memStart, s_memAlign);
@@ -52,7 +52,7 @@ int user_malloc_init_for_tls(void)
 	//E Generate mspace
 	//J mspace を生成する
 	s_mspace = sceLibcMspaceCreate("User Malloc For TLS", addr, HEAP_SIZE, 0);
-	if (s_mspace == NULL) {
+	if (s_mspace == nullptr) {
 		//E Error handling
 		//J エラー処理
 		return 1;
@@ -67,7 +67,7 @@ int user_malloc_fini_for_tls(void)
 {
 	int res;
 
-	if (s_mspace != NULL) {
+	if (s_mspace != nullptr) {
 		//E Free mspace
 		//J mspace を解放する
 		res = sceLibcMspaceDestroy(s_mspace);
