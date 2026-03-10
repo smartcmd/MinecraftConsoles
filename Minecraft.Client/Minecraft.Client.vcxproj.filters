@@ -1684,6 +1684,12 @@
     <ClInclude Include="Common\XUI\XUI_DebugTips.h">
       <Filter>Xbox\Source Files\XUI\Menu screens\Debug</Filter>
     </ClInclude>
+    <ClInclude Include="ServerCommands.h">
+      <Filter>net\minecraft\server</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerConsole.h">
+      <Filter>net\minecraft\server</Filter>
+    </ClInclude>
     <ClInclude Include="ServerConnection.h">
       <Filter>net\minecraft\server\network</Filter>
     </ClInclude>
@@ -4252,6 +4258,12 @@
       <Filter>net\minecraft\server\network</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleInput.cpp">
+      <Filter>net\minecraft\server</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerCommands.cpp">
+      <Filter>net\minecraft\server</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerConsole.cpp">
       <Filter>net\minecraft\server</Filter>
     </ClCompile>
     <ClCompile Include="MinecraftServer.cpp">
