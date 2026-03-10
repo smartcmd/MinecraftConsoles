@@ -589,7 +589,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
 		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
-			g_KBMInput.OnChar((wchar_t)wParam);
+			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
 		break;
 
 	case WM_KEYDOWN:
@@ -620,12 +620,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else if (vk == VK_MENU)
 			vk = (lParam & (1 << 24)) ? VK_RMENU : VK_LMENU;
 		g_KBMInput.OnKeyDown(vk);
-		break;
+		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 	{
-		int vk = (int)wParam;
+		int vk = static_cast<int>(wParam);
 		if (vk == VK_SHIFT)
 			vk = (MapVirtualKey((lParam >> 16) & 0xFF, MAPVK_VSC_TO_VK_EX) == VK_RSHIFT) ? VK_RSHIFT : VK_LSHIFT;
 		else if (vk == VK_CONTROL)
@@ -1673,6 +1673,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	const Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
+	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
+	if (!launchOptions.serverMode)
+	{
+		Win64Xuid::ResolvePersistentXuid();
+	}
+
 	// If no username, let's fall back
 	if (g_Win64Username[0] == 0)
 	{
@@ -2133,6 +2139,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 				}
 			}
+		}
+
+		// Open chat
+		if (g_KBMInput.IsKeyPressed('T') && app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
+		{
+			g_KBMInput.ClearCharBuffer();
+			pMinecraft->setScreen(new ChatScreen());
+			SetFocus(g_hWnd);
 		}
 
 #if 0

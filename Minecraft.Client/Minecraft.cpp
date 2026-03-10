@@ -747,7 +747,7 @@ void Minecraft::run()
 
 		while (System::currentTimeMillis() >= lastTime + 1000)
 		{
-			fpsString = std::to_wstring(frames) + L" fps, " + std::to_wstring(Chunk::updates) + L" chunk updates)";
+			fpsString = std::to_wstring(frames) + L" fps (" + std::to_wstring(Chunk::updates) + L" chunk updates)";
 			Chunk::updates = 0;
 			lastTime += 1000;
 			frames = 0;
@@ -2084,7 +2084,7 @@ void Minecraft::run_middle()
 			while (System::nanoTime() >= lastTime + 1000000000)
 			{
 				MemSect(31);
-				fpsString = std::to_wstring(frames) + L" fps," + std::to_wstring(Chunk::updates) + L" chunk updates";
+				fpsString = std::to_wstring(frames) + L" fps (" + std::to_wstring(Chunk::updates) + L" chunk updates)";
 				MemSect(0);
 				Chunk::updates = 0;
 				lastTime += 1000000000;
