@@ -65,7 +65,7 @@ public:
 private:
 	wstring reorderBidi(const wstring &str);
 
-	void draw(const wstring &str, bool dropShadow);
+	void draw(const wstring &str, bool dropShadow, int baseColor);
     void draw(const wstring& str, int x, int y, int color, bool dropShadow);
 	void drawLiteral(const wstring& str, int x, int y, int color); // no § parsing
 	int MapCharacter(wchar_t c); // 4J added

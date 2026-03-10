@@ -289,7 +289,7 @@ static bool isSectionFormatCode(wchar_t ca)
 	return l == L'l' || l == L'o' || l == L'n' || l == L'm' || l == L'r' || l == L'k';
 }
 
-void Font::draw(const wstring &str, bool dropShadow)
+void Font::draw(const wstring &str, bool dropShadow, int baseColor)
 {
 	// Bind the texture
 	textures->bindTexture(m_textureLocation);
@@ -299,6 +299,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 
 	Tesselator *t = Tesselator::getInstance();
 	t->begin();
+	t->color(baseColor & 0x00ffffff, (baseColor >> 24) & 255);
 
 	for (int i = 0; i < static_cast<int>(cleanStr.length()); ++i)
 	{
@@ -310,10 +311,8 @@ void Font::draw(const wstring &str, bool dropShadow)
 			wchar_t ca = cleanStr[i+1];
 			if (!isSectionFormatCode(ca))
 			{
-				t->end();
-				renderCharacter(167);
-				renderCharacter(ca);
-				t->begin();
+				addCharacterQuad(167);
+				addCharacterQuad(ca);
 				i += 1;
 				continue;
 			}
@@ -337,10 +336,8 @@ void Font::draw(const wstring &str, bool dropShadow)
 				noise = false;
 				if (colorN < 0 || colorN > 15) colorN = 15;
 				if (dropShadow) colorN += 16;
-				int color = colors[colorN];
-				t->end();
-				glColor3f((color >> 16) / 255.0F, ((color >> 8) & 255) / 255.0F, (color & 255) / 255.0F);
-				t->begin();
+				baseColor = (baseColor & 0xff000000) | colors[colorN];
+				t->color(baseColor & 0x00ffffff, (baseColor >> 24) & 255);
 			}
 			i += 1;
 			continue;
@@ -373,11 +370,11 @@ void Font::draw(const wstring& str, int x, int y, int color, bool dropShadow)
 		if (dropShadow) // divide RGB by 4, preserve alpha
 			color = (color & 0xfcfcfc) >> 2 | (color & (-1 << 24));
 
-		glColor4f((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
+		glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		xPos = x;
 		yPos = y;
-		draw(str, dropShadow);
+		draw(str, dropShadow, color);
 	}
 }
 
