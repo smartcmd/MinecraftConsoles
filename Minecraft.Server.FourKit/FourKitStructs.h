@@ -136,3 +136,27 @@ struct PlayerNetworkAddressData
 		hostAddress[0] = '\0';
 	}
 };
+
+struct PlayerPortalData
+{
+	const char* playerName;
+	int cause;
+	double fromX;
+	double fromY;
+	double fromZ;
+	double toX;
+	double toY;
+	double toZ;
+
+	PlayerPortalData()
+		: playerName(nullptr)
+		, cause(0)
+		, fromX(0.0)
+		, fromY(0.0)
+		, fromZ(0.0)
+		, toX(0.0)
+		, toY(0.0)
+		, toZ(0.0)
+	{
+	}
+};

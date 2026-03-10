@@ -584,10 +584,11 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		int noDelay = 1;
 		setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&noDelay, sizeof(noDelay));
 
-#if defined(MINECRAFT_SERVER_BUILD)
 		std::string remoteIp;
 		const bool hasRemoteIp = TryGetNumericRemoteIp(remoteAddress, &remoteIp);
 		const char *remoteIpForLog = hasRemoteIp ? remoteIp.c_str() : "unknown";
+
+#if defined(MINECRAFT_SERVER_BUILD)
 		if (g_Win64DedicatedServer)
 		{
 			ServerRuntime::ServerLogManager::OnIncomingTcpConnection(remoteIpForLog);

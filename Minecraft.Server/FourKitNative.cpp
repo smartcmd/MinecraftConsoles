@@ -378,6 +378,39 @@ namespace FourKit
 		return cancelled;
 	}
 
+	bool EmitPlayerPortalEvent(ServerPlayer* nativePlayer, EPortalTeleportCause cause,
+		double& fromX, double& fromY, double& fromZ,
+		double& toX, double& toY, double& toZ)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		PlayerPortalData portalData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		portalData.playerName = nameUtf8.c_str();
+		portalData.cause = (int)cause;
+		portalData.fromX = fromX;
+		portalData.fromY = fromY;
+		portalData.fromZ = fromZ;
+		portalData.toX = toX;
+		portalData.toY = toY;
+		portalData.toZ = toZ;
+
+		bool cancelled = false;
+		FourKit_FireOnPlayerPortal(&portalData, &cancelled);
+
+		fromX = portalData.fromX;
+		fromY = portalData.fromY;
+		fromZ = portalData.fromZ;
+		toX = portalData.toX;
+		toY = portalData.toY;
+		toZ = portalData.toZ;
+
+		return cancelled;
+	}
+
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer)
 	{
 		if (nativePlayer == nullptr)

@@ -5,6 +5,15 @@
 
 using namespace System;
 
+public enum class TeleportCause
+{
+	END_PORTAL = 0,
+	ENDER_PEARL = 1,
+	NETHER_PORTAL = 2,
+	PLUGIN = 3,
+	UNKNOWN = 4
+};
+
 public ref class Location
 {
 public:
@@ -98,6 +107,25 @@ public:
 	Player^ getPlayer() { return PlayerObject; }
 	Location^ getFrom() { return From; }
 	Location^ getTo() { return To; }
+	bool isCancelled() { return Cancelled; }
+	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+};
+
+public ref class PlayerPortalEvent
+{
+public:
+	property Player^ PlayerObject;
+	property TeleportCause Cause;
+	property Location^ From;
+	property Location^ To;
+	property bool Cancelled;
+
+	Player^ getPlayer() { return PlayerObject; }
+	TeleportCause getCause() { return Cause; }
+	Location^ getFrom() { return From; }
+	Location^ getTo() { return To; }
+	void setTo(double x, double y, double z) { To = gcnew Location(x, y, z); }
+	void setFrom(double x, double y, double z) { From = gcnew Location(x, y, z); }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
 };

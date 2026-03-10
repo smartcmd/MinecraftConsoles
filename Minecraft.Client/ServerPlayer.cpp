@@ -33,6 +33,10 @@
 #include "..\Minecraft.World\LevelChunk.h"
 #include "LevelRenderer.h"
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+#include "..\Minecraft.Server\FourKitNative.h"
+#endif
+
 
 ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring& name, ServerPlayerGameMode *gameMode) : Player(level, name)
 {
@@ -508,7 +512,7 @@ void ServerPlayer::doTickB()
 	// 		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToEnd));
 	// 	}
 	//else
-		if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToOverworld))
+	if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToOverworld))
 	{
 		if(level->dimension->id != 0 )
 		{
@@ -728,6 +732,50 @@ void ServerPlayer::changeDimension(int i)
 {
 	if(!connection->hasClientTickedOnce()) return;
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	double fromX = x;
+	double fromY = y;
+	double fromZ = z;
+	double toX = x;
+	double toY = y;
+	double toZ = z;
+
+	FourKit::EPortalTeleportCause portalCause = FourKit::ePortalCause_Unknown;
+	if (dimension == 1 && i == 1)
+	{
+		portalCause = FourKit::ePortalCause_EndPortal;
+		Pos *exitPos = server->getLevel(0)->getDimensionSpecificSpawn();
+		if (exitPos != NULL)
+		{
+			toX = exitPos->x;
+			toY = exitPos->y;
+			toZ = exitPos->z;
+			delete exitPos;
+		}
+	}
+	else if (dimension == 0 && i == 1)
+	{
+		portalCause = FourKit::ePortalCause_EndPortal;
+		Pos *pos = server->getLevel(i)->getDimensionSpecificSpawn();
+		if (pos != NULL)
+		{
+			toX = pos->x;
+			toY = pos->y;
+			toZ = pos->z;
+			delete pos;
+		}
+	}
+	else
+	{
+		portalCause = FourKit::ePortalCause_NetherPortal;
+	}
+
+	if (FourKit::EmitPlayerPortalEvent(this, portalCause, fromX, fromY, fromZ, toX, toY, toZ))
+	{
+		return;
+	}
+#endif
+
 	if (dimension == 1 && i == 1)
 	{
 		app.DebugPrintf("Start win game\n");
@@ -765,12 +813,16 @@ void ServerPlayer::changeDimension(int i)
 		{
 			awardStat(GenericStats::theEnd(), GenericStats::param_theEnd());
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+			connection->teleport(toX, toY, toZ, 0, 0);
+#else
 			Pos *pos = server->getLevel(i)->getDimensionSpecificSpawn();
 			if (pos != NULL)
 			{
 				connection->teleport(pos->x, pos->y, pos->z, 0, 0);
 				delete pos;
 			}
+#endif
 
 			i = 1;
 		}
@@ -783,6 +835,16 @@ void ServerPlayer::changeDimension(int i)
 		lastSentExp = -1;
 		lastSentHealth = -1;
 		lastSentFood = -1;
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		if (dimension != 0 || i != 1)
+		{
+			if (toX != fromX || toY != fromY || toZ != fromZ)
+			{
+				connection->teleport(toX, toY, toZ, yRot, xRot);
+			}
+		}
+#endif
 	}
 }
 

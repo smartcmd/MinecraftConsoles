@@ -436,6 +436,71 @@ void FourKit::FireEventOnPlayerMove(const PlayerMoveData &moveData, bool *cancel
     }
 }
 
+void FourKit::FireEventOnPlayerPortal(PlayerPortalData *portalData, bool *cancelled)
+{
+    try
+    {
+        if (portalData == nullptr)
+        {
+            if (cancelled != nullptr)
+            {
+                *cancelled = false;
+            }
+            return;
+        }
+
+        String ^ name = gcnew String((portalData->playerName != nullptr) ? portalData->playerName : "");
+
+        Player ^ player = ResolvePlayerByName(name);
+        if (player == nullptr)
+        {
+            player = gcnew Player(name);
+        }
+
+        PlayerPortalEvent^ event = gcnew PlayerPortalEvent();
+        event->PlayerObject = player;
+
+        TeleportCause cause = TeleportCause::UNKNOWN;
+        if (portalData->cause == (int)TeleportCause::END_PORTAL) cause = TeleportCause::END_PORTAL;
+        else if (portalData->cause == (int)TeleportCause::ENDER_PEARL) cause = TeleportCause::ENDER_PEARL;
+        else if (portalData->cause == (int)TeleportCause::NETHER_PORTAL) cause = TeleportCause::NETHER_PORTAL;
+        else if (portalData->cause == (int)TeleportCause::PLUGIN) cause = TeleportCause::PLUGIN;
+
+        event->Cause = cause;
+        event->From = gcnew Location(portalData->fromX, portalData->fromY, portalData->fromZ);
+        event->To = gcnew Location(portalData->toX, portalData->toY, portalData->toZ);
+        event->Cancelled = false;
+
+        EventManager::FireEvent(event);
+
+        if (event->From != nullptr)
+        {
+            portalData->fromX = event->From->getX();
+            portalData->fromY = event->From->getY();
+            portalData->fromZ = event->From->getZ();
+        }
+        if (event->To != nullptr)
+        {
+            portalData->toX = event->To->getX();
+            portalData->toY = event->To->getY();
+            portalData->toZ = event->To->getZ();
+        }
+
+        if (cancelled != nullptr)
+        {
+            *cancelled = event->Cancelled;
+        }
+    }
+    catch (Exception ^ ex)
+    {
+        PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerPortal event: {0}", ex->Message));
+        if (cancelled != nullptr)
+        {
+            *cancelled = false;
+        }
+    }
+}
+
 void FourKit::addListener(Listener ^ listener)
 {
     EventManager::RegisterListener(listener);
@@ -669,6 +734,11 @@ extern "C"
     __declspec(dllexport) void FourKit_FireOnPlayerMove(const PlayerMoveData &moveData, bool* cancelled)
     {
         FourKit::FireEventOnPlayerMove(moveData, cancelled);
+    }
+
+    __declspec(dllexport) void FourKit_FireOnPlayerPortal(PlayerPortalData* portalData, bool* cancelled)
+    {
+        FourKit::FireEventOnPlayerPortal(portalData, cancelled);
     }
 
     __declspec(dllexport) void FourKit_FireOnLoad()

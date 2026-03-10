@@ -9,11 +9,23 @@ class PlayerConnection;
 
 namespace FourKit
 {
+	enum EPortalTeleportCause
+	{
+		ePortalCause_EndPortal = 0,
+		ePortalCause_EnderPearl = 1,
+		ePortalCause_NetherPortal = 2,
+		ePortalCause_Plugin = 3,
+		ePortalCause_Unknown = 4
+	};
+
 	void CreateAndBindManagedPlayer(ServerPlayer* nativePlayer, PlayerConnection* connection);
 	bool EmitPlayerChatEvent(ServerPlayer* nativePlayer, const std::wstring& message);
 	bool EmitBlockBreakEvent(ServerPlayer* nativePlayer, int x, int y, int z, int blockId, int blockData);
 	bool EmitBlockPlaceEvent(ServerPlayer* nativePlayer, int x, int y, int z, int blockId, int blockData);
 	bool EmitPlayerMoveEvent(ServerPlayer* nativePlayer, double fromX, double fromY, double fromZ, double toX, double toY, double toZ);
+	bool EmitPlayerPortalEvent(ServerPlayer* nativePlayer, EPortalTeleportCause cause,
+		double& fromX, double& fromY, double& fromZ,
+		double& toX, double& toY, double& toZ);
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
 }
 
