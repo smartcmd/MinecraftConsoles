@@ -557,8 +557,8 @@ int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,b
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t));
 		Win64_GetKeyboardText(pchText, 128);
-		pClass->m_editSeed.setLabel((wchar_t *)pchText);
-		pClass->m_params->seed = (wchar_t *)pchText;
+		pClass->m_editSeed.setLabel(reinterpret_cast<wchar_t*>(pchText));
+		pClass->m_params->seed = static_cast<wstring>(reinterpret_cast<wchar_t*>(pchText));
 #else
 #ifdef __PSVITA__
 		uint16_t pchText[2048];
@@ -584,7 +584,7 @@ void UIScene_LaunchMoreOptionsMenu::getDirectEditInputs(vector<UIControl_TextInp
 void UIScene_LaunchMoreOptionsMenu::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
 {
 	if (result == UIControl_TextInput::eDirectEdit_Confirmed)
-		m_params->seed = input->getEditBuffer();
+		m_params->seed = static_cast<wstring>(input->getEditBuffer());
 }
 #endif
 
