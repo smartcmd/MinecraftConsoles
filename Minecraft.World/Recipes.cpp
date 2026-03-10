@@ -178,7 +178,7 @@ Recipes::Recipes()
 		L'#', Tile::mossyCobblestone,
 		L'S');
 
-	addShapedRecipy(new ItemInstance(Item::door_wood, 1), //
+	addShapedRecipy(new ItemInstance(Item::door_wood, 3), //
 		L"sssctg",
 		L"##", //
 		L"##", //
@@ -187,7 +187,7 @@ Recipes::Recipes()
 		L'#', Tile::wood,
 		L'S');
 
-	addShapedRecipy(new ItemInstance(Item::door_iron, 1), //
+	addShapedRecipy(new ItemInstance(Item::door_iron, 3), //
 		L"ssscig",
 		L"##", //
 		L"##", //
