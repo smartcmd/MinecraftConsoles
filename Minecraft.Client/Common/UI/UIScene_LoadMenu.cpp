@@ -8,7 +8,6 @@
 #include "..\..\MinecraftServer.h"
 #include "..\..\..\Minecraft.World\LevelSettings.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\MobCategory.h"
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
 #include "Common\Network\Sony\SonyHttp.h"
 #endif

@@ -11,7 +11,6 @@
 #include "..\..\..\Minecraft.World\BiomeSource.h"
 #include "..\..\..\Minecraft.World\IntCache.h"
 #include "..\..\..\Minecraft.World\LevelType.h"
-#include "..\..\..\Minecraft.World\MobCategory.h"
 #include "..\..\DLCTexturePack.h"
 
 #ifdef __PSVITA__
