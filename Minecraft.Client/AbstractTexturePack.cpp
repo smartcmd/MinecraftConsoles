@@ -296,8 +296,7 @@ void AbstractTexturePack::loadDefaultHTMLColourTable()
 	const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
 	WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
-	// Try and load the HTMLColours.col based off the common XML first, before the deprecated xuiscene_colourtable	
-	wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/HTMLColours.col");
+	swprintf_s(szResourceLocator, LOCATOR_SIZE, L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/HTMLColours.col");
 	BYTE *data;
 	UINT dataLength;
 	if(XuiResourceLoadAll(szResourceLocator, &data, &dataLength) == S_OK)
@@ -308,7 +307,7 @@ void AbstractTexturePack::loadDefaultHTMLColourTable()
 	}
 	else
 	{
-		wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/");
+		swprintf_s(szResourceLocator, LOCATOR_SIZE, L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/");
 		HXUIOBJ hScene;
 		HRESULT hr = XuiSceneCreate(szResourceLocator,L"xuiscene_colourtable.xur", nullptr, &hScene);
 
