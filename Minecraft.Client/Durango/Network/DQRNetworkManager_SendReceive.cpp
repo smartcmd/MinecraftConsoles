@@ -217,8 +217,9 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						memcpy( &receivedSize, connectionInfo->m_pucRoomSyncData, 4);
 						delete [] connectionInfo->m_pucRoomSyncData;
 
-						if( receivedSize < 0 || receivedSize > 100000 )
+						if( receivedSize < 0 || receivedSize > 1048576 )
 						{
+							DQRNetworkManager::LogCommentFormat(L"RoomSyncData rejected: size=%d", receivedSize);
 							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
 							connectionInfo->m_pucRoomSyncData = nullptr;
 							connectionInfo->m_roomSyncDataBytesToRead = 0;
@@ -320,8 +321,9 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						memcpy( &receivedSize, connectionInfo->m_pucAddFailedPlayerData, 4);
 						delete [] connectionInfo->m_pucAddFailedPlayerData;
 
-						if( receivedSize < 0 || receivedSize > 100000 )
+						if( receivedSize < 0 || receivedSize > 1048576 )
 						{
+							DQRNetworkManager::LogCommentFormat(L"AddFailedPlayerData rejected: size=%d", receivedSize);
 							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
 							connectionInfo->m_pucAddFailedPlayerData = nullptr;
 							connectionInfo->m_addFailedPlayerDataBytesToRead = 0;
