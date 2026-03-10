@@ -11,6 +11,7 @@ bool RegionFileCache::useSplitSaves(ESavePlatform platform)
 	{
 	case SAVE_FILE_PLATFORM_XBONE:
 	case SAVE_FILE_PLATFORM_PS4:
+	case SAVE_FILE_PLATFORM_WIN64:
 		return true;
 	default:
 		return false;
