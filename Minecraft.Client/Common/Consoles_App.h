@@ -163,12 +163,12 @@ public:
 	eXuiAction      GetGlobalXuiAction()																								{return m_eGlobalXuiAction;}
 	void			SetGlobalXuiAction(eXuiAction action)																				{m_eGlobalXuiAction=action;}
 	eXuiAction      GetXuiAction(int iPad)																								{return m_eXuiAction[iPad];}
-	void			SetAction(int iPad, eXuiAction action, LPVOID param = NULL);
-	void			SetTMSAction(int iPad, eTMSAction action)																			{m_eTMSAction[iPad]=action; }
+    void SetAction(int iPad, eXuiAction action, LPVOID param = nullptr);
+    void SetTMSAction(int iPad, eTMSAction action) { m_eTMSAction[iPad] = action; }
 	eTMSAction      GetTMSAction(int iPad)																								{return m_eTMSAction[iPad];}
 	eXuiServerAction GetXuiServerAction(int iPad)																						{return m_eXuiServerAction[iPad];}
 	LPVOID			GetXuiServerActionParam(int iPad)																					{return m_eXuiServerActionParam[iPad];}
-	void			SetXuiServerAction(int iPad, eXuiServerAction action, LPVOID param = NULL)											{m_eXuiServerAction[iPad]=action; m_eXuiServerActionParam[iPad] = param;}
+	void			SetXuiServerAction(int iPad, eXuiServerAction action, LPVOID param = nullptr)											{m_eXuiServerAction[iPad]=action; m_eXuiServerActionParam[iPad] = param;}
 	eXuiServerAction GetGlobalXuiServerAction()																							{return m_eGlobalXuiServerAction;}
 	void			SetGlobalXuiServerAction(eXuiServerAction action)																			{m_eGlobalXuiServerAction=action;}
 
@@ -625,7 +625,7 @@ public:
 	virtual void ReleaseSaveThumbnail()=0;
 	virtual void GetScreenshot(int iPad,PBYTE *pbData,DWORD *pdwSize)=0;
 
-	virtual void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false)=0;
+	virtual void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false)=0;
 
 private:
 
@@ -862,12 +862,12 @@ public:
 
 	bool GetBanListRead(int iPad) { return m_bRead_BannedListA[iPad];}
 	void SetBanListRead(int iPad,bool bVal) { m_bRead_BannedListA[iPad]=bVal;}
-	void ClearBanList(int iPad) { BannedListA[iPad].pBannedList=NULL;BannedListA[iPad].dwBytes=0;}
+	void ClearBanList(int iPad) { BannedListA[iPad].pBannedList=nullptr;BannedListA[iPad].dwBytes=0;}
 
 	DWORD GetRequiredTexturePackID()	{return m_dwRequiredTexturePackID;}
 	void SetRequiredTexturePackID(DWORD dwID)	{m_dwRequiredTexturePackID=dwID;}
 
-	virtual void GetFileFromTPD(eTPDFileType eType,PBYTE pbData,DWORD dwBytes,PBYTE *ppbData,DWORD *pdwBytes ) {*ppbData = NULL; *pdwBytes = 0;}
+	virtual void GetFileFromTPD(eTPDFileType eType,PBYTE pbData,DWORD dwBytes,PBYTE *ppbData,DWORD *pdwBytes ) {*ppbData = nullptr; *pdwBytes = 0;}
 
 	//XTITLE_DEPLOYMENT_TYPE getDeploymentType() { return m_titleDeploymentType; }
 

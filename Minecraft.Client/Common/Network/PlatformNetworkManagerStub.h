@@ -81,7 +81,7 @@ private:
 	GameSessionData m_hostGameSessionData;
 	CGameNetworkManager *m_pGameNetworkManager;
 public:
-	virtual void UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving = NULL);
+	virtual void UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving = nullptr);
 
 private:
 	// TODO 4J Stu - Do we need to be able to have more than one of these?
@@ -98,12 +98,14 @@ private:
 		INetworkPlayer *m_pNetworkPlayer;
 		unsigned char *flags;
 		unsigned int count;
+		int m_smallId;
 		PlayerFlags(INetworkPlayer *pNetworkPlayer, unsigned int count);
 		~PlayerFlags();
 	};
 	vector<PlayerFlags *> m_playerFlags;
 	void SystemFlagAddPlayer(INetworkPlayer *pNetworkPlayer);
 	void SystemFlagRemovePlayer(INetworkPlayer *pNetworkPlayer);
+	void SystemFlagRemoveBySmallId(int smallId);
 	void SystemFlagReset();
 public:
 	virtual void SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index);
@@ -160,6 +162,9 @@ public:
 	virtual void SetSessionsUpdatedCallback( void (*SessionsUpdatedCallback)(LPVOID pParam), LPVOID pSearchParam );
 	virtual void GetFullFriendSessionInfo( FriendSessionInfo *foundSession, void (* FriendSessionUpdatedFn)(bool success, void *pParam), void *pParam );
 	virtual void ForceFriendsSessionRefresh();
+
+	// Win64: used by accept thread to reject connections when server is at max players (so we don't assign smallId > max).
+	bool CanAcceptMoreConnections();
 
 public:
 	void NotifyPlayerJoined( IQNetPlayer *pQNetPlayer );

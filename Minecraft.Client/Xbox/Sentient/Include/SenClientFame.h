@@ -215,7 +215,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                  E_POINTER: out_userFameVIPArray is NULL.
+	///                  E_POINTER: out_userFameVIPArray is nullptr.
 	///					 SENTIENT_E_TOO_MANY_CALLS: This call has been rejected to avoid excessive server load.  Try again later.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
@@ -243,7 +243,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                  E_POINTER: out_fameVIPData is NULL.
+	///                  E_POINTER: out_fameVIPData is nullptr.
 	///					 SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_fameVIPData has not been filled in.
 	///                  S_OK: The operation completed successfully.
 	///
@@ -304,8 +304,8 @@ namespace Sentient
 	/// @return         Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                 E_POINTER: out_entryArray or out_leaderboardResults is NULL.
-	///					E_INVALIDARG: userCallback is NULL and out_senHandle is non-NULL.  Task handles are not supported for synchronous requests.
+	///                 E_POINTER: out_entryArray or out_leaderboardResults is nullptr.
+	///					E_INVALIDARG: userCallback is nullptr and out_senHandle is non-nullptr.  Task handles are not supported for synchronous requests.
 	///					SENTIENT_E_TOO_MANY_CALLS: This call has been rejected to avoid excessive server load.  Try again later.
 	///                 E_FAIL: Failed to spawn server call.
 	///                 S_OK: Server call spawned successfully.
@@ -331,7 +331,7 @@ namespace Sentient
 	///
 	/// @return			SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                 E_POINTER: out_awardData is NULL.
+	///                 E_POINTER: out_awardData is nullptr.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_awardData has not been filled in.
 	///					S_FALSE: The operation completed successfully but there were no awards to report.  out_awardData has not been filled in.
 	///                 S_OK: The operation completed successfully and there was a valid award to report.  out_awardData contains information about the award.
@@ -351,7 +351,7 @@ namespace Sentient
 	///
 	///	@return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                 E_POINTER: out_timeRemaining is NULL.
+	///                 E_POINTER: out_timeRemaining is nullptr.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_timeRemaining has not been filled in.
 	///                 E_FAIL: Internal failure.  Check log for output.
 	///                 S_OK: Call completed successfully and out_timeRemaining has been filled in.
@@ -373,7 +373,7 @@ namespace Sentient
 	///	@return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                 E_POINTER: out_timeRemaining is NULL.
+	///                 E_POINTER: out_timeRemaining is nullptr.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_timeRemaining has not been filled in.
 	///					S_FALSE: The VIP level of the supplied user does not expire.  out_timeRemaining has not been filled in.
 	///                 E_FAIL: Internal failure.  Check log for output.
@@ -400,7 +400,7 @@ namespace Sentient
 	///
 	/// @return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                 E_POINTER: out_name is NULL.
+	///                 E_POINTER: out_name is nullptr.
 	///					E_INVALIDARG: vipLevel is outside the range of known VIP levels.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_name has not been filled in.
 	///                 S_OK: The operation completed successfully.
@@ -423,7 +423,7 @@ namespace Sentient
 	/// @return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                 E_POINTER: out_count is NULL.
+	///                 E_POINTER: out_count is nullptr.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and out_count has not been filled in.
 	///                 E_FAIL: Internal failure.  Check log for output.
 	///                 S_OK: The operation completed successfully.
@@ -456,7 +456,7 @@ namespace Sentient
 	///	@return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                 E_POINTER: out_dataCount or out_displayData is NULL.
+	///                 E_POINTER: out_dataCount or out_displayData is nullptr.
 	///					E_INVALIDARG: startIndex is greater than the total number of items available.
 	///					SENTIENT_S_OPERATION_IN_PROGRESS: The call could not be completed immediately and output parameters have not been filled in.
 	///                 E_FAIL: Internal failure.  Check log for output.
@@ -553,8 +553,8 @@ namespace Sentient
 	/// @return			Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                 SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                 SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///					E_INVALIDARG: Either userCallback is NULL and out_senHandle is non-NULL, or participantCount is less than 2.
-	///                 E_POINTER: participants is NULL.
+	///					E_INVALIDARG: Either userCallback is nullptr and out_senHandle is non-nullptr, or participantCount is less than 2.
+	///                 E_POINTER: participants is nullptr.
 	///                 E_FAIL: Failed to spawn server call.
 	///                 S_OK: Server call spawned successfully.
 	///				

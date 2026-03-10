@@ -9,7 +9,7 @@
 
 LevelData *MockedLevelStorage::prepareLevel() 
 {
-    return NULL;
+    return nullptr;
 }
 
 void MockedLevelStorage::checkSession()
@@ -18,7 +18,7 @@ void MockedLevelStorage::checkSession()
 
 ChunkStorage *MockedLevelStorage::createChunkStorage(Dimension *dimension)
 {
-    return NULL;
+    return nullptr;
 }
 
 void MockedLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players)
@@ -31,7 +31,7 @@ void MockedLevelStorage::saveLevelData(LevelData *levelData)
 
 PlayerIO *MockedLevelStorage::getPlayerIO()
 {
-    return NULL;
+    return nullptr;
 }
 
 void MockedLevelStorage::closeAll() 

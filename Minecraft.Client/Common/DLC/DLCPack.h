@@ -87,8 +87,8 @@ public:
 	
 	DWORD getSkinCount() { return getDLCItemsCount(DLCManager::e_DLCType_Skin); }
 	DWORD getSkinIndexAt(const wstring &path, bool &found) { return getFileIndexAt(DLCManager::e_DLCType_Skin, path, found); }
-	DLCSkinFile *getSkinFile(const wstring &path) { return (DLCSkinFile *)getFile(DLCManager::e_DLCType_Skin, path); }
-	DLCSkinFile *getSkinFile(DWORD index) { return (DLCSkinFile *)getFile(DLCManager::e_DLCType_Skin, index); }
+	DLCSkinFile *getSkinFile(const wstring &path) { return static_cast<DLCSkinFile *>(getFile(DLCManager::e_DLCType_Skin, path)); }
+	DLCSkinFile *getSkinFile(DWORD index) { return static_cast<DLCSkinFile *>(getFile(DLCManager::e_DLCType_Skin, index)); }
 	bool doesPackContainSkin(const wstring &path) { return doesPackContainFile(DLCManager::e_DLCType_Skin, path); }
 
 	bool hasPurchasedFile(DLCManager::EDLCType type, const wstring &path);

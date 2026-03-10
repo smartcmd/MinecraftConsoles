@@ -25,7 +25,7 @@ FollowOwnerGoal::FollowOwnerGoal(TamableAnimal *tamable, double speedModifier, f
 bool FollowOwnerGoal::canUse()
 {
 	shared_ptr<LivingEntity> owner = dynamic_pointer_cast<LivingEntity>( tamable->getOwner() );
-	if (owner == NULL) return false;
+	if (owner == nullptr) return false;
 	if (tamable->isSitting()) return false;
 	if (tamable->distanceToSqr(owner) < startDistance * startDistance) return false;
 	this->owner = weak_ptr<LivingEntity>(owner);
@@ -34,7 +34,7 @@ bool FollowOwnerGoal::canUse()
 
 bool FollowOwnerGoal::canContinueToUse()
 {
-	return owner.lock() != NULL && !navigation->isDone() && tamable->distanceToSqr(owner.lock()) > stopDistance * stopDistance && !tamable->isSitting();
+	return owner.lock() != nullptr && !navigation->isDone() && tamable->distanceToSqr(owner.lock()) > stopDistance * stopDistance && !tamable->isSitting();
 }
 
 void FollowOwnerGoal::start()

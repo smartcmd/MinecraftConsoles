@@ -28,7 +28,7 @@ typedef struct
 	int newSaveBlocksUsed;
 	int iSaveC;
 	PSAVE_INFO SaveInfoA;
-	PSAVE_INFO pCurrentSaveInfo;		// Pointer to SAVE_INFO for the save that has just been loaded, or NULL if no save has been loaded (ie this is a newly created game)
+	PSAVE_INFO pCurrentSaveInfo;		// Pointer to SAVE_INFO for the save that has just been loaded, or nullptr if no save has been loaded (ie this is a newly created game)
 }
 SAVE_DETAILS,*PSAVE_DETAILS;
 
@@ -315,7 +315,7 @@ public:
 
 	// Get details of existing savedata
 	C4JStorage::ESaveGameState	GetSavesInfo(int iPad,int ( *Func)(LPVOID lpParam,SAVE_DETAILS *pSaveDetails,const bool),LPVOID lpParam,char *pszSavePackName);						// Start search
-	PSAVE_DETAILS				ReturnSavesInfo();																																	// Returns result of search (or NULL if not yet received)
+	PSAVE_DETAILS				ReturnSavesInfo();																																	// Returns result of search (or nullptr if not yet received)
 	void						ClearSavesInfo();																																	// Clears results
 	C4JStorage::ESaveGameState	LoadSaveDataThumbnail(PSAVE_INFO pSaveInfo,int( *Func)(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes), LPVOID lpParam);					// Get the thumbnail for an individual save referenced by pSaveInfo
 
@@ -398,8 +398,8 @@ public:
 	EDLCStatus					GetInstalledDLC(int iPad,int( *Func)(LPVOID, int, int),LPVOID lpParam);
 	CONTENT_DATA&				GetDLC(DWORD dw);
 	DWORD						GetAvailableDLCCount( int iPad );
-	DWORD						MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive = NULL);
-	DWORD						UnmountInstalledDLC(LPCSTR szMountDrive = NULL);
+	DWORD						MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive = nullptr);
+	DWORD						UnmountInstalledDLC(LPCSTR szMountDrive = nullptr);
 	void						GetMountedDLCFileList(const char* szMountDrive, std::vector<std::string>& fileList);
 	std::string					GetMountedPath(std::string szMount);
 	void						SetDLCProductCode(const char* szProductCode);

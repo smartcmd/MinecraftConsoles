@@ -28,7 +28,7 @@ SparseDataStorage::SparseDataStorage()
 #ifdef _XBOX
 	unsigned char *planeIndices = (unsigned char *)XPhysicalAlloc(128 * 128, MAXULONG_PTR, 4096, PAGE_READWRITE);
 #else
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * 128));
 #endif
 	unsigned char *data = planeIndices + 128;
 	planeIndices[0] = ALL_0_INDEX;
@@ -51,7 +51,7 @@ SparseDataStorage::SparseDataStorage(bool isUpper)
 {
 	// Allocate using physical alloc. As this will (by default) return memory from the pool of 4KB pages, the address will in the range of MM_PHYSICAL_4KB_BASE upwards. We can use
 	// this fact to identify the allocation later, and so free it with the corresponding call to XPhysicalFree.
-	unsigned char *planeIndices = (unsigned char *)malloc(128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128));
 	for( int i = 0; i < 128; i++ )
 	{
 		planeIndices[i] = ALL_0_INDEX;
@@ -87,12 +87,12 @@ SparseDataStorage::~SparseDataStorage()
 SparseDataStorage::SparseDataStorage(SparseDataStorage *copyFrom)
 {
 	// Extra details of source storage
-	int64_t sourceDataAndCount = copyFrom->dataAndCount;
-	unsigned char *sourceIndicesAndData = (unsigned char *)(sourceDataAndCount & 0x0000ffffffffffff);
+	const int64_t sourceDataAndCount = copyFrom->dataAndCount;
+	const unsigned char *sourceIndicesAndData = (unsigned char *)(sourceDataAndCount & 0x0000ffffffffffff);
 	int sourceCount = (sourceDataAndCount >> 48 ) & 0xffff;
 
 	// Allocate & copy indices ( 128 bytes ) and any allocated planes (128 * count)
-	unsigned char *destIndicesAndData = (unsigned char *)malloc( sourceCount * 128 + 128 );
+	unsigned char *destIndicesAndData = static_cast<unsigned char *>(malloc(sourceCount * 128 + 128));
 
 	// AP - I've moved this to be before the memcpy because of a very strange bug on vita. Sometimes dataAndCount wasn't valid in time when ::get was called.
 	// This should never happen and this isn't a proper solution but fixes it for now.
@@ -129,10 +129,10 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 
 		for( int xz = 0; xz < 256; xz++ )	// 256 in loop as 16 x 16 separate bytes need checked
 		{
-			int pos = ( xz << 7 ) | y;
-			int slot = pos >> 1;
-			int part = pos & 1;
-			unsigned char value = ( dataIn[slot + inOffset] >> (part * 4) ) & 15;
+			const int pos = ( xz << 7 ) | y;
+			const int slot = pos >> 1;
+			const int part = pos & 1;
+			const unsigned char value = ( dataIn[slot + inOffset] >> (part * 4) ) & 15;
 			if( value != 0 ) all0 = false;
 		}
 		if( all0 )
@@ -146,7 +146,7 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 	}
 
 	// Allocate required storage
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * allocatedPlaneCount + 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * allocatedPlaneCount + 128));
 	unsigned char *data = planeIndices + 128;
 	XMemCpy(planeIndices, _planeIndices, 128);
 
@@ -158,9 +158,9 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 		// we know they were sequentially allocated above.
 		if( planeIndices[y] < 128 )
 		{
-			int part = y & 1;
+			const int part = y & 1;
 			//int shift = 4 * part;
-			unsigned char *pucIn = &dataIn[ (y >> 1) + inOffset];
+			const unsigned char *pucIn = &dataIn[ (y >> 1) + inOffset];
 
 			for( int xz = 0; xz < 128; xz++ )	// 128 ( 16 x 16 x 0.5 ) in loop as packing 2 values into each destination byte
 			{
@@ -176,9 +176,9 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 
 	// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-	int64_t newDataAndCount = ((int64_t) planeIndices) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = reinterpret_cast<int64_t>(planeIndices) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((int64_t)allocatedPlaneCount) << 48;
+	newDataAndCount |= static_cast<int64_t>(allocatedPlaneCount) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }
@@ -205,10 +205,10 @@ void SparseDataStorage::getData(byteArray retArray, unsigned int retOffset)
 		}
 		else
 		{
-			int part = y & 1;
-			int shift = 4 * part;
+			const int part = y & 1;
+			const int shift = 4 * part;
 			unsigned char *pucOut = &retArray.data[ (y >> 1) +  + retOffset];
-			unsigned char *pucIn = &data[ planeIndices[ y ] * 128 ];
+			const unsigned char *pucIn = &data[ planeIndices[ y ] * 128 ];
 			for( int xz = 0; xz < 128; xz++ )		// 128 in loop (16 x 16 x 0.5) as input data is being treated in pairs of nybbles that are packed in the same byte
 			{
 				unsigned char value = (*pucIn) & 15;
@@ -237,10 +237,10 @@ int SparseDataStorage::get(int x, int y, int z)
 	}
 	else
 	{
-		int planeIndex = x * 16 + z;				// Index within this xz plane
-		int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
-		int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
-		int retval = ( data[ planeIndices[y] * 128 + byteIndex ] >> shift ) & 15;
+		const int planeIndex = x * 16 + z;				// Index within this xz plane
+		const int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
+		const int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
+		const int retval = ( data[ planeIndices[y] * 128 + byteIndex ] >> shift ) & 15;
 
 		return retval;
 	}
@@ -270,12 +270,12 @@ void SparseDataStorage::set(int x, int y, int z, int val)
 
 	// Either data was already allocated, or we've just done that. Now store our value into the right place.
 
-	int planeIndex = x * 16 + z;				// Index within this xz plane
-	int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
-	int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
-	int mask = 0xf0 >> shift;
+	const int planeIndex = x * 16 + z;				// Index within this xz plane
+	const int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
+	const int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
+	const int mask = 0xf0 >> shift;
 
-	int idx = planeIndices[y] * 128 + byteIndex;
+	const int idx = planeIndices[y] * 128 + byteIndex;
 	data[idx] = ( data[idx] & mask ) | ( val << shift );
 
 }
@@ -288,7 +288,7 @@ void SparseDataStorage::set(int x, int y, int z, int val)
 int SparseDataStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, int x1, int y1, int z1, int offset, tileUpdatedCallback callback, void *param, int yparam)
 {
 	// Actual setting of data happens when calling set method so no need to lock here
-	unsigned char *pucIn = &dataIn.data[offset];
+	const unsigned char *pucIn = &dataIn.data[offset];
 	if( callback )
 	{
 		for( int x = x0; x < x1; x++ )
@@ -296,11 +296,11 @@ int SparseDataStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, i
 			for( int z = z0; z < z1; z++ )
 			{
 				// Emulate how data was extracted from DataLayer... see comment above
-				int yy0 = y0 & 0xfffffffe;
-				int len = ( y1 - y0 ) / 2;
+				const int yy0 = y0 & 0xfffffffe;
+				const int len = ( y1 - y0 ) / 2;
 				for( int i = 0; i < len; i++ )
 				{
-					int y = yy0 + ( i * 2 );
+					const int y = yy0 + ( i * 2 );
 
 					int toSet = (*pucIn) & 15;
 					if( get(x, y, z) != toSet )
@@ -326,11 +326,11 @@ int SparseDataStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, i
 			for( int z = z0; z < z1; z++ )
 			{
 				// Emulate how data was extracted from DataLayer... see comment above
-				int yy0 = y0 & 0xfffffffe;
-				int len = ( y1 - y0 ) / 2;
+				const int yy0 = y0 & 0xfffffffe;
+				const int len = ( y1 - y0 ) / 2;
 				for( int i = 0; i < len; i++ )
 				{
-					int y = yy0 + ( i * 2 );
+					const int y = yy0 + ( i * 2 );
 
 					set(x, y, z, (*pucIn) & 15 );
 					set(x, y + 1, z, ((*pucIn) >> 4 ) & 15 );
@@ -339,9 +339,9 @@ int SparseDataStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, i
 			}
 		}
 	}
-	ptrdiff_t count = pucIn - &dataIn.data[offset];
+	const ptrdiff_t count = pucIn - &dataIn.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 // Updates the data at offset position dataInOut with a region of data information - external ordering compatible with java DataLayer
@@ -357,11 +357,11 @@ int SparseDataStorage::getDataRegion(byteArray dataInOut, int x0, int y0, int z0
 		for( int z = z0; z < z1; z++ )
 		{
 			// Emulate how data was extracted from DataLayer... see comment above
-			int yy0 = y0 & 0xfffffffe;
-			int len = ( y1 - y0 ) / 2;
+			const int yy0 = y0 & 0xfffffffe;
+			const int len = ( y1 - y0 ) / 2;
 			for( int i = 0; i < len; i++ )
 			{
-				int y = yy0 + ( i * 2 );
+				const int y = yy0 + ( i * 2 );
 
 				*pucOut = get( x, y, z);
 				*pucOut |= get( x, y + 1, z) << 4;
@@ -369,9 +369,9 @@ int SparseDataStorage::getDataRegion(byteArray dataInOut, int x0, int y0, int z0
 			}
 		}
 	}
-	ptrdiff_t count = pucOut - &dataInOut.data[offset];
+	const ptrdiff_t count = pucOut - &dataInOut.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 void SparseDataStorage::addNewPlane(int y)
@@ -380,34 +380,34 @@ void SparseDataStorage::addNewPlane(int y)
 	do
 	{
 		// Get last packed data pointer & count
-		int64_t lastDataAndCount = dataAndCount;
+		const int64_t lastDataAndCount = dataAndCount;
 
 		// Unpack count & data pointer
-		int lastLinesUsed = (int)(( lastDataAndCount >> 48 ) & 0xffff);
+		const int lastLinesUsed = static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 		unsigned char *lastDataPointer = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 
 		// Find out what to prefill the newly allocated line with
-		unsigned char planeIndex = lastDataPointer[y];
+		const unsigned char planeIndex = lastDataPointer[y];
 
 		if( planeIndex < ALL_0_INDEX ) return;			// Something has already allocated this line - we're done
 
 		int linesUsed = lastLinesUsed + 1;
 
 		// Allocate new memory storage, copy over anything from old storage, and initialise remainder
-		unsigned char *dataPointer = (unsigned char *)malloc(linesUsed * 128 + 128);
+		auto dataPointer = static_cast<unsigned char *>(malloc(linesUsed * 128 + 128));
 		XMemCpy( dataPointer, lastDataPointer, 128 * lastLinesUsed + 128);
 		XMemSet( dataPointer + ( 128 * lastLinesUsed ) + 128, 0, 128 );
 		dataPointer[y] = lastLinesUsed;
 
 		// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-		int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
+		int64_t newDataAndCount = reinterpret_cast<int64_t>(dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((int64_t)linesUsed) << 48;
+		newDataAndCount |= static_cast<int64_t>(linesUsed) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+		const int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
 
 		if( lastDataAndCount2 == lastDataAndCount )
 		{
@@ -430,7 +430,7 @@ void SparseDataStorage::addNewPlane(int y)
 
 void SparseDataStorage::getPlaneIndicesAndData(unsigned char **planeIndices, unsigned char **data)
 {
-	unsigned char *indicesAndData = (unsigned char *)(dataAndCount & 0x0000ffffffffffff);
+	unsigned char *indicesAndData = reinterpret_cast<unsigned char *>(dataAndCount & 0x0000ffffffffffff);
 
 	*planeIndices = indicesAndData;
 	*data = indicesAndData + 128;
@@ -448,10 +448,10 @@ void SparseDataStorage::tick()
 {
 	// We have 3 queues for deleting. Always delete from the next one after where we are writing to, so it should take 2 ticks
 	// before we ever delete something, from when the request to delete it came in
-	int freeIndex = ( deleteQueueIndex + 1 ) % 3;
+	const int freeIndex = ( deleteQueueIndex + 1 ) % 3;
 
 //	printf("Free queue: %d, %d\n",deleteQueue[freeIndex].GetEntryCount(),deleteQueue[freeIndex].GetAllocated());
-	unsigned char *toFree = NULL;
+	unsigned char *toFree = nullptr;
 	do
 	{
 		toFree = deleteQueue[freeIndex].Pop();
@@ -480,12 +480,12 @@ void SparseDataStorage::updateDataAndCount(int64_t newDataAndCount)
 	bool success = false;
 	do
 	{
-		int64_t lastDataAndCount = dataAndCount;
-		unsigned char *lastDataPointer = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
+		const int64_t lastDataAndCount = dataAndCount;
+		unsigned char *lastDataPointer = reinterpret_cast<unsigned char *>(lastDataAndCount & 0x0000ffffffffffff);
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+		const int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
 
 		if( lastDataAndCount2 == lastDataAndCount )
 		{
@@ -508,7 +508,7 @@ int SparseDataStorage::compress()
 	unsigned char _planeIndices[128];
 	bool needsCompressed = false;
 
-	int64_t lastDataAndCount = dataAndCount;
+	const int64_t lastDataAndCount = dataAndCount;
 
 	unsigned char *planeIndices = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 	unsigned char *data = planeIndices + 128;
@@ -522,7 +522,7 @@ int SparseDataStorage::compress()
 		}
 		else
 		{
-			unsigned char *pucData = &data[ 128 * planeIndices[i] ];
+			const unsigned char *pucData = &data[ 128 * planeIndices[i] ];
 			bool all0 = true;
 			for( int j = 0; j < 128; j++ )	// 16 x 16 x 4-bits
 			{
@@ -543,7 +543,7 @@ int SparseDataStorage::compress()
 
 	if( needsCompressed )
 	{
-		unsigned char *newIndicesAndData = (unsigned char *)malloc( 128 + 128 * planesToAlloc );
+		unsigned char *newIndicesAndData = static_cast<unsigned char *>(malloc(128 + 128 * planesToAlloc));
 		unsigned char *pucData = newIndicesAndData + 128;
 		XMemCpy( newIndicesAndData, _planeIndices, 128 );
 
@@ -560,11 +560,11 @@ int SparseDataStorage::compress()
 #pragma warning ( disable : 4826 )
 		int64_t newDataAndCount = ((int64_t) newIndicesAndData) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((int64_t)planesToAlloc) << 48;
+		newDataAndCount |= static_cast<int64_t>(planesToAlloc) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
-		int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
+		const int64_t lastDataAndCount2 = InterlockedCompareExchangeRelease64( &dataAndCount, newDataAndCount, lastDataAndCount );
 
 		if( lastDataAndCount2 != lastDataAndCount )
 		{
@@ -586,7 +586,7 @@ int SparseDataStorage::compress()
 	}
 	else
 	{
-		return (int)((lastDataAndCount >> 48 ) & 0xffff);
+		return static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 	}
 }
 
@@ -594,7 +594,7 @@ int SparseDataStorage::compress()
 bool SparseDataStorage::isCompressed()
 {
 
-	int	count = ( dataAndCount >> 48 ) & 0xffff;
+	const int	count = ( dataAndCount >> 48 ) & 0xffff;
 	return (count < 127);
 
 
@@ -602,24 +602,24 @@ bool SparseDataStorage::isCompressed()
 
 void SparseDataStorage::write(DataOutputStream *dos)
 {
-	int count = ( dataAndCount >> 48 ) & 0xffff;
+	const int count = ( dataAndCount >> 48 ) & 0xffff;
 	dos->writeInt(count);
 	unsigned char *dataPointer = (unsigned char *)(dataAndCount & 0x0000ffffffffffff);
-	byteArray wrapper(dataPointer, count * 128 + 128);
+	const byteArray wrapper(dataPointer, count * 128 + 128);
 	dos->write(wrapper);
 }
 
 void SparseDataStorage::read(DataInputStream *dis)
 {
-	int count = dis->readInt();
-	unsigned char *dataPointer = (unsigned char *)malloc(count * 128 + 128);
-	byteArray wrapper(dataPointer, count * 128 + 128);
+	const int count = dis->readInt();
+	unsigned char *dataPointer = static_cast<unsigned char *>(malloc(count * 128 + 128));
+	const byteArray wrapper(dataPointer, count * 128 + 128);
 	dis->readFully(wrapper);
 
 #pragma warning ( disable : 4826 )
-	int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = reinterpret_cast<int64_t>(dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((int64_t)count) << 48;
+	newDataAndCount |= static_cast<int64_t>(count) << 48;
 
 	updateDataAndCount(newDataAndCount);
 }

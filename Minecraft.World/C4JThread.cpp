@@ -21,7 +21,7 @@ CRITICAL_SECTION C4JThread::ms_threadListCS;
 
 #ifdef _XBOX_ONE
 	// 4J Stu - On XboxOne the main thread is not the one that does all the static init, so we have to set this up later
-C4JThread *C4JThread::m_mainThread = NULL;
+C4JThread *C4JThread::m_mainThread = nullptr;
 
 void C4JThread::StaticInit()
 {
@@ -109,12 +109,12 @@ C4JThread::C4JThread( C4JThreadStartFunc* startFunc, void* param, const char* th
 		CPU = SCE_KERNEL_CPU_MASK_USER_1;
 	}
 
-	m_threadID = sceKernelCreateThread(m_threadName, entryPoint, g_DefaultPriority, m_stackSize, 0, CPU, NULL);
+	m_threadID = sceKernelCreateThread(m_threadName, entryPoint, g_DefaultPriority, m_stackSize, 0, CPU, nullptr);
 	app.DebugPrintf("***************************** start thread %s **************************\n", m_threadName);
 #else
 	m_threadID = 0;
 	m_threadHandle = 0;
-	m_threadHandle = CreateThread(NULL, m_stackSize, entryPoint, this, CREATE_SUSPENDED, &m_threadID);
+	m_threadHandle = CreateThread(nullptr, m_stackSize, entryPoint, this, CREATE_SUSPENDED, &m_threadID);
 #endif
 	EnterCriticalSection(&ms_threadListCS);
 	ms_threadList.push_back(this);
@@ -128,8 +128,8 @@ C4JThread::C4JThread( const char* mainThreadName)
 	user_registerthread();
 #endif
 
-	m_startFunc = NULL;
-	m_threadParam = NULL;
+	m_startFunc = nullptr;
+	m_threadParam = nullptr;
 	m_stackSize = 0;
 
 #ifdef __PS3__
@@ -178,7 +178,7 @@ C4JThread::~C4JThread()
 #endif
 
 #if defined __ORBIS__
-	scePthreadJoin(m_threadID, NULL);
+	scePthreadJoin(m_threadID, nullptr);
 #endif
 
 	EnterCriticalSection(&ms_threadListCS);
@@ -212,7 +212,7 @@ void * C4JThread::entryPoint(void *param)
 	pThread->m_exitCode = (*pThread->m_startFunc)(pThread->m_threadParam);
 	pThread->m_completionFlag->Set();
 	pThread->m_isRunning = false;
-	scePthreadExit(NULL);
+	scePthreadExit(nullptr);
 }
 #elif defined __PSVITA__
 struct StrArg {
@@ -233,14 +233,14 @@ SceInt32 C4JThread::entryPoint(SceSize argSize, void *pArgBlock)
 	PSVitaTLSStorage::RemoveThread(pThread->m_threadID);
 	user_removethread();
 
-	sceKernelExitDeleteThread(NULL);
+	sceKernelExitDeleteThread(nullptr);
 
 	return pThread->m_exitCode;
 }
 #else
 DWORD WINAPI	C4JThread::entryPoint(LPVOID lpParam)
 {
-	C4JThread* pThread = (C4JThread*)lpParam;
+	C4JThread* pThread = static_cast<C4JThread *>(lpParam);
 	SetThreadName(-1, pThread->m_threadName);
 	pThread->m_exitCode = (*pThread->m_startFunc)(pThread->m_threadParam);
 	pThread->m_isRunning = false;
@@ -270,7 +270,7 @@ void C4JThread::Run()
 	scePthreadAttrDestroy(&m_threadAttr);
 #elif defined __PSVITA__
 	StrArg strArg = {this};
-//	m_threadID = sceKernelCreateThread(m_threadName, entryPoint, m_priority, m_stackSize, 0, m_CPUMask, NULL);
+//	m_threadID = sceKernelCreateThread(m_threadName, entryPoint, m_priority, m_stackSize, 0, m_CPUMask, nullptr);
 	sceKernelStartThread( m_threadID, sizeof(strArg), &strArg);
 #else
 	ResumeThread(m_threadHandle);
@@ -439,7 +439,7 @@ C4JThread* C4JThread::getCurrentThread()
 #endif //__PS3__
 	EnterCriticalSection(&ms_threadListCS);
 
-	for(int i=0;i<ms_threadList.size(); i++)
+	for(size_t i=0;i<ms_threadList.size(); i++)
 	{
 		if(currThreadID == ms_threadList[i]->m_threadID)
 		{
@@ -450,7 +450,7 @@ C4JThread* C4JThread::getCurrentThread()
 
 	LeaveCriticalSection(&ms_threadListCS);
 
-	return NULL;
+	return nullptr;
 }
 
 bool C4JThread::isMainThread()
@@ -480,12 +480,12 @@ C4JThread::Event::Event(EMode mode/* = e_modeAutoClear*/)
 
 #elif defined __ORBIS__
 	char name[1] = {0};
-	sceKernelCreateEventFlag( &m_event, name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, NULL);
+	sceKernelCreateEventFlag( &m_event, name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, nullptr);
 #elif defined __PSVITA__
 	char name[1] = {0};
-	m_event = sceKernelCreateEventFlag( name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, NULL);
+	m_event = sceKernelCreateEventFlag( name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, nullptr);
 #else
-	m_event = CreateEvent( NULL, (m_mode == e_modeManualClear), FALSE, NULL );
+	m_event = CreateEvent( nullptr, (m_mode == e_modeManualClear), FALSE, nullptr );
 #endif //__PS3__
 }
 
@@ -554,7 +554,7 @@ DWORD C4JThread::Event::WaitForSignal( int timeoutMs )
 	SceKernelUseconds *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -566,7 +566,7 @@ DWORD C4JThread::Event::WaitForSignal( int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_PAT;
 	}
-	int err = sceKernelWaitEventFlag(m_event, 1, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_event, 1, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -579,7 +579,7 @@ DWORD C4JThread::Event::WaitForSignal( int timeoutMs )
 	SceUInt32 *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -591,7 +591,7 @@ DWORD C4JThread::Event::WaitForSignal( int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_ALL;
 	}
-	int err = sceKernelWaitEventFlag(m_event, 1, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_event, 1, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -623,15 +623,15 @@ C4JThread::EventArray::EventArray( int size, EMode mode/* = e_modeAutoClear*/)
 	assert(err == CELL_OK);
 #elif defined __ORBIS__
 	char name[1] = {0};
-	sceKernelCreateEventFlag( &m_events, name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, NULL);
+	sceKernelCreateEventFlag( &m_events, name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, nullptr);
 #elif defined __PSVITA__
 	char name[1] = {0};
-	m_events = sceKernelCreateEventFlag( name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, NULL);
+	m_events = sceKernelCreateEventFlag( name, SCE_KERNEL_EVF_ATTR_TH_FIFO | SCE_KERNEL_EVF_ATTR_MULTI, 0, nullptr);
 #else
 	m_events = new HANDLE[size];
 	for(int i=0;i<size;i++)
 	{
-		m_events[i]  = CreateEvent(NULL, (m_mode == e_modeManualClear), FALSE, NULL );
+		m_events[i]  = CreateEvent(nullptr, (m_mode == e_modeManualClear), FALSE, nullptr );
 	}
 #endif // __PS3__
 }
@@ -713,7 +713,7 @@ DWORD C4JThread::EventArray::WaitForSingle(int index, int timeoutMs )
 	SceKernelUseconds *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -748,7 +748,7 @@ DWORD C4JThread::EventArray::WaitForSingle(int index, int timeoutMs )
 	SceUInt32 *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -760,7 +760,7 @@ DWORD C4JThread::EventArray::WaitForSingle(int index, int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_ALL;
 	}
-	int err = sceKernelWaitEventFlag(m_events, 1<<index, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_events, 1<<index, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -814,7 +814,7 @@ DWORD C4JThread::EventArray::WaitForAll(int timeoutMs )
 	SceKernelUseconds *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -829,7 +829,7 @@ DWORD C4JThread::EventArray::WaitForAll(int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_PAT;
 	}
-	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK:
@@ -850,7 +850,7 @@ DWORD C4JThread::EventArray::WaitForAll(int timeoutMs )
 	SceUInt32 *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -865,7 +865,7 @@ DWORD C4JThread::EventArray::WaitForAll(int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_ALL;
 	}
-	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -911,7 +911,7 @@ DWORD C4JThread::EventArray::WaitForAny(int timeoutMs )
 	SceKernelUseconds *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -926,7 +926,7 @@ DWORD C4JThread::EventArray::WaitForAny(int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_PAT;
 	}
-	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -939,7 +939,7 @@ DWORD C4JThread::EventArray::WaitForAny(int timeoutMs )
 	SceUInt32 *pTimeoutMicrosecs;
 	if( timeoutMs == INFINITE )
 	{
-		pTimeoutMicrosecs = NULL;
+		pTimeoutMicrosecs = nullptr;
 	}
 	else
 	{
@@ -954,7 +954,7 @@ DWORD C4JThread::EventArray::WaitForAny(int timeoutMs )
 	{
 		waitMode |= SCE_KERNEL_EVF_WAITMODE_CLEAR_ALL;
 	}
-	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, NULL, pTimeoutMicrosecs);
+	int err = sceKernelWaitEventFlag(m_events, bitmask, waitMode, nullptr, pTimeoutMicrosecs);
 	switch(err)
 	{
 		case SCE_OK: return WAIT_OBJECT_0;
@@ -970,7 +970,7 @@ DWORD C4JThread::EventArray::WaitForAny(int timeoutMs )
 #ifdef __PS3__
 void C4JThread::EventArray::Cancel()
 {
-	sys_event_flag_cancel(m_events, NULL);
+	sys_event_flag_cancel(m_events, nullptr);
 }
 #endif 
 
@@ -982,9 +982,9 @@ C4JThread::EventQueue::EventQueue( UpdateFunc* updateFunc, ThreadInitFunc thread
 	m_updateFunc = updateFunc;
 	m_threadInitFunc = threadInitFunc;
 	strcpy(m_threadName, szThreadName);
-	m_thread = NULL;
-	m_startEvent = NULL;
-	m_finishedEvent = NULL;
+	m_thread = nullptr;
+	m_startEvent = nullptr;
+	m_finishedEvent = nullptr;
 	m_processor = -1;
 	m_priority = THREAD_PRIORITY_HIGHEST+1;
 }
@@ -1004,7 +1004,7 @@ void C4JThread::EventQueue::init()
 
 void C4JThread::EventQueue::sendEvent( Level* pLevel )
 {
-	if(m_thread == NULL)
+	if(m_thread == nullptr)
 		init();
 	EnterCriticalSection(&m_critSect);
 	m_queue.push(pLevel);
@@ -1015,7 +1015,7 @@ void C4JThread::EventQueue::sendEvent( Level* pLevel )
 
 void C4JThread::EventQueue::waitForFinish()
 {
-	if(m_thread == NULL)
+	if(m_thread == nullptr)
 		init();
 	EnterCriticalSection(&m_critSect);
 	if(m_queue.empty())
@@ -1029,7 +1029,7 @@ void C4JThread::EventQueue::waitForFinish()
 
 int C4JThread::EventQueue::threadFunc( void* lpParam )
 {
-	EventQueue* p = (EventQueue*)lpParam;
+	EventQueue* p = static_cast<EventQueue *>(lpParam);
 	p->threadPoll();
 	return 0;
 }

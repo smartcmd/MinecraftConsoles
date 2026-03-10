@@ -46,7 +46,7 @@ Node *Path::last()
 	{
 		return nodes[length - 1];
 	}
-	return NULL;
+	return nullptr;
 }
 
 Node *Path::get(int i) 
@@ -76,9 +76,9 @@ void Path::setIndex(int index)
 
 Vec3 *Path::getPos(shared_ptr<Entity> e, int index) 
 {
-	double x = nodes[index]->x + (int) (e->bbWidth + 1) * 0.5;
+	double x = nodes[index]->x + static_cast<int>(e->bbWidth + 1) * 0.5;
 	double y = nodes[index]->y;
-	double z = nodes[index]->z + (int) (e->bbWidth + 1) * 0.5;
+	double z = nodes[index]->z + static_cast<int>(e->bbWidth + 1) * 0.5;
 	return Vec3::newTemp(x, y, z);
 }
 
@@ -94,7 +94,7 @@ Vec3 *Path::currentPos()
 
 bool Path::sameAs(Path *path)
 {
-	if (path == NULL) return false;
+	if (path == nullptr) return false;
 	if (path->nodes.length != nodes.length) return false;
 	for (int i = 0; i < nodes.length; ++i)
 		if (nodes[i]->x != path->nodes[i]->x || nodes[i]->y != path->nodes[i]->y || nodes[i]->z != path->nodes[i]->z) return false;
@@ -104,13 +104,13 @@ bool Path::sameAs(Path *path)
 bool Path::endsIn(Vec3 *pos)
 {
 	Node *lastNode = last();
-	if (lastNode == NULL) return false;
-	return lastNode->x == (int) pos->x && lastNode->y == (int) pos->y && lastNode->z == (int) pos->z;
+	if (lastNode == nullptr) return false;
+	return lastNode->x == static_cast<int>(pos->x) && lastNode->y == static_cast<int>(pos->y) && lastNode->z == static_cast<int>(pos->z);
 }
 
 bool Path::endsInXZ(Vec3 *pos)
 {
 	Node *lastNode = last();
-	if (lastNode == NULL) return false;
-	return lastNode->x == (int) pos->x && lastNode->z == (int) pos->z;
+	if (lastNode == nullptr) return false;
+	return lastNode->x == static_cast<int>(pos->x) && lastNode->z == static_cast<int>(pos->z);
 }

@@ -3,7 +3,7 @@
 #include "CompleteUsingItemTask.h"
 
 CompleteUsingItemTask::CompleteUsingItemTask(Tutorial *tutorial, int descriptionId, int itemIds[], unsigned int itemIdsLength, bool enablePreCompletion)
-	: TutorialTask( tutorial, descriptionId, enablePreCompletion, NULL)
+	: TutorialTask( tutorial, descriptionId, enablePreCompletion, nullptr)
 {	
 	m_iValidItemsA= new int [itemIdsLength];
 	for(int i=0;i<itemIdsLength;i++)

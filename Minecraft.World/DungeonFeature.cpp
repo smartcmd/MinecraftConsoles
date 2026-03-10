@@ -142,12 +142,12 @@ void DungeonFeature::addTunnel(int xOffs, int zOffs, byteArray blocks, double xC
 						{
 							if (yy < 10)
 							{
-								blocks[p] = (byte) Tile::lava_Id;
+								blocks[p] = static_cast<byte>(Tile::lava_Id);
 							}
 							else
 							{
-								blocks[p] = (byte) 0;
-								if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = (byte) Tile::grass_Id;
+								blocks[p] = static_cast<byte>(0);
+								if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = static_cast<byte>(Tile::grass_Id);
 							}
 						}
 					}

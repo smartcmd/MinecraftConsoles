@@ -63,7 +63,7 @@ class SQRNetworkPlayer
 	public:
 		DataPacketHeader() : m_dataSize(0), m_ackFlags(e_flag_AckUnknown) {}
 		DataPacketHeader(int dataSize, AckFlags ackFlags) : m_dataSize(dataSize), m_ackFlags(ackFlags) { }
-		AckFlags GetAckFlags() { return (AckFlags)m_ackFlags;}
+		AckFlags GetAckFlags() { return static_cast<AckFlags>(m_ackFlags);}
 		int GetDataSize() { return m_dataSize; }
 	};
 

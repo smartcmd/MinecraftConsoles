@@ -15,7 +15,7 @@ ColoredTileItem::ColoredTileItem(int id, bool stackedByData) : TileItem(id)
 
 ColoredTileItem::~ColoredTileItem()
 {
-	if(descriptionPostfixes.data != NULL) delete [] descriptionPostfixes.data;
+	if(descriptionPostfixes.data != nullptr) delete [] descriptionPostfixes.data;
 }
 
 int ColoredTileItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
@@ -35,7 +35,7 @@ int ColoredTileItem::getLevelDataForAuxValue(int auxValue)
 
 ColoredTileItem *ColoredTileItem::setDescriptionPostfixes(intArray descriptionPostfixes)
 {
-	if(this->descriptionPostfixes.data != NULL) delete this->descriptionPostfixes.data;
+	if(this->descriptionPostfixes.data != nullptr) delete this->descriptionPostfixes.data;
 	this->descriptionPostfixes = intArray(descriptionPostfixes.length);
 	for(unsigned int i = 0; i < descriptionPostfixes.length; ++i )
 	{
@@ -47,7 +47,7 @@ ColoredTileItem *ColoredTileItem::setDescriptionPostfixes(intArray descriptionPo
 
 unsigned int ColoredTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
-	if (descriptionPostfixes.data == NULL)
+	if (descriptionPostfixes.data == nullptr)
 	{
 		return TileItem::getDescriptionId(instance);
 	}

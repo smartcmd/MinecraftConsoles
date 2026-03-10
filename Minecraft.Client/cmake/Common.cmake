@@ -76,12 +76,6 @@ set(_MINECRAFT_CLIENT_COMMON_COMMON_SOURCE_FILES_DLC
 )
 source_group("Common/Source Files/DLC" FILES ${_MINECRAFT_CLIENT_COMMON_COMMON_SOURCE_FILES_DLC})
 
-set(_MINECRAFT_CLIENT_COMMON_COMMON_SOURCE_FILES_FILESYSTEM
-  "${BASE_DIR}/Filesystem/Filesystem.cpp"
-  "${BASE_DIR}/Filesystem/Filesystem.h"
-)
-source_group("Common/Source Files/Filesystem" FILES ${_MINECRAFT_CLIENT_COMMON_COMMON_SOURCE_FILES_FILESYSTEM})
-
 set(_MINECRAFT_CLIENT_COMMON_COMMON_SOURCE_FILES_GAMERULES
   "${BASE_DIR}/GameRules/ConsoleGameRules.h"
   "${BASE_DIR}/GameRules/ConsoleGameRulesConstants.h"

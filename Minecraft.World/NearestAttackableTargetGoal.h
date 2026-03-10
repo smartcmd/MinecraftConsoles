@@ -41,7 +41,7 @@ private:
 	weak_ptr<LivingEntity> target;
 
 public:
-	NearestAttackableTargetGoal(PathfinderMob *mob, const type_info& targetType, int randomInterval, bool mustSee, bool mustReach = false, EntitySelector *entitySelector = NULL);
+	NearestAttackableTargetGoal(PathfinderMob *mob, const type_info& targetType, int randomInterval, bool mustSee, bool mustReach = false, EntitySelector *entitySelector = nullptr);
 
 	virtual ~NearestAttackableTargetGoal();
 

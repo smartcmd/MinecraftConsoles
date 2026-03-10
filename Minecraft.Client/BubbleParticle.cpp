@@ -16,11 +16,11 @@ BubbleParticle::BubbleParticle(Level *level, double x, double y, double z, doubl
         
 	size = size*(random->nextFloat()*0.6f+0.2f);
         
-	xd = xa*0.2f+(float)(Math::random()*2-1)*0.02f;
-	yd = ya*0.2f+(float)(Math::random()*2-1)*0.02f;
-	zd = za*0.2f+(float)(Math::random()*2-1)*0.02f;        
+	xd = xa*0.2f+static_cast<float>(Math::random() * 2 - 1)*0.02f;
+	yd = ya*0.2f+static_cast<float>(Math::random() * 2 - 1)*0.02f;
+	zd = za*0.2f+static_cast<float>(Math::random() * 2 - 1)*0.02f;        
 
-	lifetime = (int) (8 / (Math::random() * 0.8 + 0.2));
+	lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2));
 }
 
 void BubbleParticle::tick()

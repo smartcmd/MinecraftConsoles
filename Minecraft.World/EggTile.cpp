@@ -40,7 +40,7 @@ void EggTile::checkSlide(Level *level, int x, int y, int z)
 		}
 		else
 		{
-			shared_ptr<FallingTile> e = shared_ptr<FallingTile>(new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id));
+			shared_ptr<FallingTile> e = std::make_shared<FallingTile>(level, x + 0.5f, y + 0.5f, z + 0.5f, id);
 			level->addEntity(e);
 		}
 	}

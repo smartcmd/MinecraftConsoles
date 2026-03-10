@@ -58,7 +58,7 @@ void RemotePlayer::tick()
     walkAnimSpeed += (wst - walkAnimSpeed) * 0.4f;
     walkAnimPos += walkAnimSpeed;
 
-	if (!hasStartedUsingItem && isUsingItemFlag() && inventory->items[inventory->selected] != NULL)
+	if (!hasStartedUsingItem && isUsingItemFlag() && inventory->items[inventory->selected] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = inventory->items[inventory->selected];
 		startUsingItem(inventory->items[inventory->selected], Item::items[item->id]->getUseDuration(item));
@@ -103,8 +103,8 @@ void RemotePlayer::aiStep()
         while (yrd >= 180)
             yrd -= 360;
 
-        yRot += (float)((yrd) / lSteps);
-        xRot += (float)((lxr - xRot) / lSteps);
+        yRot += static_cast<float>((yrd) / lSteps);
+        xRot += static_cast<float>((lxr - xRot) / lSteps);
 
         lSteps--;
         setPos(xt, yt, zt);
@@ -113,7 +113,7 @@ void RemotePlayer::aiStep()
     oBob = bob;
 
     float tBob = (float) Mth::sqrt(xd * xd + zd * zd);
-    float tTilt = (float) atan(-yd * 0.2f) * 15.0f;
+    float tTilt = static_cast<float>(atan(-yd * 0.2f)) * 15.0f;
     if (tBob > 0.1f) tBob = 0.1f;
     if (!onGround || getHealth() <= 0) tBob = 0;
     if (onGround || getHealth() <= 0) tTilt = 0;

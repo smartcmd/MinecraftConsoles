@@ -57,7 +57,7 @@ void Ocelot::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) 0);
+	entityData->define(DATA_TYPE_ID, static_cast<byte>(0));
 }
 
 void Ocelot::serverAiMobStep()
@@ -199,7 +199,7 @@ bool Ocelot::mobInteract(shared_ptr<Player> player)
 	}
 	else
 	{
-		if (temptGoal->isRunning() && item != NULL && item->id == Item::fish_raw_Id && player->distanceToSqr(shared_from_this()) < 3 * 3)
+		if (temptGoal->isRunning() && item != nullptr && item->id == Item::fish_raw_Id && player->distanceToSqr(shared_from_this()) < 3 * 3)
 		{
 			// 4J-PB - don't lose the fish in creative mode
 			if (!player->abilities.instabuild) item->count--;
@@ -240,7 +240,7 @@ shared_ptr<AgableMob> Ocelot::getBreedOffspring(shared_ptr<AgableMob> target)
 	// 4J - added limit to number of animals that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		shared_ptr<Ocelot> offspring = shared_ptr<Ocelot>( new Ocelot(level) );
+		shared_ptr<Ocelot> offspring = std::make_shared<Ocelot>(level);
 		if (isTame())
 		{
 			offspring->setOwnerUUID(getOwnerUUID());
@@ -257,7 +257,7 @@ shared_ptr<AgableMob> Ocelot::getBreedOffspring(shared_ptr<AgableMob> target)
 
 bool Ocelot::isFood(shared_ptr<ItemInstance> itemInstance)
 {
-	return itemInstance != NULL && itemInstance->id == Item::fish_raw_Id;
+	return itemInstance != nullptr && itemInstance->id == Item::fish_raw_Id;
 }
 
 bool Ocelot::canMate(shared_ptr<Animal> animal)
@@ -266,7 +266,7 @@ bool Ocelot::canMate(shared_ptr<Animal> animal)
 	if (!isTame()) return false;
 
 	shared_ptr<Ocelot> partner = dynamic_pointer_cast<Ocelot>(animal);
-	if (partner == NULL) return false;
+	if (partner == nullptr) return false;
 	if (!partner->isTame()) return false;
 
 	return isInLove() && partner->isInLove();
@@ -279,7 +279,7 @@ int Ocelot::getCatType()
 
 void Ocelot::setCatType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, static_cast<byte>(type));
 }
 
 bool Ocelot::canSpawn()
@@ -339,7 +339,7 @@ MobGroupData *Ocelot::finalizeMobSpawn(MobGroupData *groupData, int extraData /*
 	{
 		for (int kitten = 0; kitten < 2; kitten++)
 		{
-			shared_ptr<Ocelot> ocelot = shared_ptr<Ocelot>( new Ocelot(level) );
+			shared_ptr<Ocelot> ocelot = std::make_shared<Ocelot>(level);
 			ocelot->moveTo(x, y, z, yRot, 0);
 			ocelot->setAge(-20 * 60 * 20);
 			level->addEntity(ocelot);
@@ -351,7 +351,7 @@ MobGroupData *Ocelot::finalizeMobSpawn(MobGroupData *groupData, int extraData /*
 void Ocelot::setSittingOnTile(bool val)
 {
 	byte current = entityData->getByte(DATA_FLAGS_ID);
-	entityData->set(DATA_FLAGS_ID, val ? (byte) (current | 0x02) : (byte) (current & ~0x02) );
+	entityData->set(DATA_FLAGS_ID, val ? static_cast<byte>(current | 0x02) : static_cast<byte>(current & ~0x02) );
 }
 
 bool Ocelot::isSittingOnTile()

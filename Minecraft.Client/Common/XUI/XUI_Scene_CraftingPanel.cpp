@@ -40,7 +40,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 
 	D3DXVECTOR3 vec;
 	VOID *pObj;
-	CraftingPanelScreenInput* pCraftingPanelData = (CraftingPanelScreenInput*)pInitData->pvInitData;
+	CraftingPanelScreenInput* pCraftingPanelData = static_cast<CraftingPanelScreenInput *>(pInitData->pvInitData);
 	m_iContainerType=pCraftingPanelData->iContainerType;
 	m_pPlayer=pCraftingPanelData->player;
 	m_iPad=pCraftingPanelData->iPad;
@@ -89,12 +89,12 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<m_iIngredients3x3SlotC;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientA[i], &pObj );
-			m_pCraftingIngredientA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftingIngredientA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 		XuiObjectFromHandle( m_hCraftOutput, &pObj );
-		m_pCraftingOutput = (CXuiCtrlCraftIngredientSlot *)pObj;
-		m_pGroupA=(Recipy::_eGroupType *)&m_GroupTypeMapping9GridA;
-		m_pGroupTabA=(CXuiSceneCraftingPanel::_eGroupTab *)&m_GroupTabBkgMapping3x3A;
+		m_pCraftingOutput = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
+		m_pGroupA=static_cast<Recipy::_eGroupType *>(&m_GroupTypeMapping9GridA);
+		m_pGroupTabA=static_cast<CXuiSceneCraftingPanel::_eGroupTab *>(&m_GroupTabBkgMapping3x3A);
 
 		m_iCraftablesMaxHSlotC=m_iMaxHSlot3x3C;
 
@@ -102,7 +102,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<4;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientDescA[i], &pObj );
-			m_pCraftIngredientDescA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftIngredientDescA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 	}
 	else
@@ -113,13 +113,13 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<m_iIngredients2x2SlotC;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientA[i], &pObj );
-			m_pCraftingIngredientA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftingIngredientA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 
 		XuiObjectFromHandle( m_hCraftOutput, &pObj );
-		m_pCraftingOutput = (CXuiCtrlCraftIngredientSlot *)pObj;
-		m_pGroupA=(Recipy::_eGroupType *)&m_GroupTypeMapping4GridA;
-		m_pGroupTabA=(CXuiSceneCraftingPanel::_eGroupTab *)&m_GroupTabBkgMapping2x2A;
+		m_pCraftingOutput = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
+		m_pGroupA=static_cast<Recipy::_eGroupType *>(&m_GroupTypeMapping4GridA);
+		m_pGroupTabA=static_cast<CXuiSceneCraftingPanel::_eGroupTab *>(&m_GroupTabBkgMapping2x2A);
 
 		m_iCraftablesMaxHSlotC=m_iMaxHSlot2x2C;
 
@@ -127,7 +127,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<4;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientDescA[i], &pObj );
-			m_pCraftIngredientDescA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftIngredientDescA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 	}
 
@@ -165,7 +165,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 #ifdef _XBOX
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
 		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
@@ -206,7 +206,7 @@ HRESULT CXuiSceneCraftingPanel::OnTransitionEnd( XUIMessageTransition *pTransDat
 		{
 			for(int i=0;i<m_iMaxGroup3x3;i++)
 			{
-				m_hGroupIconA[i].PlayVisualRange(m_GroupIconNameA[m_pGroupA[i]],NULL,m_GroupIconNameA[m_pGroupA[i]]);
+				m_hGroupIconA[i].PlayVisualRange(m_GroupIconNameA[m_pGroupA[i]],nullptr,m_GroupIconNameA[m_pGroupA[i]]);
 				XuiElementSetShow(m_hGroupIconA[i].m_hObj,TRUE);
 			}
 		}
@@ -214,7 +214,7 @@ HRESULT CXuiSceneCraftingPanel::OnTransitionEnd( XUIMessageTransition *pTransDat
 		{
 			for(int i=0;i<m_iMaxGroup2x2;i++)
 			{
-				m_hGroupIconA[i].PlayVisualRange(m_GroupIconNameA[m_pGroupA[i]],NULL,m_GroupIconNameA[m_pGroupA[i]]);
+				m_hGroupIconA[i].PlayVisualRange(m_GroupIconNameA[m_pGroupA[i]],nullptr,m_GroupIconNameA[m_pGroupA[i]]);
 				XuiElementSetShow(m_hGroupIconA[i].m_hObj,TRUE);
 			}
 		}
@@ -336,7 +336,7 @@ HRESULT CXuiSceneCraftingPanel::OnGetSourceImage(XUIMessageGetSourceImage* pData
 	HRESULT hr = S_OK;
 	//int iId=pData->iItem;
 	int iId=(pData->iData>>22)&0x1FF;
-	pData->szPath = NULL;
+	pData->szPath = nullptr;
 	pData->bDirty=true;
 	rfHandled = TRUE;
 	return hr;
@@ -352,15 +352,15 @@ HRESULT CXuiSceneCraftingPanel::OnDestroy()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 #ifdef _XBOX
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
 		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
-		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
+		if(gameMode != nullptr) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 #endif
 
 	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
-	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
+	if(Minecraft::GetInstance()->localplayers[m_iPad] != nullptr) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 
 	return S_OK;
 }
@@ -433,7 +433,7 @@ void CXuiSceneCraftingPanel::setCraftVSlotItem(int iPad, int iIndex, shared_ptr<
 
 void CXuiSceneCraftingPanel::setCraftingOutputSlotItem(int iPad, shared_ptr<ItemInstance> item)
 {
-	if(item == NULL)
+	if(item == nullptr)
 	{
 		m_pCraftingOutput->SetIcon(iPad, 0,0,0,0,0,false);
 	}
@@ -450,7 +450,7 @@ void CXuiSceneCraftingPanel::setCraftingOutputSlotRedBox(bool show)
 
 void CXuiSceneCraftingPanel::setIngredientSlotItem(int iPad, int index, shared_ptr<ItemInstance> item)
 {
-	if(item == NULL)
+	if(item == nullptr)
 	{
 		m_pCraftingIngredientA[index]->SetIcon(iPad, 0,0,0,0,0,false);
 	}

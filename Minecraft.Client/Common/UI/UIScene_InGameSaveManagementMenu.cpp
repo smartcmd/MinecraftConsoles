@@ -8,7 +8,7 @@
 
 int UIScene_InGameSaveManagementMenu::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-	UIScene_InGameSaveManagementMenu *pClass= (UIScene_InGameSaveManagementMenu *)lpParam;
+	UIScene_InGameSaveManagementMenu *pClass= static_cast<UIScene_InGameSaveManagementMenu *>(lpParam);
 
 	app.DebugPrintf("Received data for save thumbnail\n");
 
@@ -20,9 +20,9 @@ int UIScene_InGameSaveManagementMenu::LoadSaveDataThumbnailReturned(LPVOID lpPar
 	}
 	else
 	{
-		pClass->m_saveDetails[pClass->m_iRequestingThumbnailId].pbThumbnailData = NULL;
+		pClass->m_saveDetails[pClass->m_iRequestingThumbnailId].pbThumbnailData = nullptr;
 		pClass->m_saveDetails[pClass->m_iRequestingThumbnailId].dwThumbnailSize = 0;
-		app.DebugPrintf("Save thumbnail data is NULL, or has size 0\n");
+		app.DebugPrintf("Save thumbnail data is nullptr, or has size 0\n");
 	}
 	pClass->m_bSaveThumbnailReady = true;
 
@@ -55,9 +55,9 @@ UIScene_InGameSaveManagementMenu::UIScene_InGameSaveManagementMenu(int iPad, voi
 	m_bRetrievingSaveThumbnails = false;
 	m_bSaveThumbnailReady = false;
 	m_bExitScene=false;
-	m_pSaveDetails=NULL;
+	m_pSaveDetails=nullptr;
 	m_bSavesDisplayed=false;
-	m_saveDetails = NULL;
+	m_saveDetails = nullptr;
 	m_iSaveDetailsCount = 0;
 
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__) || defined(_DURANGO)
@@ -198,17 +198,17 @@ void UIScene_InGameSaveManagementMenu::tick()
 		if(!m_bSavesDisplayed)
 		{
 			m_pSaveDetails=StorageManager.ReturnSavesInfo();
-			if(m_pSaveDetails!=NULL)
+			if(m_pSaveDetails!=nullptr)
 			{
 				m_spaceIndicatorSaves.reset();
 
 				m_bSavesDisplayed=true;
 
-				if(m_saveDetails!=NULL)
+				if(m_saveDetails!=nullptr)
 				{
 					for(unsigned int i = 0; i < m_pSaveDetails->iSaveC; ++i)
 					{
-						if(m_saveDetails[i].pbThumbnailData!=NULL)
+						if(m_saveDetails[i].pbThumbnailData!=nullptr)
 						{
 							delete m_saveDetails[i].pbThumbnailData;
 						}
@@ -371,9 +371,9 @@ void UIScene_InGameSaveManagementMenu::GetSaveInfo(  )
 	m_controlSavesTimer.setVisible(true);
 
 	m_pSaveDetails=StorageManager.ReturnSavesInfo();
-	if(m_pSaveDetails==NULL)
+	if(m_pSaveDetails==nullptr)
 	{
-		C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save"); 
+		C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,nullptr,this,"save"); 
 	}
 
 
@@ -418,12 +418,12 @@ void UIScene_InGameSaveManagementMenu::handleInput(int iPad, int key, bool repea
 
 void UIScene_InGameSaveManagementMenu::handleInitFocus(F64 controlId, F64 childId)
 {
-	app.DebugPrintf(app.USER_SR, "UIScene_InGameSaveManagementMenu::handleInitFocus - %d , %d\n", (int)controlId, (int)childId);
+	app.DebugPrintf(app.USER_SR, "UIScene_InGameSaveManagementMenu::handleInitFocus - %d , %d\n", static_cast<int>(controlId), static_cast<int>(childId));
 }
 
 void UIScene_InGameSaveManagementMenu::handleFocusChange(F64 controlId, F64 childId) 
 {
-	app.DebugPrintf(app.USER_SR, "UIScene_InGameSaveManagementMenu::handleFocusChange - %d , %d\n", (int)controlId, (int)childId);
+	app.DebugPrintf(app.USER_SR, "UIScene_InGameSaveManagementMenu::handleFocusChange - %d , %d\n", static_cast<int>(controlId), static_cast<int>(childId));
 	m_iSaveListIndex = childId;
 	if(m_bSavesDisplayed) m_bUpdateSaveSize = true;
 	updateTooltips();
@@ -431,7 +431,7 @@ void UIScene_InGameSaveManagementMenu::handleFocusChange(F64 controlId, F64 chil
 
 void UIScene_InGameSaveManagementMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_SavesList:
 		{
@@ -452,7 +452,7 @@ void UIScene_InGameSaveManagementMenu::handlePress(F64 controlId, F64 childId)
 
 int UIScene_InGameSaveManagementMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_InGameSaveManagementMenu* pClass = (UIScene_InGameSaveManagementMenu*)pParam;
+	UIScene_InGameSaveManagementMenu* pClass = static_cast<UIScene_InGameSaveManagementMenu *>(pParam);
 	// results switched for this dialog
 
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -477,7 +477,7 @@ int UIScene_InGameSaveManagementMenu::DeleteSaveDialogReturned(void *pParam,int 
 
 int UIScene_InGameSaveManagementMenu::DeleteSaveDataReturned(LPVOID lpParam,bool bRes)
 {
-	UIScene_InGameSaveManagementMenu* pClass = (UIScene_InGameSaveManagementMenu*)lpParam;
+	UIScene_InGameSaveManagementMenu* pClass = static_cast<UIScene_InGameSaveManagementMenu *>(lpParam);
 
 	if(bRes)
 	{

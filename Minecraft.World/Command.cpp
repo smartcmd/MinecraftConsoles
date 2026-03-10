@@ -24,7 +24,7 @@ void Command::logAdminAction(shared_ptr<CommandSender> source, ChatPacket::EChat
 
 void Command::logAdminAction(shared_ptr<CommandSender> source, int type, ChatPacket::EChatPacketMessage messageType, const wstring& message, int customData, const wstring& additionalMessage)
 {
-	if (logger != NULL)
+	if (logger != nullptr)
 	{
 		logger->logAdminCommand(source, type, messageType, message, customData, additionalMessage);
 	}
@@ -39,7 +39,7 @@ shared_ptr<ServerPlayer> Command::getPlayer(PlayerUID playerId)
 {
 	shared_ptr<ServerPlayer> player = MinecraftServer::getInstance()->getPlayers()->getPlayer(playerId);
 
-	if (player == NULL)
+	if (player == nullptr)
 	{
 		return nullptr;
 	}

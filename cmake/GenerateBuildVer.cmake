@@ -24,12 +24,30 @@ endif()
 # Get branch name
 execute_process(
   COMMAND git symbolic-ref --short HEAD
-  OUTPUT_VARIABLE GIT_REF
+  OUTPUT_VARIABLE GIT_BRANCH
   OUTPUT_STRIP_TRAILING_WHITESPACE
   RESULT_VARIABLE rc
 )
 if(NOT rc EQUAL 0)
-  set(GIT_REF "unknown")
+  set(GIT_BRANCH "unknown")
+endif()
+
+# Get GitHub repository from environment variable (if available) or git remote
+if(DEFINED ENV{GITHUB_REPOSITORY})
+  set(GIT_REF "$ENV{GITHUB_REPOSITORY}/${GIT_BRANCH}")
+else()
+  execute_process(
+    COMMAND git remote get-url origin
+    OUTPUT_VARIABLE GIT_REMOTE_URL
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE rc
+  )
+  # Handle github urls only
+  if(rc EQUAL 0 AND GIT_REMOTE_URL MATCHES "github\\.com[:/]([^/:]+/[^/.]+)(\\.git)?")
+    set(GIT_REF "${CMAKE_MATCH_1}/${GIT_BRANCH}")
+  else()
+    set(GIT_REF "UNKNOWN/${GIT_BRANCH}")
+  endif()
 endif()
 
 # If we have uncommitted changes, add a suffix to the version string
@@ -46,7 +64,8 @@ file(WRITE "${OUTPUT_FILE}"
   "#pragma once\n"
   "\n"
   "#define VER_PRODUCTBUILD ${BUILD_NUMBER}\n"
-  "#define VER_PRODUCTVERSION_STR_W L\"${GIT_SHA}${SUFFIX} (${GIT_REF})\"\n"
+  "#define VER_PRODUCTVERSION_STR_W L\"${GIT_SHA}${SUFFIX}\"\n"
   "#define VER_FILEVERSION_STR_W VER_PRODUCTVERSION_STR_W\n"
+  "#define VER_BRANCHVERSION_STR_W L\"${GIT_REF}\"\n"
   "#define VER_NETWORK VER_PRODUCTBUILD\n"
 )

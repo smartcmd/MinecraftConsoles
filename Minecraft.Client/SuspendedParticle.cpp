@@ -25,7 +25,7 @@ SuspendedParticle::SuspendedParticle(Level *level, double x, double y, double z,
 	yd = ya * 0.0f;
 	zd = za * 0.0f;
 
-	lifetime = (int) (16 / (Math::random() * 0.8 + 0.2));
+	lifetime = static_cast<int>(16 / (Math::random() * 0.8 + 0.2));
 }
 
 void SuspendedParticle::tick()

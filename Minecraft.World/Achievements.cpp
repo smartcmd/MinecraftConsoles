@@ -17,79 +17,79 @@ int Achievements::yMax = 0;
 
 vector<Achievement *> *Achievements::achievements = new vector<Achievement *>;
 
-Achievement *Achievements::openInventory = NULL;
-Achievement *Achievements::mineWood = NULL;
-Achievement *Achievements::buildWorkbench = NULL;
-Achievement *Achievements::buildPickaxe = NULL;
-Achievement *Achievements::buildFurnace = NULL;
-Achievement *Achievements::acquireIron = NULL;
-Achievement *Achievements::buildHoe = NULL;
-Achievement *Achievements::makeBread = NULL;
-Achievement *Achievements::bakeCake = NULL;
-Achievement *Achievements::buildBetterPickaxe = NULL;
-Achievement *Achievements::cookFish = NULL;
-Achievement *Achievements::onARail = NULL;
-Achievement *Achievements::buildSword = NULL;
-Achievement *Achievements::killEnemy = NULL;
-Achievement *Achievements::killCow = NULL;
-Achievement *Achievements::flyPig = NULL;
+Achievement *Achievements::openInventory = nullptr;
+Achievement *Achievements::mineWood = nullptr;
+Achievement *Achievements::buildWorkbench = nullptr;
+Achievement *Achievements::buildPickaxe = nullptr;
+Achievement *Achievements::buildFurnace = nullptr;
+Achievement *Achievements::acquireIron = nullptr;
+Achievement *Achievements::buildHoe = nullptr;
+Achievement *Achievements::makeBread = nullptr;
+Achievement *Achievements::bakeCake = nullptr;
+Achievement *Achievements::buildBetterPickaxe = nullptr;
+Achievement *Achievements::cookFish = nullptr;
+Achievement *Achievements::onARail = nullptr;
+Achievement *Achievements::buildSword = nullptr;
+Achievement *Achievements::killEnemy = nullptr;
+Achievement *Achievements::killCow = nullptr;
+Achievement *Achievements::flyPig = nullptr;
 
-Achievement *Achievements::snipeSkeleton = NULL;
-Achievement *Achievements::diamonds = NULL;
-//Achievement *Achievements::portal = NULL;
-Achievement *Achievements::ghast = NULL;
-Achievement *Achievements::blazeRod = NULL;
-Achievement *Achievements::potion = NULL;
-Achievement *Achievements::theEnd = NULL;
-Achievement *Achievements::winGame = NULL;
-Achievement *Achievements::enchantments = NULL;
-//Achievement *Achievements::overkill = NULL;
-//Achievement *Achievements::bookcase = NULL;
+Achievement *Achievements::snipeSkeleton = nullptr;
+Achievement *Achievements::diamonds = nullptr;
+//Achievement *Achievements::portal = nullptr;
+Achievement *Achievements::ghast = nullptr;
+Achievement *Achievements::blazeRod = nullptr;
+Achievement *Achievements::potion = nullptr;
+Achievement *Achievements::theEnd = nullptr;
+Achievement *Achievements::winGame = nullptr;
+Achievement *Achievements::enchantments = nullptr;
+//Achievement *Achievements::overkill = nullptr;
+//Achievement *Achievements::bookcase = nullptr;
 
 // 4J : WESTY : Added new acheivements. 
-Achievement *Achievements::leaderOfThePack = NULL;
-Achievement *Achievements::MOARTools = NULL;
-Achievement *Achievements::dispenseWithThis = NULL;
-Achievement *Achievements::InToTheNether = NULL;
+Achievement *Achievements::leaderOfThePack = nullptr;
+Achievement *Achievements::MOARTools = nullptr;
+Achievement *Achievements::dispenseWithThis = nullptr;
+Achievement *Achievements::InToTheNether = nullptr;
 
 // 4J : WESTY : Added other awards. 
-Achievement *Achievements::socialPost = NULL;
-Achievement *Achievements::eatPorkChop = NULL;
-Achievement *Achievements::play100Days = NULL;
-Achievement *Achievements::arrowKillCreeper = NULL;
-Achievement *Achievements::mine100Blocks = NULL;
-Achievement *Achievements::kill10Creepers = NULL;
+Achievement *Achievements::socialPost = nullptr;
+Achievement *Achievements::eatPorkChop = nullptr;
+Achievement *Achievements::play100Days = nullptr;
+Achievement *Achievements::arrowKillCreeper = nullptr;
+Achievement *Achievements::mine100Blocks = nullptr;
+Achievement *Achievements::kill10Creepers = nullptr;
 
 #ifdef _EXTENDED_ACHIEVEMENTS
-Achievement *Achievements::overkill = NULL;	// Restored old achivements.
-Achievement *Achievements::bookcase = NULL; // Restored old achivements.
+Achievement *Achievements::overkill = nullptr;	// Restored old achivements.
+Achievement *Achievements::bookcase = nullptr; // Restored old achivements.
 
 // 4J-JEV: New Achievements for Orbis.
-Achievement *Achievements::adventuringTime = NULL;
-Achievement *Achievements::repopulation = NULL;
-//Achievement *Achievements::porkChop = NULL;
-Achievement *Achievements::diamondsToYou = NULL;
-//Achievement *Achievements::passingTheTime = NULL;
-//Achievement *Achievements::archer = NULL;
-Achievement *Achievements::theHaggler = NULL;
-Achievement *Achievements::potPlanter = NULL;
-Achievement *Achievements::itsASign = NULL;
-Achievement *Achievements::ironBelly = NULL;
-Achievement *Achievements::haveAShearfulDay = NULL;
-Achievement *Achievements::rainbowCollection = NULL;
-Achievement *Achievements::stayinFrosty = NULL;
-Achievement *Achievements::chestfulOfCobblestone = NULL;
-Achievement *Achievements::renewableEnergy = NULL;
-Achievement *Achievements::musicToMyEars = NULL;
-Achievement *Achievements::bodyGuard = NULL;
-Achievement *Achievements::ironMan = NULL;
-Achievement *Achievements::zombieDoctor = NULL;
-Achievement *Achievements::lionTamer = NULL;
+Achievement *Achievements::adventuringTime = nullptr;
+Achievement *Achievements::repopulation = nullptr;
+//Achievement *Achievements::porkChop = nullptr;
+Achievement *Achievements::diamondsToYou = nullptr;
+//Achievement *Achievements::passingTheTime = nullptr;
+//Achievement *Achievements::archer = nullptr;
+Achievement *Achievements::theHaggler = nullptr;
+Achievement *Achievements::potPlanter = nullptr;
+Achievement *Achievements::itsASign = nullptr;
+Achievement *Achievements::ironBelly = nullptr;
+Achievement *Achievements::haveAShearfulDay = nullptr;
+Achievement *Achievements::rainbowCollection = nullptr;
+Achievement *Achievements::stayinFrosty = nullptr;
+Achievement *Achievements::chestfulOfCobblestone = nullptr;
+Achievement *Achievements::renewableEnergy = nullptr;
+Achievement *Achievements::musicToMyEars = nullptr;
+Achievement *Achievements::bodyGuard = nullptr;
+Achievement *Achievements::ironMan = nullptr;
+Achievement *Achievements::zombieDoctor = nullptr;
+Achievement *Achievements::lionTamer = nullptr;
 #endif
 
 void Achievements::staticCtor()
 {
-	Achievements::openInventory			= (new Achievement(eAward_TakingInventory,		L"openInventory",		0, 0,	Item::book,			NULL))->setAwardLocallyOnly()->postConstruct();
+	Achievements::openInventory			= (new Achievement(eAward_TakingInventory,		L"openInventory",		0, 0,	Item::book,			nullptr))->setAwardLocallyOnly()->postConstruct();
 	Achievements::mineWood				= (new Achievement(eAward_GettingWood,			L"mineWood",			2, 1,	Tile::treeTrunk,	(Achievement *) openInventory))->postConstruct();
 	Achievements::buildWorkbench		= (new Achievement(eAward_Benchmarking,			L"buildWorkBench",		4, -1,	Tile::workBench,	(Achievement *) mineWood))->postConstruct();
 	Achievements::buildPickaxe			= (new Achievement(eAward_TimeToMine,			L"buildPickaxe",		4, 2,	Item::pickAxe_wood, (Achievement *) buildWorkbench))->postConstruct();
@@ -152,26 +152,26 @@ void Achievements::staticCtor()
 	Achievements::overkill				= (new Achievement(eAward_overkill,					L"overkill",				-4,1,	Item::sword_diamond,	(Achievement *)enchantments) )->setGolden()->postConstruct();
 	Achievements::bookcase				= (new Achievement(eAward_bookcase,					L"bookcase",				-3,6,	Tile::bookshelf,		(Achievement *)enchantments) )->postConstruct();
 
-	Achievements::adventuringTime		= (new Achievement(eAward_adventuringTime,			L"adventuringTime",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::repopulation			= (new Achievement(eAward_repopulation,				L"repopulation",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
+	Achievements::adventuringTime		= (new Achievement(eAward_adventuringTime,			L"adventuringTime",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::repopulation			= (new Achievement(eAward_repopulation,				L"repopulation",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
 	//Achievements::porkChoop			// // //																						// // //
-	Achievements::diamondsToYou			= (new Achievement(eAward_diamondsToYou,			L"diamondsToYou",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	//Achievements::passingTheTime		= (new Achievement(eAward_play100Days,				L"passingTheTime",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	//Achievements::archer				= (new Achievement(eAward_arrowKillCreeper,			L"archer",					0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::theHaggler			= (new Achievement(eAward_theHaggler,				L"theHaggler",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::potPlanter			= (new Achievement(eAward_potPlanter,				L"potPlanter",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::itsASign				= (new Achievement(eAward_itsASign,					L"itsASign",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::ironBelly				= (new Achievement(eAward_ironBelly,				L"ironBelly",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::haveAShearfulDay		= (new Achievement(eAward_haveAShearfulDay,			L"haveAShearfulDay",		0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::rainbowCollection		= (new Achievement(eAward_rainbowCollection,		L"rainbowCollection",		0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::stayinFrosty			= (new Achievement(eAward_stayinFrosty,				L"stayingFrosty",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::chestfulOfCobblestone	= (new Achievement(eAward_chestfulOfCobblestone,	L"chestfulOfCobblestone",	0,0,	Tile::bookshelf,		(Achievement*) NULL) )->setAwardLocallyOnly()->postConstruct();	
-	Achievements::renewableEnergy		= (new Achievement(eAward_renewableEnergy,			L"renewableEnergy",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::musicToMyEars			= (new Achievement(eAward_musicToMyEars,			L"musicToMyEars",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::bodyGuard				= (new Achievement(eAward_bodyGuard,				L"bodyGuard",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::ironMan				= (new Achievement(eAward_ironMan,					L"ironMan",					0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::zombieDoctor			= (new Achievement(eAward_zombieDoctor,				L"zombieDoctor",			0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
-	Achievements::lionTamer				= (new Achievement(eAward_lionTamer,				L"lionTamer",				0,0,	Tile::bookshelf,		(Achievement*) NULL) )->postConstruct();	
+	Achievements::diamondsToYou			= (new Achievement(eAward_diamondsToYou,			L"diamondsToYou",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	//Achievements::passingTheTime		= (new Achievement(eAward_play100Days,				L"passingTheTime",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	//Achievements::archer				= (new Achievement(eAward_arrowKillCreeper,			L"archer",					0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::theHaggler			= (new Achievement(eAward_theHaggler,				L"theHaggler",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::potPlanter			= (new Achievement(eAward_potPlanter,				L"potPlanter",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::itsASign				= (new Achievement(eAward_itsASign,					L"itsASign",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::ironBelly				= (new Achievement(eAward_ironBelly,				L"ironBelly",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::haveAShearfulDay		= (new Achievement(eAward_haveAShearfulDay,			L"haveAShearfulDay",		0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::rainbowCollection		= (new Achievement(eAward_rainbowCollection,		L"rainbowCollection",		0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::stayinFrosty			= (new Achievement(eAward_stayinFrosty,				L"stayingFrosty",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::chestfulOfCobblestone	= (new Achievement(eAward_chestfulOfCobblestone,	L"chestfulOfCobblestone",	0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->setAwardLocallyOnly()->postConstruct();	
+	Achievements::renewableEnergy		= (new Achievement(eAward_renewableEnergy,			L"renewableEnergy",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::musicToMyEars			= (new Achievement(eAward_musicToMyEars,			L"musicToMyEars",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::bodyGuard				= (new Achievement(eAward_bodyGuard,				L"bodyGuard",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::ironMan				= (new Achievement(eAward_ironMan,					L"ironMan",					0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::zombieDoctor			= (new Achievement(eAward_zombieDoctor,				L"zombieDoctor",			0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
+	Achievements::lionTamer				= (new Achievement(eAward_lionTamer,				L"lionTamer",				0,0,	Tile::bookshelf,		(Achievement*) nullptr) )->postConstruct();	
 #endif
 
 }

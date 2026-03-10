@@ -51,7 +51,7 @@ Path *PathFinder::findPath(Entity *e, double xt, double yt, double zt, float max
 	int startY = Mth::floor(e->bb->y0 + 0.5f);
 	if (canFloat && e->isInWater())
 	{
-		startY = (int) (e->bb->y0);
+		startY = static_cast<int>(e->bb->y0);
 		int tileId = level->getTile((int) Mth::floor(e->x), startY, (int) Mth::floor(e->z));
 		while (tileId == Tile::water_Id || tileId == Tile::calmWater_Id)
 		{
@@ -62,10 +62,10 @@ Path *PathFinder::findPath(Entity *e, double xt, double yt, double zt, float max
 		avoidWater = false;
 	} else startY = Mth::floor(e->bb->y0 + 0.5f);
 
-	Node *from = getNode((int) floor(e->bb->x0), startY, (int) floor(e->bb->z0));
-	Node *to = getNode((int) floor(xt - e->bbWidth / 2), (int) floor(yt), (int) floor(zt - e->bbWidth / 2));
+	Node *from = getNode(static_cast<int>(floor(e->bb->x0)), startY, static_cast<int>(floor(e->bb->z0)));
+	Node *to = getNode(static_cast<int>(floor(xt - e->bbWidth / 2)), static_cast<int>(floor(yt)), static_cast<int>(floor(zt - e->bbWidth / 2)));
 
-	Node *size = new Node((int) floor(e->bbWidth + 1), (int) floor(e->bbHeight + 1), (int) floor(e->bbWidth + 1));
+	Node *size = new Node(static_cast<int>(floor(e->bbWidth + 1)), static_cast<int>(floor(e->bbHeight + 1)), static_cast<int>(floor(e->bbWidth + 1)));
 	Path *path = findPath(e, from, to, size, maxDist);
 	delete size;
 
@@ -124,7 +124,7 @@ Path *PathFinder::findPath(Entity *e, Node *from, Node *to, Node *size, float ma
 		}
 	}
 
-	if (closest == from) return NULL;
+	if (closest == from) return nullptr;
 	return reconstruct_path(from, closest);
 }
 
@@ -140,44 +140,44 @@ int PathFinder::getNeighbors(Entity *entity, Node *pos, Node *size, Node *target
 	Node *e = getNode(entity, pos->x + 1, pos->y, pos->z, size, jumpSize);
 	Node *s = getNode(entity, pos->x, pos->y, pos->z - 1, size, jumpSize);
 
-	if (n != NULL && !n->closed && n->distanceTo(target) < maxDist) neighbors->data[p++] = n;
-	if (w != NULL && !w->closed && w->distanceTo(target) < maxDist) neighbors->data[p++] = w;
-	if (e != NULL && !e->closed && e->distanceTo(target) < maxDist) neighbors->data[p++] = e;
-	if (s != NULL && !s->closed && s->distanceTo(target) < maxDist) neighbors->data[p++] = s;
+	if (n != nullptr && !n->closed && n->distanceTo(target) < maxDist) neighbors->data[p++] = n;
+	if (w != nullptr && !w->closed && w->distanceTo(target) < maxDist) neighbors->data[p++] = w;
+	if (e != nullptr && !e->closed && e->distanceTo(target) < maxDist) neighbors->data[p++] = e;
+	if (s != nullptr && !s->closed && s->distanceTo(target) < maxDist) neighbors->data[p++] = s;
 
 	return p;
 }
 
 Node *PathFinder::getNode(Entity *entity, int x, int y, int z, Node *size, int jumpSize)
 {
-	Node *best = NULL;
+	Node *best = nullptr;
 	int pathType = isFree(entity, x, y, z, size);
 	if (pathType == TYPE_WALKABLE) return getNode(x, y, z);
 	if (pathType == TYPE_OPEN) best = getNode(x, y, z);
-	if (best == NULL && jumpSize > 0 && pathType != TYPE_FENCE && pathType != TYPE_TRAP && isFree(entity, x, y + jumpSize, z, size) == TYPE_OPEN)
+	if (best == nullptr && jumpSize > 0 && pathType != TYPE_FENCE && pathType != TYPE_TRAP && isFree(entity, x, y + jumpSize, z, size) == TYPE_OPEN)
 	{
 		best = getNode(x, y + jumpSize, z);
 		y += jumpSize;
 	}
 
-	if (best != NULL)
+	if (best != nullptr)
 	{
 		int drop = 0;
 		int cost = 0;
 		while (y > 0)
 		{
 			cost = isFree(entity, x, y - 1, z, size);
-			if (avoidWater && cost == TYPE_WATER) return NULL;
+			if (avoidWater && cost == TYPE_WATER) return nullptr;
 			if (cost != TYPE_OPEN) break;
 			// fell too far?
-            if (++drop >= 4) return NULL;								// 4J - rolling this back to pre-java 1.6.4 version as we're suspicious of the performance implications of this
-//			if (drop++ >= entity->getMaxFallDistance()) return NULL;
+            if (++drop >= 4) return nullptr;								// 4J - rolling this back to pre-java 1.6.4 version as we're suspicious of the performance implications of this
+//			if (drop++ >= entity->getMaxFallDistance()) return nullptr;
 			y--;
 
 			if (y > 0) best = getNode(x, y, z);
 		}
 		// fell into lava?
-		if (cost == TYPE_LAVA) return NULL;
+		if (cost == TYPE_LAVA) return nullptr;
 	}
 
 	return best;
@@ -269,7 +269,7 @@ Path *PathFinder::reconstruct_path(Node *from, Node *to)
 {
 	int count = 1;
 	Node *n = to;
-	while (n->cameFrom != NULL)
+	while (n->cameFrom != nullptr)
 	{
 		count++;
 		n = n->cameFrom;
@@ -278,7 +278,7 @@ Path *PathFinder::reconstruct_path(Node *from, Node *to)
 	NodeArray nodes = NodeArray(count);
 	n = to;
 	nodes.data[--count] = n;
-	while (n->cameFrom != NULL)
+	while (n->cameFrom != nullptr)
 	{
 		n = n->cameFrom;
 		nodes.data[--count] = n;

@@ -27,6 +27,6 @@ shared_ptr<ItemInstance> ExperienceItem::use(shared_ptr<ItemInstance> itemInstan
 		itemInstance->count--;
 	}
 	level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-	if (!level->isClientSide) level->addEntity( shared_ptr<ThrownExpBottle>( new ThrownExpBottle(level, player) ));
+	if (!level->isClientSide) level->addEntity(std::make_shared<ThrownExpBottle>(level, player));
 	return itemInstance;
 }

@@ -12,7 +12,7 @@
 UIControl_EnchantmentBook::UIControl_EnchantmentBook()
 {
 	UIControl::setControlType(UIControl::eEnchantmentBook);
-	model = NULL;
+	model = nullptr;
 	last = nullptr;
 
 	time = 0;
@@ -69,12 +69,12 @@ void UIControl_EnchantmentBook::render(IggyCustomDrawCallbackRegion *region)
 
 	glEnable(GL_CULL_FACE);
 
-	if(model == NULL)
+	if(model == nullptr)
 	{
 		// Share the model the the EnchantTableRenderer
 
-		EnchantTableRenderer *etr = (EnchantTableRenderer*)TileEntityRenderDispatcher::instance->getRenderer(eTYPE_ENCHANTMENTTABLEENTITY);
-		if(etr != NULL)
+		EnchantTableRenderer *etr = static_cast<EnchantTableRenderer *>(TileEntityRenderDispatcher::instance->getRenderer(eTYPE_ENCHANTMENTTABLEENTITY));
+		if(etr != nullptr)
 		{
 			model = etr->bookModel;
 		}
@@ -96,7 +96,7 @@ void UIControl_EnchantmentBook::render(IggyCustomDrawCallbackRegion *region)
 
 void UIControl_EnchantmentBook::tickBook()
 {
-	UIScene_EnchantingMenu *m_containerScene = (UIScene_EnchantingMenu *)m_parentScene;
+	UIScene_EnchantingMenu *m_containerScene = static_cast<UIScene_EnchantingMenu *>(m_parentScene);
 	EnchantmentMenu *menu = m_containerScene->getMenu();
 	shared_ptr<ItemInstance> current = menu->getSlot(0)->getItem();
 	if (!ItemInstance::matches(current, last))

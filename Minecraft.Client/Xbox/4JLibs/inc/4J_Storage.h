@@ -217,7 +217,7 @@ public:
 
 	// Messages
 	C4JStorage::EMessageResult			RequestMessageBox(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=XUSER_INDEX_ANY,
-		int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=NULL,LPVOID lpParam=NULL, CXuiStringTable *pStringTable=NULL, WCHAR *pwchFormatString=NULL,DWORD dwFocusButton=0);
+		int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=nullptr,LPVOID lpParam=nullptr, CXuiStringTable *pStringTable=nullptr, WCHAR *pwchFormatString=nullptr,DWORD dwFocusButton=0);
 	void								CancelMessageBoxRequest();
 
 	C4JStorage::EMessageResult			GetMessageBoxResult();
@@ -239,7 +239,7 @@ public:
 	unsigned int				GetSaveSize();
 	void						GetSaveData(void *pvData,unsigned int *puiBytes);
 	PVOID						AllocateSaveData(unsigned int uiBytes);
-	void						SaveSaveData(unsigned int uiBytes,PBYTE pbThumbnail=NULL,DWORD cbThumbnail=0,PBYTE pbTextData=NULL, DWORD dwTextLen=0);
+	void						SaveSaveData(unsigned int uiBytes,PBYTE pbThumbnail=nullptr,DWORD cbThumbnail=0,PBYTE pbTextData=nullptr, DWORD dwTextLen=0);
 	void						CopySaveDataToNewSave(PBYTE pbThumbnail,DWORD cbThumbnail,WCHAR *wchNewName,int ( *Func)(LPVOID lpParam, bool), LPVOID lpParam);
 	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);
 	bool						GetSaveDeviceSelected(unsigned int iPad);
@@ -271,27 +271,27 @@ public:
 
 	C4JStorage::EDLCStatus				GetInstalledDLC(int iPad,int( *Func)(LPVOID, int, int),LPVOID lpParam);
 	XCONTENT_DATA&						GetDLC(DWORD dw);
-	DWORD								MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive=NULL);
-	DWORD								UnmountInstalledDLC(LPCSTR szMountDrive=NULL);
+	DWORD								MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive=nullptr);
+	DWORD								UnmountInstalledDLC(LPCSTR szMountDrive=nullptr);
 
 	// Global title storage
 	C4JStorage::ETMSStatus				ReadTMSFile(int iQuadrant,eGlobalStorage eStorageFacility,C4JStorage::eTMS_FileType eFileType,
-											WCHAR *pwchFilename,BYTE **ppBuffer,DWORD *pdwBufferSize,int( *Func)(LPVOID, WCHAR *,int, bool, int)=NULL,LPVOID lpParam=NULL, int iAction=0);
+											WCHAR *pwchFilename,BYTE **ppBuffer,DWORD *pdwBufferSize,int( *Func)(LPVOID, WCHAR *,int, bool, int)=nullptr,LPVOID lpParam=nullptr, int iAction=0);
 	bool								WriteTMSFile(int iQuadrant,eGlobalStorage eStorageFacility,WCHAR *pwchFilename,BYTE *pBuffer,DWORD dwBufferSize);
 	bool								DeleteTMSFile(int iQuadrant,eGlobalStorage eStorageFacility,WCHAR *pwchFilename);
-	void								StoreTMSPathName(WCHAR *pwchName=NULL);
+	void								StoreTMSPathName(WCHAR *pwchName=nullptr);
 
 	// TMS++
-	C4JStorage::ETMSStatus				TMSPP_WriteFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,C4JStorage::eTMS_UGCTYPE eUGCType,CHAR *pchFilePath,CHAR *pchBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=NULL,LPVOID lpParam=NULL, int iUserData=0);
+	C4JStorage::ETMSStatus				TMSPP_WriteFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,C4JStorage::eTMS_UGCTYPE eUGCType,CHAR *pchFilePath,CHAR *pchBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=nullptr,LPVOID lpParam=nullptr, int iUserData=0);
 	C4JStorage::ETMSStatus				TMSPP_GetUserQuotaInfo(int iPad,TMSCLIENT_CALLBACK Func,LPVOID lpParam, int iUserData=0);
-	C4JStorage::ETMSStatus				TMSPP_ReadFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPCSTR szFilename,int( *Func)(LPVOID,int,int,PTMSPP_FILEDATA, LPCSTR)=NULL,LPVOID lpParam=NULL, int iUserData=0);
-	C4JStorage::ETMSStatus				TMSPP_ReadFileList(int iPad,C4JStorage::eGlobalStorage eStorageFacility,CHAR *pchFilePath,int( *Func)(LPVOID,int,int,PTMSPP_FILE_LIST)=NULL,LPVOID lpParam=NULL, int iUserData=0);
-	C4JStorage::ETMSStatus				TMSPP_DeleteFile(int iPad,LPCSTR szFilePath,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,int( *Func)(LPVOID,int,int),LPVOID lpParam=NULL, int iUserData=0);
+	C4JStorage::ETMSStatus				TMSPP_ReadFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPCSTR szFilename,int( *Func)(LPVOID,int,int,PTMSPP_FILEDATA, LPCSTR)=nullptr,LPVOID lpParam=nullptr, int iUserData=0);
+	C4JStorage::ETMSStatus				TMSPP_ReadFileList(int iPad,C4JStorage::eGlobalStorage eStorageFacility,CHAR *pchFilePath,int( *Func)(LPVOID,int,int,PTMSPP_FILE_LIST)=nullptr,LPVOID lpParam=nullptr, int iUserData=0);
+	C4JStorage::ETMSStatus				TMSPP_DeleteFile(int iPad,LPCSTR szFilePath,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,int( *Func)(LPVOID,int,int),LPVOID lpParam=nullptr, int iUserData=0);
 	bool								TMSPP_InFileList(eGlobalStorage eStorageFacility, int iPad,const wstring &Filename);
 	unsigned int						CRC(unsigned char *buf, int len);
 
-	C4JStorage::ETMSStatus				TMSPP_WriteFileWithProgress(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,C4JStorage::eTMS_UGCTYPE eUGCType,CHAR *pchFilePath,CHAR *pchBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=NULL,LPVOID lpParam=NULL, int iUserData=0,
-		int( *CompletionFunc)(LPVOID,float fComplete)=NULL,LPVOID lpCompletionParam=NULL);
+	C4JStorage::ETMSStatus				TMSPP_WriteFileWithProgress(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,C4JStorage::eTMS_UGCTYPE eUGCType,CHAR *pchFilePath,CHAR *pchBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=nullptr,LPVOID lpParam=nullptr, int iUserData=0,
+		int( *CompletionFunc)(LPVOID,float fComplete)=nullptr,LPVOID lpCompletionParam=nullptr);
 	void								TMSPP_CancelWriteFileWithProgress(int iPad);
 
 	HRESULT								TMSPP_SetTitleGroupID(LPCSTR szGroupID);

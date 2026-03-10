@@ -28,7 +28,7 @@ DWORD Tesselator::tlsIdx = TlsAlloc();
 
 Tesselator *Tesselator::getInstance()
 {
-	return (Tesselator *)TlsGetValue(tlsIdx);
+	return static_cast<Tesselator *>(TlsGetValue(tlsIdx));
 }
 
 void Tesselator::CreateNewThreadStorage(int bytes)
@@ -179,18 +179,18 @@ void Tesselator::end()
 				}
 #else
 
-				RenderManager.DrawVertices((C4JRender::ePrimitiveType)mode,vertexCount,_array->data,C4JRender::VERTEX_TYPE_COMPRESSED, C4JRender::PIXEL_SHADER_TYPE_STANDARD);
+				RenderManager.DrawVertices(static_cast<C4JRender::ePrimitiveType>(mode),vertexCount,_array->data,C4JRender::VERTEX_TYPE_COMPRESSED, C4JRender::PIXEL_SHADER_TYPE_STANDARD);
 #endif
 			}
 			else
 			{
 				if( useProjectedTexturePixelShader )
 				{
-					RenderManager.DrawVertices((C4JRender::ePrimitiveType)mode,vertexCount,_array->data,C4JRender::VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_TEXGEN, C4JRender::PIXEL_SHADER_TYPE_PROJECTION);
+					RenderManager.DrawVertices(static_cast<C4JRender::ePrimitiveType>(mode),vertexCount,_array->data,C4JRender::VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_TEXGEN, C4JRender::PIXEL_SHADER_TYPE_PROJECTION);
 				}
 				else
 				{
-					RenderManager.DrawVertices((C4JRender::ePrimitiveType)mode,vertexCount,_array->data,C4JRender::VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1, C4JRender::PIXEL_SHADER_TYPE_STANDARD);
+					RenderManager.DrawVertices(static_cast<C4JRender::ePrimitiveType>(mode),vertexCount,_array->data,C4JRender::VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1, C4JRender::PIXEL_SHADER_TYPE_STANDARD);
 				}
 			}
 #endif
@@ -295,12 +295,12 @@ void Tesselator::tex2(int tex2)
 
 void Tesselator::color(float r, float g, float b)
 {
-    color((int) (r * 255), (int) (g * 255), (int) (b * 255));
+    color(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255));
 }
 
 void Tesselator::color(float r, float g, float b, float a)
 {
-    color((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (a * 255));
+    color(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255), static_cast<int>(a * 255));
 }
 
 void Tesselator::color(int r, int g, int b)
@@ -749,7 +749,7 @@ void Tesselator::vertex(float x, float y, float z)
 	// see comments in packCompactQuad() for exact format
 	if( useCompactFormat360 )
 	{
-		unsigned int ucol = (unsigned int)col;
+		unsigned int ucol = static_cast<unsigned int>(col);
 
 #ifdef _XBOX
 		// Pack as 4:4:4 RGB_
@@ -774,7 +774,7 @@ void Tesselator::vertex(float x, float y, float z)
 		unsigned short packedcol = ((col & 0xf8000000 ) >> 16 ) |
 								   ((col & 0x00fc0000 ) >> 13 ) |
 								   ((col & 0x0000f800 ) >> 11 );
-		int ipackedcol = ((int)packedcol) & 0xffff;	// 0 to 65535 range
+		int ipackedcol = static_cast<int>(packedcol) & 0xffff;	// 0 to 65535 range
 
 		ipackedcol -= 32768;	// -32768 to 32767 range
 		ipackedcol &= 0xffff;
@@ -824,12 +824,12 @@ void Tesselator::vertex(float x, float y, float z)
 
 		p += 4;
 #else
-		pShortData[0] = (((int)((x + xo ) * 1024.0f))&0xffff);
-		pShortData[1] = (((int)((y + yo ) * 1024.0f))&0xffff);
-		pShortData[2] = (((int)((z + zo ) * 1024.0f))&0xffff);
+		pShortData[0] = (static_cast<int>((x + xo) * 1024.0f)&0xffff);
+		pShortData[1] = (static_cast<int>((y + yo) * 1024.0f)&0xffff);
+		pShortData[2] = (static_cast<int>((z + zo) * 1024.0f)&0xffff);
 		pShortData[3] = ipackedcol;
-		pShortData[4] = (((int)(uu * 8192.0f))&0xffff);
-		pShortData[5] = (((int)(v * 8192.0f))&0xffff);
+		pShortData[4] = (static_cast<int>(uu * 8192.0f)&0xffff);
+		pShortData[5] = (static_cast<int>(v * 8192.0f)&0xffff);
 		int16_t u2 = ((int16_t*)&_tex2)[0];
 		int16_t v2 = ((int16_t*)&_tex2)[1];
 #if defined _XBOX_ONE || defined __ORBIS__ 
@@ -1040,9 +1040,9 @@ void Tesselator::normal(float x, float y, float z)
 	int8_t zz = (int8_t) (z * 127);
 	_normal = (xx & 0xff) | ((yy & 0xff) << 8) | ((zz & 0xff) << 16);
 #else
-	byte xx = (byte) (x * 127);
-	byte yy = (byte) (y * 127);
-	byte zz = (byte) (z * 127);
+	byte xx = static_cast<byte>(x * 127);
+	byte yy = static_cast<byte>(y * 127);
+	byte zz = static_cast<byte>(z * 127);
 	_normal = (xx & 0xff) | ((yy & 0xff) << 8) | ((zz & 0xff) << 16);
 #endif
 }

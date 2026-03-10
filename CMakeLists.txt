@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.24)
 
 project(MinecraftConsoles LANGUAGES C CXX RC ASM_MASM)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(NOT WIN32)
   message(FATAL_ERROR "This CMake build currently supports Windows only.")
@@ -73,6 +76,7 @@ target_include_directories(MinecraftClient PRIVATE
   "${CLIENT_DIR}"
   "${CLIENT_DIR}/Windows64/Iggy/include"
   "${CLIENT_DIR}/Xbox/Sentient/Include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 )
 target_compile_definitions(MinecraftClient PRIVATE
   ${MINECRAFT_SHARED_DEFINES}

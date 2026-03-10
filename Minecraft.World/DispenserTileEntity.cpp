@@ -35,7 +35,7 @@ shared_ptr<ItemInstance> DispenserTileEntity::getItem(unsigned int slot)
 
 shared_ptr<ItemInstance> DispenserTileEntity::removeItem(unsigned int slot, int count)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		if (items[slot]->count <= count)
 		{
@@ -61,7 +61,7 @@ shared_ptr<ItemInstance> DispenserTileEntity::removeItem(unsigned int slot, int 
 
 shared_ptr<ItemInstance> DispenserTileEntity::removeItemNoUpdate(int slot)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
@@ -73,7 +73,7 @@ shared_ptr<ItemInstance> DispenserTileEntity::removeItemNoUpdate(int slot)
 // 4J-PB added for spawn eggs not being useable due to limits, so add them in again
 void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int slot)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		// just increment the count of the items
 		if(item->id==items[slot]->id)
@@ -85,7 +85,7 @@ void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int
 	else
 	{
 		items[slot] = item;
-		if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+		if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 		setChanged();
 	}
 }
@@ -99,10 +99,10 @@ bool DispenserTileEntity::removeProjectile(int itemId)
 {
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL && items[i]->id == itemId)
+		if (items[i] != nullptr && items[i]->id == itemId)
 		{
 			shared_ptr<ItemInstance> removedItem = removeItem(i, 1);
-			return removedItem != NULL;
+			return removedItem != nullptr;
 		}
 	}
 	return false;
@@ -114,7 +114,7 @@ int DispenserTileEntity::getRandomSlot()
 	int replaceOdds = 1;
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL && random->nextInt(replaceOdds++) == 0)
+		if (items[i] != nullptr && random->nextInt(replaceOdds++) == 0)
 		{
 			replaceSlot = i;
 		}
@@ -126,7 +126,7 @@ int DispenserTileEntity::getRandomSlot()
 void DispenserTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
-	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+	if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 	setChanged();
 }
 
@@ -134,7 +134,7 @@ int DispenserTileEntity::addItem(shared_ptr<ItemInstance> item)
 {
 	for (int i = 0; i < items.length; i++)
 	{
-		if (items[i] == NULL || items[i]->id == 0)
+		if (items[i] == nullptr || items[i]->id == 0)
 		{
 			setItem(i, item);
 			return i;
@@ -186,10 +186,10 @@ void DispenserTileEntity::save(CompoundTag *base)
 
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -231,12 +231,12 @@ bool DispenserTileEntity::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
 // 4J Added
 shared_ptr<TileEntity> DispenserTileEntity::clone()
 {
-	shared_ptr<DispenserTileEntity> result = shared_ptr<DispenserTileEntity>( new DispenserTileEntity() );
+	shared_ptr<DispenserTileEntity> result = std::make_shared<DispenserTileEntity>();
 	TileEntity::clone(result);
 
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			result->items[i] = ItemInstance::clone(items[i]);
 		}

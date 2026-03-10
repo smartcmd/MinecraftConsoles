@@ -15,8 +15,8 @@ FireworksMenu::FireworksMenu(shared_ptr<Inventory> inventory, Level *level, int 
 	m_canMakeCharge = false;
 	m_canMakeFade = false;
 
-	craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(this, 3, 3) );
-	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
+	craftSlots = std::make_shared<CraftingContainer>(this, 3, 3);
+	resultSlots = std::make_shared<ResultContainer>();
 
 	this->level = level;
 	x = xt;
@@ -61,7 +61,7 @@ void FireworksMenu::removed(shared_ptr<Player> player)
 	for (int i = 0; i < 9; i++)
 	{
 		shared_ptr<ItemInstance> item = craftSlots->removeItemNoUpdate(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			player->drop(item);
 		}
@@ -77,7 +77,7 @@ shared_ptr<ItemInstance> FireworksMenu::quickMoveStack(shared_ptr<Player> player
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
@@ -145,6 +145,6 @@ bool FireworksMenu::canTakeItemForPickAll(shared_ptr<ItemInstance> carried, Slot
 
 bool FireworksMenu::isValidIngredient(shared_ptr<ItemInstance> item, int slotId)
 {
-	if(item == NULL || slotId == RESULT_SLOT) return true;
+	if(item == nullptr || slotId == RESULT_SLOT) return true;
 	return FireworksRecipe::isValidIngredient(item, m_canMakeFireworks, m_canMakeCharge, m_canMakeFade);
 }

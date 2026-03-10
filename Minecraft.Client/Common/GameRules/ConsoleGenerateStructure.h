@@ -36,7 +36,7 @@ public:
 
 	virtual int getMinY();
 
-	EStructurePiece GetType() { return (EStructurePiece)0; }
+	EStructurePiece GetType() { return static_cast<EStructurePiece>(0); }
 	void addAdditonalSaveData(CompoundTag *tag) {}
 	void readAdditonalSaveData(CompoundTag *tag) {}
 };

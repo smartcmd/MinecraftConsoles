@@ -46,11 +46,11 @@ void TileEntity::setId(tileEntityCreateFn createFn, eINSTANCEOF clas, wstring id
 
 TileEntity::TileEntity()
 {
-	level = NULL;
+	level = nullptr;
 	x = y = z = 0;
 	remove = false;
 	data = -1;
-	tile = NULL;
+	tile = nullptr;
 	renderRemoveStage = e_RenderRemoveStageKeep;
 }
 
@@ -66,7 +66,7 @@ void TileEntity::setLevel(Level *level)
 
 bool TileEntity::hasLevel()
 {
-	return level != NULL;
+	return level != nullptr;
 }
 
 void TileEntity::load(CompoundTag *tag)
@@ -101,7 +101,7 @@ shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag *tag)
     auto it = idCreateMap.find(tag->getString(L"id"));
     if (it != idCreateMap.end())
         entity = shared_ptr<TileEntity>(it->second());
-	if (entity != NULL)
+	if (entity != nullptr)
 	{
 		entity->load(tag);
 	}
@@ -129,11 +129,11 @@ void TileEntity::setData(int data, int updateFlags)
 
 void TileEntity::setChanged()
 {
-	if (level != NULL)
+	if (level != nullptr)
 	{
 		data = level->getData(x, y, z);
 		level->tileEntityChanged(x, y, z, shared_from_this());
-		if (getTile() != NULL) level->updateNeighbourForOutputSignal(x, y, z, getTile()->id);
+		if (getTile() != nullptr) level->updateNeighbourForOutputSignal(x, y, z, getTile()->id);
 	}
 }
 
@@ -152,7 +152,7 @@ double TileEntity::getViewDistance()
 
 Tile *TileEntity::getTile()
 {
-	if( tile == NULL ) tile = Tile::tiles[level->getTile(x, y, z)];
+	if( tile == nullptr ) tile = Tile::tiles[level->getTile(x, y, z)];
 	return tile;
 }
 
@@ -183,7 +183,7 @@ bool TileEntity::triggerEvent(int b0, int b1)
 
 void TileEntity::clearCache()
 {
-	tile = NULL;
+	tile = nullptr;
 	data = -1;
 }
 

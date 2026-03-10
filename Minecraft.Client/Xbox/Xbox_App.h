@@ -121,7 +121,7 @@ private:
 
 public:
 
-	void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false);
+	void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false);
 // 	void ReadXuidsFileFromTMS(int iPad,eTMSAction NextAction,bool bCallback);
 // 	void ReadDLCFileFromTMS(int iPad,eTMSAction NextAction, bool bCallback);
 
@@ -133,12 +133,12 @@ public:
 	
 	WCHAR *GetSceneName(EUIScene eScene, bool bAppendToName,bool bSplitscreenScene);
 
-	virtual HRESULT			NavigateToScene(int iPad,EUIScene eScene, void *initData = NULL, bool forceUsePad = false, BOOL bStayVisible=FALSE, HXUIOBJ *phResultingScene=NULL);
+	virtual HRESULT			NavigateToScene(int iPad,EUIScene eScene, void *initData = nullptr, bool forceUsePad = false, BOOL bStayVisible=FALSE, HXUIOBJ *phResultingScene=nullptr);
 	virtual HRESULT			NavigateBack(int iPad, bool forceUsePad = false,EUIScene eScene = eUIScene_COUNT);
 	virtual HRESULT			TutorialSceneNavigateBack(int iPad, bool forceUsePad = false);
 	virtual HRESULT			CloseXuiScenes(int iPad, bool forceUsePad = false);
 	virtual HRESULT			CloseAllPlayersXuiScenes();
-	virtual HRESULT			CloseXuiScenesAndNavigateToScene(int iPad,EUIScene eScene, void *initData=NULL, bool forceUsePad = false);
+	virtual HRESULT			CloseXuiScenesAndNavigateToScene(int iPad,EUIScene eScene, void *initData=nullptr, bool forceUsePad = false);
 	virtual HRESULT			RemoveBackScene(int iPad);
 	virtual HRESULT			NavigateToHomeMenu();
 	D3DXVECTOR3				GetElementScreenPosition(HXUIOBJ hObj);
