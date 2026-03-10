@@ -24,18 +24,21 @@ bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z)
 
 bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z, bool force)
 {
-	if( !force )
+	//Will only spawn a bonus chest if the world is new and has never been saved.
+	if (level->isNew)
 	{
-		int t = 0;
-		while (((t = level->getTile(x, y, z)) == 0 || t == Tile::leaves_Id) && y > 1)
+		if( !force )
+		{
+			int t = 0;
+			while (((t = level->getTile(x, y, z)) == 0 || t == Tile::leaves_Id) && y > 1)
 			y--;
 
-		if (y < 1)
-		{
-			return false;
+			if (y < 1)
+			{
+				return false;
+			}
+			y++;
 		}
-		y++;
-	}
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -85,4 +88,6 @@ bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z,
 	}
 
 	return false;
+
+	}
 }
