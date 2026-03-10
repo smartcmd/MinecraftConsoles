@@ -142,7 +142,7 @@ private:
     bool loadLevel(LevelStorageSource *storageSource, const wstring& name, int64_t levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
     void setProgress(const wstring& status, int progress);
     void endProgress();
-    void saveAllChunks();
+	void saveAllChunks();
 	void saveGameRules();
     void stopServer(bool didInit);
 #ifdef _LARGE_WORLDS

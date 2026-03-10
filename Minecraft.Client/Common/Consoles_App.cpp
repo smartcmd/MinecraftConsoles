@@ -5699,6 +5699,9 @@ bool CMinecraftApp::isXuidDeadmau5(PlayerUID xuid)
 
 void CMinecraftApp::AddMemoryTextureFile(const wstring &wName,PBYTE pbData,DWORD dwBytes)
 {
+#ifdef _WINDOWS64
+	extern bool g_Win64Verbose;
+#endif
 	EnterCriticalSection(&csMemFilesLock);
 	// check it's not already in
 	PMEMDATA pData=nullptr;
@@ -5706,6 +5709,9 @@ void CMinecraftApp::AddMemoryTextureFile(const wstring &wName,PBYTE pbData,DWORD
 	if(it != m_MEM_Files.end())
 	{
 #ifndef _CONTENT_PACKAGE
+#ifdef _WINDOWS64
+		if (g_Win64Verbose)
+#endif
 		wprintf(L"Incrementing the memory texture file count for %ls\n", wName.c_str());
 #endif
 		pData = (*it).second;

@@ -30,6 +30,7 @@
 #include "..\..\Minecraft.World\ThreadName.h"
 #include "..\..\Minecraft.Client\StatsCounter.h"
 #include "..\ConnectScreen.h"
+#include "..\ServerConsole.h"
 //#include "Social\SocialManager.h"
 //#include "Leaderboards\LeaderboardManager.h"
 //#include "XUI\XUI_Scene_Container.h"
@@ -123,6 +124,7 @@ struct Win64LaunchOptions
 	int screenMode;
 	bool serverMode;
 	bool fullscreen;
+	bool verbose;
 };
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
@@ -208,6 +210,7 @@ static Win64LaunchOptions ParseLaunchOptions()
 	Win64LaunchOptions options = {};
 	options.screenMode = 0;
 	options.serverMode = false;
+	options.verbose = false;
 
 	g_Win64MultiplayerJoin = false;
 	g_Win64MultiplayerPort = WIN64_NET_DEFAULT_PORT;
@@ -271,6 +274,8 @@ static Win64LaunchOptions ParseLaunchOptions()
 		}
 		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
 			options.fullscreen = true;
+		else if (_wcsicmp(argv[i], L"-v") == 0 || _wcsicmp(argv[i], L"-verbose") == 0)
+			options.verbose = true;
 	}
 
 	LocalFree(argv);
@@ -1354,30 +1359,19 @@ static int HeadlessServerConsoleThreadProc(void* lpParameter)
 {
 	UNREFERENCED_PARAMETER(lpParameter);
 
-	std::string line;
+	MinecraftServer* server = nullptr;
 	while (!app.m_bShutdown)
 	{
-		if (!std::getline(std::cin, line))
-		{
-			if (std::cin.eof())
-			{
-				break;
-			}
-
-			std::cin.clear();
-			Sleep(50);
-			continue;
-		}
-
-		wstring command = trimString(convStringToWstring(line));
-		if (command.empty())
-			continue;
-
-		MinecraftServer* server = MinecraftServer::getInstance();
+		server = MinecraftServer::getInstance();
 		if (server != nullptr)
-		{
-			server->handleConsoleInput(command, server);
-		}
+			break;
+		Sleep(100);
+	}
+
+	if (server != nullptr && !app.m_bShutdown)
+	{
+		ServerConsole console(server);
+		console.run();
 	}
 
 	return 0;
@@ -1564,6 +1558,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// Load stuff from launch options, including username
 	const Win64LaunchOptions launchOptions = ParseLaunchOptions();
+	g_Win64Verbose = launchOptions.verbose;
 	ApplyScreenMode(launchOptions.screenMode);
 
 	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
