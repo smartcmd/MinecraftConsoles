@@ -47,9 +47,7 @@ set(CLIENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client")
 # Sources
 # ---
 add_subdirectory(Minecraft.World)
-list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${WORLD_DIR}/")
 add_subdirectory(Minecraft.Client)
-list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CLIENT_DIR}/")
 
 # ---
 # MinecraftWorld
