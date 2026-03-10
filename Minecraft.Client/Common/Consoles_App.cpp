@@ -84,6 +84,8 @@ int CMinecraftApp::s_iHTMLFontSizesA[eHTMLSize_COUNT] =
 #endif
 };
 
+// jvnpr -- update this anytime settingfixer needs to convert old settings to new settings!
+const int currentSettingDataVersion = 1;
 
 CMinecraftApp::CMinecraftApp()
 {
@@ -904,6 +906,8 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1 );
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1 );
 
+	app.SetGameSettings(iPad, eGameSetting_SettingDataVersion, currentSettingDataVersion);
+
 	// 4J-PB - leave these in, or remove from everywhere they are referenced!
 	// Although probably best to leave in unless we split the profile settings into platform specific classes - having different meaning per platform for the same bitmask could get confusing
 	//#ifdef __PS3__
@@ -1362,6 +1366,7 @@ void CMinecraftApp::ApplyGameSettingsChanged(int iPad)
 
 	ActionGameSettings(iPad,eGameSetting_PS3_EULA_Read);
 
+	ActionGameSettings(iPad,eGameSetting_SettingDataVersion);
 }
 
 void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
@@ -1596,7 +1601,31 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_PSVita_NetworkModeAdhoc:
 		//nothing to do here
 		break;
+	case eGameSetting_SettingDataVersion:
+		break;
 	}
+}
+
+void CMinecraftApp::SettingFixer()
+{
+	unsigned int version = ProfileManager.GetPrimaryPad()]->uiSettingDataVersion
+
+	if (GameSettingsA[version != currentSettingDataVersion)
+	{
+		DebugPrintf("[SettingFixer]: Fixing Settings!\n");
+
+		/* ex:
+		if (version < 1) fix v1 setting changes;
+		if (version < 2) fix v2 setting changes;
+		...
+		*/ 
+	}
+	else
+	{
+		DebugPrintf("[SettingFixer]: Nothing to do.\n");
+	}
+
+	GameSettingsA[ProfileManager.GetPrimaryPad()]->uiSettingDataVersion = currentSettingDataVersion;
 }
 
 void CMinecraftApp::SetPlayerSkin(int iPad,const wstring &name)
@@ -2306,7 +2335,14 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 			GameSettingsA[iPad]->bSettingsChanged=true;
 		}
 		break;
+	case eGameSetting_SettingDataVersion:
 
+		if (GameSettingsA[iPad]->uiSettingDataVersion != ucVal)
+		{
+			GameSettingsA[iPad]->uiSettingDataVersion = ucVal;
+			ActionGameSettings(iPad, eVal);
+			GameSettingsA[iPad]->bSettingsChanged = true;
+		}
 	}
 }
 
@@ -2441,7 +2477,9 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 
 	case eGameSetting_PSVita_NetworkModeAdhoc:
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)>>17;
-
+	
+	case eGameSetting_SettingDataVersion:
+		return GameSettingsA[iPad]->uiSettingDataVersion;
 	}
 	return 0;
 }
