@@ -17,6 +17,7 @@ protected:
 	ButtonTile(int id, bool sensitive);
 
 public:
+    static shared_ptr<Player> lastPlayer;
 	Icon *getTexture(int face, int data);
 	virtual AABB *getAABB(Level *level, int x, int y, int z);
 	virtual int getTickDelay(Level *level);
