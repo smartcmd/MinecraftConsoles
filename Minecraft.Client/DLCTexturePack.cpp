@@ -483,8 +483,10 @@ int DLCTexturePack::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicen
 					iEndStart=iOverworldC+iNetherC;
 					iEndC=dlcFile->GetCountofType(DLCAudioFile::e_AudioType_End);
 
+
+					//DLC packs don't differentiate survival, creative, and menu music so for now they are all the same range.
 					Minecraft::GetInstance()->soundEngine->SetStreamingSounds(iOverworldStart,iOverworldStart+iOverworldC-1,
-						iNetherStart,iNetherStart+iNetherC-1,iEndStart,iEndStart+iEndC-1,iEndStart+iEndC); // push the CD start to after
+						iNetherStart,iNetherStart+iNetherC-1,iEndStart,iEndStart+iEndC-1,iEndStart+iEndC, iOverworldStart,iOverworldStart+iOverworldC-1,iOverworldStart,iOverworldStart+iOverworldC-1); // push the CD start to after
 				}
 #endif
 }

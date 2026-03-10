@@ -3757,7 +3757,7 @@ void CMinecraftApp::HandleXuiActions(void)
 						pMinecraft->soundEngine->SetStreamingSounds(eStream_Overworld_Calm1,eStream_Overworld_piano3,
 							eStream_Nether1,eStream_Nether4,
 							eStream_end_dragon,eStream_end_end,
-							eStream_CD_1);
+							eStream_CD_1, eStream_Overworld_Creative1, eStream_Overworld_Creative6, eStream_Overworld_Menu1, eStream_Overworld_Menu4);
 #endif
 						pMinecraft->soundEngine->playStreaming(L"", 0, 0, 0, 1, 1);
 
