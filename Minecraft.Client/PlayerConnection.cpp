@@ -36,6 +36,7 @@
 #include "Options.h"
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\ServerLogger.h"
 #include "..\Minecraft.Server\FourKitNative.h"
 #endif
 
@@ -493,6 +494,29 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 	if (packet->action == PlayerActionPacket::START_DESTROY_BLOCK)
 	{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		int blockId = level->getTile(x, y, z);
+		int blockData = level->getData(x, y, z);
+		bool useInteractedBlock = true;
+
+        shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+        bool hasItem = (selectedItem != NULL && selectedItem->id > 0);
+
+		if (FourKit::EmitPlayerInteractEvent(
+			player.get(),
+			FourKit::eInteract_LeftClickBlock,
+			packet->face,
+            true,
+			x, y, z,
+			player->dimension,
+			blockId,
+			blockData,
+			hasItem))
+		{
+			player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+			return;
+		}
+#endif
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 		bool shouldEmitBreakEvent = player->gameMode->isCreative();
 
 		if (!shouldEmitBreakEvent)
@@ -568,12 +592,38 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 	int face = packet->getFace();
 	player->resetLastActionTime();
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	// this fires twice sometimes. it fires twice with an arrow thats about all ive tested
+	// also does bukkit stop player from placing block if playerinteractevent is cancelled? need to test soon
+
+	bool allowUseItemInHand = (item != NULL);
+    bool hasItem = (item != NULL && item->id > 0);
+
+    int clickedBlockId = level->getTile(x, y, z);
+    int clickedBlockData = level->getData(x, y, z);
+    if (FourKit::EmitPlayerInteractEvent(
+            player.get(),
+            FourKit::eInteract_RightClickBlock,
+            face,
+            true,
+            x, y, z,
+            player->dimension,
+            clickedBlockId,
+            clickedBlockData,
+            hasItem))
+    {
+        informClient = true;
+    }
+#endif
+
 	// 4J Stu - We don't have ops, so just use the levels setting
 	bool canEditSpawn = level->canEditSpawn; // = level->dimension->id != 0 || server->players->isOp(player->name);
 	if (packet->getFace() == 255)
-	{
+    {
+        // this only gets to this point when right click w/o item. Right click air todo.
+
 		if (item == NULL) return;
-		player->gameMode->useItem(player, level, item);
+			player->gameMode->useItem(player, level, item);
 	}
 	else if ((packet->getY() < server->getMaxBuildHeight() - 1) || (packet->getFace() != Facing::UP && packet->getY() < server->getMaxBuildHeight()))
 	{
@@ -582,66 +632,71 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 			if (true)		// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from java 1.6.4) but putting back to old behaviour
 			{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
-				bool blockPlaceCancelled = false;
-				bool shouldEmitBlockPlaceEvent = false;
-				int placeX = x;
-				int placeY = y;
-				int placeZ = z;
-				bool validFace = true;
-				
-				if (face == 0)
-				{
-					placeY--;
-				}
-				else if (face == 1)
-				{
-					placeY++;
-				}
-				else if (face == 2)
-				{
-					placeZ--;
-				}
-				else if (face == 3)
-				{
-					placeZ++;
-				}
-				else if (face == 4)
-				{
-					placeX--;
-				}
-				else if (face == 5)
-				{
-					placeX++;
-				}
-				else
-				{
-					validFace = false;
-				}
-
-				if (item != NULL && validFace)
-				{
-					// Test if block placement would actually occur
-					shouldEmitBlockPlaceEvent = player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ(), true);
-					
-					if (shouldEmitBlockPlaceEvent)
-					{
-						int blockId = item->id;
-						int blockData = item->getAuxValue();
-						blockPlaceCancelled = FourKit::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
-					}
-				}
-
-				if (!blockPlaceCancelled)
-				{
+				if (!informClient)
 #endif
-					player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+				{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
-				}
-				else
-				{
-					informClient = true;
-				}
+					bool blockPlaceCancelled = false;
+					bool shouldEmitBlockPlaceEvent = false;
+					int placeX = x;
+					int placeY = y;
+					int placeZ = z;
+					bool validFace = true;
+					
+					if (face == 0)
+					{
+						placeY--;
+					}
+					else if (face == 1)
+					{
+						placeY++;
+					}
+					else if (face == 2)
+					{
+						placeZ--;
+					}
+					else if (face == 3)
+					{
+						placeZ++;
+					}
+					else if (face == 4)
+					{
+						placeX--;
+					}
+					else if (face == 5)
+					{
+						placeX++;
+					}
+					else
+					{
+						validFace = false;
+					}
+
+					if (item != NULL && validFace)
+					{
+						// Test if block placement would actually occur
+						shouldEmitBlockPlaceEvent = player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ(), true);
+						
+						if (shouldEmitBlockPlaceEvent)
+						{
+							int blockId = item->id;
+							int blockData = item->getAuxValue();
+							blockPlaceCancelled = FourKit::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
+						}
+					}
+
+					if (!blockPlaceCancelled)
+					{
 #endif
+						player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+					}
+					else
+					{
+						informClient = true;
+					}
+#endif
+				}
 			}
 		}
 
@@ -835,6 +890,9 @@ void PlayerConnection::handleAnimate(shared_ptr<AnimatePacket> packet)
 	player->resetLastActionTime();
 	if (packet->action == AnimatePacket::SWING)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		// todo: this fires at the same time as left click block..... dont fire left click air if left click block. will have 2 add check 4 dat
+#endif
 		player->swing();
 	}
 }
@@ -1701,7 +1759,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 			{
 				app.DebugPrintf("Command blocks not enabled");
 				//player->sendMessage(ChatMessageComponent.forTranslation("advMode.notEnabled"));
-			}
+				}
 			else if (player->hasPermission(eGameCommand_Effect) && player->abilities.instabuild)
 			{
 				ByteArrayInputStream bais(customPayloadPacket->data);
@@ -1714,7 +1772,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 				shared_ptr<TileEntity> tileEntity = player->level->getTileEntity(x, y, z);
 				shared_ptr<CommandBlockEntity> cbe = dynamic_pointer_cast<CommandBlockEntity>(tileEntity);
 				if (tileEntity != NULL && cbe != NULL)
-				{
+							{
 					cbe->setCommand(command);
 					player->level->sendTileUpdated(x, y, z);
 					//player->sendMessage(ChatMessageComponent.forTranslation("advMode.setCommand.success", command));

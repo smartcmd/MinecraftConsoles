@@ -11,24 +11,6 @@
 #include "Block.h"
 #include "FourKitStructs.h"
 
-using namespace System;
-using namespace System::Reflection;
-using namespace System::IO;
-using namespace System::Collections::Generic;
-
-enum class PluginEventType
-{
-	OnLoad,
-	OnExit,
-	OnPlayerJoin
-};
-
-public ref class PlayerJoinEventArgs
-{
-public:
-	String^ PlayerName;
-};
-
 public ref class FourKit
 {
 public:
@@ -63,4 +45,5 @@ internal:
     static void FireEventOnPlayerMove(const PlayerMoveData &moveData, bool *cancelled);
     static void FireEventOnPlayerPortal(PlayerPortalData *portalData, bool *cancelled);
     static void FireEventOnSignChange(SignChangeData *signData, bool *cancelled);
+    static void FireEventOnPlayerInteract(PlayerInteractData *interactData, bool *cancelled);
 };

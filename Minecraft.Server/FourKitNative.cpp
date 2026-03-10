@@ -443,6 +443,34 @@ namespace FourKit
 		return cancelled;
 	}
 
+	bool EmitPlayerInteractEvent(ServerPlayer* nativePlayer, EInteractAction action, int blockFace,
+		bool hasBlock, int x, int y, int z, int dimension, int blockId, int blockData, bool hasItem)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		PlayerInteractData interactData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		interactData.playerName = nameUtf8.c_str();
+		interactData.action = (int)action;
+		interactData.blockFace = blockFace;
+		interactData.hasBlock = hasBlock;
+        interactData.hasItem = hasItem;
+		interactData.x = x;
+		interactData.y = y;
+		interactData.z = z;
+		interactData.dimension = dimension;
+		interactData.blockId = blockId;
+		interactData.blockData = blockData;
+
+		bool cancelled = false;
+		FourKit_FireOnPlayerInteract(&interactData, &cancelled);
+
+		return cancelled;
+	}
+
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer)
 	{
 		if (nativePlayer == nullptr)

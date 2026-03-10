@@ -183,3 +183,33 @@ struct SignChangeData
 		}
 	}
 };
+
+struct PlayerInteractData
+{
+	const char* playerName;
+	int action;
+    int blockFace;
+    bool hasBlock;
+    bool hasItem;
+	int x;
+	int y;
+	int z;
+	int dimension;
+	int blockId;
+	int blockData;
+
+	PlayerInteractData()
+		: playerName(nullptr)
+		, action(0)
+		, blockFace(0)
+		, hasBlock(false)
+		, hasItem(false)
+		, x(0)
+		, y(0)
+		, z(0)
+		, dimension(0)
+		, blockId(0)
+		, blockData(0)
+	{
+	}
+};

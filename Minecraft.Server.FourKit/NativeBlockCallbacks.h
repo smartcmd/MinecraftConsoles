@@ -5,7 +5,7 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-public ref class NativeBlockCallbacks
+private ref class NativeBlockCallbacks
 {
 public:
 	static void BreakNaturally(int x, int y, int z, int dimension);

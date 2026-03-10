@@ -20,6 +20,33 @@ namespace
 	PB_NATIVE_CALLBACK_LIST(PB_DECLARE_STORAGE)
 #undef PB_DECLARE_STORAGE
 
+	BlockFace ToBlockFace(int face)
+	{
+		switch (face)
+		{
+		case 0: return BlockFace::DOWN;
+		case 1: return BlockFace::UP;
+		case 2: return BlockFace::NORTH;
+		case 3: return BlockFace::SOUTH;
+		case 4: return BlockFace::WEST;
+		case 5: return BlockFace::EAST;
+		default: return BlockFace::SELF;
+		}
+	}
+
+	InteractAction ToInteractAction(int action)
+	{
+		switch (action)
+		{
+		case 0: return InteractAction::RIGHT_CLICK_BLOCK;
+		//case 1: return InteractAction::LEFT_CLICK_AIR;
+		case 2: return InteractAction::LEFT_CLICK_BLOCK;
+		//case 3: return InteractAction::RIGHT_CLICK_AIR;
+		case 4: return InteractAction::PHYSICAL;
+		default: return InteractAction::RIGHT_CLICK_BLOCK;
+		}
+	}
+
 	Player^ ResolvePlayerByName(String^ name)
 	{
 		if (String::IsNullOrEmpty(name))
@@ -574,6 +601,66 @@ void FourKit::FireEventOnSignChange(SignChangeData *signData, bool *cancelled)
     }
 }
 
+void FourKit::FireEventOnPlayerInteract(PlayerInteractData *interactData, bool *cancelled)
+{
+	try
+	{
+		if (interactData == nullptr)
+		{
+			if (cancelled != nullptr)
+			{
+				*cancelled = false;
+			}
+			return;
+		}
+
+		String ^ name = gcnew String((interactData->playerName != nullptr) ? interactData->playerName : "");
+		Player ^ player = ResolvePlayerByName(name);
+		if (player == nullptr)
+		{
+			player = gcnew Player(name);
+		}
+
+		PlayerInteractEvent^ event = gcnew PlayerInteractEvent();
+		event->PlayerObject = player;
+		event->Action = ToInteractAction(interactData->action);
+        event->Face = ToBlockFace(interactData->blockFace);
+        event->HasBlock = interactData->hasBlock;
+        event->HasItem = interactData->hasItem;
+		event->Cancelled = false;
+
+		if (interactData->hasBlock)
+		{
+			event->ClickedBlock = gcnew Block(
+				interactData->x,
+				interactData->y,
+				interactData->z,
+				interactData->dimension,
+				interactData->blockId,
+				interactData->blockData);
+		}
+		else
+		{
+			event->ClickedBlock = nullptr;
+		}
+
+		EventManager::FireEvent(event);
+
+		if (cancelled != nullptr)
+		{
+			*cancelled = event->Cancelled;
+		}
+	}
+	catch (Exception ^ ex)
+	{
+		PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerInteract event: {0}", ex->Message));
+		if (cancelled != nullptr)
+		{
+			*cancelled = false;
+		}
+	}
+}
+
 void FourKit::addListener(Listener ^ listener)
 {
     EventManager::RegisterListener(listener);
@@ -817,6 +904,11 @@ extern "C"
     __declspec(dllexport) void FourKit_FireOnSignChange(SignChangeData* signData, bool* cancelled)
     {
         FourKit::FireEventOnSignChange(signData, cancelled);
+    }
+
+    __declspec(dllexport) void FourKit_FireOnPlayerInteract(PlayerInteractData* interactData, bool* cancelled)
+    {
+        FourKit::FireEventOnPlayerInteract(interactData, cancelled);
     }
 
     __declspec(dllexport) void FourKit_FireOnLoad()

@@ -3,7 +3,7 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-public ref class PluginLogger
+private ref class PluginLogger
 {
 public:
 	enum class LogLevel

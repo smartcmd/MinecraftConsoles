@@ -18,6 +18,15 @@ namespace FourKit
 		ePortalCause_Unknown = 4
 	};
 
+	enum EInteractAction
+	{
+		eInteract_RightClickBlock = 0,
+		//eInteract_LeftClickAir = 1,
+		eInteract_LeftClickBlock = 2,
+		//eInteract_RightClickAir = 3,
+		eInteract_Physical = 4
+	};
+
 	void CreateAndBindManagedPlayer(ServerPlayer* nativePlayer, PlayerConnection* connection);
 	bool EmitPlayerChatEvent(ServerPlayer* nativePlayer, const std::wstring& message);
 	bool EmitBlockBreakEvent(ServerPlayer* nativePlayer, int x, int y, int z, int blockId, int blockData);
@@ -27,6 +36,8 @@ namespace FourKit
 		double& fromX, double& fromY, double& fromZ,
 		double& toX, double& toY, double& toZ);
 	bool EmitSignChangeEvent(ServerPlayer* nativePlayer, int x, int y, int z, int dimension, std::wstring lines[4]);
+	bool EmitPlayerInteractEvent(ServerPlayer* nativePlayer, EInteractAction action, int blockFace,
+		bool hasBlock, int x, int y, int z, int dimension, int blockId, int blockData, bool hasItem);
 	void EmitPlayerLeaveEvent(ServerPlayer* nativePlayer);
 }
 

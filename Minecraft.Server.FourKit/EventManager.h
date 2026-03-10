@@ -8,7 +8,7 @@ using namespace System::Reflection;
 using namespace System::Collections::Generic;
 using namespace System::Threading;
 
-public ref class EventManager
+private ref class EventManager
 {
 public:
 	static void RegisterListener(Listener^ listener);

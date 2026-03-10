@@ -5,7 +5,7 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-public ref class NativePlayerCallbacks
+private ref class NativePlayerCallbacks
 {
 public:
 	static void SetFallDistance(String^ playerName, float distance);

@@ -14,6 +14,38 @@ public enum class TeleportCause
 	UNKNOWN = 4
 };
 
+public enum class InteractAction
+{
+	RIGHT_CLICK_BLOCK = 0,
+	//LEFT_CLICK_AIR = 1,
+	LEFT_CLICK_BLOCK = 2,
+	//RIGHT_CLICK_AIR = 3,
+	PHYSICAL = 4
+};
+
+public enum class BlockFace
+{
+	NORTH = 0,
+	EAST = 1,
+	SOUTH = 2,
+	WEST = 3,
+	UP = 4,
+	DOWN = 5,
+	NORTH_EAST = 6,
+	NORTH_WEST = 7,
+	SOUTH_EAST = 8,
+	SOUTH_WEST = 9,
+	WEST_NORTH_WEST = 10,
+	NORTH_NORTH_WEST = 11,
+	NORTH_NORTH_EAST = 12,
+	EAST_NORTH_EAST = 13,
+	EAST_SOUTH_EAST = 14,
+	SOUTH_SOUTH_EAST = 15,
+	SOUTH_SOUTH_WEST = 16,
+	WEST_SOUTH_WEST = 17,
+	SELF = 18
+};
+
 public ref class Location
 {
 public:
@@ -152,5 +184,40 @@ internal:
 	property Player ^ PlayerObject;
     property Block ^ BlockObject;
     property cli::array<String ^> ^ Lines;
+    property bool Cancelled;
+};
+
+public ref class PlayerInteractEvent
+{
+  public:
+    void setCancelled(bool cancelled)
+    {
+        Cancelled = cancelled;
+    }
+    bool isCancelled()
+    {
+        return Cancelled;
+    }
+    InteractAction getAction()
+    {
+        return Action;
+    }
+    Player^ getPlayer() { return PlayerObject; }
+    Block^ getClickedBlock() { return ClickedBlock; }
+    BlockFace getBlockFace()
+    {
+        return Face;
+    }
+    bool hasItem()
+    {
+        return HasItem;
+    }
+internal:
+    property Player^ PlayerObject;
+    property InteractAction Action;
+    property Block^ ClickedBlock;
+    property BlockFace Face;
+    property bool HasBlock;
+    property bool HasItem;
     property bool Cancelled;
 };
