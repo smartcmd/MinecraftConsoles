@@ -961,7 +961,6 @@ int CGameNetworkManager::ServerThreadProc( void* lpParameter )
 	Entity::useSmallIds();
 	Level::enableLightingCache();
 	Tile::CreateNewThreadStorage();
-	FireworksRecipe::CreateNewThreadStorage();
 
 	MinecraftServer::main(seed, lpParameter); //saveData, app.GetGameHostOption(eGameHostOption_All));
 

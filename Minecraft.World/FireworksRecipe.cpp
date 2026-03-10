@@ -2,47 +2,14 @@
 #include "net.minecraft.world.item.h"
 #include "FireworksRecipe.h"
 
-DWORD FireworksRecipe::tlsIdx = 0;
-FireworksRecipe::ThreadStorage *FireworksRecipe::tlsDefault = nullptr;
-
-FireworksRecipe::ThreadStorage::ThreadStorage()
-{
-	resultItem = nullptr;
-}
-
-void FireworksRecipe::CreateNewThreadStorage()
-{
-	ThreadStorage *tls = new ThreadStorage();
-	if(tlsDefault == nullptr )
-	{
-		tlsIdx = TlsAlloc();
-		tlsDefault = tls;
-	}
-	TlsSetValue(tlsIdx, tls);
-}
-
-void FireworksRecipe::UseDefaultThreadStorage()
-{
-	TlsSetValue(tlsIdx, tlsDefault);
-}
-
-void FireworksRecipe::ReleaseThreadStorage()
-{
-	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
-	if( tls == tlsDefault ) return;
-
-	delete tls;
-}
-
 void FireworksRecipe::setResultItem(shared_ptr<ItemInstance> item)
 {
-	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
-	tls->resultItem = item;
+	this->resultItem = item;
 }
 
 FireworksRecipe::FireworksRecipe()
 {
-	//resultItem = nullptr;
+	resultItem = nullptr;
 }
 
 bool FireworksRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *level)
@@ -268,9 +235,11 @@ bool FireworksRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *l
 
 shared_ptr<ItemInstance> FireworksRecipe::assemble(shared_ptr<CraftingContainer> craftSlots)
 {
-	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
-	return tls->resultItem->copy();
-	//return resultItem->copy();
+	if (this->resultItem != nullptr)
+	{
+		return this->resultItem->copy();
+	}
+	return nullptr;
 }
 
 int FireworksRecipe::size()
@@ -280,9 +249,7 @@ int FireworksRecipe::size()
 
 const ItemInstance *FireworksRecipe::getResultItem()
 {
-	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
-	return tls->resultItem.get();
-	//return resultItem.get();
+	return this->resultItem.get();
 }
 
 void FireworksRecipe::updatePossibleRecipes(shared_ptr<CraftingContainer> craftSlots, bool *firework, bool *charge, bool *fade)
