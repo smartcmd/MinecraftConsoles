@@ -217,7 +217,8 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						memcpy( &receivedSize, connectionInfo->m_pucRoomSyncData, 4);
 						delete [] connectionInfo->m_pucRoomSyncData;
 
-						if( receivedSize < 0 || receivedSize > 1048576 )
+					// a 512KB limit gives enough headroom for legitimate XUID data, but prevents a overflow. With 2 players the size is about 100kb so 512kb gives good headroom
+						if( receivedSize < 0 || receivedSize > 524288 )
 						{
 							DQRNetworkManager::LogCommentFormat(L"RoomSyncData rejected: size=%d", receivedSize);
 							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
@@ -321,7 +322,8 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						memcpy( &receivedSize, connectionInfo->m_pucAddFailedPlayerData, 4);
 						delete [] connectionInfo->m_pucAddFailedPlayerData;
 
-						if( receivedSize < 0 || receivedSize > 1048576 )
+					// a 512KB limit gives enough headroom for legitimate XUID strings, but prevents a overflow.
+						if( receivedSize < 0 || receivedSize > 524288 )
 						{
 							DQRNetworkManager::LogCommentFormat(L"AddFailedPlayerData rejected: size=%d", receivedSize);
 							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
