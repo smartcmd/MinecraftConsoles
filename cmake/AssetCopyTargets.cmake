@@ -1,4 +1,4 @@
-# Creates the CopyAssets build target
+# Creates the AssetCopyTargets build target
 
 set(COPY_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyAssets.cmake")
 
@@ -21,6 +21,7 @@ set(ASSET_EXCLUDE_FILES
   "*.xml" "*.lang" 
   "*.bat" "*.cmd"
   "*.msscmp" "*.binka"
+  "*.swf" # These are built into the .arc
 )
 
 # Join the exclusion patterns into a single string for passing to the copy script
@@ -46,13 +47,13 @@ function(setup_asset_copy_targets)
     )
   endforeach()
 
-  add_custom_target(CopyAssets ALL
+  add_custom_target(AssetCopyTargets ALL
     ${copy_commands}
     COMMENT "Copying assets..."
     VERBATIM
   )
 
-  add_dependencies(MinecraftClient CopyAssets)
+  add_dependencies(MinecraftClient AssetCopyTargets)
 
-  set_property(TARGET CopyAssets PROPERTY FOLDER "Build")
+  set_property(TARGET AssetCopyTargets PROPERTY FOLDER "Build")
 endfunction()
