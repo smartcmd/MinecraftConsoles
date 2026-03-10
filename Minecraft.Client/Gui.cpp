@@ -986,56 +986,56 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
             lines.push_back(minecraft->gatherStats1()); // Time to autosave
             lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
             lines.push_back(minecraft->gatherStats3()); // RTT
-        }
 		
 #ifdef _DEBUG // Only show terrain features in debug builds not release
-        // TERRAIN FEATURES
-        if (minecraft->level->dimension->id == 0)
-        {
-            wstring wfeature[eTerrainFeature_Count];
+			// TERRAIN FEATURES
+			if (minecraft->level->dimension->id == 0)
+			{
+				wstring wfeature[eTerrainFeature_Count];
 
-            wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-            wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-            wfeature[eTerrainFeature_Village] = L"Village: ";
-            wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+				wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
+				wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
+				wfeature[eTerrainFeature_Village] = L"Village: ";
+				wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
 
-            float maxW = static_cast<float>(screenWidth - debugLeft - 8) / scale;
-            float maxWForContent = maxW - static_cast<float>(font->width(L"..."));
-            bool truncated[eTerrainFeature_Count] = {};
+				float maxW = static_cast<float>(screenWidth - debugLeft - 8) / scale;
+				float maxWForContent = maxW - static_cast<float>(font->width(L"..."));
+				bool truncated[eTerrainFeature_Count] = {};
 
-            for (size_t i = 0; i < app.m_vTerrainFeatures.size(); i++)
-            {
-                FEATURE_DATA *pFeatureData = app.m_vTerrainFeatures[i];
-                int type = pFeatureData->eTerrainFeature;
-                if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine)
-                {
-                    continue;
-                }
-                if (truncated[type])
-                {
-                    continue;
-                }
+				for (size_t i = 0; i < app.m_vTerrainFeatures.size(); i++)
+				{
+					FEATURE_DATA *pFeatureData = app.m_vTerrainFeatures[i];
+					int type = pFeatureData->eTerrainFeature;
+					if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine)
+					{
+						continue;
+					}
+					if (truncated[type])
+					{
+						continue;
+					}
 
-                wstring itemInfo = L"[" + std::to_wstring(pFeatureData->x * 16) + L", " + std::to_wstring(pFeatureData->z * 16) + L"] ";
-                if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
-                {
-                    wfeature[type] += itemInfo;
-                }
-                else
-                {
-                    wfeature[type] += L"...";
-                    truncated[type] = true;
-                }
-            }
+					wstring itemInfo = L"[" + std::to_wstring(pFeatureData->x * 16) + L", " + std::to_wstring(pFeatureData->z * 16) + L"] ";
+					if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
+					{
+						wfeature[type] += itemInfo;
+					}
+					else
+					{
+						wfeature[type] += L"...";
+						truncated[type] = true;
+					}
+				}
 
-            lines.push_back(L""); // Add a spacer line
-            for (int i = eTerrainFeature_Stronghold; i <= static_cast<int>(eTerrainFeature_Ravine); i++)
-            {
-                lines.push_back(wfeature[i]);
-            }
-            lines.push_back(L"");
-        }
+				lines.push_back(L""); // Add a spacer line
+				for (int i = eTerrainFeature_Stronghold; i <= static_cast<int>(eTerrainFeature_Ravine); i++)
+				{
+					lines.push_back(wfeature[i]);
+				}
+				lines.push_back(L"");
+			}
 #endif
+        }
 
 		// Loop through the lines and draw them all on screen
 		int yPos = debugTop;
