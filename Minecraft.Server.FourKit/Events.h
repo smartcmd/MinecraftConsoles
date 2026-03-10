@@ -44,82 +44,76 @@ public:
 public ref class PlayerJoinEvent
 {
 public:
-	property Player^ PlayerObject;
-	
 	Player^ getPlayer() { return PlayerObject; }
+internal:
+	property Player^ PlayerObject;
 };
 
 public ref class PlayerLeaveEvent
 {
 public:
-	property Player^ PlayerObject;
-	
 	Player^ getPlayer() { return PlayerObject; }
+internal:
+	property Player^ PlayerObject;
 };
 
 public ref class PlayerChatEvent
 {
 public:
-	property Player^ PlayerObject;
-	property String^ Message;
-	property bool Cancelled;
-
 	Player^ getPlayer() { return PlayerObject; }
 	String^ getMessage() { return Message; }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal:
+	property Player^ PlayerObject;
+	property String^ Message;
+	property bool Cancelled;
 };
 
 public ref class BlockBreakEvent
 {
 public:
-	property Player^ PlayerObject;
-	property Block^ BlockObject;
-	property bool Cancelled;
-
 	Player^ getPlayer() { return PlayerObject; }
 	Block^ getBlock() { return BlockObject; }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal:
+	property Player^ PlayerObject;
+	property Block^ BlockObject;
+	property bool Cancelled;
 };
 
 public ref class BlockPlaceEvent
 {
 public:
-	property Player^ PlayerObject;
-	property Block^ BlockObject;
-	property bool Cancelled;
-
 	Player^ getPlayer() { return PlayerObject; }
 	Block^ getBlock() { return BlockObject; }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal:
+	property Player ^ PlayerObject;
+    property Block ^ BlockObject;
+    property bool Cancelled;
 };
 
 public ref class PlayerMoveEvent
 {
 public:
-	property Player^ PlayerObject;
-	property Location^ From;
-	property Location^ To;
-	property bool Cancelled;
-
 	Player^ getPlayer() { return PlayerObject; }
 	Location^ getFrom() { return From; }
 	Location^ getTo() { return To; }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal: 
+	property Player ^ PlayerObject;
+    property Location ^ From;
+    property Location ^ To;
+    property bool Cancelled;
 };
 
 public ref class PlayerPortalEvent
 {
 public:
-	property Player^ PlayerObject;
-	property TeleportCause Cause;
-	property Location^ From;
-	property Location^ To;
-	property bool Cancelled;
-
 	Player^ getPlayer() { return PlayerObject; }
 	TeleportCause getCause() { return Cause; }
 	Location^ getFrom() { return From; }
@@ -128,16 +122,17 @@ public:
 	void setFrom(double x, double y, double z) { From = gcnew Location(x, y, z); }
 	bool isCancelled() { return Cancelled; }
 	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal: 
+	property Player ^ PlayerObject;
+    property TeleportCause Cause;
+    property Location ^ From;
+    property Location ^ To;
+    property bool Cancelled;
 };
 
 public ref class SignChangeEvent
 {
 public:
-	property Player^ PlayerObject;
-	property Block^ BlockObject;
-	property cli::array<String^>^ Lines;
-	property bool Cancelled;
-
 	String^ getLine(int index)
 	{
 		if (Lines == nullptr || index < 0 || index >= Lines->Length) return String::Empty;
@@ -153,4 +148,9 @@ public:
 		Lines[index] = (content == nullptr) ? String::Empty : content;
 	}
 	bool isCancelled() { return Cancelled; }
+internal:
+	property Player ^ PlayerObject;
+    property Block ^ BlockObject;
+    property cli::array<String ^> ^ Lines;
+    property bool Cancelled;
 };
