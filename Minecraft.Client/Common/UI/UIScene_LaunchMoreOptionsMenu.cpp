@@ -420,6 +420,9 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 	case eLaunchCheckbox_NaturalRegeneration:
 		m_params->bNaturalRegeneration = selected;
 		break;
+	case eLaunchCheckbox_NoMobCap:
+		m_params->bNoMobCap = selected;
+		break;
 	case eLaunchCheckbox_DayLightCycle:
 		m_params->bDoDaylightCycle = selected;
 		break;
