@@ -1,6 +1,7 @@
 #pragma once
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\File.h"
+#include "..\Minecraft.World\ChunkStorage.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "..\Minecraft.World\JavaIntHash.h"
 #include "..\Minecraft.World\RandomLevelSource.h"
@@ -53,6 +54,7 @@ public:
 
 #endif
 	virtual LevelChunk **getCache() { return cache; }		// 4J added
+	virtual ChunkStorage *getStorage() { return storage; }	// 4J added
 
 	// 4J-JEV Added; Remove chunk from the toDrop queue.
 #ifdef _LARGE_WORLDS	

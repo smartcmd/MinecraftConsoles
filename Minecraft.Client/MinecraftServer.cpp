@@ -23,6 +23,7 @@
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "..\Minecraft.World\net.minecraft.world.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\Minecraft.World\ChunkStorage.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 #include "..\Minecraft.World\Pos.h"
 #include "..\Minecraft.World\System.h"
@@ -234,11 +235,7 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 
 	if (action == L"save-all")
 	{
-		if (playerList != nullptr)
-		{
-			playerList->saveAll(nullptr, false);
-		}
-		server->info(L"World saved.");
+		server->executeSaveAll();
 		return true;
 	}
 
@@ -1367,6 +1364,46 @@ void MinecraftServer::saveAllChunks()
 			}
 		}
 	}
+}
+
+// 4J-JEV: Added
+void MinecraftServer::executeSaveAll()
+{
+	broadcastStartSavingPacket();
+	if (players != nullptr)
+	{
+		players->saveAll(Minecraft::GetInstance()->progressRenderer, false);
+	}
+	
+	for (unsigned int i = 0; i < levels.length; i++)
+	{
+		ServerLevel *level = levels[levels.length - 1 - i];
+		if (level != nullptr)
+		{
+			level->save(true, Minecraft::GetInstance()->progressRenderer);
+		}
+	}
+
+	if (levels[0] != nullptr)
+	{
+		levels[0]->saveToDisc(Minecraft::GetInstance()->progressRenderer, false);
+	}
+
+	saveGameRules();
+
+	// 4J - ensure all asynchronous chunk saves are completed
+	for (unsigned int i = 0; i < levels.length; i++)
+	{
+		ServerLevel *level = levels[i];
+		if (level != nullptr && level->cache != nullptr && level->cache->getStorage() != nullptr)
+		{
+			level->cache->getStorage()->WaitForAll();
+		}
+	}
+
+	broadcastStopSavingPacket();
+
+	info(L"World saved.");
 }
 
 // 4J-JEV: Added

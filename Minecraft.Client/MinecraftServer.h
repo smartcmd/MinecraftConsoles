@@ -74,6 +74,9 @@ public:
 
 //    static Logger logger = Logger.getLogger("Minecraft");
     static unordered_map<wstring, int> ironTimers;
+    void saveAllChunks();
+	void saveGameRules();
+	void executeSaveAll();
 
 private:
 	static const int DEFAULT_MINECRAFT_PORT = 25565;
@@ -142,8 +145,7 @@ private:
     bool loadLevel(LevelStorageSource *storageSource, const wstring& name, int64_t levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
     void setProgress(const wstring& status, int progress);
     void endProgress();
-    void saveAllChunks();
-	void saveGameRules();
+private:
     void stopServer(bool didInit);
 #ifdef _LARGE_WORLDS
 	void overwriteBordersForNewWorldSize(ServerLevel* level);
@@ -207,6 +209,7 @@ public:
 	static void resetFlags() { s_bServerHalted = false; s_bSaveOnExitAnswered = false; }
 
 	bool flagEntitiesToBeRemoved(unsigned int *flags);	// 4J added
+	//void MinecraftServer::executeSaveAll();
 private:
 	//4J Added
 	static MinecraftServer *server;

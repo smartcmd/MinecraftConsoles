@@ -16,6 +16,7 @@
 #endif
 
 #include <cstdint>
+#include "..\Minecraft.Client\Common\BuildVer.h"
 
 #ifdef _DURANGO
 #include <xdk.h>
@@ -192,7 +193,7 @@ void MemSect(int sect);
 #include "..\Minecraft.Client\Common\Minecraft_Macros.h"
 #include "..\Minecraft.Client\Common\Colours\ColourTable.h"
 
-#include "..\Minecraft.Client\Common\BuildVer.h"
+
 
 #ifdef _XBOX
 #include "..\Minecraft.Client\Xbox\Xbox_App.h"
