@@ -1959,8 +1959,29 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		RenderManager.Set_matrixDirty();
 #endif
+		{
+			int maxFps = GameRenderer::getFpsCap(app.GetGameSettings(0, eGameSetting_FpsCap));
+			if (maxFps > 0)
+			{
+				static LONGLONG lastTime = 0;
+				LARGE_INTEGER freq, now;
+				QueryPerformanceFrequency(&freq);
+				QueryPerformanceCounter(&now);
+				LONGLONG targetInterval = freq.QuadPart / maxFps;
+				LONGLONG elapsed = now.QuadPart - lastTime;
+				if (elapsed < targetInterval)
+				{
+					DWORD sleepMs = (DWORD)((targetInterval - elapsed) * 1000 / freq.QuadPart);
+					if (sleepMs > 0) Sleep(sleepMs);
+				}
+				QueryPerformanceCounter(&now);
+				lastTime = now.QuadPart;
+			}
+		}
 		// Present the frame.
-		RenderManager.Present();
+		int vsyncSetting = app.GetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_VSync);
+		printf("[DEBUG] VSync setting: %d (0=OFF, 1=ON)\n", vsyncSetting);
+		g_pSwapChain->Present(vsyncSetting ? 1 : 0, 0);
 
 		ui.CheckMenuDisplayed();
 

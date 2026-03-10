@@ -157,30 +157,25 @@ enum eGameSetting
 	eGameSetting_InviteOnly,
 	eGameSetting_FriendsOfFriends,
 	eGameSetting_DisplayUpdateMessage,
-
 	// TU6
 	eGameSetting_BedrockFog,
 	eGameSetting_DisplayHUD,
 	eGameSetting_DisplayHand,
-
 	// TU7
 	eGameSetting_CustomSkinAnim,
-
 	// TU9
 	eGameSetting_DeathMessages,
 	eGameSetting_UISize,
 	eGameSetting_UISizeSplitscreen,
 	eGameSetting_AnimatedCharacter,
-
 	// PS3
 	eGameSetting_PS3_EULA_Read,
-
 	// PSVita
 	eGameSetting_PSVita_NetworkModeAdhoc,
-
-
+	// VSync/FpsCap
+	eGameSetting_FpsCap,
+	eGameSetting_VSync,
 };
-
 
 
 enum eGameMode

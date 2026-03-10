@@ -771,6 +771,7 @@ static void Win64_GetSettingsPath(char *outPath, DWORD size)
 static void Win64_SaveSettings(GAME_SETTINGS *gs)
 {
     if (!gs) return;
+    printf("[DEBUG] Win64_SaveSettings: VSync=%d before save\n", gs->ucVSync);
     char filePath[MAX_PATH] = {};
     Win64_GetSettingsPath(filePath, MAX_PATH);
     FILE *f = nullptr;
@@ -778,6 +779,11 @@ static void Win64_SaveSettings(GAME_SETTINGS *gs)
     {
         fwrite(gs, sizeof(GAME_SETTINGS), 1, f);
         fclose(f);
+        printf("[DEBUG] Win64_SaveSettings: Settings saved to %s\n", filePath);
+    }
+    else
+    {
+        printf("[DEBUG] Win64_SaveSettings: Failed to open file %s\n", filePath);
     }
 }
 static void Win64_LoadSettings(GAME_SETTINGS *gs)
@@ -790,8 +796,16 @@ static void Win64_LoadSettings(GAME_SETTINGS *gs)
     {
         GAME_SETTINGS temp = {};
         if (fread(&temp, sizeof(GAME_SETTINGS), 1, f) == 1)
+        {
             memcpy(gs, &temp, sizeof(GAME_SETTINGS));
+            printf("[DEBUG] Win64_LoadSettings: VSync=%d after load\n", gs->ucVSync);
+        }
         fclose(f);
+        printf("[DEBUG] Win64_LoadSettings: Settings loaded from %s\n", filePath);
+    }
+    else
+    {
+        printf("[DEBUG] Win64_LoadSettings: Failed to open file %s, using defaults\n", filePath);
     }
 }
 #endif
@@ -838,6 +852,9 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
 	SetGameSettings(iPad,eGameSetting_FOV,0);
+	SetGameSettings(iPad,eGameSetting_FpsCap,1);
+	SetGameSettings(iPad,eGameSetting_VSync,0);
+	printf("[DEBUG] VSync initialized to OFF (0) for pad %d\n", iPad);
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==nullptr)
@@ -1411,6 +1428,10 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 			pMinecraft->options->set(Options::Option::FOV, (float)GameSettingsA[iPad]->ucFov / 100.0f);
 		}
 		break;
+	case eGameSetting_FpsCap:
+		break;
+	case eGameSetting_VSync:
+		break;
 	case eGameSetting_Difficulty:		
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
@@ -1888,6 +1909,22 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 				ActionGameSettings(iPad,eVal);
 			}
 			GameSettingsA[iPad]->bSettingsChanged=true;
+		}
+		break;
+	case eGameSetting_FpsCap:
+		if(GameSettingsA[iPad]->ucFpsCap!=ucVal)
+		{
+			GameSettingsA[iPad]->ucFpsCap=ucVal;
+			GameSettingsA[iPad]->bSettingsChanged=true;
+		}
+		break;
+	case eGameSetting_VSync:
+		printf("[DEBUG] SetGameSettings VSync: pad=%d, old=%d, new=%d\n", iPad, GameSettingsA[iPad]->ucVSync, ucVal);
+		if(GameSettingsA[iPad]->ucVSync!=ucVal)
+		{
+			GameSettingsA[iPad]->ucVSync=ucVal;
+			GameSettingsA[iPad]->bSettingsChanged=true;
+			printf("[DEBUG] VSync setting updated to: %d\n", ucVal);
 		}
 		break;
 	case eGameSetting_Difficulty:		
@@ -2441,6 +2478,13 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 
 	case eGameSetting_PSVita_NetworkModeAdhoc:
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)>>17;
+
+	case eGameSetting_FpsCap:
+		return GameSettingsA[iPad]->ucFpsCap;
+
+	case eGameSetting_VSync:
+		printf("[DEBUG] GetGameSettings VSync: pad=%d, value=%d\n", iPad, GameSettingsA[iPad]->ucVSync);
+		return GameSettingsA[iPad]->ucVSync;
 
 	}
 	return 0;

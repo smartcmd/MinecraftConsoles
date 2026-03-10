@@ -163,8 +163,8 @@ private:
 
     void setupFog(int i, float alpha);
     FloatBuffer *getBuffer(float a, float b, float c, float d);
-	static int getFpsCap(int option);
 public:
+	static int getFpsCap(int option);
 	void updateAllChunks();
 
 #ifdef MULTITHREAD_ENABLE
