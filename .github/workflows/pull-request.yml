@@ -17,13 +17,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v6
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
     
-    - name: Configure
-      run: cmake -B out/build/windows64 --preset windows64
-
-    - name: Build
-      run: cmake --build out/build/windows64 --preset windows64-debug --target Minecraft.Client
-
-
+    - name: Run CMake
+      uses: lukka/run-cmake@v10
+      with:
+        configurePreset: windows64
+        buildPreset: windows64-debug

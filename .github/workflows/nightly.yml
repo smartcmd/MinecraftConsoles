@@ -25,17 +25,20 @@ jobs:
     - name: Set platform lowercase
       run: echo "PLATFORM=$('${{ matrix.platform }}'.ToLower())" >> $env:GITHUB_ENV
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Configure
-      run: cmake -B out/build/${{ env.PLATFORM }} --preset ${{ env.PLATFORM }}
-
-    - name: Build
-      run: cmake --build out/build/${{ env.PLATFORM }} --preset ${{ env.PLATFORM }}-release --target Minecraft.Client
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
+    
+    - name: Run CMake
+      uses: lukka/run-cmake@v10
+      with:
+        configurePreset: ${{ env.PLATFORM }}
+        buildPreset: ${{ env.PLATFORM }}-release
 
     - name: Zip Build
-      run: 7z a -r LCE${{ matrix.platform }}.zip ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/*
+      run: 7z a -r LCE${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/*
 
     - name: Stage artifacts
       run: |
@@ -45,8 +48,8 @@ jobs:
     - name: Stage exe and pdb
       if: matrix.platform == 'Windows64'
       run: |
-        Copy-Item ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.exe staging/
-        Copy-Item ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.pdb staging/
+        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.exe staging/
+        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.pdb staging/
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v6

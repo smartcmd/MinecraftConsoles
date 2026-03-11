@@ -23,7 +23,7 @@ set(ASSET_EXCLUDE_FILES
   "*.resx" "*.loc"
   "*.wav" # Unsupported audio format
   "*.xui"
-  "MediaPS*" "MediaOrbis.arc" "MediaDurango.arc" # Console media
+  "MediaPS*.arc" "MediaOrbis.arc" "MediaDurango.arc" # Console media
 )
 
 # Global folder exclusions applied to every folder copy

@@ -2,9 +2,15 @@
   "version": 6,
   "configurePresets": [
     {
+      "name": "base",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "hidden": true
+    },
+    {
       "name": "windows64",
       "displayName": "Windows64",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "cacheVariables": {
         "PLATFORM_DEFINES": "_WINDOWS64"
       }
@@ -12,7 +18,7 @@
     {
       "name": "durango",
       "displayName": "Durango",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake",
       "cacheVariables": {
         "PLATFORM_DEFINES": "_DURANGO;_XBOX_ONE"
@@ -21,7 +27,7 @@
     {
       "name": "orbis",
       "displayName": "ORBIS",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake",
       "cacheVariables": {
         "PLATFORM_DEFINES": "__ORBIS__"
@@ -30,7 +36,7 @@
     {
       "name": "ps3",
       "displayName": "PS3",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake",
       "cacheVariables": {
         "PLATFORM_DEFINES": "__PS3__"
@@ -39,7 +45,7 @@
     {
       "name": "psvita",
       "displayName": "PSVita",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake",
       "cacheVariables": {
         "PLATFORM_DEFINES": "__PSVITA__"
@@ -48,7 +54,7 @@
     {
       "name": "xbox360",
       "displayName": "Xbox 360",
-      "generator": "Ninja Multi-Config",
+      "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake",
       "cacheVariables": {
         "PLATFORM_DEFINES": "_XBOX"
