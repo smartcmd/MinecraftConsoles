@@ -506,17 +506,16 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 			player.get(),
 			FourKit::eInteract_LeftClickBlock,
 			packet->face,
-			true,
+            true,
 			x, y, z,
 			player->dimension,
 			blockId,
 			blockData,
 			hasItem))
 		{
-			if (!done) send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+			player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
 			return;
 		}
-		if (done) return;
 #endif
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 		bool shouldEmitBreakEvent = player->gameMode->isCreative();
@@ -544,15 +543,14 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 			int blockData = level->getData(x, y, z);
 			if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
 			{
-				if (!done) send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+				player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
 				return;
 			}
 		}
-		if (done) return;
 #endif
 
 		if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
-		else send(std::make_shared<TileUpdatePacket>(x, y, z, level));
+		else player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 
 	}
 	else if (packet->action == PlayerActionPacket::STOP_DESTROY_BLOCK)
@@ -566,23 +564,21 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 				int blockData = level->getData(x, y, z);
 				if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
 				{
-					if (!done) send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+					player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
 					return;
 				}
 			}
 		}
-		if (done) return;
 #endif
 
 		player->gameMode->stopDestroyBlock(x, y, z);
-		if (done) return;
 		server->getPlayers()->prioritiseTileChanges(x, y, z, level->dimension->id);	// 4J added - make sure that the update packets for this get prioritised over other general world updates
-		if (level->getTile(x, y, z) != 0) send(std::make_shared<TileUpdatePacket>(x, y, z, level));
+		if (level->getTile(x, y, z) != 0) player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 	}
 	else if (packet->action == PlayerActionPacket::ABORT_DESTROY_BLOCK)
 	{
 		player->gameMode->abortDestroyBlock(x, y, z);
-		if (!done && level->getTile(x, y, z) != 0) send(std::make_shared<TileUpdatePacket>(x, y, z, level));
+		if (level->getTile(x, y, z) != 0) player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 	}
 }
 
@@ -711,10 +707,10 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 		informClient = true;
 	}
 
-	if (informClient && !done)
+	if (informClient)
 	{
 
-		send(std::make_shared<TileUpdatePacket>(x, y, z, level));
+		player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 
 		if (face == 0) y--;
 		if (face == 1) y++;
@@ -730,7 +726,7 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 		// isn't what it is expecting.
 		if( level->getTile(x,y,z) != Tile::pistonMovingPiece_Id )
 		{
-			send(std::make_shared<TileUpdatePacket>(x, y, z, level));
+			player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 		}
 
 	}
