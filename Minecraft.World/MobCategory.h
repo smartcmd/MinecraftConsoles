@@ -8,22 +8,22 @@ class MobCategory
 public:
 	// 4J - putting constants for xbox spawning in one place to tidy things up a bit - all numbers are per level
 	static int max_natural_monsters;						// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
-	static int max_natural_animals;						// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
-	static int max_natural_ambient;						// Ambient mobs
+	static int max_natural_animals;							// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
+	static int max_natural_ambient;							// Ambient mobs
 	static int max_natural_squid;							// Max number of squid that the mob spawner will produce
 	static int max_natural_chickens;						// Max number of chickens that the mob spawner will produce
-	static int max_natural_wolves;						// Max number of wolves that the mob spawner will produce
+	static int max_natural_wolves;							// Max number of wolves that the mob spawner will produce
 	static int max_natural_mushroomcows;					// Max number of mushroom cows that the mob spawner will produce
 
-	static int max_snow_golems;							// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static int max_iron_golems;							// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static int max_bosses;								// Max number of bosses (enderdragon/wither)
+	static int max_snow_golems;								// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int max_iron_golems;								// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int max_bosses;									// Max number of bosses (enderdragon/wither)
 
 	static int max_animals_with_breeding;					// Max number of animals that we can produce (in total), when breeding
 	static int max_chickens_with_breeding;					// Max number of chickens that we can produce (in total), when breeding/hatching
 	static int max_mushroomcows_with_breeding;				// Max number of mushroom cows that we can produce (in total), when breeding
 	static int max_wolves_with_breeding;					// Max number of wolves that we can produce (in total), when breeding
-	static int max_villagers_with_breeding;				// Max number of villagers that we can produce (in total), when breeding
+	static int max_villagers_with_breeding;					// Max number of villagers that we can produce (in total), when breeding
 
 	static int max_animals_with_spawn_egg;					// Max number of animals that we can produce (in total), when using spawn eggs
 	static int max_chickens_with_spawn_egg;					// Max number of chickens that we can produce (in total), when using spawn eggs
@@ -64,27 +64,21 @@ public:
 
 
 private:
-	const int m_max;
-	int m_maxPerLevel = 0;
+	// Use pointers to allow for this to be changed indirectly whilst staying a const
+	const int *m_max;
 	const Material *spawnPositionMaterial;
 	const bool m_isFriendly;
 	const bool m_isPersistent;
 	const bool m_isSingleType; // 4J Added
 	const eINSTANCEOF m_eBase; // 4J added
-	// Added for animals so that wolves, mushroomcows, and chickens can be included in the category count.
-	// Only used when mob cap is unlimited, done to ensure the wolves and chickens can spawn properly.
-	// When using the shorter constructor, this will be set to m_eBase.
-	const eINSTANCEOF m_eJavaBase;
 
-	MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType);
-	// Additional constructor, allows specifying the enum to use if mob cap is unlimited
-	MobCategory(int maxVar, Material * spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, eINSTANCEOF eJavaBase, bool isSingleType);
+	MobCategory(int *maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType);
 
 public:
 	const type_info getBaseClass();
 	const eINSTANCEOF getEnumBaseClass();	// 4J added
 	int getMaxInstancesPerChunk();
-	int getMaxInstancesPerLevel();		// 4J added
+	// int getMaxInstancesPerLevel(); 4J added ~ Removed as it has been merged with getMaxInstancesPerChunk()
 	Material *getSpawnPositionMaterial();
 	bool isFriendly();
 	bool isSingleType();

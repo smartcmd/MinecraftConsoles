@@ -82,7 +82,6 @@ public:
 
 protected:
 	vector<MobSpawnerData *> enemies;
-	vector<MobSpawnerData *> all_friendlies; // Added to not have to recombine with other groups every time spawner data is used
 	vector<MobSpawnerData *> friendlies;
 	vector<MobSpawnerData *> waterFriendlies;
 	vector<MobSpawnerData *> friendlies_chicken;

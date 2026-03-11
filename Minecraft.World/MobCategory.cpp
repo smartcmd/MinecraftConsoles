@@ -43,58 +43,39 @@ MobCategoryArray MobCategory::values = MobCategoryArray(7);
 void MobCategory::staticCtor()
 {
 	// 4J - adjusted the max levels here for the xbox version, which now represent the max levels in the whole world
-	monster = new MobCategory(70, Material::air, false, false, eTYPE_MONSTER, false);
-	// Raised these to be identical to base LCE
-	creature = new MobCategory(50, Material::air, true, true, eTYPE_ANIMALS_SPAWN_LIMIT_CHECK, eTYPE_ANIMAL, false);
-	ambient = new MobCategory(20, Material::air, true, false, eTYPE_AMBIENT, false),
-	waterCreature = new MobCategory(5, Material::water, true, false, eTYPE_WATERANIMAL, false);
+	// Use pointers to modifiable fields, in future can become modifiable
+	monster = new MobCategory(&max_natural_monsters, Material::air, false, false, eTYPE_MONSTER, false);
+	creature = new MobCategory(&max_natural_animals, Material::air, true, true, eTYPE_ANIMALS_SPAWN_LIMIT_CHECK, false);
+	ambient = new MobCategory(&max_natural_ambient, Material::air, true, false, eTYPE_AMBIENT, false),
+	waterCreature = new MobCategory(&max_natural_squid, Material::water, true, false, eTYPE_WATERANIMAL, false);
 
 	values[0] = monster;
 	values[1] = creature;
 	values[2] = ambient;
 	values[3] = waterCreature;
 	// 4J - added 2 new categories to give us better control over spawning wolves & chickens
-	creature_wolf = new MobCategory(3, Material::air, true, true, eTYPE_WOLF, true);
-	creature_chicken = new MobCategory(2, Material::air, true, true, eTYPE_CHICKEN, true);
-	creature_mushroomcow = new MobCategory(2, Material::air, true, true, eTYPE_MUSHROOMCOW, true);
+	creature_wolf = new MobCategory(&max_natural_wolves, Material::air, true, true, eTYPE_WOLF, true);
+	creature_chicken = new MobCategory(&max_natural_chickens, Material::air, true, true, eTYPE_CHICKEN, true);
+	creature_mushroomcow = new MobCategory(&max_natural_mushroomcows, Material::air, true, true, eTYPE_MUSHROOMCOW, true);
 	values[4] = creature_wolf;
 	values[5] = creature_chicken;
 	values[6] = creature_mushroomcow;
-	
-	monster->m_maxPerLevel = max_natural_monsters;
-	creature->m_maxPerLevel = max_natural_animals;
-	ambient->m_maxPerLevel = max_natural_ambient;
-	waterCreature->m_maxPerLevel = max_natural_squid;
-	creature_wolf->m_maxPerLevel = max_natural_wolves;
-	creature_chicken->m_maxPerLevel = max_natural_chickens;
-	creature_mushroomcow->m_maxPerLevel = max_natural_mushroomcows;
 }
 
-MobCategory::MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType)
-	: m_max(maxVar), spawnPositionMaterial(spawnPositionMaterial), m_isFriendly(isFriendly), m_isPersistent(isPersistent), m_eBase(eBase), m_eJavaBase(eBase), m_isSingleType(isSingleType)
-{
-}
-
-MobCategory::MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, eINSTANCEOF eJavaBase, bool isSingleType)
-	: m_max(maxVar), spawnPositionMaterial(spawnPositionMaterial), m_isFriendly(isFriendly), m_isPersistent(isPersistent), m_eBase(eBase), m_eJavaBase(eJavaBase), m_isSingleType(isSingleType)
+MobCategory::MobCategory(int *maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType)
+	: m_max(maxVar), spawnPositionMaterial(spawnPositionMaterial), m_isFriendly(isFriendly), m_isPersistent(isPersistent), m_eBase(eBase), m_isSingleType(isSingleType)
 {
 }
 
 // 4J - added
 const eINSTANCEOF MobCategory::getEnumBaseClass()
 {
-	if (app.GetGameHostOption(eGameHostOption_NoMobCap)) return m_eJavaBase;
 	return m_eBase;
 }
 
 int MobCategory::getMaxInstancesPerChunk()
 {
-	return m_max;
-}
-
-int MobCategory::getMaxInstancesPerLevel()	// 4J added
-{
-	return m_maxPerLevel;
+	return *m_max;
 }
 
 Material *MobCategory::getSpawnPositionMaterial()

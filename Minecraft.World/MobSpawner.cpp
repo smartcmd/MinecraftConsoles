@@ -210,15 +210,13 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 		}
 
 		// Use variable to not repeat checks
-		int maxInstances = mobCategory->getMaxInstancesPerLevel();
+		int maxInstances = mobCategory->getMaxInstancesPerChunk(); // Merged in values from getMaxInstancesPerLevel(), so changed to use getMaxInstancesPerChunk()
 		// Check for if the mob cap is "off" (works as Java does, scaled by chunk count)
 		bool usesChunkLimit = app.GetGameHostOption(eGameHostOption_NoMobCap);
 		if (usesChunkLimit)
 		{
 			// Use Java logic for the max count instead, accounting for chunks polled and the magic number.
 			maxInstances = mobCategory->getMaxInstancesPerChunk() * chunksToPoll.size() / MAGIC_NUMBER;
-			// Cancel spawning under extra categories, with this option they should be included in creature
-			if (i > 3) continue;
 		}
 
 		// 4J - this is now quite different to the java version. We just have global max counts for the level whereas the original has a max per chunk that

@@ -222,25 +222,7 @@ int Biome::getSkyColor(float temp)
 vector<Biome::MobSpawnerData *> *Biome::getMobs(MobCategory *category)
 {
 	if (category == MobCategory::monster) return &enemies;
-	if (category == MobCategory::creature)
-	{
-		if (app.GetGameHostOption(eGameHostOption_NoMobCap))
-		{
-			// Only input into this if necessary, this should be after all others are set up for this biome as well
-			size_t combinedSize = friendlies.size() + friendlies_chicken.size() + friendlies_wolf.size() + friendlies_mushroomcow.size();
-			if (all_friendlies.empty() && combinedSize > 0) {
-				// If empty, reserve the combined size of all mob spawner data
-				all_friendlies.reserve(combinedSize);
-				// Combine each vector into all_friendlies
-				all_friendlies.insert(all_friendlies.end(), friendlies.begin(), friendlies.end());
-				all_friendlies.insert(all_friendlies.end(), friendlies_chicken.begin(), friendlies_chicken.end());
-				all_friendlies.insert(all_friendlies.end(), friendlies_wolf.begin(), friendlies_wolf.end());
-				all_friendlies.insert(all_friendlies.end(), friendlies_mushroomcow.begin(), friendlies_mushroomcow.end());
-			}
-			return &all_friendlies; // Use combined vector when using Java logic
-		}
-		return &friendlies;
-	}
+	if (category == MobCategory::creature) return &friendlies;
 	if (category == MobCategory::waterCreature) return &waterFriendlies;
 	if (category == MobCategory::creature_chicken) return &friendlies_chicken;
 	if (category == MobCategory::creature_wolf) return &friendlies_wolf;
