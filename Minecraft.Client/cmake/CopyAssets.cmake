@@ -6,7 +6,8 @@
 #   COPY_DEST     – destination directory
 #
 # Optional:
-#   EXCLUDE_FILES – semicolon-separated file patterns to exclude
+#   EXCLUDE_FILES – pipe-separated file patterns to exclude
+#   EXCLUDE_FOLDERS – pipe-separated folder patterns to exclude
 
 if(NOT COPY_SOURCE OR NOT COPY_DEST)
   message(FATAL_ERROR "COPY_SOURCE and COPY_DEST must be set.")
@@ -17,6 +18,10 @@ if(EXCLUDE_FILES)
   string(REPLACE "|" ";" EXCLUDE_FILES "${EXCLUDE_FILES}")
 endif()
 
+if(EXCLUDE_FOLDERS)
+  string(REPLACE "|" ";" EXCLUDE_FOLDERS "${EXCLUDE_FOLDERS}")
+endif()
+
 if(CMAKE_HOST_WIN32)
   set(robocopy_args
     "${COPY_SOURCE}" "${COPY_DEST}"
@@ -25,6 +30,10 @@ if(CMAKE_HOST_WIN32)
 
   if(EXCLUDE_FILES)
     list(APPEND robocopy_args /XF ${EXCLUDE_FILES})
+  endif()
+
+  if(EXCLUDE_FOLDERS)
+    list(APPEND robocopy_args /XD ${EXCLUDE_FOLDERS})
   endif()
 
   execute_process(
@@ -39,6 +48,10 @@ elseif(CMAKE_HOST_UNIX)
   set(rsync_args -av)
 
   foreach(pattern IN LISTS EXCLUDE_FILES)
+    list(APPEND rsync_args "--exclude=${pattern}")
+  endforeach()
+
+  foreach(pattern IN LISTS EXCLUDE_FOLDERS)
     list(APPEND rsync_args "--exclude=${pattern}")
   endforeach()
 

@@ -83,3 +83,14 @@ add_custom_target(CopyRedist ALL
 
 add_dependencies(Minecraft.Client CopyRedist)
 set_property(TARGET CopyRedist PROPERTY FOLDER "Build")
+
+# Make sure GameHDD exists
+add_custom_target(EnsureGameHDD ALL
+  COMMAND ${CMAKE_COMMAND}
+    -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Windows64/GameHDD"
+  COMMENT "Ensuring GameHDD directory exists..."
+  VERBATIM
+)
+
+add_dependencies(Minecraft.Client EnsureGameHDD)
+set_property(TARGET EnsureGameHDD PROPERTY FOLDER "Build")

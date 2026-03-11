@@ -10,8 +10,6 @@ set(ASSET_FOLDER_PAIRS
   "Common/res"         "Common/res"
   "Common/Trial"       "Common/Trial"
   "Common/Tutorial"    "Common/Tutorial"
-#   "Windows64/GameHDD"  "Windows64/GameHDD"
-  "DurangoMedia"       "Windows64Media" # Use Durango as a base for the Windows64 media
   "Windows64Media"     "Windows64Media"
 )
 
@@ -20,13 +18,22 @@ set(ASSET_EXCLUDE_FILES
   "*.cpp" "*.h"
   "*.xml" "*.lang" 
   "*.bat" "*.cmd"
-  "*.msscmp" "*.binka"
+  "*.msscmp" "*.binka" # Old audio formats
   "*.swf" # These are built into the .arc
+  "*.resx" "*.loc"
+  "*.wav" # Unsupported audio format
   "*.xui"
+  "MediaPS*" "MediaOrbis.arc" "MediaDurango.arc" # Console media
+)
+
+# Global folder exclusions applied to every folder copy
+set(ASSET_EXCLUDE_FOLDERS
+  "Graphics"
 )
 
 # Join the exclusion patterns into a single string for passing to the copy script
 list(JOIN ASSET_EXCLUDE_FILES "|" ASSET_EXCLUDE_FILES_STR)
+list(JOIN ASSET_EXCLUDE_FOLDERS "|" ASSET_EXCLUDE_FOLDERS_STR)
 
 function(setup_asset_copy_targets)
   set(copy_commands "")
@@ -44,6 +51,7 @@ function(setup_asset_copy_targets)
         "-DCOPY_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}/${src}"
         "-DCOPY_DEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/${dest}"
         "-DEXCLUDE_FILES=${ASSET_EXCLUDE_FILES_STR}"
+        "-DEXCLUDE_FOLDERS=${ASSET_EXCLUDE_FOLDERS_STR}"
         -P "${COPY_SCRIPT}"
     )
   endforeach()
