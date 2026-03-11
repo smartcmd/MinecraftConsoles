@@ -42,7 +42,4 @@ $existing = if (Test-Path $path) { Get-Content $path -Raw } else { "" }
 
 if ($existing.Trim() -ne $newContent.Trim()) {
     $newContent | Set-Content $path
-    Write-Host "BuildVer.h aggiornato."
-} else {
-    Write-Host "BuildVer.h invariato, skip."
 }
