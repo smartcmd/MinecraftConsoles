@@ -209,15 +209,37 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalRoomSyncData:
 				connectionInfo->m_pucRoomSyncData[connectionInfo->m_roomSyncDataBytesRead++] = byte;
-				// The room sync info is sent as a 4 byte count of the length of XUID strings, then the RoomSyncData, then the XUID strings
 				if( connectionInfo->m_roomSyncDataBytesToRead == 0 )
 				{
-					// At first stage of reading the 4 byte count
 					if( connectionInfo->m_roomSyncDataBytesRead == 4 )
 					{
-						memcpy( &connectionInfo->m_roomSyncDataBytesToRead, connectionInfo->m_pucRoomSyncData, 4);
+						int receivedSize = 0;
+						memcpy( &receivedSize, connectionInfo->m_pucRoomSyncData, 4);
 						delete [] connectionInfo->m_pucRoomSyncData;
-						connectionInfo->m_roomSyncDataBytesToRead += sizeof(RoomSyncData);
+
+					// a 512KB limit gives enough headroom for legitimate XUID data, but prevents a overflow. With 2 players the size is about 100kb so 512kb gives good headroom
+						if( receivedSize < 0 || receivedSize > 524288 )
+						{
+							DQRNetworkManager::LogCommentFormat(L"RoomSyncData rejected: size=%d", receivedSize);
+							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
+							connectionInfo->m_pucRoomSyncData = nullptr;
+							connectionInfo->m_roomSyncDataBytesToRead = 0;
+							connectionInfo->m_roomSyncDataBytesRead = 0;
+							break;
+						}
+
+						int totalSize = receivedSize + sizeof(RoomSyncData);
+
+						if( totalSize < receivedSize )
+						{
+							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
+							connectionInfo->m_pucRoomSyncData = nullptr;
+							connectionInfo->m_roomSyncDataBytesToRead = 0;
+							connectionInfo->m_roomSyncDataBytesRead = 0;
+							break;
+						}
+
+						connectionInfo->m_roomSyncDataBytesToRead = totalSize;
 						connectionInfo->m_pucRoomSyncData = new unsigned char[ connectionInfo->m_roomSyncDataBytesToRead ];
 						connectionInfo->m_roomSyncDataBytesRead = 0;
 					}
@@ -296,8 +318,22 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 					// At first stage of reading the 4 byte count
 					if( connectionInfo->m_addFailedPlayerDataBytesRead == 4 )
 					{
-						memcpy( &connectionInfo->m_addFailedPlayerDataBytesToRead, connectionInfo->m_pucAddFailedPlayerData, 4);
+						int receivedSize = 0;
+						memcpy( &receivedSize, connectionInfo->m_pucAddFailedPlayerData, 4);
 						delete [] connectionInfo->m_pucAddFailedPlayerData;
+
+					// a 512KB limit gives enough headroom for legitimate XUID strings, but prevents a overflow.
+						if( receivedSize < 0 || receivedSize > 524288 )
+						{
+							DQRNetworkManager::LogCommentFormat(L"AddFailedPlayerData rejected: size=%d", receivedSize);
+							connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
+							connectionInfo->m_pucAddFailedPlayerData = nullptr;
+							connectionInfo->m_addFailedPlayerDataBytesToRead = 0;
+							connectionInfo->m_addFailedPlayerDataBytesRead = 0;
+							break;
+						}
+
+						connectionInfo->m_addFailedPlayerDataBytesToRead = receivedSize;
 						connectionInfo->m_pucAddFailedPlayerData = new unsigned char[ connectionInfo->m_addFailedPlayerDataBytesToRead ];
 						connectionInfo->m_addFailedPlayerDataBytesRead = 0;
 					}
