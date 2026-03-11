@@ -409,6 +409,28 @@ float GameRenderer::getFov(float a, bool applyEffects)
 
 }
 
+float GameRenderer::getViewmodelFov(float a)
+{
+	// 4J - keep the hand/item looking sensible when the player cranks the world FOV
+	if (cameraFlip > 0) return 90;
+
+	shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+	if (!player) return 70.0f;
+
+	float fov = 70.0f;
+
+	if (player->getHealth() <= 0)
+	{
+		float duration = player->deathTime + a;
+		fov /= ((1 - 500 / (duration + 500)) * 2.0f + 1);
+	}
+
+	int t = Camera::getBlockAt(mc->level, player, a);
+	if (t != 0 && Tile::tiles[t]->material == Material::water) fov = fov * 60 / 70;
+
+	return fov + fovOffsetO + (fovOffset - fovOffsetO) * a;
+}
+
 void GameRenderer::bobHurt(float a)
 {
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
@@ -591,6 +613,24 @@ void GameRenderer::unZoomRegion()
 	zoom = 1;
 }
 
+void GameRenderer::applyViewportFovAndAspectAdjustments(float& fov, float& aspect) const
+{
+	if (!mc || !mc->player) return;
+
+	if ((mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP) ||
+		(mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM))
+	{
+		aspect *= 2.0f;
+		fov *= 0.7f;		// Reduce FOV to make things less fish-eye, at the expense of reducing vertical FOV from single player mode
+	}
+	else if ((mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT) ||
+		(mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT))
+	{
+		// Ideally I'd like to make the fov bigger here, but if I do then you can see that the arm isn't very long...
+		aspect *= 0.5f;
+	}
+}
+
 // 4J added as we have more complex adjustments to make for fov & aspect on account of viewports
 void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects)
 {
@@ -600,18 +640,18 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
 	fov = getFov(a, applyEffects);
 
-	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
-		( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM ) )
-	{
-		aspect *= 2.0f;
-		fov *= 0.7f;		// Reduce FOV to make things less fish-eye, at the expense of reducing vertical FOV from single player mode
-	}
-	else if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT ) ||
-		( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT) )
-	{
-		// Ideally I'd like to make the fov bigger here, but if I do then you an see that the arm isn't very long...
-		aspect *= 0.5f;
-	}
+	applyViewportFovAndAspectAdjustments(fov, aspect);
+}
+
+void GameRenderer::getViewmodelFovAndAspect(float& fov, float& aspect, float a)
+{
+	// 4J - same as getFovAndAspect(), but for the hand/item pass
+	extern int g_rScreenWidth;
+	extern int g_rScreenHeight;
+	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
+	fov = getViewmodelFov(a);
+
+	applyViewportFovAndAspectAdjustments(fov, aspect);
 }
 
 void GameRenderer::setupCamera(float a, int eye)
@@ -716,7 +756,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 
 	// 4J - have split out fov & aspect calculation so we can take into account viewports
 	float fov, aspect;
-	getFovAndAspect(fov, aspect, a, false);
+	getViewmodelFovAndAspect(fov, aspect, a);
 
 	if (zoom != 1)
 	{
@@ -954,70 +994,91 @@ float GameRenderer::ComputeGammaFromSlider(float slider0to100)
 
 void GameRenderer::CachePlayerGammas()
 {
-    const float slider = app.GetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_Gamma);
-    const float gamma = ComputeGammaFromSlider(slider);
-
     for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES; ++j)
-        m_cachedGammaPerPlayer[j] = gamma;
+    {
+        std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+        if (!player)
+        {
+            m_cachedGammaPerPlayer[j] = 1.0f;
+            continue;
+        }
+
+        const float slider = app.GetGameSettings(j, eGameSetting_Gamma); // 0..100
+        m_cachedGammaPerPlayer[j] = ComputeGammaFromSlider(slider);
+    }
 }
 
 bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
 {
+    // Use the actual backbuffer dimensions so viewports adapt to window resize.
     extern int g_rScreenWidth;
     extern int g_rScreenHeight;
 
-    std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
-    if (!player)
+    int active = 0;
+    int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
+    for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
+    {
+        if (Minecraft::GetInstance()->localplayers[i])
+            indexMap[active++] = i;
+    }
+
+    if (active <= 1)
+    {
+        outViewport.TopLeftX = 0.0f;
+        outViewport.TopLeftY = 0.0f;
+        outViewport.Width = static_cast<FLOAT>(g_rScreenWidth);
+        outViewport.Height = static_cast<FLOAT>(g_rScreenHeight);
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
+
+    int k = -1;
+    for (int ord = 0; ord < active; ++ord)
+        if (indexMap[ord] == j)
+        {
+            k = ord;
+            break;
+        }
+    if (k < 0)
         return false;
 
-    const float w = static_cast<float>(g_rScreenWidth);
-    const float h = static_cast<float>(g_rScreenHeight);
-    const float halfW = w * 0.5f;
-    const float halfH = h * 0.5f;
+    const float width = static_cast<float>(g_rScreenWidth);
+    const float height = static_cast<float>(g_rScreenHeight);
 
-    outViewport.MinDepth = 0.0f;
-    outViewport.MaxDepth = 1.0f;
-
-    switch (static_cast<C4JRender::eViewportType>(player->m_iScreenSection))
+    if (active == 2)
     {
-    case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = w;     outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
-        outViewport.Width    = w;     outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = h;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = h;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = halfH;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    default:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = w;     outViewport.Height   = h;
-        break;
+        const float halfH = height * 0.5f;
+        outViewport.TopLeftX = 0.0f;
+        outViewport.Width = width;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        if (k == 0)
+        {
+            outViewport.TopLeftY = 0.0f;
+            outViewport.Height = halfH;
+        }
+        else
+        {
+            outViewport.TopLeftY = halfH;
+            outViewport.Height = halfH;
+        }
+        return true;
     }
-    return true;
+    else
+    {
+        const float halfW = width * 0.5f;
+        const float halfH = height * 0.5f;
+        const int row = (k >= 2) ? 1 : 0;
+        const int col = (k % 2);
+        outViewport.TopLeftX = col ? halfW : 0.0f;
+        outViewport.TopLeftY = row ? halfH : 0.0f;
+        outViewport.Width = halfW;
+        outViewport.Height = halfH;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
 }
 
 uint32_t GameRenderer::BuildPlayerViewports(D3D11_VIEWPORT *outViewports, float *outGammas, UINT maxCount) const

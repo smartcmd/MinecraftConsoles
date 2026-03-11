@@ -247,17 +247,13 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 
 		F32 scale;
 		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
-
-		// For vertical split, scale down to fit the full SWF height when the
-		// window is shorter than the movie (same fix as HUD).
-		if(!needsYTile && m_movieHeight > 0)
-		{
-			F32 scaleH = (F32)tileHeight / (F32)m_movieHeight;
-			if(scaleH < scale)
-				scale = scaleH;
-		}
-
 		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+
+		S32 contentOffX, contentOffY;
+		ComputeSplitContentOffset(viewport, m_movieWidth, m_movieHeight, scale, tileWidth, tileHeight, tileYStart, contentOffX, contentOffY);
+		xPos += contentOffX;
+		yPos += contentOffY;
+		ui.setupRenderPosition(xPos, yPos);
 
 		IggyPlayerDrawTilesStart ( getMovie() );
 

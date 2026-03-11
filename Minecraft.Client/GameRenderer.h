@@ -102,6 +102,7 @@ public:
 private:
 	void tickFov();
 	float getFov(float a, bool applyEffects);
+	float getViewmodelFov(float a);
     void bobHurt(float a);
     void bobView(float a);
     void moveCameraToPlayer(float a);
@@ -112,7 +113,9 @@ public:
 	void zoomRegion(double zoom, double xa, double ya);
     void unZoomRegion();
 private:
+	void applyViewportFovAndAspectAdjustments(float& fov, float& aspect) const;
 	void getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects); // 4J added
+	void getViewmodelFovAndAspect(float& fov, float& aspect, float a); // 4J added
 public:
 	void setupCamera(float a, int eye);
 private:
