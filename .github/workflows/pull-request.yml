@@ -1,4 +1,4 @@
-name: MSBuild Debug Test
+name: Pull Request Build
 
 on:
   workflow_dispatch: 
@@ -8,25 +8,22 @@ on:
       - '.gitignore'
       - '*.md'
       - '.github/*.md'
-  push:
-    branches:
-    - 'main'
-    paths-ignore:
-      - '.gitignore'
-      - '*.md'
-      - '.github/*.md'
 
 jobs:
   build:
-    name: Build Windows64 (DEBUG)
     runs-on: windows-latest
-
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v6
 
-    - name: Setup msbuild
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
     
+    - name: Configure
+      run: cmake -B out/build/windows64 --preset windows64
+
     - name: Build
-      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Debug /p:Platform="Windows64"
+      run: cmake --build out/build/windows64 --preset windows64-debug --target Minecraft.Client
+
+

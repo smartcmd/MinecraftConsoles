@@ -12,23 +12,58 @@ on:
 
 jobs:
   build:
-    name: Build Windows64
     runs-on: windows-latest
+
+    strategy:
+      matrix:
+        platform: [Windows64]
 
     steps:
     - name: Checkout
       uses: actions/checkout@v6
 
-    - name: Setup msbuild
+    - name: Set platform lowercase
+      run: echo "PLATFORM=$('${{ matrix.platform }}'.ToLower())" >> $env:GITHUB_ENV
+
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
     - name: Configure
-      run: cmake -B out/build --preset windows64
+      run: cmake -B out/build/${{ env.PLATFORM }} --preset ${{ env.PLATFORM }}
+
     - name: Build
-      run: cmake --build out/build --preset windows64-release --target Minecraft.Client
+      run: cmake --build out/build/${{ env.PLATFORM }} --preset ${{ env.PLATFORM }}-release --target Minecraft.Client
 
     - name: Zip Build
-      run: 7z a -r LCEWindows64.zip ./out/build/Minecraft.Client/Release/*
+      run: 7z a -r LCE${{ matrix.platform }}.zip ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/*
+
+    - name: Stage artifacts
+      run: |
+        New-Item -ItemType Directory -Force -Path staging
+        Copy-Item LCE${{ matrix.platform }}.zip staging/
+
+    - name: Stage exe and pdb
+      if: matrix.platform == 'Windows64'
+      run: |
+        Copy-Item ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.exe staging/
+        Copy-Item ./out/build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.pdb staging/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: build-${{ matrix.platform }}
+        path: staging/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v7
+      with:
+        path: artifacts
+        merge-multiple: true
 
     - name: Update release
       uses: andelf/nightly-release@main
@@ -43,6 +78,9 @@ jobs:
           # 🚨 First time here? 🚨
           If you've never downloaded the game before, you need to download `LCEWindows64.zip` and extract it to the folder where you'd like to keep the game. The other files are included in this `.zip` file!
         files: |
-            LCEWindows64.zip
-            ./out/build/Minecraft.Client/Release/Minecraft.Client.exe
-            ./out/build/Minecraft.Client/Release/Minecraft.Client.pdb
+          artifacts/*
+
+    - name: Cleanup artifacts
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: build-*
