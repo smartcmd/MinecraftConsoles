@@ -105,7 +105,7 @@ shared_ptr<Entity> PigZombie::findAttackTarget()
 bool PigZombie::hurt(DamageSource *source, float dmg)
 {
 	shared_ptr<Entity> sourceEntity = source->getEntity();
-	if ( sourceEntity != nullptr && sourceEntity->instanceof(eTYPE_PLAYER) && sourceEntity->isAttackable())
+	if ( sourceEntity != nullptr && sourceEntity->instanceof(eTYPE_PLAYER) && !sourceEntity->isInvulnerable())
 	{
 		vector<shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));
 		for (auto& e : *nearby)
