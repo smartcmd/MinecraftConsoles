@@ -195,6 +195,11 @@ bool Player::isUsingItem()
 	return useItem != nullptr;
 }
 
+bool Player::isAttackable()
+{
+    return !abilities.invulnerable;
+}
+
 int Player::getTicksUsingItem()
 {
 	if (isUsingItem())
