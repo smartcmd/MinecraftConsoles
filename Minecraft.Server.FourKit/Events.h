@@ -66,14 +66,10 @@ private:
 
 public ref class ServerLoadEvent
 {
-public:
-	property String^ ServerName;
 };
 
 public ref class ServerShutdownEvent
 {
-public:
-	property String^ Reason;
 };
 
 public ref class PlayerJoinEvent

@@ -165,12 +165,14 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="FourKitEvents.cpp" />
+    <ClCompile Include="FourKitExports.cpp" />
+    <ClCompile Include="FourKitRuntime.cpp" />
     <ClCompile Include="InetAddress.cpp" />
     <ClCompile Include="InetSocketAddress.cpp" />
     <ClCompile Include="NativeBlockCallbacks.cpp" />
     <ClCompile Include="NativePlayerCallbacks.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="FourKit.cpp" />
     <ClCompile Include="PluginLogger.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -181,6 +183,7 @@
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="CommandExecutor.h" />
+    <ClInclude Include="FourKitInternal.h" />
     <ClInclude Include="InetAddress.h" />
     <ClInclude Include="InetSocketAddress.h" />
     <ClInclude Include="Item.h" />

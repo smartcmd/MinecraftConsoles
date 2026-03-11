@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FourKit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +40,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitRuntime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitExports.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitInternal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

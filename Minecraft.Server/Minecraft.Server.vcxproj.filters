@@ -594,11 +594,17 @@
     <ClCompile Include="Console\commands\CliCommandTp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="FourKitNative.cpp">
-      <Filter>Server\FourKit</Filter>
-    </ClCompile>
     <ClCompile Include="Console\commands\CliCommandWhitelist.cpp">
       <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitNativeWorldCallbacks.cpp">
+      <Filter>Server\FourKit</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitNativeEvents.cpp">
+      <Filter>Server\FourKit</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitNativePlayerCallbacks.cpp">
+      <Filter>Server\FourKit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -694,6 +700,9 @@
       <Filter>Server\FourKit</Filter>
     </ClInclude>
     <ClInclude Include="FourKitImports.h">
+      <Filter>Server\FourKit</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitNativeInternal.h">
       <Filter>Server\FourKit</Filter>
     </ClInclude>
   </ItemGroup>

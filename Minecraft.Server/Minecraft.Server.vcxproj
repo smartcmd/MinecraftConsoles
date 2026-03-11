@@ -126,8 +126,10 @@
   <ItemGroup>
     <ClCompile Include="Access\Access.cpp" />
     <ClCompile Include="Access\BanManager.cpp" />
-    <ClCompile Include="FourKitNative.cpp" />
     <ClCompile Include="Access\WhitelistManager.cpp" />
+    <ClCompile Include="FourKitNativeEvents.cpp" />
+    <ClCompile Include="FourKitNativePlayerCallbacks.cpp" />
+    <ClCompile Include="FourKitNativeWorldCallbacks.cpp" />
     <ClCompile Include="ServerLogManager.cpp" />
     <ClCompile Include="..\Minecraft.Client\AbstractTexturePack.cpp" />
     <ClCompile Include="..\Minecraft.Client\AchievementPopup.cpp" />
@@ -712,6 +714,7 @@
     <ClInclude Include="FourKitNative.h" />
     <ClInclude Include="FourKitNativeCallbacks.h" />
     <ClInclude Include="FourKitImports.h" />
+    <ClInclude Include="FourKitNativeInternal.h" />
     <ClInclude Include="ServerLogger.h" />
     <ClInclude Include="ServerLogManager.h" />
     <ClInclude Include="ServerProperties.h" />
