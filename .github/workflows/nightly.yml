@@ -57,9 +57,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: nightly-dedicated-server
-        name: Nightly Server Release
+        name: Nightly Dedicated Server Release
         body: |
-          Dedicated server runtime for Windows64.
+          Dedicated Server runtime for Windows64.
 
           Download `LCEServerWindows64.zip` and extract it to a folder where you'd like to keep the server runtime.
         files: |
