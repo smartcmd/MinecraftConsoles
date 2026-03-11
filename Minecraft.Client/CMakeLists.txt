@@ -35,7 +35,7 @@ target_compile_definitions(Minecraft.Client PRIVATE
 if(MSVC)
   configure_msvc_target(Minecraft.Client)
   target_link_options(Minecraft.Client PRIVATE
-    $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
+    $<$<CONFIG:Release>:/LTCG:incremental>
   )
 endif()
 
