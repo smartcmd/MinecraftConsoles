@@ -409,6 +409,28 @@ float GameRenderer::getFov(float a, bool applyEffects)
 
 }
 
+float GameRenderer::getViewmodelFov(float a)
+{
+	// The first-person hand/item should not scale with the user's world FOV (Java-like viewmodel feel).
+	if (cameraFlip > 0) return 90;
+
+	shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+	if (!player) return 70.0f;
+
+	float fov = 70.0f;
+
+	if (player->getHealth() <= 0)
+	{
+		float duration = player->deathTime + a;
+		fov /= ((1 - 500 / (duration + 500)) * 2.0f + 1);
+	}
+
+	int t = Camera::getBlockAt(mc->level, player, a);
+	if (t != 0 && Tile::tiles[t]->material == Material::water) fov = fov * 60 / 70;
+
+	return fov + fovOffsetO + (fovOffset - fovOffsetO) * a;
+}
+
 void GameRenderer::bobHurt(float a)
 {
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
@@ -591,6 +613,24 @@ void GameRenderer::unZoomRegion()
 	zoom = 1;
 }
 
+void GameRenderer::applyViewportFovAndAspectAdjustments(float& fov, float& aspect) const
+{
+	if (!mc || !mc->player) return;
+
+	if ((mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP) ||
+		(mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM))
+	{
+		aspect *= 2.0f;
+		fov *= 0.7f;		// Reduce FOV to make things less fish-eye, at the expense of reducing vertical FOV from single player mode
+	}
+	else if ((mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT) ||
+		(mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT))
+	{
+		// Ideally I'd like to make the fov bigger here, but if I do then you can see that the arm isn't very long...
+		aspect *= 0.5f;
+	}
+}
+
 // 4J added as we have more complex adjustments to make for fov & aspect on account of viewports
 void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects)
 {
@@ -600,18 +640,18 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
 	fov = getFov(a, applyEffects);
 
-	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
-		( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM ) )
-	{
-		aspect *= 2.0f;
-		fov *= 0.7f;		// Reduce FOV to make things less fish-eye, at the expense of reducing vertical FOV from single player mode
-	}
-	else if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT ) ||
-		( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT) )
-	{
-		// Ideally I'd like to make the fov bigger here, but if I do then you an see that the arm isn't very long...
-		aspect *= 0.5f;
-	}
+	applyViewportFovAndAspectAdjustments(fov, aspect);
+}
+
+void GameRenderer::getViewmodelFovAndAspect(float& fov, float& aspect, float a)
+{
+	// Use the real window dimensions so the perspective updates on resize.
+	extern int g_rScreenWidth;
+	extern int g_rScreenHeight;
+	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
+	fov = getViewmodelFov(a);
+
+	applyViewportFovAndAspectAdjustments(fov, aspect);
 }
 
 void GameRenderer::setupCamera(float a, int eye)
@@ -716,7 +756,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 
 	// 4J - have split out fov & aspect calculation so we can take into account viewports
 	float fov, aspect;
-	getFovAndAspect(fov, aspect, a, false);
+	getViewmodelFovAndAspect(fov, aspect, a);
 
 	if (zoom != 1)
 	{
