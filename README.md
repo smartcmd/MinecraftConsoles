@@ -97,6 +97,65 @@ Persistent files are bind-mounted to host:
 - `./server-data/server.properties` -> `/srv/mc/server.properties`
 - `./server-data/GameHDD` -> `/srv/mc/Windows64/GameHDD`
 
+### About `server.properties`
+
+`Minecraft.Server` reads `server.properties` from the executable working directory (Docker image: `/srv/mc/server.properties`).
+If the file is missing or contains invalid values, defaults are auto-generated/normalized on startup.
+
+Important keys:
+
+| Key | Values / Range | Default | Notes |
+|-----|-----------------|---------|-------|
+| `server-port` | `1-65535` | `25565` | Listen TCP port |
+| `server-ip` | string | `0.0.0.0` | Bind address |
+| `server-name` | string (max 16 chars) | `DedicatedServer` | Host display name |
+| `max-players` | `1-8` | `8` | Public player slots |
+| `level-name` | string | `world` | Display world name |
+| `level-id` | safe ID string | derived from `level-name` | Save folder ID; normalized automatically |
+| `level-seed` | int64 or empty | empty | Empty = random seed |
+| `world-size` | `classic\|small\|medium\|large` | `classic` | World size preset for new worlds and expansion target for existing worlds |
+| `log-level` | `debug\|info\|warn\|error` | `info` | Server log verbosity |
+| `autosave-interval` | `5-3600` | `60` | Seconds between autosaves |
+| `white-list` | `true/false` | `false` | Enable access list checks |
+| `lan-advertise` | `true/false` | `false` | LAN session advertisement |
+
+Minimal example:
+
+```properties
+server-name=DedicatedServer
+server-port=25565
+max-players=8
+level-name=world
+level-seed=
+world-size=classic
+log-level=info
+white-list=false
+lan-advertise=false
+autosave-interval=60
+```
+
+### Dedicated Server launch arguments
+
+The server loads base settings from `server.properties`, then CLI arguments override those values.
+
+| Argument | Description |
+|----------|-------------|
+| `-port <1-65535>` | Override `server-port` |
+| `-ip <addr>` | Override `server-ip` |
+| `-bind <addr>` | Alias of `-ip` |
+| `-name <name>` | Override `server-name` (max 16 chars) |
+| `-maxplayers <1-8>` | Override `max-players` |
+| `-seed <int64>` | Override `level-seed` |
+| `-loglevel <level>` | Override `log-level` (`debug`, `info`, `warn`, `error`) |
+| `-help` / `--help` / `-h` | Print usage and exit |
+
+Examples:
+
+```powershell
+Minecraft.Server.exe -name MyServer -port 25565 -ip 0.0.0.0 -maxplayers 8 -loglevel info
+Minecraft.Server.exe -seed 123456789
+```
+
 ## Controls (Keyboard & Mouse)
 
 - **Movement**: `W` `A` `S` `D`
