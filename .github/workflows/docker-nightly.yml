@@ -1,0 +1,124 @@
+name: Docker Nightly Dedicated Server
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - "main"
+    paths-ignore:
+      - ".gitignore"
+      - "*.md"
+      - ".github/*.md"
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-nightly-dedicated-server
+  cancel-in-progress: true
+
+jobs:
+  build-runtime:
+    name: Build Dedicated Server Runtime
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build Dedicated Server
+      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64" /t:"Minecraft.World;Minecraft.Server" /m
+
+    - name: Upload dedicated server runtime to artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dedicated-server-runtime
+        if-no-files-found: error
+        path: |
+          x64/Minecraft.Server/Release/Minecraft.Server.exe
+          x64/Minecraft.Server/Release/iggy_w64.dll
+          x64/Minecraft.Server/Release/Common/**
+          x64/Minecraft.Server/Release/Windows64/**
+
+  docker-publish:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: build-runtime
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Download dedicated server runtime from artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dedicated-server-runtime
+        path: .artifacts/runtime
+
+    - name: Prepare Docker runtime directory
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        root=".artifacts/runtime"
+        src=""
+
+        if [[ -f "$root/Minecraft.Server.exe" ]]; then
+          src="$root"
+        elif [[ -f "$root/x64/Minecraft.Server/Release/Minecraft.Server.exe" ]]; then
+          src="$root/x64/Minecraft.Server/Release"
+        else
+          echo "Could not find Minecraft.Server.exe in downloaded artifact"
+          find "$root" -maxdepth 6 -type f || true
+          exit 1
+        fi
+
+        rm -rf runtime
+        mkdir -p runtime
+        cp "$src/Minecraft.Server.exe" runtime/Minecraft.Server.exe
+        cp "$src/iggy_w64.dll" runtime/iggy_w64.dll
+        cp -R "$src/Common" runtime/Common
+        cp -R "$src/Windows64" runtime/Windows64
+
+        test -f runtime/Minecraft.Server.exe
+        test -f runtime/iggy_w64.dll
+        test -d runtime/Common
+        test -d runtime/Windows64
+
+    - name: Compute image name
+      id: image
+      shell: bash
+      run: |
+        owner="$(echo "${{ vars.CONTAINER_REGISTRY_OWNER || github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+        echo "owner=$owner" >> "$GITHUB_OUTPUT"
+        echo "image=ghcr.io/$owner/minecraft-lce-dedicated-server" >> "$GITHUB_OUTPUT"
+
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ steps.image.outputs.image }}
+        tags: |
+          type=raw,value=nightly
+
+    - name: Login to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.GHCR_USERNAME || github.actor }}
+        password: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
+
+    - name: Build and push image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: docker/dedicated-server/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          MC_RUNTIME_DIR=runtime
