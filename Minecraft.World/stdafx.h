@@ -192,7 +192,7 @@ void MemSect(int sect);
 #include "..\Minecraft.Client\Common\Minecraft_Macros.h"
 #include "..\Minecraft.Client\Common\Colours\ColourTable.h"
 
-#include "..\Minecraft.Client\Common\BuildVer.h"
+#include "Common\BuildVer.h"
 
 #ifdef _XBOX
 #include "..\Minecraft.Client\Xbox\Xbox_App.h"

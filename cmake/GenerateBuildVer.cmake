@@ -60,7 +60,9 @@ if(GIT_STATUS)
   set(SUFFIX "-dev")
 endif()
 
-file(WRITE "${OUTPUT_FILE}"
+# Write to a temp file first, only overwrite if content changed.
+# This prevents unnecessary rebuilds when the version info hasn't changed.
+set(_content
   "#pragma once\n"
   "\n"
   "#define VER_PRODUCTBUILD ${BUILD_NUMBER}\n"
@@ -69,3 +71,21 @@ file(WRITE "${OUTPUT_FILE}"
   "#define VER_BRANCHVERSION_STR_W L\"${GIT_REF}\"\n"
   "#define VER_NETWORK VER_PRODUCTBUILD\n"
 )
+
+set(_tmp "${OUTPUT_FILE}.tmp")
+file(WRITE "${_tmp}" ${_content})
+
+if(EXISTS "${OUTPUT_FILE}")
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E compare_files "${OUTPUT_FILE}" "${_tmp}"
+    RESULT_VARIABLE _changed
+  )
+else()
+  set(_changed 1)
+endif()
+
+if(_changed)
+  file(RENAME "${_tmp}" "${OUTPUT_FILE}")
+else()
+  file(REMOVE "${_tmp}")
+endif()

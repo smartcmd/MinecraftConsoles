@@ -62,8 +62,12 @@ add_subdirectory(Minecraft.Client)
 # ---
 add_library(MinecraftWorld STATIC ${MINECRAFT_WORLD_SOURCES})
 target_include_directories(MinecraftWorld
-  PRIVATE "${WORLD_DIR}"
-  PUBLIC  "${WORLD_DIR}/x64headers"
+  PRIVATE
+  "${CMAKE_CURRENT_BINARY_DIR}/generated/"
+  "${WORLD_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+  PUBLIC
+  "${WORLD_DIR}/x64headers"
 )
 target_compile_definitions(MinecraftWorld PRIVATE
   ${MINECRAFT_SHARED_DEFINES}
@@ -122,23 +126,17 @@ target_link_libraries(MinecraftClient PRIVATE
 # Build versioning
 # ---
 set(BUILDVER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateBuildVer.cmake")
+set(BUILDVER_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated/Common/BuildVer.h")
 
 add_custom_target(GenerateBuildVer
   COMMAND ${CMAKE_COMMAND}
-    "-DOUTPUT_FILE=${CLIENT_DIR}/Common/BuildVer.h"
+    "-DOUTPUT_FILE=${BUILDVER_OUTPUT}"
     -P "${BUILDVER_SCRIPT}"
   COMMENT "Generating BuildVer.h..."
   VERBATIM
 )
 
 add_dependencies(MinecraftClient GenerateBuildVer)
-
-add_custom_command(TARGET MinecraftClient POST_BUILD
-  COMMAND git restore "**/BuildVer.h"
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-  COMMENT "Restoring BuildVer.h..."
-  VERBATIM
-)
 
 # ---
 # Asset / redist copy
