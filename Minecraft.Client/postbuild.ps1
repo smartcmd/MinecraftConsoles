@@ -36,8 +36,6 @@ foreach ($copy in $copies) {
 
     if (Test-Path $src) {
         # Copy the files using xcopy, forcing overwrite and suppressing errors, and only copying if the source is newer than the destination
-		xcopy /q /y /i /s /e /d "$src" "$dst" 2>$null
+        xcopy /q /y /i /s /e /d "$src" "$dst" 2>$null
     }
 }
-
-git restore "**/BuildVer.h"
