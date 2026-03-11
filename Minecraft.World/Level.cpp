@@ -4717,6 +4717,10 @@ bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 			count = countInstanceOf( eTYPE_WOLF, true);
 			max = MobCategory::max_wolves_with_spawn_egg;
 			break;
+		case eTYPE_MUSHROOMCOW:
+			count = countInstanceOf( eTYPE_MUSHROOMCOW, true);
+			max = MobCategory::max_mushroomcows_with_spawn_egg;
+			break;
 		case eTYPE_SQUID:
 			count = countInstanceOf( eTYPE_SQUID, true);
 			max = MobCategory::max_squids_with_spawn_egg;
@@ -4778,6 +4782,10 @@ bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 		case eTYPE_WOLF:
 			count = countInstanceOf( eTYPE_WOLF, true);
 			max = MobCategory::max_wolves_with_breeding;
+			break;
+		case eTYPE_MUSHROOMCOW:
+			count = countInstanceOf( eTYPE_MUSHROOMCOW, true);
+			max = MobCategory::max_mushroomcows_with_breeding;
 			break;
 		default:
 			if((type & eTYPE_ANIMALS_SPAWN_LIMIT_CHECK) == eTYPE_ANIMALS_SPAWN_LIMIT_CHECK)
