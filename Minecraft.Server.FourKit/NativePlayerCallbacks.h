@@ -14,6 +14,8 @@ public:
 	static void SendMessage(String^ playerName, String^ message);
 	static void TeleportTo(String^ playerName, double x, double y, double z);
 	static void Kick(String^ playerName, String^ reason);
+	static bool BanPlayer(String^ playerName, String^ reason);
+	static bool BanPlayerIp(String^ playerName, String^ reason);
 	static bool IsSneaking(String^ playerName);
 	static void SetSneaking(String^ playerName, bool sneaking);
 	static bool IsSprinting(String^ playerName);

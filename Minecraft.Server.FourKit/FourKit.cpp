@@ -995,6 +995,8 @@ static int DispatchPlayerCommandExport(const char *playerName, const char *comma
     X(SetWeatherDuration, (int dimension, int duration), (dimension, duration))
 
 #define PB_NATIVE_VALUE_EXPORT_LIST(X)                                                                                                                                                                                       \
+    X(BanPlayer, bool, (const char *playerName, const char *reason), false, (playerName, reason))                                                                                                                          \
+    X(BanPlayerIp, bool, (const char *playerName, const char *reason), false, (playerName, reason))                                                                                                                        \
     X(IsSneaking, int, (const char *playerName), 0, (playerName))                                                                                                                                                            \
     X(IsSprinting, int, (const char *playerName), 0, (playerName))                                                                                                                                                           \
     X(GetAllowFlight, int, (const char *playerName), 0, (playerName))                                                                                                                                                        \

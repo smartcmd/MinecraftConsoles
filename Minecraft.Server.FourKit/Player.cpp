@@ -69,6 +69,16 @@ void Player::kickPlayer() // String ^ reason
     NativePlayerCallbacks::Kick(m_name, "");
 }
 
+bool Player::banPlayer(String^ reason)
+{
+	return NativePlayerCallbacks::BanPlayer(m_name, reason);
+}
+
+bool Player::banPlayerIp(String^ reason)
+{
+	return NativePlayerCallbacks::BanPlayerIp(m_name, reason);
+}
+
 void Player::teleport(double x, double y, double z)
 {
 	m_x = x;

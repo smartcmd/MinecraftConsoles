@@ -85,6 +85,36 @@ void NativePlayerCallbacks::Kick(String^ playerName, String^ reason)
 	}
 }
 
+bool NativePlayerCallbacks::BanPlayer(String^ playerName, String^ reason)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	const char* reasonPtr = (const char*)(Marshal::StringToHGlobalAnsi(reason != nullptr ? reason : String::Empty)).ToPointer();
+	try
+	{
+		return NativeCallback_BanPlayer(namePtr, reasonPtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+		Marshal::FreeHGlobal(IntPtr((void*)reasonPtr));
+	}
+}
+
+bool NativePlayerCallbacks::BanPlayerIp(String^ playerName, String^ reason)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	const char* reasonPtr = (const char*)(Marshal::StringToHGlobalAnsi(reason != nullptr ? reason : String::Empty)).ToPointer();
+	try
+	{
+		return NativeCallback_BanPlayerIp(namePtr, reasonPtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+		Marshal::FreeHGlobal(IntPtr((void*)reasonPtr));
+	}
+}
+
 bool NativePlayerCallbacks::IsSneaking(String^ playerName)
 {
 	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();

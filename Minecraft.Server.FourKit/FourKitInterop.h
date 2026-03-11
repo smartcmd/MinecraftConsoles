@@ -11,6 +11,8 @@
 	X(SendMessage, void, (const char* playerName, const char* message)) \
 	X(TeleportTo, void, (const char* playerName, double x, double y, double z)) \
 	X(Kick, void, (const char* playerName, const char* reason)) \
+	X(BanPlayer, bool, (const char* playerName, const char* reason)) \
+	X(BanPlayerIp, bool, (const char* playerName, const char* reason)) \
 	X(IsSneaking, int, (const char* playerName)) \
 	X(SetSneaking, void, (const char* playerName, int sneaking)) \
 	X(IsSprinting, int, (const char* playerName)) \
@@ -74,6 +76,8 @@
 	FourKitSendMessageCallback SendMessage, \
 	FourKitTeleportToCallback TeleportTo, \
 	FourKitKickCallback Kick, \
+	FourKitBanPlayerCallback BanPlayer, \
+	FourKitBanPlayerIpCallback BanPlayerIp, \
 	FourKitIsSneakingCallback IsSneaking, \
 	FourKitSetSneakingCallback SetSneaking, \
 	FourKitIsSprintingCallback IsSprinting, \
@@ -125,6 +129,8 @@
 	SendMessage, \
 	TeleportTo, \
 	Kick, \
+	BanPlayer, \
+	BanPlayerIp, \
 	IsSneaking, \
 	SetSneaking, \
 	IsSprinting, \

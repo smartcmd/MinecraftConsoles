@@ -4,6 +4,9 @@
 
 #include "FourKitNative.h"
 #include "FourKitNativeCallbacks.h"
+#include "Access\Access.h"
+#include "Common\NetworkUtils.h"
+#include "ServerLogManager.h"
 #include "..\Minecraft.Client\ServerLevel.h"
 #include "..\Minecraft.Client\ServerPlayer.h"
 #include "..\Minecraft.Client\PlayerConnection.h"
@@ -11,6 +14,7 @@
 #include "..\Minecraft.Client\PlayerList.h"
 #include "..\Minecraft.World\Connection.h"
 #include "..\Minecraft.World\Socket.h"
+#include "..\Minecraft.World\DisconnectPacket.h"
 #include "..\Minecraft.Server.FourKit\FourKitStructs.h"
 #include "..\Minecraft.Server.FourKit\FourKitInterop.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
@@ -27,14 +31,92 @@
 #include "..\Minecraft.Client\ServerPlayerGameMode.h"
 #include "..\Minecraft.World\LevelSettings.h"
 
-#if defined(_WINDOWS64)
+#include <algorithm>
+
 #include "..\Minecraft.Client\Windows64\Network\WinsockNetLayer.h"
-#endif
 
 namespace FourKit
 {
 	std::map<std::string, ServerPlayer*> g_nativePlayerMap;
 	static bool g_callbacksRegistered = false;
+
+	namespace
+	{
+		static void AppendUniqueXuid(PlayerUID xuid, std::vector<PlayerUID>* out)
+		{
+			if (out == nullptr || xuid == INVALID_XUID)
+			{
+				return;
+			}
+
+			if (std::find(out->begin(), out->end(), xuid) == out->end())
+			{
+				out->push_back(xuid);
+			}
+		}
+
+		static void CollectPlayerBanXuids(ServerPlayer* player, std::vector<PlayerUID>* out)
+		{
+			if (player == nullptr || out == nullptr)
+			{
+				return;
+			}
+
+			AppendUniqueXuid(player->getXuid(), out);
+			AppendUniqueXuid(player->getOnlineXuid(), out);
+		}
+
+		static std::string BuildBanReason(const char* reason)
+		{
+			const std::string trimmed = ServerRuntime::StringUtils::TrimAscii((reason != nullptr) ? reason : "");
+			return trimmed.empty() ? "Banned by a plugin." : trimmed;
+		}
+
+		static bool TryGetPlayerRemoteIp(ServerPlayer* player, std::string* outIp)
+		{
+			if (outIp == nullptr || player == nullptr || player->connection == nullptr || player->connection->connection == nullptr || player->connection->connection->getSocket() == nullptr)
+			{
+				return false;
+			}
+
+			const unsigned char smallId = player->connection->connection->getSocket()->getSmallId();
+			if (smallId == 0)
+			{
+				return false;
+			}
+
+			return ServerRuntime::ServerLogManager::TryGetConnectionRemoteIp(smallId, outIp);
+		}
+
+		static int DisconnectPlayersByRemoteIp(const std::string& ip)
+		{
+			auto* server = MinecraftServer::getInstance();
+			if (server == nullptr || server->getPlayers() == nullptr)
+			{
+				return 0;
+			}
+
+			const std::string normalizedIp = ServerRuntime::NetworkUtils::NormalizeIpToken(ip);
+			const std::vector<std::shared_ptr<ServerPlayer>> playerSnapshot = server->getPlayers()->players;
+			int disconnectedCount = 0;
+			for (const auto& player : playerSnapshot)
+			{
+				std::string playerIp;
+				if (player == nullptr || !TryGetPlayerRemoteIp(player.get(), &playerIp))
+				{
+					continue;
+				}
+
+				if (ServerRuntime::NetworkUtils::NormalizeIpToken(playerIp) == normalizedIp && player->connection != nullptr)
+				{
+					player->connection->disconnect(DisconnectPacket::eDisconnect_Banned);
+					++disconnectedCount;
+				}
+			}
+
+			return disconnectedCount;
+		}
+	}
 
 	static ServerLevel* GetServerLevel(int dimension)
 	{
@@ -162,6 +244,96 @@ namespace FourKit
 		{
             it->second->connection->disconnect(DisconnectPacket::eDisconnect_Kicked);
 		}
+	}
+
+	bool NativeCallback_BanPlayer(const char* playerName, const char* reason)
+	{
+		if (playerName == nullptr || !ServerRuntime::Access::IsInitialized())
+		{
+			return false;
+		}
+
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it == g_nativePlayerMap.end() || it->second == nullptr)
+		{
+			return false;
+		}
+
+		ServerPlayer* player = it->second;
+		std::vector<PlayerUID> xuids;
+		CollectPlayerBanXuids(player, &xuids);
+		if (xuids.empty())
+		{
+			return false;
+		}
+
+		const bool hasUnbannedIdentity = std::any_of(
+			xuids.begin(),
+			xuids.end(),
+			[](PlayerUID xuid) { return !ServerRuntime::Access::IsPlayerBanned(xuid); });
+		if (!hasUnbannedIdentity)
+		{
+			return false;
+		}
+
+		ServerRuntime::Access::BanMetadata metadata = ServerRuntime::Access::BanManager::BuildDefaultMetadata("Plugin");
+		metadata.reason = BuildBanReason(reason);
+
+		const std::string playerNameUtf8 = ServerRuntime::StringUtils::WideToUtf8(player->name);
+		for (const auto xuid : xuids)
+		{
+			if (ServerRuntime::Access::IsPlayerBanned(xuid))
+			{
+				continue;
+			}
+
+			if (!ServerRuntime::Access::AddPlayerBan(xuid, playerNameUtf8, metadata))
+			{
+				return false;
+			}
+		}
+
+		if (player->connection != nullptr)
+		{
+			player->connection->disconnect(DisconnectPacket::eDisconnect_Banned);
+		}
+
+		return true;
+	}
+
+	bool NativeCallback_BanPlayerIp(const char* playerName, const char* reason)
+	{
+		if (playerName == nullptr || !ServerRuntime::Access::IsInitialized())
+		{
+			return false;
+		}
+
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it == g_nativePlayerMap.end() || it->second == nullptr)
+		{
+			return false;
+		}
+
+		std::string remoteIp;
+		if (!TryGetPlayerRemoteIp(it->second, &remoteIp))
+		{
+			return false;
+		}
+
+		if (ServerRuntime::Access::IsIpBanned(remoteIp))
+		{
+			return false;
+		}
+
+		ServerRuntime::Access::BanMetadata metadata = ServerRuntime::Access::BanManager::BuildDefaultMetadata("Plugin");
+		metadata.reason = BuildBanReason(reason);
+		if (!ServerRuntime::Access::AddIpBan(remoteIp, metadata))
+		{
+			return false;
+		}
+
+		DisconnectPlayersByRemoteIp(remoteIp);
+		return true;
 	}
 
 	int NativeCallback_IsSneaking(const char* playerName)
@@ -1004,6 +1176,8 @@ namespace FourKit
 						&NativeCallback_SendMessage,
 						&NativeCallback_TeleportTo,
 						&NativeCallback_Kick,
+						&NativeCallback_BanPlayer,
+						&NativeCallback_BanPlayerIp,
 						&NativeCallback_IsSneaking,
 						&NativeCallback_SetSneaking,
 						&NativeCallback_IsSprinting,

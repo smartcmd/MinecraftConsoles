@@ -44,6 +44,8 @@ public:
 	void setSprinting(bool sprinting);
 	virtual void sendMessage(String^ message) override;
 	void kickPlayer(); // String^ reason
+	bool banPlayer(String^ reason);
+	bool banPlayerIp(String^ reason);
 	void teleport(double x, double y, double z);
 
 	bool getAllowFlight();
