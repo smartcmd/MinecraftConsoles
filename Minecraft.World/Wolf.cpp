@@ -286,7 +286,7 @@ bool Wolf::hurt(DamageSource *source, float dmg)
 	if (isTame())
 	{		
 		shared_ptr<Entity> entity = source->getDirectEntity();
-		if (entity != nullptr && entity->instanceof(eTYPE_PLAYER) && !entity->isInvulnerable())
+		if (entity != nullptr && entity->instanceof(eTYPE_PLAYER))
 		{
 			shared_ptr<Player> attacker = dynamic_pointer_cast<Player>(entity);
 			attacker->canHarmPlayer(getOwnerUUID());
