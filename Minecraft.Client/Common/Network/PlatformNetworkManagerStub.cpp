@@ -240,7 +240,13 @@ void CPlatformNetworkManagerStub::DoWork()
 				qnetPlayer->m_resolvedXuid = INVALID_XUID;
 				qnetPlayer->m_gamertag[0] = 0;
 				qnetPlayer->SetCustomDataValue(0);
-				if (IQNet::s_playerCount > 1)
+				// Recalculate s_playerCount as the highest active slot + 1.
+				// A blind decrement would hide players at higher-indexed slots when a
+				// lower-indexed player disconnects first: GetPlayerBySmallId scans
+				// [0, s_playerCount) so any slot at or above the decremented count
+				// becomes invisible, causing its disconnect to be missed (ghost player).
+				while (IQNet::s_playerCount > 1 &&
+					   IQNet::m_player[IQNet::s_playerCount - 1].GetCustomDataValue() == 0)
 					IQNet::s_playerCount--;
 			}
 			// NOTE: Do NOT call PushFreeSmallId here. The old PlayerConnection's
