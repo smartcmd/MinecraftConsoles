@@ -12,7 +12,7 @@ DoorInfo::DoorInfo(int x, int y, int z, int insideDx, int insideDy, int timeStam
 
 int DoorInfo::distanceTo(int x2, int y2, int z2)
 {
-	return (int) sqrt((float)distanceToSqr(x2, y2, z2));
+	return static_cast<int>(sqrt((float)distanceToSqr(x2, y2, z2)));
 }
 
 int DoorInfo::distanceToSqr(int x2, int y2, int z2)

@@ -15,7 +15,7 @@ LeapAtTargetGoal::LeapAtTargetGoal(Mob *mob, float yd)
 bool LeapAtTargetGoal::canUse()
 {
 	target = weak_ptr<LivingEntity>(mob->getTarget());
-	if (target.lock() == NULL) return false;
+	if (target.lock() == nullptr) return false;
 	double d = mob->distanceToSqr(target.lock());
 	if (d < 2 * 2 || d > 4 * 4) return false;
 	if (!mob->onGround) return false;
@@ -25,7 +25,7 @@ bool LeapAtTargetGoal::canUse()
 
 bool LeapAtTargetGoal::canContinueToUse()
 {
-	return target.lock() != NULL && !mob->onGround;
+	return target.lock() != nullptr && !mob->onGround;
 }
 
 void LeapAtTargetGoal::start()

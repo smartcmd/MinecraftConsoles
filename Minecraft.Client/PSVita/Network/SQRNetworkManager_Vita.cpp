@@ -16,8 +16,8 @@
 // image used for the invite gui, filesize must be smaller than SCE_NP_MESSAGE_DIALOG_MAX_INDEX_ICON_SIZE ( 64K )
 #define SESSION_IMAGE_PATH				"app0:PSVita/session_image.png"
 
-int (* SQRNetworkManager_Vita::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;
-void * SQRNetworkManager_Vita::s_SignInCompleteParam = NULL;
+int (* SQRNetworkManager_Vita::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = nullptr;
+void * SQRNetworkManager_Vita::s_SignInCompleteParam = nullptr;
 sce::Toolkit::NP::PresenceDetails SQRNetworkManager_Vita::s_lastPresenceInfo;
 int SQRNetworkManager_Vita::s_resendPresenceCountdown = 0;
 bool SQRNetworkManager_Vita::s_presenceStatusDirty = false;
@@ -98,8 +98,8 @@ SQRNetworkManager_Vita::SQRNetworkManager_Vita(ISQRNetworkManagerListener *liste
 	m_isInSession = false;
 	m_offlineGame = false;
 	m_offlineSQR = false;
-	m_aServerId = NULL;
-	m_gameBootInvite = NULL;
+	m_aServerId = nullptr;
+	m_gameBootInvite = nullptr;
 	m_onlineStatus = false;
 	m_bLinkDisconnected = false;
 	m_bShuttingDown = false;
@@ -129,7 +129,7 @@ void SQRNetworkManager_Vita::Initialise()
 	m_bShuttingDown = false;
 	int32_t ret = 0;
 	// 	int32_t libCtxId = 0;
-	// 	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, NULL);
+	// 	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, nullptr);
 	// 	assert (ret >= 0);
 	// 	libCtxId = ret;
 
@@ -162,7 +162,7 @@ void SQRNetworkManager_Vita::Initialise()
 	}
 
 	SetState(SNM_INT_STATE_SIGNING_IN);
-	// 	AttemptPSNSignIn(NULL, NULL);
+	// 	AttemptPSNSignIn(nullptr, nullptr);
 
 	// 	SonyHttp::init();
 
@@ -170,7 +170,7 @@ void SQRNetworkManager_Vita::Initialise()
 	// 	npConf.commId			= &s_npCommunicationId;
 	// 	npConf.commPassphrase	= &s_npCommunicationPassphrase;
 	// 	npConf.commSignature	= &s_npCommunicationSignature;
-	// 	ret = sceNpInit(&npConf, NULL);
+	// 	ret = sceNpInit(&npConf, nullptr);
 	// 	if (ret < 0 && ret != SCE_NP_ERROR_ALREADY_INITIALIZED)
 	// 	{
 	// 		app.DebugPrintf("sceNpInit failed, ret=%x\n", ret);
@@ -295,7 +295,7 @@ void SQRNetworkManager_Vita::InitialiseAfterOnline()
 		if( s_SignInCompleteCallbackFn )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,0);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		return;
 	}
@@ -329,7 +329,7 @@ void SQRNetworkManager_Vita::InitialiseAfterOnline()
 
 	app.DebugPrintf("sceNpMatching2CreateContext\n");
 	ret = sceNpMatching2CreateContext(&npID, GetSceNpCommsId(), &s_npCommunicationPassphrase, &m_matchingContext);
-	//ret = sceNpMatching2CreateContext(&npID, NULL, NULL, &m_matchingContext);
+	//ret = sceNpMatching2CreateContext(&npID, nullptr, nullptr, &m_matchingContext);
 
 	if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_CREATE_MATCHING_CONTEXT ) )
 	{
@@ -377,7 +377,7 @@ void SQRNetworkManager_Vita::Tick()
 	if( ( m_gameBootInvite ) && ( s_safeToRespondToGameBootInvite ) )
 	{
 		m_listener->HandleInviteReceived( ProfileManager.GetPrimaryPad(), m_gameBootInvite );
-		m_gameBootInvite = NULL;
+		m_gameBootInvite = nullptr;
 	}
 
 	ErrorHandlingTick();
@@ -444,12 +444,12 @@ void SQRNetworkManager_Vita::Tick()
 		if( s_signInCompleteCallbackIfFailed )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		else if(s_SignInCompleteCallbackFn)
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-			s_SignInCompleteCallbackFn = NULL;
+			s_SignInCompleteCallbackFn = nullptr;
 		}
 	}
 
@@ -467,7 +467,7 @@ void SQRNetworkManager_Vita::ErrorHandlingTick()
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		app.DebugPrintf("Network error: SNM_INT_STATE_INITIALISE_FAILED\n");
 		if( m_isInSession && m_offlineGame) // m_offlineSQR )  // MGH - changed this to m_offlineGame, as m_offlineSQR can be true when running an online game but the init has failed because the servers are down
@@ -578,7 +578,7 @@ void SQRNetworkManager_Vita::UpdateExternalRoomData()
 		reqParam.roomBinAttrExternal = &roomBinAttr;
 
 		app.DebugPrintf("sceNpMatching2SetRoomDataExternal\n");
-		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 		app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2SetRoomDataExternal returns 0x%x, number of players %d\n",ret,((char *)m_joinExtData)[174]);
 		if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_SET_EXTERNAL_ROOM_DATA ) )
 		{
@@ -608,11 +608,11 @@ bool SQRNetworkManager_Vita::FriendRoomManagerSearch()
 	}
 
 	// Free up any external data that we received from the previous search
-	for( int i = 0; i < m_aFriendSearchResults.size(); i++ )
+	for( size_t i = 0; i < m_aFriendSearchResults.size(); i++ )
 	{
 		if(m_aFriendSearchResults[i].m_RoomExtDataReceived)
 			free(m_aFriendSearchResults[i].m_RoomExtDataReceived);
-		m_aFriendSearchResults[i].m_RoomExtDataReceived = NULL;
+		m_aFriendSearchResults[i].m_RoomExtDataReceived = nullptr;
 	}
 
 	m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_COUNT;
@@ -675,7 +675,7 @@ void SQRNetworkManager_Vita::FriendSearchTick()
 		{
 			m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_INFO;
 			delete m_getFriendCountThread;
-			m_getFriendCountThread = NULL;
+			m_getFriendCountThread = nullptr;
 			FriendRoomManagerSearch2();
 		}
 	}
@@ -695,7 +695,7 @@ int SQRNetworkManager_Vita::BasicEventThreadProc( void *lpParameter )
 	//
 	// 	do
 	// 	{
-	// 		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, NULL);
+	// 		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, nullptr);
 	//
 	// 		// If the sys_event_t we've sent here from the handler has a non-zero data1 element, this is to signify that we should terminate the thread
 	// 		if( event.udata == 0 )
@@ -753,7 +753,7 @@ int SQRNetworkManager_Vita::GetFriendsThreadProc( void* lpParameter )
 	// There shouldn't ever be more than 100 friends returned but limit here just in case
 	if( manager->m_friendCount > 100 ) manager->m_friendCount = 100;
 
-	SceNpId* friendIDs = NULL;
+	SceNpId* friendIDs = nullptr;
 	if(manager->m_friendCount > 0)
 	{
 		// grab all the friend IDs first
@@ -890,7 +890,7 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerByIndex(int idx)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -907,7 +907,7 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerBySmallId(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_Vita::GetLocalPlayerByUserIndex(int idx)
@@ -923,7 +923,7 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetLocalPlayerByUserIndex(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_Vita::GetHostPlayer()
@@ -936,11 +936,11 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetHostPlayer()
 
 SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerIfReady(SQRNetworkPlayer *player)
 {
-	if( player == NULL ) return NULL;
+	if( player == nullptr ) return nullptr;
 
 	if( player->IsReady() ) return player;
 
-	return NULL;
+	return nullptr;
 }
 
 // Update state internally
@@ -1039,7 +1039,7 @@ bool SQRNetworkManager_Vita::JoinRoom(SQRNetworkManager_Vita::SessionSearchResul
 {
 	// Set up the presence info we would like to synchronise out when we have fully joined the game
 	CPlatformNetworkManagerSony::SetSQRPresenceInfoFromExtData(&s_lastPresenceSyncInfo, searchResult->m_extData, searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId);
-	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, NULL);
+	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, nullptr);
 }
 
 // Join room with a specified roomId. This is used when joining from an invite, as well as by the previous method
@@ -1106,7 +1106,7 @@ void SQRNetworkManager_Vita::LeaveRoom(bool bActuallyLeaveRoom)
 
 			SetState(SNM_INT_STATE_LEAVING);
 			app.DebugPrintf("sceNpMatching2LeaveRoom\n");
-			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, NULL, &m_leaveRoomRequestId );
+			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, nullptr, &m_leaveRoomRequestId );
 			if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_LEAVE_ROOM) )
 			{
 				SetState(SNM_INT_STATE_LEAVING_FAILED);
@@ -1214,7 +1214,7 @@ bool SQRNetworkManager_Vita::AddLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
 		app.DebugPrintf("sceNpMatching2SetRoomMemberDataInternal\n");
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL) )
 		{
@@ -1264,7 +1264,7 @@ bool SQRNetworkManager_Vita::RemoveLocalPlayerByUserIndex(int idx)
 				// And do any adjusting necessary to the mappings from this room data, to the SQRNetworkPlayers.
 				// This will also delete the SQRNetworkPlayer and do all the callbacks that requires etc.
 				MapRoomSlotPlayers(roomSlotPlayerCount);
-				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 
 				// Sync this back out to our networked clients...
 				SyncRoomData();
@@ -1302,7 +1302,7 @@ bool SQRNetworkManager_Vita::RemoveLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternalNum = 1;
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL2) )
 		{
@@ -1526,14 +1526,14 @@ void SQRNetworkManager_Vita::TickJoinablePresenceData()
 			// 			// Signed in to PSN but not connected (no internet access)
 			// 			UINT uiIDA[1];
 			// 			uiIDA[0] = IDS_OK;
-			// 			ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL, app.GetStringTable());
+			// 			ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), nullptr, nullptr, app.GetStringTable());
 			// 		}
 			// 		else
 			{
 				// Not signed in to PSN
 				UINT uiIDA[1];
 				uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
-				ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 1, ProfileManager.GetPrimaryPad(), &MustSignInReturnedPresenceInvite, NULL);
+				ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 1, ProfileManager.GetPrimaryPad(), &MustSignInReturnedPresenceInvite, nullptr);
 			}
 
 		}
@@ -1573,7 +1573,7 @@ void SQRNetworkManager_Vita::FindOrCreateNonNetworkPlayer(int slot, int playerTy
 		}
 	}
 	// Create the player - non-network players can be considered complete as soon as we create them as we aren't waiting on their network connections becoming complete, so can flag them as such and notify via callback
-	PlayerUID *pUID = NULL;
+	PlayerUID *pUID = nullptr;
 	PlayerUID localUID;
 	if( ( playerType == SQRNetworkPlayer::SNP_TYPE_LOCAL ) ||
 		m_isHosting && ( playerType == SQRNetworkPlayer::SNP_TYPE_HOST ) )
@@ -1640,7 +1640,7 @@ void SQRNetworkManager_Vita::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_REMOTE )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1696,7 +1696,7 @@ void SQRNetworkManager_Vita::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_LOCAL )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1788,7 +1788,7 @@ void SQRNetworkManager_Vita::UpdatePlayersFromRoomSyncUIDs()
 }
 
 // Host only - add remote players to our internal storage of player slots, and synchronise this with other room members.
-bool SQRNetworkManager_Vita::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==NULL*/ )
+bool SQRNetworkManager_Vita::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==nullptr*/ )
 {
 	assert( m_isHosting );
 
@@ -1908,7 +1908,7 @@ void SQRNetworkManager_Vita::RemoveRemotePlayersAndSync( SceNpMatching2RoomMembe
 			}
 			// Zero last element, that isn't part of the currently sized array anymore
 			memset(&m_roomSyncData.players[m_roomSyncData.getPlayerCount()],0,sizeof(PlayerSyncData));
-			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 		}
 		else
 		{
@@ -1951,7 +1951,7 @@ void SQRNetworkManager_Vita::RemoveNetworkPlayers( int mask )
 			{
 				if( m_aRoomSlotPlayers[i] == player )
 				{
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 			// And delete the reference from the ctx->player map
@@ -2004,7 +2004,7 @@ void SQRNetworkManager_Vita::SyncRoomData()
 	roomBinAttr.size = sizeof( m_roomSyncData );
 	reqParam.roomBinAttrInternalNum = 1;
 	reqParam.roomBinAttrInternal = &roomBinAttr;
-	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 }
 
 // Check if the matching context is valid, and if not attempt to create one. If to do this requires starting an asynchronous process, then sets the internal state to the state passed in
@@ -2037,7 +2037,7 @@ bool SQRNetworkManager_Vita::GetMatchingContext(eSQRNetworkManagerInternalState 
 	// Create context
 	app.DebugPrintf("sceNpMatching2CreateContext\n");
 	ret = sceNpMatching2CreateContext(&npId, &s_npCommunicationId, &s_npCommunicationPassphrase, &m_matchingContext/*, option*/);
-	//ret = sceNpMatching2CreateContext(&npId, NULL,NULL, &m_matchingContext/*, option*/);
+	//ret = sceNpMatching2CreateContext(&npId, nullptr,nullptr, &m_matchingContext/*, option*/);
 	if( ret < 0 )
 	{
 		app.DebugPrintf("SQRNetworkManager::GetMatchingContext - sceNpMatching2CreateContext failed with code 0x%08x\n", ret);
@@ -2137,7 +2137,7 @@ bool SQRNetworkManager_Vita::GetServerContext(SceNpMatching2ServerId serverId)
 	//	{
 	// 		// Get list of server IDs of servers allocated to the application. We don't actually need to do this, but it is as good a way as any to try a matching2 service and check that
 	// 		// the context *really* is valid.
-	// 		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, NULL, 0 );
+	// 		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, nullptr, 0 );
 	// 		// If an error is returned here, we need to destroy and recerate our server - if this goes ok we should come back through this path again
 	// 		if( ( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_UNAVAILABLE ) ||		// This error has been seen (occasionally) in a normal working environment
 	// 			( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED ) )				// Also checking for this as a means of simulating the previous error
@@ -2233,7 +2233,7 @@ void SQRNetworkManager_Vita::RoomCreateTick()
 			app.DebugPrintf(CMinecraftApp::USER_RR,">> Creating room start\n");
 			s_roomStartTime = System::currentTimeMillis();
 			app.DebugPrintf("sceNpMatching2CreateJoinRoom\n");
-			int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, NULL, &m_createRoomRequestId );
+			int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, nullptr, &m_createRoomRequestId );
 			if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_JOIN_ROOM) )
 			{
 				SetState(SNM_INT_STATE_HOSTING_CREATE_ROOM_FAILED);
@@ -2468,7 +2468,7 @@ bool SQRNetworkManager_Vita::CreateVoiceRudpConnections(SceNpMatching2RoomId roo
 
 	// create this connection if we don't have it already
 	SQRVoiceConnection* pConnection = SonyVoiceChat_Vita::getVoiceConnectionFromRoomMemberID(peerMemberId);
-	if(pConnection == NULL)
+	if(pConnection == nullptr)
 	{
 
 		// Create an Rudp context for the voice connection, this will happen regardless of whether the peer is client or host
@@ -2542,7 +2542,7 @@ bool SQRNetworkManager_Vita::CreateRudpConnections(SceNpMatching2RoomId roomId, 
 		if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_RUDP_CONTEXT) ) return false;
 		if( m_isHosting )
 		{
-			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, NULL );
+			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, nullptr );
 		}
 		else
 		{
@@ -2576,7 +2576,7 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerFromRudpCtx(int rudpCtx)
 	{
 		return it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2590,7 +2590,7 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerFromRoomMemberAndLocalIdx(int
 			return it->second;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2693,7 +2693,7 @@ void SQRNetworkManager_Vita::ContextCallback(SceNpMatching2ContextId  id, SceNpM
 		if( manager->m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 		{
 			manager->SetState( SNM_INT_STATE_IDLE );
-			manager->GetExtDataForRoom(0, NULL, NULL, NULL);
+			manager->GetExtDataForRoom(0, nullptr, nullptr, nullptr);
 			break;
 		}
 
@@ -2729,7 +2729,7 @@ void SQRNetworkManager_Vita::ContextCallback(SceNpMatching2ContextId  id, SceNpM
 			// 				if(s_SignInCompleteCallbackFn)
 			// 				{
 			// 					s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-			// 					s_SignInCompleteCallbackFn = NULL;
+			// 					s_SignInCompleteCallbackFn = nullptr;
 			// 				}
 
 
@@ -2966,12 +2966,12 @@ void SQRNetworkManager_Vita::DefaultRequestCallback(SceNpMatching2ContextId id, 
 					// Set flag to indicate whether we were kicked for being out of room or not
 					reqParam.optData.data[0] = isFull ? 1 : 0;
 					reqParam.optData.len = 1;
-					int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, NULL, &manager->m_kickRequestId);
+					int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, nullptr, &manager->m_kickRequestId);
 					app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2KickoutRoomMember returns error 0x%x\n",ret);
 				}
 				else
 				{
-					if(pRoomMemberData->roomMemberDataInternal->roomMemberBinAttrInternal->data.ptr == NULL)
+					if(pRoomMemberData->roomMemberDataInternal->roomMemberBinAttrInternal->data.ptr == nullptr)
 					{
 						// the host doesn't send out data, so this must be the host we're connecting to
 
@@ -3220,7 +3220,7 @@ void SQRNetworkManager_Vita::RoomEventCallback(SceNpMatching2ContextId id, SceNp
 							reqParam.roomMemberBinAttrInternalNum = 1;
 							reqParam.roomMemberBinAttrInternal = &binAttr;
 
-							int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, NULL, &manager->m_setRoomMemberInternalDataRequestId );
+							int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, nullptr, &manager->m_setRoomMemberInternalDataRequestId );
 						}
 						else
 						{
@@ -3309,7 +3309,7 @@ void SQRNetworkManager_Vita::SignallingCallback(SceNpMatching2ContextId ctxId, S
 				{
 					SonyVoiceChat_Vita::disconnectRemoteConnection(pVoice);
 				}
-				if(peerMemberId == manager->m_hostMemberId || pVoice == NULL) //  MGH - added check for voice, as we sometime get here before m_hostMemberId has been filled in
+				if(peerMemberId == manager->m_hostMemberId || pVoice == nullptr) //  MGH - added check for voice, as we sometime get here before m_hostMemberId has been filled in
 				{
 					// Host has left the game... so its all over for this client too. Finish everything up now, including deleting the server context which belongs to this gaming session
 					// This also might be a response to a request to leave the game from our end too so don't need to do anything in that case
@@ -3336,7 +3336,7 @@ void SQRNetworkManager_Vita::SignallingCallback(SceNpMatching2ContextId ctxId, S
 			reqParam.attrId = attrs;
 			reqParam.attrIdNum = 1;
 
-			sceNpMatching2GetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, NULL, &manager->m_roomMemberDataRequestId);
+			sceNpMatching2GetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, nullptr, &manager->m_roomMemberDataRequestId);
 		}
 		break;
 	}
@@ -3349,7 +3349,7 @@ int SQRNetworkManager_Vita::BasicEventCallback(int event, int retCode, uint32_t 
 	PSVITA_STUBBED;
 	// 	SQRNetworkManager_Vita *manager = (SQRNetworkManager_Vita *)arg;
 	// 	// We aren't allowed to actually get the event directly from this callback, so send our own internal event to a thread dedicated to doing this
-	// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, NULL);
+	// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, nullptr);
 
 	return 0;
 }
@@ -3408,7 +3408,7 @@ void SQRNetworkManager_Vita::SysUtilCallback(uint64_t status, uint64_t param, vo
 	// 					{
 	// 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 	// 					}
-	// 					s_SignInCompleteCallbackFn  = NULL;
+	// 					s_SignInCompleteCallbackFn  = nullptr;
 	// 				}
 	// 				return;
 	// 			}
@@ -3423,7 +3423,7 @@ void SQRNetworkManager_Vita::SysUtilCallback(uint64_t status, uint64_t param, vo
 	// 					{
 	// 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 	// 					}
-	// 					s_SignInCompleteCallbackFn  = NULL;
+	// 					s_SignInCompleteCallbackFn  = nullptr;
 	// 				}
 	// 			}
 	//
@@ -3472,7 +3472,7 @@ void SQRNetworkManager_Vita::updateNetCheckDialog()
 				if( s_SignInCompleteCallbackFn )
 				{
 					s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,0);
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 			}
 			else
@@ -3488,7 +3488,7 @@ void SQRNetworkManager_Vita::updateNetCheckDialog()
 					{
 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 					}
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 			}
 		}
@@ -3611,7 +3611,7 @@ void SQRNetworkManager_Vita::RudpContextCallback(int ctx_id, int event_id, int e
 							playerFrom = manager->m_aRoomSlotPlayers[0];
 							playerTo = manager->GetPlayerFromRudpCtx( ctx_id );
 						}
-						if( ( playerFrom != NULL ) && ( playerTo != NULL ) )
+						if( ( playerFrom != nullptr ) && ( playerTo != nullptr ) )
 						{
 							manager->m_listener->HandleDataReceived( playerFrom, playerTo, data, bytesRead );
 						}
@@ -3677,7 +3677,7 @@ void SQRNetworkManager_Vita::ServerContextValid_CreateRoom()
 	{
 		app.DebugPrintf("sceNpMatching2GetWorldInfoList\n");
 		m_getWorldRequestId=0;
-		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, NULL, &m_getWorldRequestId);
+		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, nullptr, &m_getWorldRequestId);
 	}
 	if (ret < 0)
 	{
@@ -3706,7 +3706,7 @@ void SQRNetworkManager_Vita::ServerContextValid_JoinRoom()
 	reqParam.roomMemberBinAttrInternalNum = 1;
 	reqParam.roomMemberBinAttrInternal = &binAttr;
 
-	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, NULL, &m_joinRoomRequestId );
+	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, nullptr, &m_joinRoomRequestId );
 	if ( (ret < 0) || ForceErrorPoint(SNM_FORCE_ERROR_JOIN_ROOM) )
 	{
 		if( ret == SCE_NP_MATCHING2_SERVER_ERROR_NAT_TYPE_MISMATCH)
@@ -3730,14 +3730,14 @@ const SceNpCommunicationSignature* SQRNetworkManager_Vita::GetSceNpCommsSig()
 const SceNpTitleId* SQRNetworkManager_Vita::GetSceNpTitleId()
 {
 	PSVITA_STUBBED;
-	return NULL;
+	return nullptr;
 	// 	return &s_npTitleId;
 }
 
 const SceNpTitleSecret* SQRNetworkManager_Vita::GetSceNpTitleSecret()
 {
 	PSVITA_STUBBED;
-	return NULL;
+	return nullptr;
 	//	return &s_npTitleSecret;
 }
 
@@ -3771,9 +3771,9 @@ void SQRNetworkManager_Vita::GetExtDataForRoom( SceNpMatching2RoomId roomId, voi
 	static SceNpMatching2RoomId aRoomId[1];
 	static SceNpMatching2AttributeId attr[1];
 
-	// All parameters will be NULL if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
-	// NULL parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
-	if( extData != NULL )
+	// All parameters will be nullptr if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
+	// nullptr parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
+	if( extData != nullptr )
 	{
 		aRoomId[0] = roomId;
 		attr[0] = SCE_NP_MATCHING2_ROOM_BIN_ATTR_EXTERNAL_1_ID;
@@ -3797,14 +3797,14 @@ void SQRNetworkManager_Vita::GetExtDataForRoom( SceNpMatching2RoomId roomId, voi
 		return;
 	}
 
-	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 	if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 	{
 		app.DebugPrintf("Having to recreate matching context, setting state to SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT\n");
 		return;
 	}
 
-	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, NULL, &m_roomDataExternalListRequestId );
+	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, nullptr, &m_roomDataExternalListRequestId );
 
 	// If we hadn't properly detected that a matching context was unvailable, we might still get an error indicating that it is from the previous call. Handle similarly, but we need
 	// to destroy the context first.
@@ -3818,7 +3818,7 @@ void SQRNetworkManager_Vita::GetExtDataForRoom( SceNpMatching2RoomId roomId, voi
 			m_FriendSessionUpdatedFn(false, m_pParamFriendSessionUpdated);
 			return;
 		};
-		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 		if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 		{
 			return;
@@ -3957,7 +3957,7 @@ void SQRNetworkManager_Vita::AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(vo
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 	}
 }
@@ -4127,6 +4127,6 @@ SQRNetworkPlayer *SQRNetworkManager_Vita::GetPlayerByXuid(PlayerUID xuid)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 

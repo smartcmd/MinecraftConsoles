@@ -3,7 +3,7 @@
 #include "EdgeZLib.h"
 #include "edge/zlib/edgezlib_ppu.h"
 
-static CellSpurs* s_pSpurs = NULL;
+static CellSpurs* s_pSpurs = nullptr;
 
 //Set this to 5 if you want deflate/inflate to run in parallel on 5 SPUs.
 
@@ -12,7 +12,7 @@ const uint32_t kMaxNumDeflateQueueEntries = 64;
 static CellSpursEventFlag s_eventFlagDeflate;		//Cannot be on stack
 static CellSpursTaskset s_taskSetDeflate;			//Cannot be on stack
 static EdgeZlibDeflateQHandle s_deflateQueue;
-static void* s_pDeflateQueueBuffer = NULL;
+static void* s_pDeflateQueueBuffer = nullptr;
 static void* s_pDeflateTaskContext[kNumDeflateTasks];
 static uint32_t s_numElementsToCompress;	//Cannot be on stack
 
@@ -22,7 +22,7 @@ const uint32_t kMaxNumInflateQueueEntries = 64;
 static CellSpursEventFlag s_eventFlagInflate;		//Cannot be on stack
 static CellSpursTaskset s_taskSetInflate;			//Cannot be on stack
 static EdgeZlibInflateQHandle s_inflateQueue;
-static void* s_pInflateQueueBuffer = NULL;
+static void* s_pInflateQueueBuffer = nullptr;
 static void* s_pInflateTaskContext[kNumInflateTasks];
 static uint32_t s_numElementsToDecompress;	//Cannot be on stack
 
@@ -195,9 +195,9 @@ bool EdgeZLib::Compress(void* pDestination, uint32_t* pDestSize, const void* pSo
 	//	The Deflate Task will wake up and process this work.
 	//
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t* pDst = NULL;
+	uint32_t* pDst = nullptr;
 	bool findingSizeOnly = false;
-	if(pDestination == NULL && *pDestSize == 0)
+	if(pDestination == nullptr && *pDestSize == 0)
 	{
 		pDst = (uint32_t*)malloc(SrcSize);
 		findingSizeOnly = true;

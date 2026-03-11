@@ -30,7 +30,7 @@ void ArchiveFile::_readHeader(DataInputStream *dis)
 
 ArchiveFile::ArchiveFile(File file)
 {
-	m_cachedData = NULL;
+	m_cachedData = nullptr;
 	m_sourcefile = file;
 	app.DebugPrintf("Loading archive file...\n");
 #ifndef _CONTENT_PACKAGE
@@ -48,7 +48,7 @@ ArchiveFile::ArchiveFile(File file)
 	FileInputStream fis(file);
 
 #if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
-	byteArray readArray(file.length());
+	byteArray readArray(static_cast<unsigned int>(file.length()));
 	fis.read(readArray,0,file.length());
 
 	ByteArrayInputStream bais(readArray);
@@ -122,20 +122,20 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 		HANDLE hfile = CreateFile(	m_sourcefile.getPath().c_str(), 
 			GENERIC_READ,
 			0,
-			NULL,
+			nullptr,
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
-			NULL
+			nullptr
 			);
 #else
 		app.DebugPrintf("Createfile archive\n");
 		HANDLE hfile = CreateFile(	wstringtofilename(m_sourcefile.getPath()), 
 			GENERIC_READ,
 			0,
-			NULL,
+			nullptr,
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
-			NULL
+			nullptr
 			);
 #endif
 
@@ -144,7 +144,7 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 			app.DebugPrintf("hfile ok\n");
 			DWORD ok = SetFilePointer(	hfile,
 				data->ptr,
-				NULL,
+				nullptr,
 				FILE_BEGIN
 				);
 
@@ -157,7 +157,7 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 					(LPVOID) pbData,
 					data->filesize,
 					&bytesRead,
-					NULL
+					nullptr
 					);
 
 				if(bSuccess==FALSE)
@@ -182,7 +182,7 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 #endif
 
 		// Compressed filenames are preceeded with an asterisk.
-		if ( data->isCompressed && out.data != NULL )
+		if ( data->isCompressed && out.data != nullptr )
 		{
 			/* 4J-JEV:
 			* If a compressed file is accessed before compression object is 
@@ -204,7 +204,7 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 			out.length = decompressedSize;
 		}
 
-		assert(out.data != NULL); // THERE IS NO FILE WITH THIS NAME!
+		assert(out.data != nullptr); // THERE IS NO FILE WITH THIS NAME!
 
 	}
 

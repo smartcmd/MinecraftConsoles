@@ -46,6 +46,13 @@ However, we would accept changes that...
 - Having workable multi-platform compilation for ARM, Consoles, Linux
 - Being a good base for further expansion and modding of LCE, such as backports and "modpacks".
 
+# Scope of PRs
+All Pull Requests should fully document the changes they include in their file changes. They should also be limited to one general topic and not touch all over the codebase unless its justifiable. 
+
+For example, we would not accept a PR that reworks UI, multiplayer code, and furnace ticking even if its a "fixup" PR as its too difficult to review a ton of code changes that are all irrelevant from each other. However, a PR focused on adding a bunch of commands or fixes several crashes that are otherwise irrelevant to each other would be accepted. 
+
+If your PR includes any undocumented changes it will be closed.
+
 # Use of AI and LLMs
 We currently do not accept any new code into the project that was written largely, entirely, or even noticably by an LLM. All contributions should be made by humans that understand the codebase.
 

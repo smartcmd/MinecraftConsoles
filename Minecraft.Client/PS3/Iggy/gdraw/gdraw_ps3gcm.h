@@ -108,7 +108,7 @@ IDOC extern GDrawFunctions * gdraw_GCM_CreateContext(CellGcmContextData *gcm, vo
    There can only be one GCM GDraw context active at any one time.
 
    If initialization fails for some reason (the main reason would be an out of memory condition),
-   NULL is returned. Otherwise, you can pass the return value to IggySetGDraw. */
+   nullptr is returned. Otherwise, you can pass the return value to IggySetGDraw. */
 
 IDOC extern void gdraw_GCM_DestroyContext(void);
 /* Destroys the current GDraw context, if any. */

@@ -30,9 +30,9 @@ void GiveItemCommand::execute(shared_ptr<CommandSender> source, byteArray comman
 	bais.reset();
 
 	shared_ptr<ServerPlayer> player = getPlayer(uid);
-	if(player != NULL && item > 0 && Item::items[item] != NULL)
+	if(player != nullptr && item > 0 && Item::items[item] != nullptr)
 	{
-		shared_ptr<ItemInstance> itemInstance = shared_ptr<ItemInstance>(new ItemInstance(item, amount, aux));
+		shared_ptr<ItemInstance> itemInstance = std::make_shared<ItemInstance>(item, amount, aux);
 		shared_ptr<ItemEntity> drop = player->drop(itemInstance);
 		drop->throwTime = 0;
 		//logAdminAction(source, L"commands.give.success", ChatPacket::e_ChatCustom, Item::items[item]->getName(itemInstance), item, amount, player->getAName());
@@ -42,7 +42,7 @@ void GiveItemCommand::execute(shared_ptr<CommandSender> source, byteArray comman
 
 shared_ptr<GameCommandPacket> GiveItemCommand::preparePacket(shared_ptr<Player> player, int item, int amount, int aux, const wstring &tag)
 {
-	if(player == NULL) return nullptr;
+	if(player == nullptr) return nullptr;
 
 	ByteArrayOutputStream baos;
 	DataOutputStream dos(&baos);
@@ -53,5 +53,5 @@ shared_ptr<GameCommandPacket> GiveItemCommand::preparePacket(shared_ptr<Player> 
 	dos.writeInt(aux);
 	dos.writeUTF(tag);
 
-	return shared_ptr<GameCommandPacket>( new GameCommandPacket(eGameCommand_Give, baos.toByteArray() ));
+	return std::make_shared<GameCommandPacket>(eGameCommand_Give, baos.toByteArray());
 }

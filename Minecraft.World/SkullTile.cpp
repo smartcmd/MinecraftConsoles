@@ -67,7 +67,7 @@ void SkullTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Living
 
 shared_ptr<TileEntity> SkullTile::newTileEntity(Level *level)
 {
-	return shared_ptr<SkullTileEntity>(new SkullTileEntity());
+	return std::make_shared<SkullTileEntity>();
 }
 
 int SkullTile::cloneTileId(Level *level, int x, int y, int z)
@@ -79,7 +79,7 @@ int SkullTile::cloneTileData(Level *level, int x, int y, int z)
 {
 	shared_ptr<TileEntity> tileEntity = level->getTileEntity(x, y, z);
 	shared_ptr<SkullTileEntity> skull = dynamic_pointer_cast<SkullTileEntity>(tileEntity);
-	if (skull != NULL)
+	if (skull != nullptr)
 	{
 		return skull->getSkullType();
 	}
@@ -113,7 +113,7 @@ void SkullTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 	if (level->isClientSide) return;
 	if ((data & NO_DROP_BIT) == 0)
 	{
-		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>(new ItemInstance(Item::skull_Id, 1, cloneTileData(level, x, y, z)));
+		shared_ptr<ItemInstance> item = std::make_shared<ItemInstance>(Item::skull_Id, 1, cloneTileData(level, x, y, z));
 		shared_ptr<SkullTileEntity> entity = dynamic_pointer_cast<SkullTileEntity>(level->getTileEntity(x, y, z));
 
 		if (entity->getSkullType() == SkullTileEntity::TYPE_CHAR && !entity->getExtraType().empty())
@@ -166,7 +166,7 @@ void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<Skul
 				if (level->canCreateMore(eTYPE_WITHERBOSS, Level::eSpawnType_Egg))
 				{
 					// 4J: Removed !isClientSide check because there's one earlier on
-					shared_ptr<WitherBoss> witherBoss = shared_ptr<WitherBoss>( new WitherBoss(level) );
+					shared_ptr<WitherBoss> witherBoss = std::make_shared<WitherBoss>(level);
 					witherBoss->moveTo(x + 0.5, y - 1.45, z + zo + 1.5, 90, 0);
 					witherBoss->yBodyRot = 90;
 					witherBoss->makeInvulnerable();
@@ -180,8 +180,8 @@ void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<Skul
 					Tile::tiles[Tile::soulsand_Id]->spawnResources(level, x, y - 2, z + zo + 1, 0, 0);
 					Tile::tiles[Tile::soulsand_Id]->spawnResources(level, x, y - 1, z + zo + 2, 0, 0);
 					
-					shared_ptr<ItemInstance> itemInstance = shared_ptr<ItemInstance>(new ItemInstance(Item::skull_Id, 3, SkullTileEntity::TYPE_WITHER));
-					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(level, x, y, z + zo + 1, itemInstance) );
+					shared_ptr<ItemInstance> itemInstance = std::make_shared<ItemInstance>(Item::skull_Id, 3, SkullTileEntity::TYPE_WITHER);
+					shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x, y, z + zo + 1, itemInstance);
 					level->addEntity(itemEntity);
 				}
 
@@ -229,7 +229,7 @@ void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<Skul
 				if (level->canCreateMore(eTYPE_WITHERBOSS, Level::eSpawnType_Egg))
 				{
 					// 4J: Removed !isClientSide check because there's one earlier on
-					shared_ptr<WitherBoss> witherBoss = shared_ptr<WitherBoss>( new WitherBoss(level) );
+					shared_ptr<WitherBoss> witherBoss = std::make_shared<WitherBoss>(level);
 					witherBoss->moveTo(x + xo + 1.5, y - 1.45, z + .5, 0, 0);
 					witherBoss->makeInvulnerable();
 					level->addEntity(witherBoss);
@@ -242,8 +242,8 @@ void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<Skul
 					Tile::tiles[Tile::soulsand_Id]->spawnResources(level, x + xo + 1, y - 2, z, 0, 0);
 					Tile::tiles[Tile::soulsand_Id]->spawnResources(level, x + xo + 2, y - 1, z, 0, 0);
 
-					shared_ptr<ItemInstance> itemInstance = shared_ptr<ItemInstance>(new ItemInstance(Item::skull_Id, 3, SkullTileEntity::TYPE_WITHER));
-					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(level, x + xo + 1, y, z, itemInstance) );
+					shared_ptr<ItemInstance> itemInstance = std::make_shared<ItemInstance>(Item::skull_Id, 3, SkullTileEntity::TYPE_WITHER);
+					shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(level, x + xo + 1, y, z, itemInstance);
 					level->addEntity(itemEntity);
 				}
 
@@ -274,7 +274,7 @@ bool SkullTile::isSkullAt(Level *level, int x, int y, int z, int skullType)
 	}
 	shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
 	shared_ptr<SkullTileEntity> skull = dynamic_pointer_cast<SkullTileEntity>(te);
-	if (skull == NULL)
+	if (skull == nullptr)
 	{
 		return false;
 	}

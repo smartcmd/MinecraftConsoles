@@ -33,11 +33,11 @@ void XboxStructureActionPlaceContainer::getChildren(vector<GameRuleDefinition *>
 
 GameRuleDefinition *XboxStructureActionPlaceContainer::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_AddItem)
 	{
 		rule = new AddItemRuleDefinition();
-		m_items.push_back((AddItemRuleDefinition *)rule);
+		m_items.push_back(static_cast<AddItemRuleDefinition *>(rule));
 	}
 	else
 	{
@@ -70,7 +70,7 @@ bool XboxStructureActionPlaceContainer::placeContainerInLevel(StructurePiece *st
 
 	if ( chunkBB->isInside( worldX, worldY, worldZ ) )
 	{
-		if ( level->getTileEntity( worldX, worldY, worldZ ) != NULL )
+		if ( level->getTileEntity( worldX, worldY, worldZ ) != nullptr )
 		{
 			// Remove the current tile entity
 			level->removeTileEntity( worldX, worldY, worldZ );
@@ -81,7 +81,7 @@ bool XboxStructureActionPlaceContainer::placeContainerInLevel(StructurePiece *st
 		shared_ptr<Container> container = dynamic_pointer_cast<Container>(level->getTileEntity( worldX, worldY, worldZ ));
 
 		app.DebugPrintf("XboxStructureActionPlaceContainer - placing a container at (%d,%d,%d)\n", worldX, worldY, worldZ);
-		if ( container != NULL )
+		if ( container != nullptr )
 		{
 			level->setData( worldX, worldY, worldZ, m_data, Tile::UPDATE_CLIENTS);
 			// Add items

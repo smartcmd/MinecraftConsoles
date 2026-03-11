@@ -27,7 +27,7 @@ Tag::Tag(const wstring &name)
 // 4J - Was Object obj
 bool Tag::equals(Tag *obj)
 {
-	if (obj == NULL )// || !(obj instanceof Tag))
+	if (obj == nullptr )// || !(obj instanceof Tag))
 	{
 		return false;
 	}
@@ -84,27 +84,56 @@ Tag *Tag::readNamedTag(DataInput *dis)
 
 Tag *Tag::readNamedTag(DataInput *dis, int tagDepth)
 {
+    static __declspec(thread) int depth = 0;
+    static __declspec(thread) int totalTagCount = 0;
+
+    if (depth == 0)
+    {
+        totalTagCount = 0;
+    }
+
+    depth++;
+
+    if (depth > 256)
+    {
+        depth--;
+        return new EndTag();
+    }
+
+    totalTagCount++;
+    const int MAX_TOTAL_TAGS = 32768;
+    if (totalTagCount > MAX_TOTAL_TAGS)
+    {
+        depth--;
+        return new EndTag();
+    }
+
 	byte type = dis->readByte();
-	if (type == 0) return new EndTag();
+	if (type == 0) { 
+		depth--; 
+		return new EndTag(); 
+	}
 
 	// 4J Stu - readByte can return -1, so if it's that then also mark as the end tag
 	if(type == 255)
 	{
-		app.DebugPrintf("readNamedTag read a type of 255\n");
-#ifndef _CONTENT_PACKAGE
-		__debugbreak();
-#endif
+        depth--;
 		return new EndTag();
 	}
 
 	wstring name = dis->readUTF();//new String(bytes, "UTF-8");
 
 	Tag *tag = newTag(type, name);
+	if (tag == nullptr) { 
+		depth--; 
+		return new EndTag();
+	}
 	//        short length = dis.readShort();
 	//        byte[] bytes = new byte[length];
 	//        dis.readFully(bytes);
 
 	tag->load(dis, tagDepth);
+    depth--;
 	return tag;
 }
 
@@ -150,7 +179,7 @@ Tag *Tag::newTag(byte type, const wstring &name)
 	case TAG_Compound:
 		return new CompoundTag(name);
 	}
-	return NULL;
+	return nullptr;
 }
 
 const wchar_t *Tag::getTagName(byte type)

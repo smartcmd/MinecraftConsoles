@@ -7,34 +7,34 @@
 EnchantmentArray Enchantment::enchantments = EnchantmentArray( 256 );
 vector<Enchantment *> Enchantment::validEnchantments;
 
-Enchantment *Enchantment::allDamageProtection = NULL;
-Enchantment *Enchantment::fireProtection = NULL;
-Enchantment *Enchantment::fallProtection = NULL;
-Enchantment *Enchantment::explosionProtection = NULL;
-Enchantment *Enchantment::projectileProtection = NULL;
-Enchantment *Enchantment::drownProtection = NULL;
-Enchantment *Enchantment::waterWorker = NULL;
-Enchantment *Enchantment::thorns = NULL;
+Enchantment *Enchantment::allDamageProtection = nullptr;
+Enchantment *Enchantment::fireProtection = nullptr;
+Enchantment *Enchantment::fallProtection = nullptr;
+Enchantment *Enchantment::explosionProtection = nullptr;
+Enchantment *Enchantment::projectileProtection = nullptr;
+Enchantment *Enchantment::drownProtection = nullptr;
+Enchantment *Enchantment::waterWorker = nullptr;
+Enchantment *Enchantment::thorns = nullptr;
 
 // weapon
-Enchantment *Enchantment::damageBonus = NULL;
-Enchantment *Enchantment::damageBonusUndead = NULL;
-Enchantment *Enchantment::damageBonusArthropods = NULL;
-Enchantment *Enchantment::knockback = NULL;
-Enchantment *Enchantment::fireAspect = NULL;
-Enchantment *Enchantment::lootBonus = NULL;
+Enchantment *Enchantment::damageBonus = nullptr;
+Enchantment *Enchantment::damageBonusUndead = nullptr;
+Enchantment *Enchantment::damageBonusArthropods = nullptr;
+Enchantment *Enchantment::knockback = nullptr;
+Enchantment *Enchantment::fireAspect = nullptr;
+Enchantment *Enchantment::lootBonus = nullptr;
 
 // digger
-Enchantment *Enchantment::diggingBonus = NULL;
-Enchantment *Enchantment::untouching = NULL;
-Enchantment *Enchantment::digDurability = NULL;
-Enchantment *Enchantment::resourceBonus = NULL;
+Enchantment *Enchantment::diggingBonus = nullptr;
+Enchantment *Enchantment::untouching = nullptr;
+Enchantment *Enchantment::digDurability = nullptr;
+Enchantment *Enchantment::resourceBonus = nullptr;
 
 // bows
-Enchantment *Enchantment::arrowBonus = NULL;
-Enchantment *Enchantment::arrowKnockback = NULL;
-Enchantment *Enchantment::arrowFire = NULL;
-Enchantment *Enchantment::arrowInfinite = NULL;
+Enchantment *Enchantment::arrowBonus = nullptr;
+Enchantment *Enchantment::arrowKnockback = nullptr;
+Enchantment *Enchantment::arrowFire = nullptr;
+Enchantment *Enchantment::arrowInfinite = nullptr;
 
 void Enchantment::staticCtor()
 {
@@ -70,7 +70,7 @@ void Enchantment::staticCtor()
 	for(unsigned int i = 0; i < 256; ++i)
 	{
 		Enchantment *enchantment = enchantments[i];
-		if (enchantment != NULL)
+		if (enchantment != nullptr)
 		{
 			validEnchantments.push_back(enchantment);
 		}
@@ -79,7 +79,7 @@ void Enchantment::staticCtor()
 
 void Enchantment::_init(int id)
 {
-	if (enchantments[id] != NULL)
+	if (enchantments[id] != nullptr)
 	{
 		app.DebugPrintf("Duplicate enchantment id!");
 #ifndef _CONTENT_PACKAGE

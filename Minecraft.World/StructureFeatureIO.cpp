@@ -63,7 +63,7 @@ wstring StructureFeatureIO::getEncodeId(StructurePiece *piece)
 
 StructureStart *StructureFeatureIO::loadStaticStart(CompoundTag *tag, Level *level)
 {
-	StructureStart *start = NULL;
+	StructureStart *start = nullptr;
 
     auto it = startIdClassMap.find(tag->getString(L"id"));
     if(it != startIdClassMap.end())
@@ -71,7 +71,7 @@ StructureStart *StructureFeatureIO::loadStaticStart(CompoundTag *tag, Level *lev
 		start = (it->second)();
 	}
 
-	if (start != NULL)
+	if (start != nullptr)
 	{
 		start->load(level, tag);
 	}
@@ -84,7 +84,7 @@ StructureStart *StructureFeatureIO::loadStaticStart(CompoundTag *tag, Level *lev
 
 StructurePiece *StructureFeatureIO::loadStaticPiece(CompoundTag *tag, Level *level)
 {
-	StructurePiece *piece = NULL;
+	StructurePiece *piece = nullptr;
 
     auto it = pieceIdClassMap.find(tag->getString(L"id"));
     if(it != pieceIdClassMap.end())
@@ -92,7 +92,7 @@ StructurePiece *StructureFeatureIO::loadStaticPiece(CompoundTag *tag, Level *lev
 		piece = (it->second)();
 	}
 
-	if (piece != NULL)
+	if (piece != nullptr)
 	{
 		piece->load(level, tag);
 	}

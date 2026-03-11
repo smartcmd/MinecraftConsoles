@@ -81,7 +81,7 @@ void Squid::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	int count = random->nextInt(3 + playerBonusLevel) + 1;
 	for (int i = 0; i < count; i++) 
 	{
-		spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK) ), 0.0f);
+		spawnAtLocation(std::make_shared<ItemInstance>(Item::dye_powder, 1, DyePowderItem::BLACK), 0.0f);
 	}
 }
 
@@ -140,10 +140,10 @@ void Squid::aiStep()
 
 		double horizontalMovement = sqrt(xd * xd + zd * zd);
 
-		yBodyRot += ((-(float) atan2(xd, zd) * 180 / PI) - yBodyRot) * 0.1f;
+		yBodyRot += ((-static_cast<float>(atan2(xd, zd)) * 180 / PI) - yBodyRot) * 0.1f;
 		yRot = yBodyRot;
 		zBodyRot = zBodyRot + (float) PI * rotateSpeed * 1.5f;
-		xBodyRot += ((-(float) atan2(horizontalMovement, yd) * 180 / PI) - xBodyRot) * 0.1f;
+		xBodyRot += ((-static_cast<float>(atan2(horizontalMovement, yd)) * 180 / PI) - xBodyRot) * 0.1f;
 	}
 	else 
 	{

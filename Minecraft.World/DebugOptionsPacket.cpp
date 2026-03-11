@@ -28,12 +28,12 @@ void DebugOptionsPacket::handle(PacketListener *listener)
 
 void DebugOptionsPacket::read(DataInputStream *dis) //throws IOException
 {
-	m_uiVal = (unsigned int)dis->readInt();
+	m_uiVal = static_cast<unsigned int>(dis->readInt());
 }
 
 void DebugOptionsPacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeInt((int)m_uiVal);
+	dos->writeInt(static_cast<int>(m_uiVal));
 }
 
 int DebugOptionsPacket::getEstimatedSize() 

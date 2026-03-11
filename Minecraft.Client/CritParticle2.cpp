@@ -11,12 +11,12 @@ void CritParticle2::_init(double xa, double ya, double za, float scale)
 	yd += ya * 0.4;
 	zd += za * 0.4;
 
-	rCol = gCol = bCol = (float) (Math::random() * 0.3f + 0.6f);
+	rCol = gCol = bCol = static_cast<float>(Math::random() * 0.3f + 0.6f);
 	size *= 0.75f;
 	size *= scale;
 	oSize = size;
 
-	lifetime = (int) (6 / (Math::random() * 0.8 + 0.6));
+	lifetime = static_cast<int>(6 / (Math::random() * 0.8 + 0.6));
 	lifetime *= scale;
 	noPhysics = false;
 

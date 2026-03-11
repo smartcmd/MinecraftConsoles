@@ -10,7 +10,7 @@ BiomeCache::Block::Block(int x, int z, BiomeCache *parent)
 // 	temps = floatArray(ZONE_SIZE * ZONE_SIZE, false);		// MGH - added "no clear" flag to arrayWithLength
 // 	downfall = floatArray(ZONE_SIZE * ZONE_SIZE, false);
 // 	biomes = BiomeArray(ZONE_SIZE * ZONE_SIZE, false);
-	biomeIndices = byteArray(ZONE_SIZE * ZONE_SIZE, false);
+	biomeIndices = byteArray(static_cast<unsigned int>(ZONE_SIZE * ZONE_SIZE), false);
 
 	lastUse = 0;
 	this->x = x;
@@ -34,7 +34,7 @@ Biome *BiomeCache::Block::getBiome(int x, int z)
 {
 //	return biomes[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 
-	int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
+	const int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 	return Biome::biomes[biomeIndex];
 }
 
@@ -42,7 +42,7 @@ float BiomeCache::Block::getTemperature(int x, int z)
 {
 //	return temps[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 
-	int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
+	const int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 	return Biome::biomes[biomeIndex]->getTemperature();
 
 }
@@ -51,7 +51,7 @@ float BiomeCache::Block::getDownfall(int x, int z)
 {
 // 	return downfall[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 
-	int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
+	const int biomeIndex = biomeIndices[(x & ZONE_SIZE_MASK) | ((z & ZONE_SIZE_MASK) << ZONE_SIZE_BITS)];
 	return Biome::biomes[biomeIndex]->getDownfall();
 
 }
@@ -72,7 +72,7 @@ BiomeCache::~BiomeCache()
 	// 4J Stu - Delete source?
 	// delete source;
 
-	for( auto& it : all )
+	for(const auto& it : all )
 	{
 		delete it;
 	}
@@ -85,9 +85,9 @@ BiomeCache::Block *BiomeCache::getBlockAt(int x, int z)
 	EnterCriticalSection(&m_CS);
 	x >>= ZONE_SIZE_BITS;
 	z >>= ZONE_SIZE_BITS;
-	int64_t slot = (((int64_t) x) & 0xffffffffl) | ((((int64_t) z) & 0xffffffffl) << 32l);
-	auto it = cached.find(slot);
-	Block *block = NULL;
+	const int64_t slot = (static_cast<int64_t>(x) & 0xffffffffl) | ((static_cast<int64_t>(z) & 0xffffffffl) << 32l);
+	const auto it = cached.find(slot);
+	Block *block = nullptr;
 	if (it == cached.end())
 	{
 		MemSect(48);
@@ -124,20 +124,20 @@ float BiomeCache::getDownfall(int x, int z)
 void BiomeCache::update()
 {
 	EnterCriticalSection(&m_CS);
-	int64_t now = app.getAppTime();
-	int64_t utime = now - lastUpdateTime;
+	const int64_t now = app.getAppTime();
+	const int64_t utime = now - lastUpdateTime;
 	if (utime > DECAY_TIME / 4 || utime < 0)
 	{
 		lastUpdateTime = now;
 
 		for (auto it = all.begin(); it != all.end();)
 		{
-			Block *block = *it;
-			int64_t time = now - block->lastUse;
+			const Block *block = *it;
+			const int64_t time = now - block->lastUse;
 			if (time > DECAY_TIME || time < 0)
 			{
 				it = all.erase(it);
-				int64_t slot = (((int64_t) block->x) & 0xffffffffl) | ((((int64_t) block->z) & 0xffffffffl) << 32l);
+				int64_t slot = (static_cast<int64_t>(block->x) & 0xffffffffl) | ((static_cast<int64_t>(block->z) & 0xffffffffl) << 32l);
 				cached.erase(slot);
 				delete block;
 			}

@@ -87,17 +87,17 @@ floatArray BiomeSource::getDownfallBlock(int x, int z, int w, int h) const
 void BiomeSource::getDownfallBlock(floatArray &downfalls, int x, int z, int w, int h) const
 {
 	IntCache::releaseAll();
-	//if (downfalls == NULL || downfalls->length < w * h)
-	if (downfalls.data == NULL || downfalls.length < w * h)
+	//if (downfalls == nullptr || downfalls->length < w * h)
+	if (downfalls.data == nullptr || downfalls.length < w * h)
 	{
-		if(downfalls.data != NULL) delete [] downfalls.data;
+		if(downfalls.data != nullptr) delete [] downfalls.data;
 		downfalls = floatArray(w * h);
 	}
 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float d = (float) Biome::biomes[result[i]]->getDownfallInt() / 65536.0f;
+		float d = static_cast<float>(Biome::biomes[result[i]]->getDownfallInt()) / 65536.0f;
 		if (d > 1) d = 1;
 		downfalls[i] = d;
 	}
@@ -132,16 +132,16 @@ void BiomeSource::getTemperatureBlock(floatArray& temperatures, int x, int z, in
 {
 	IntCache::releaseAll();
 	//if (temperatures == null || temperatures.length < w * h) {
-	if (temperatures.data == NULL || temperatures.length < w * h)
+	if (temperatures.data == nullptr || temperatures.length < w * h)
 	{
-		if( temperatures.data != NULL ) delete [] temperatures.data;
+		if( temperatures.data != nullptr ) delete [] temperatures.data;
 		temperatures = floatArray(w * h);
 	}
 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float t = (float) Biome::biomes[result[i]]->getTemperatureInt() / 65536.0f;
+		float t = static_cast<float>(Biome::biomes[result[i]]->getTemperatureInt()) / 65536.0f;
 		if (t > 1) t = 1;
 		temperatures[i] = t;
 	}
@@ -170,9 +170,9 @@ void BiomeSource::getRawBiomeBlock(BiomeArray &biomes, int x, int z, int w, int 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomes.data == NULL || biomes.length < w * h)
+	if (biomes.data == nullptr || biomes.length < w * h)
 	{
-		if(biomes.data != NULL) delete [] biomes.data;
+		if(biomes.data != nullptr) delete [] biomes.data;
 		biomes = BiomeArray(w * h);
 	}
 
@@ -181,7 +181,7 @@ void BiomeSource::getRawBiomeBlock(BiomeArray &biomes, int x, int z, int w, int 
 	{
 		biomes[i] = Biome::biomes[result[i]];
 #ifndef _CONTENT_PACKAGE
-		if(biomes[i] == NULL)
+		if(biomes[i] == nullptr)
 		{
 			app.DebugPrintf("Tried to assign null biome %d\n", result[i]);
 			__debugbreak();
@@ -208,9 +208,9 @@ void BiomeSource::getBiomeBlock(BiomeArray& biomes, int x, int z, int w, int h, 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomes.data == NULL || biomes.length < w * h)
+	if (biomes.data == nullptr || biomes.length < w * h)
 	{
-		if(biomes.data != NULL) delete [] biomes.data;
+		if(biomes.data != nullptr) delete [] biomes.data;
 		biomes = BiomeArray(w * h);
 	}
 
@@ -248,9 +248,9 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 {
 	IntCache::releaseAll();
 	//if (biomes == null || biomes.length < w * h)
-	if (biomeIndices.data == NULL || biomeIndices.length < w * h)
+	if (biomeIndices.data == nullptr || biomeIndices.length < w * h)
 	{
-		if(biomeIndices.data != NULL) delete [] biomeIndices.data;
+		if(biomeIndices.data != nullptr) delete [] biomeIndices.data;
 		biomeIndices = byteArray(w * h);
 	}
 
@@ -264,7 +264,7 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		biomeIndices[i] = (byte)result[i];
+		biomeIndices[i] = static_cast<byte>(result[i]);
 	}
 }
 
@@ -341,7 +341,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 	int w = x1 - x0 + 1;
 	int h = z1 - z0 + 1;
 	intArray biomes = layer->getArea(x0, z0, w, h);
-	TilePos *res = NULL;
+	TilePos *res = nullptr;
 	int found = 0;
 	int biomesCount = w*h;
 	for (unsigned int i = 0; i < biomesCount; i++)
@@ -351,7 +351,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 		Biome *b = Biome::biomes[biomes[i]];
 		if (b == toFind)
 		{
-			if (res == NULL || random->nextInt(found + 1) == 0)
+			if (res == nullptr || random->nextInt(found + 1) == 0)
 			{
 				res = new TilePos(xx, 0, zz);
 				found++;
@@ -380,7 +380,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Ra
 	int h = z1 - z0 + 1;
 	MemSect(50);
 	intArray biomes = layer->getArea(x0, z0, w, h);
-	TilePos *res = NULL;
+	TilePos *res = nullptr;
 	int found = 0;
 	for (unsigned int i = 0; i < w * h; i++)
 	{
@@ -389,7 +389,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Ra
 		Biome *b = Biome::biomes[biomes[i]];
 		if (find(allowed.begin(), allowed.end(), b) != allowed.end())
 		{
-			if (res == NULL || random->nextInt(found + 1) == 0)
+			if (res == nullptr || random->nextInt(found + 1) == 0)
 			{
 				delete res;
 				res = new TilePos(xx, 0, zz);
@@ -553,7 +553,7 @@ void BiomeSource::getFracs(intArray indices, float *fracs)
 
 	for( int i = 0; i < Biome::BIOME_COUNT; i++ )
 	{
-		fracs[i] /= (float)(indices.length);
+		fracs[i] /= static_cast<float>(indices.length);
 	}
 }
 

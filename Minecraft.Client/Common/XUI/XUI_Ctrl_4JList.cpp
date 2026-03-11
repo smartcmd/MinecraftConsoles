@@ -7,7 +7,7 @@ HRESULT CXuiCtrl4JList::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 {
 	InitializeCriticalSection(&m_AccessListData);
 
-	m_hSelectionChangedHandlerObj = NULL;
+	m_hSelectionChangedHandlerObj = nullptr;
 
 	return S_OK;
 }
@@ -22,13 +22,13 @@ void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFrom
 
 	if(ItemInfo.pwszText)
 	{
-		dwLen1=(int)wcslen(ItemInfo.pwszText)*sizeof(WCHAR);
+		dwLen1=static_cast<int>(wcslen(ItemInfo.pwszText))*sizeof(WCHAR);
 		dwBytes+=dwLen1+sizeof(WCHAR);
 	}
 
 	if(ItemInfo.pwszImage)
 	{
-		dwLen2=(int)(wcslen(ItemInfo.pwszImage))*sizeof(WCHAR);
+		dwLen2=static_cast<int>(wcslen(ItemInfo.pwszImage))*sizeof(WCHAR);
 		dwBytes+=dwLen2+sizeof(WCHAR);
 	}
 
@@ -59,11 +59,11 @@ void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFrom
 	// need to remember the original index of this addition before it gets sorted - this will get used to load the game
 	if(iSortListFromIndex!=-1)
 	{
-		pItemInfo->iIndex=(int)m_vListData.size()-iSortListFromIndex;
+		pItemInfo->iIndex=static_cast<int>(m_vListData.size())-iSortListFromIndex;
 	}
 	else
 	{
-		pItemInfo->iIndex=(int)m_vListData.size();
+		pItemInfo->iIndex=static_cast<int>(m_vListData.size());
 	}
 
 	// added to force a sort order for DLC
@@ -110,7 +110,7 @@ void CXuiCtrl4JList::RemoveAllData( )
 {
 	EnterCriticalSection(&m_AccessListData);
 
-	int iSize=(int)m_vListData.size();
+	int iSize=static_cast<int>(m_vListData.size());
 	for(int i=0;i<iSize;i++)
 	{
 		LIST_ITEM_INFO *pBack = m_vListData.back();
@@ -304,7 +304,7 @@ HRESULT CXuiCtrl4JList::OnGetSourceDataText(XUIMessageGetSourceText *pGetSourceT
 
 HRESULT CXuiCtrl4JList::OnGetItemCountAll(XUIMessageGetItemCount *pGetItemCountData,BOOL& bHandled)
 {
-	pGetItemCountData->cItems = (int)m_vListData.size();
+	pGetItemCountData->cItems = static_cast<int>(m_vListData.size());
 	bHandled = TRUE;
 	return S_OK;
 }
@@ -315,7 +315,7 @@ HRESULT CXuiCtrl4JList::OnGetSourceDataImage(XUIMessageGetSourceImage *pGetSourc
 	{
 		// Check for a brush
 		EnterCriticalSection(&m_AccessListData);
-		if(GetData(pGetSourceImageData->iItem).hXuiBrush!=NULL)
+		if(GetData(pGetSourceImageData->iItem).hXuiBrush!=nullptr)
 		{
 			pGetSourceImageData->hBrush=GetData(pGetSourceImageData->iItem).hXuiBrush;
 		}

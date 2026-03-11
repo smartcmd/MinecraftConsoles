@@ -49,5 +49,5 @@ void TextureAndGeometryChangePacket::handle(PacketListener *listener)
 
 int TextureAndGeometryChangePacket::getEstimatedSize() 
 {
-	return 8 + (int)path.size();
+	return 8 + static_cast<int>(path.size());
 }

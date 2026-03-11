@@ -5,14 +5,14 @@
 #include "Material.h"
 #include "MobCategory.h"
 
-MobCategory *MobCategory::monster = NULL;
-MobCategory *MobCategory::creature = NULL;
-MobCategory *MobCategory::ambient = NULL;
-MobCategory *MobCategory::waterCreature = NULL;
+MobCategory *MobCategory::monster = nullptr;
+MobCategory *MobCategory::creature = nullptr;
+MobCategory *MobCategory::ambient = nullptr;
+MobCategory *MobCategory::waterCreature = nullptr;
 // 4J - added these extra categories
-MobCategory *MobCategory::creature_wolf = NULL;
-MobCategory *MobCategory::creature_chicken = NULL;
-MobCategory *MobCategory::creature_mushroomcow = NULL;
+MobCategory *MobCategory::creature_wolf = nullptr;
+MobCategory *MobCategory::creature_chicken = nullptr;
+MobCategory *MobCategory::creature_mushroomcow = nullptr;
 
 MobCategoryArray MobCategory::values = MobCategoryArray(7);
 

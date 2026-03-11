@@ -9,7 +9,7 @@ const float Mth::DEGRAD = PI / 180.0f;
 const float Mth::RADDEG = 180.0f / PI;
 const float Mth::RAD_TO_GRAD = PI / 180.0f;
 
-float *Mth::_sin = NULL;
+float *Mth::_sin = nullptr;
 
 const float Mth::sinScale = 65536.0f / (float) (PI * 2);
 
@@ -25,14 +25,14 @@ void Mth::init()
 
 float Mth::sin(float i)
 {
-	if(_sin == NULL) init();		// 4J - added
-	return _sin[(int) (i * sinScale) & 65535];
+	if(_sin == nullptr) init();		// 4J - added
+	return _sin[static_cast<int>(i * sinScale) & 65535];
 }
 
 float Mth::cos(float i)
 {
-	if(_sin == NULL) init();		// 4J - added
-	return _sin[(int) (i * sinScale + 65536 / 4) & 65535];
+	if(_sin == nullptr) init();		// 4J - added
+	return _sin[static_cast<int>(i * sinScale + 65536 / 4) & 65535];
 }
 
 float Mth::sqrt(float x)
@@ -42,35 +42,35 @@ float Mth::sqrt(float x)
 
 float Mth::sqrt(double x)
 {
-	return (float) ::sqrt(x);
+	return static_cast<float>(::sqrt(x));
 }
 
 int Mth::floor(float v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v < i ? i - 1 : i;
 }
 
 int64_t Mth::lfloor(double v)
 {
-	int64_t i = (int64_t) v;
+	int64_t i = static_cast<int64_t>(v);
 	return v < i ? i - 1 : i;
 }
 
 int Mth::fastFloor(double x)
 {
-	return (int) (x + BIG_ENOUGH_FLOAT) - BIG_ENOUGH_INT;
+	return static_cast<int>(x + BIG_ENOUGH_FLOAT) - BIG_ENOUGH_INT;
 }
 
 int Mth::floor(double v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v < i ? i - 1 : i;
 }
 
 int Mth::absFloor(double v)
 {
-	return (int) (v >= 0 ? v : -v + 1);
+	return static_cast<int>(v >= 0 ? v : -v + 1);
 }
 
 float Mth::abs(float v)
@@ -85,7 +85,7 @@ int Mth::abs(int v)
 
 int Mth::ceil(float v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v > i ? i + 1 : i;
 }
 

@@ -33,7 +33,7 @@ void MusicTileEntity::load(CompoundTag *tag)
 
 void MusicTileEntity::tune() 
 {
-	note = (byte) ((note + 1) % 25);
+	note = static_cast<byte>((note + 1) % 25);
 	setChanged();
 }
 
@@ -55,7 +55,7 @@ void MusicTileEntity::playNote(Level *level, int x, int y, int z)
 // 4J Added
 shared_ptr<TileEntity> MusicTileEntity::clone()
 {
-	shared_ptr<MusicTileEntity> result = shared_ptr<MusicTileEntity>( new MusicTileEntity() );
+	shared_ptr<MusicTileEntity> result = std::make_shared<MusicTileEntity>();
 	TileEntity::clone(result);
 
 	result->note = note;

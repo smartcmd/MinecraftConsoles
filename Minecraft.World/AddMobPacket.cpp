@@ -17,7 +17,7 @@ AddMobPacket::AddMobPacket()
 	yRot = 0;
 	xRot = 0;
 	entityData = nullptr;
-	unpack = NULL;
+	unpack = nullptr;
 }
 
 AddMobPacket::~AddMobPacket()
@@ -29,7 +29,7 @@ AddMobPacket::AddMobPacket(shared_ptr<LivingEntity> mob, int yRotp, int xRotp, i
 {
 	id = mob->entityId;
 
-	type = (byte) EntityIO::getId(mob);
+	type = static_cast<byte>(EntityIO::getId(mob));
 	// 4J Stu - We should add entities at their "last sent" position so that the relative update packets
 	// put them in the correct place
 	x = xp;//Mth::floor(mob->x * 32);
@@ -54,14 +54,14 @@ AddMobPacket::AddMobPacket(shared_ptr<LivingEntity> mob, int yRotp, int xRotp, i
 	if (xd > m) xd = m;
 	if (yd > m) yd = m;
 	if (zd > m) zd = m;
-	this->xd = (int) (xd * 8000.0);
-	this->yd = (int) (yd * 8000.0);
-	this->zd = (int) (zd * 8000.0);
+	this->xd = static_cast<int>(xd * 8000.0);
+	this->yd = static_cast<int>(yd * 8000.0);
+	this->zd = static_cast<int>(zd * 8000.0);
 
 	//	printf("%d: New add mob rot %d\n",id,yRot);
 
 	entityData = mob->getEntityData();
-	unpack = NULL;
+	unpack = nullptr;
 }
 
 void AddMobPacket::read(DataInputStream *dis) //throws IOException
@@ -118,11 +118,11 @@ void AddMobPacket::handle(PacketListener *listener)
 int AddMobPacket::getEstimatedSize() 
 {
 	int size = 11;
-	if( entityData != NULL )
+	if( entityData != nullptr )
 	{
 		size += entityData->getSizeInBytes();
 	}
-	else if( unpack != NULL )
+	else if( unpack != nullptr )
 	{
 		// 4J Stu - This is an incoming value which we aren't currently analysing
 		//size += unpack->get
@@ -132,7 +132,7 @@ int AddMobPacket::getEstimatedSize()
 
 vector<shared_ptr<SynchedEntityData::DataItem> > *AddMobPacket::getUnpackedData() 
 {
-	if (unpack == NULL)
+	if (unpack == nullptr)
 	{
 		unpack = entityData->getAll();
 	}

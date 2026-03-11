@@ -309,7 +309,7 @@ void hexStrToBin(
 			val <<= 4;
 		}
 		else {
-			if (pBinBuf != NULL && binOffset < binBufSize) {
+			if (pBinBuf != nullptr && binOffset < binBufSize) {
 				memcpy(pBinBuf + binOffset, &val, 1);
 				val = 0;
 			}
@@ -317,7 +317,7 @@ void hexStrToBin(
 		}		
 	}
 
-	if (val != 0 && pBinBuf != NULL && binOffset < binBufSize) {
+	if (val != 0 && pBinBuf != nullptr && binOffset < binBufSize) {
 		memcpy(pBinBuf + binOffset, &val, 1);
 	}
 

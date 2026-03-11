@@ -64,7 +64,7 @@ static void *map_buffer(ID3D1XContext *ctx, ID3D11Buffer *buf, bool discard)
    HRESULT hr = ctx->Map(buf, 0, discard ? D3D11_MAP_WRITE_DISCARD : D3D11_MAP_WRITE_NO_OVERWRITE, 0, &msr);
    if (FAILED(hr)) {
       report_d3d_error(hr, "Map", "of buffer");
-      return NULL;
+      return nullptr;
    } else
       return msr.pData;
 }
@@ -76,12 +76,12 @@ static void unmap_buffer(ID3D1XContext *ctx, ID3D11Buffer *buf)
 
 static RADINLINE void set_pixel_shader(ID3D11DeviceContext *ctx, ID3D11PixelShader *shader)
 {
-   ctx->PSSetShader(shader, NULL, 0);
+   ctx->PSSetShader(shader, nullptr, 0);
 }
 
 static RADINLINE void set_vertex_shader(ID3D11DeviceContext *ctx, ID3D11VertexShader *shader)
 {
-   ctx->VSSetShader(shader, NULL, 0);
+   ctx->VSSetShader(shader, nullptr, 0);
 }
 
 static ID3D11BlendState *create_blend_state(ID3D11Device *dev, BOOL blend, D3D11_BLEND src, D3D11_BLEND dst)
@@ -100,7 +100,7 @@ static ID3D11BlendState *create_blend_state(ID3D11Device *dev, BOOL blend, D3D11
    HRESULT hr = dev->CreateBlendState(&desc, &res);
    if (FAILED(hr)) {
       report_d3d_error(hr, "CreateBlendState", "");
-      res = NULL;
+      res = nullptr;
    }
 
    return res;
@@ -113,10 +113,10 @@ static void create_pixel_shader(ProgramWithCachedVariableLocations *p, ProgramWi
 {
    *p = *src;
    if(p->bytecode) {
-      HRESULT hr = gdraw->d3d_device->CreatePixelShader(p->bytecode, p->size, NULL, &p->pshader);
+      HRESULT hr = gdraw->d3d_device->CreatePixelShader(p->bytecode, p->size, nullptr, &p->pshader);
       if (FAILED(hr)) {
          report_d3d_error(hr, "CreatePixelShader", "");
-         p->pshader = NULL;
+         p->pshader = nullptr;
          return;
       }
    }
@@ -126,10 +126,10 @@ static void create_vertex_shader(ProgramWithCachedVariableLocations *p, ProgramW
 {
    *p = *src;
    if(p->bytecode) {
-      HRESULT hr = gdraw->d3d_device->CreateVertexShader(p->bytecode, p->size, NULL, &p->vshader);
+      HRESULT hr = gdraw->d3d_device->CreateVertexShader(p->bytecode, p->size, nullptr, &p->vshader);
       if (FAILED(hr)) {
          report_d3d_error(hr, "CreateVertexShader", "");
-         p->vshader = NULL;
+         p->vshader = nullptr;
          return;
       }
    }

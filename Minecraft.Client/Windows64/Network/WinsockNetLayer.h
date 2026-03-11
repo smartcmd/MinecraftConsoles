@@ -66,11 +66,17 @@ public:
 	static bool Initialize();
 	static void Shutdown();
 
-	static bool HostGame(int port, const char* bindIp = NULL);
+	static bool HostGame(int port, const char* bindIp = nullptr);
 	static bool JoinGame(const char* ip, int port);
 
 	static bool SendToSmallId(BYTE targetSmallId, const void* data, int dataSize);
 	static bool SendOnSocket(SOCKET sock, const void* data, int dataSize);
+
+	// Non-host split-screen: additional TCP connections to host, one per pad
+	static bool JoinSplitScreen(int padIndex, BYTE* outSmallId);
+	static void CloseSplitScreenConnection(int padIndex);
+	static SOCKET GetLocalSocket(BYTE senderSmallId);
+	static BYTE GetSplitScreenSmallId(int padIndex);
 
 	static bool IsHosting() { return s_isHost; }
 	static bool IsConnected() { return s_connected; }
@@ -103,6 +109,7 @@ private:
 	static DWORD WINAPI AcceptThreadProc(LPVOID param);
 	static DWORD WINAPI RecvThreadProc(LPVOID param);
 	static DWORD WINAPI ClientRecvThreadProc(LPVOID param);
+	static DWORD WINAPI SplitScreenRecvThreadProc(LPVOID param);
 	static DWORD WINAPI AdvertiseThreadProc(LPVOID param);
 	static DWORD WINAPI DiscoveryThreadProc(LPVOID param);
 
@@ -146,6 +153,11 @@ private:
 	// O(1) smallId -> socket lookup so we don't scan s_connections (which never shrinks) on every send
 	static SOCKET s_smallIdToSocket[256];
 	static CRITICAL_SECTION s_smallIdToSocketLock;
+
+	// Per-pad split-screen TCP connections (client-side, non-host only)
+	static SOCKET s_splitScreenSocket[XUSER_MAX_COUNT];
+	static BYTE s_splitScreenSmallId[XUSER_MAX_COUNT];
+	static HANDLE s_splitScreenRecvThread[XUSER_MAX_COUNT];
 
 public:
 	static void ClearSocketForSmallId(BYTE smallId);

@@ -15,7 +15,7 @@ bool MegaTreeFeature::place(Level *level, Random *random, int x, int y, int z)
 	if (y < 1 || y + treeHeight + 1 > Level::maxBuildHeight) return false;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		PIXBeginNamedEvent(0, "MegaTreeFeature Checking intersects");
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
@@ -69,14 +69,14 @@ bool MegaTreeFeature::place(Level *level, Random *random, int x, int y, int z)
 	while (branchHeight > y + treeHeight / 2)
 	{
 		float angle = random->nextFloat() * PI * 2.0f;
-		int bx = x + (int) (0.5f + Mth::cos(angle) * 4.0f);
-		int bz = z + (int) (0.5f + Mth::sin(angle) * 4.0f);
+		int bx = x + static_cast<int>(0.5f + Mth::cos(angle) * 4.0f);
+		int bz = z + static_cast<int>(0.5f + Mth::sin(angle) * 4.0f);
 		placeLeaves(level, bx, bz, branchHeight, 0, random);
 
 		for (int b = 0; b < 5; b++)
 		{
-			bx = x + (int) (1.5f + Mth::cos(angle) * b);
-			bz = z + (int) (1.5f + Mth::sin(angle) * b);
+			bx = x + static_cast<int>(1.5f + Mth::cos(angle) * b);
+			bz = z + static_cast<int>(1.5f + Mth::sin(angle) * b);
 			placeBlock(level, bx, branchHeight - 3 + b / 2, bz, Tile::treeTrunk_Id, trunkType);
 		}
 

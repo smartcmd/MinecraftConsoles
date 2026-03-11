@@ -16,18 +16,18 @@ ConsoleSchematicFile::ConsoleSchematicFile()
 {
 	m_xSize = m_ySize = m_zSize = 0;
 	m_refCount = 1;
-	m_data.data = NULL;
+	m_data.data = nullptr;
 }
 
 ConsoleSchematicFile::~ConsoleSchematicFile()
 {
 	app.DebugPrintf("Deleting schematic file\n");
-	if(m_data.data != NULL) delete [] m_data.data;
+	if(m_data.data != nullptr) delete [] m_data.data;
 }
 
 void ConsoleSchematicFile::save(DataOutputStream *dos)
 {
-	if(dos != NULL)
+	if(dos != nullptr)
 	{
 		dos->writeInt(XBOX_SCHEMATIC_CURRENT_VERSION);
 
@@ -52,7 +52,7 @@ void ConsoleSchematicFile::save(DataOutputStream *dos)
 
 void ConsoleSchematicFile::load(DataInputStream *dis)
 {
-	if(dis != NULL)
+	if(dis != nullptr)
 	{
 		// VERSION CHECK //
 		int version = dis->readInt();
@@ -61,7 +61,7 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 
 		if (version > XBOX_SCHEMATIC_ORIGINAL_VERSION) // Or later versions
 		{
-			compressionType = (Compression::ECompressionTypes)dis->readByte();
+			compressionType = static_cast<Compression::ECompressionTypes>(dis->readByte());
 		}
 
 		if (version > XBOX_SCHEMATIC_CURRENT_VERSION)
@@ -75,10 +75,10 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 		byteArray compressedBuffer(compressedSize);
 		dis->readFully(compressedBuffer);
 
-		if(m_data.data != NULL)
+		if(m_data.data != nullptr)
 		{
-			delete [] m_data.data;
-			m_data.data = NULL;
+			delete [] m_data.data; 
+			m_data.data = nullptr;
 		}
 
 		if(compressionType == Compression::eCompressionType_None)
@@ -111,17 +111,17 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 		// READ TAGS //
 		CompoundTag *tag = NbtIo::read(dis);
 		ListTag<CompoundTag> *tileEntityTags = (ListTag<CompoundTag> *) tag->getList(L"TileEntities");
-		if (tileEntityTags != NULL)
+		if (tileEntityTags != nullptr)
 		{
 			for (int i = 0; i < tileEntityTags->size(); i++)
 			{
 				CompoundTag *teTag = tileEntityTags->get(i);
 				shared_ptr<TileEntity> te = TileEntity::loadStatic(teTag);
 
-				if(te == NULL)
+				if(te == nullptr)
 				{
 #ifndef _CONTENT_PACKAGE
-					app.DebugPrintf("ConsoleSchematicFile has read a NULL tile entity\n");
+					app.DebugPrintf("ConsoleSchematicFile has read a nullptr tile entity\n");
 					__debugbreak();
 #endif
 				}
@@ -132,7 +132,7 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 			}
 		}
 		ListTag<CompoundTag> *entityTags = (ListTag<CompoundTag> *) tag->getList(L"Entities");
-		if (entityTags != NULL)
+		if (entityTags != nullptr)
 		{
 			for (int i = 0; i < entityTags->size(); i++)
 			{
@@ -145,15 +145,15 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 				double z = pos->get(2)->data;
 
 				if( type == eTYPE_PAINTING || type == eTYPE_ITEM_FRAME )
-				{
-					x = ((IntTag *) eTag->get(L"TileX") )->data;
-					y = ((IntTag *) eTag->get(L"TileY") )->data;
-					z = ((IntTag *) eTag->get(L"TileZ") )->data;
-				}
+                {
+                    x = static_cast<IntTag *>(eTag->get(L"TileX"))->data;
+                    y = static_cast<IntTag *>(eTag->get(L"TileY"))->data;
+                    z = static_cast<IntTag *>(eTag->get(L"TileZ"))->data;
+                }
 #ifdef _DEBUG
 				//app.DebugPrintf(1,"Loaded entity type %d at (%f,%f,%f)\n",(int)type,x,y,z);
 #endif
-				m_entities.push_back( pair<Vec3 *, CompoundTag *>(Vec3::newPermanent(x,y,z),(CompoundTag *)eTag->copy()));
+				m_entities.push_back( pair<Vec3 *, CompoundTag *>(Vec3::newPermanent(x,y,z),static_cast<CompoundTag *>(eTag->copy())));
 			}
 		}
 		delete tag;
@@ -178,7 +178,7 @@ void ConsoleSchematicFile::save_tags(DataOutputStream *dos)
 	tag->put(L"Entities", entityTags);
 
 	for (auto& it : m_entities )
-		entityTags->add( (CompoundTag *)(it).second->copy() );
+		entityTags->add( static_cast<CompoundTag *>((it).second->copy()) );
 
 	NbtIo::write(tag,dos);
 	delete tag;
@@ -186,15 +186,15 @@ void ConsoleSchematicFile::save_tags(DataOutputStream *dos)
 
 int64_t ConsoleSchematicFile::applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot)
 {
-	int xStart = static_cast<int>(std::fmax<double>(destinationBox->x0, (double)chunk->x*16));
-	int xEnd = static_cast<int>(std::fmin<double>(destinationBox->x1, (double)((xStart >> 4) << 4) + 16));
+	int xStart = static_cast<int>(std::fmax<double>(destinationBox->x0, static_cast<double>(chunk->x)*16));
+	int xEnd = static_cast<int>(std::fmin<double>(destinationBox->x1, static_cast<double>((xStart >> 4) << 4) + 16));
 
 	int yStart = destinationBox->y0;
 	int yEnd = destinationBox->y1;
 	if(yEnd > Level::maxBuildHeight) yEnd = Level::maxBuildHeight;
 
-	int zStart = static_cast<int>(std::fmax<double>(destinationBox->z0, (double)chunk->z * 16));
-	int zEnd = static_cast<int>(std::fmin<double>(destinationBox->z1, (double)((zStart >> 4) << 4) + 16));
+	int zStart = static_cast<int>(std::fmax<double>(destinationBox->z0, static_cast<double>(chunk->z) * 16));
+	int zEnd = static_cast<int>(std::fmin<double>(destinationBox->z1, static_cast<double>((zStart >> 4) << 4) + 16));
 
 #ifdef _DEBUG
 	app.DebugPrintf("Range is (%d,%d,%d) to (%d,%d,%d)\n",xStart,yStart,zStart,xEnd-1,yEnd-1,zEnd-1);
@@ -442,10 +442,10 @@ void ConsoleSchematicFile::applyTileEntities(LevelChunk *chunk, AABB *chunkBox, 
 		Vec3 *pos = Vec3::newTemp(targetX,targetY,targetZ);
 		if( chunkBox->containsIncludingLowerBound(pos) )
 		{
-			shared_ptr<TileEntity> teCopy = chunk->getTileEntity( (int)targetX & 15, (int)targetY & 15, (int)targetZ & 15 );
+			shared_ptr<TileEntity> teCopy = chunk->getTileEntity( static_cast<int>(targetX) & 15, static_cast<int>(targetY) & 15, static_cast<int>(targetZ) & 15 );
 
-			if ( teCopy != NULL )
-			{
+			if ( teCopy != nullptr )
+			{				
 				CompoundTag *teData = new CompoundTag();
 				te->save(teData);
 
@@ -493,7 +493,7 @@ void ConsoleSchematicFile::applyTileEntities(LevelChunk *chunk, AABB *chunkBox, 
 		}
 
 		CompoundTag *eTag = it->second;
-		shared_ptr<Entity> e = EntityIO::loadStatic(eTag, NULL);
+		shared_ptr<Entity> e = EntityIO::loadStatic(eTag, nullptr);
 
 		if( e->GetType() == eTYPE_PAINTING )
 		{
@@ -582,18 +582,18 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 
 	app.DebugPrintf("Generating schematic file for area (%d,%d,%d) to (%d,%d,%d), %dx%dx%d\n",xStart,yStart,zStart,xEnd,yEnd,zEnd,xSize,ySize,zSize);
 
-	if(dos != NULL) dos->writeInt(XBOX_SCHEMATIC_CURRENT_VERSION);
+	if(dos != nullptr) dos->writeInt(XBOX_SCHEMATIC_CURRENT_VERSION);
 
-	if(dos != NULL) dos->writeByte(compressionType);
+	if(dos != nullptr) dos->writeByte(compressionType);
 
 	//Write xSize
-	if(dos != NULL) dos->writeInt(xSize);
+	if(dos != nullptr) dos->writeInt(xSize);
 
 	//Write ySize
-	if(dos != NULL) dos->writeInt(ySize);
+	if(dos != nullptr) dos->writeInt(ySize);
 
 	//Write zSize
-	if(dos != NULL) dos->writeInt(zSize);
+	if(dos != nullptr) dos->writeInt(zSize);
 
 	//byteArray rawBuffer = level->getBlocksAndData(xStart, yStart, zStart, xSize, ySize, zSize, false);
 	int xRowSize = ySize * zSize;
@@ -660,8 +660,8 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 	delete [] result.data;
 	byteArray buffer = byteArray(ucTemp,inputSize);
 
-	if(dos != NULL) dos->writeInt(inputSize);
-	if(dos != NULL) dos->write(buffer);
+	if(dos != nullptr) dos->writeInt(inputSize);
+	if(dos != nullptr) dos->write(buffer);
 	delete [] buffer.data;
 
 	CompoundTag tag;
@@ -725,10 +725,10 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 				pos->get(2)->data -= zStart;
 
 				if( e->instanceof(eTYPE_HANGING_ENTITY) )
-				{
-					((IntTag *) eTag->get(L"TileX") )->data -= xStart;
-					((IntTag *) eTag->get(L"TileY") )->data -= yStart;
-					((IntTag *) eTag->get(L"TileZ") )->data -= zStart;
+				{					
+					static_cast<IntTag *>(eTag->get(L"TileX"))->data -= xStart;
+					static_cast<IntTag *>(eTag->get(L"TileY"))->data -= yStart;
+					static_cast<IntTag *>(eTag->get(L"TileZ"))->data -= zStart;
 				}
 
 				entitiesTag->add(eTag);
@@ -738,7 +738,7 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 
 	tag.put(L"Entities", entitiesTag);
 
-	if(dos != NULL) NbtIo::write(&tag,dos);
+	if(dos != nullptr) NbtIo::write(&tag,dos);
 }
 
 void ConsoleSchematicFile::getBlocksAndData(LevelChunk *chunk, byteArray *data, int x0, int y0, int z0, int x1, int y1, int z1, int &blocksP, int &dataP, int &blockLightP, int &skyLightP)

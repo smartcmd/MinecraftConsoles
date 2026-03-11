@@ -9,22 +9,22 @@ bool											SonyCommerce_Orbis::m_bCommerceInitialised = false;
 // SceNpCommerce2SessionInfo					SonyCommerce_Orbis::m_sessionInfo;
 SonyCommerce_Orbis::State						SonyCommerce_Orbis::m_state = e_state_noSession;
 int												SonyCommerce_Orbis::m_errorCode = 0;
-LPVOID											SonyCommerce_Orbis::m_callbackParam = NULL;
+LPVOID											SonyCommerce_Orbis::m_callbackParam = nullptr;
 
-void*											SonyCommerce_Orbis::m_receiveBuffer = NULL;
+void*											SonyCommerce_Orbis::m_receiveBuffer = nullptr;
 SonyCommerce_Orbis::Event						SonyCommerce_Orbis::m_event;
 std::queue<SonyCommerce_Orbis::Message>			SonyCommerce_Orbis::m_messageQueue;
-std::vector<SonyCommerce_Orbis::ProductInfo>*	SonyCommerce_Orbis::m_pProductInfoList = NULL;
-SonyCommerce_Orbis::ProductInfoDetailed*		SonyCommerce_Orbis::m_pProductInfoDetailed = NULL;
-SonyCommerce_Orbis::ProductInfo*				SonyCommerce_Orbis::m_pProductInfo = NULL;
+std::vector<SonyCommerce_Orbis::ProductInfo>*	SonyCommerce_Orbis::m_pProductInfoList = nullptr;
+SonyCommerce_Orbis::ProductInfoDetailed*		SonyCommerce_Orbis::m_pProductInfoDetailed = nullptr;
+SonyCommerce_Orbis::ProductInfo*				SonyCommerce_Orbis::m_pProductInfo = nullptr;
 
-SonyCommerce_Orbis::CategoryInfo*				SonyCommerce_Orbis::m_pCategoryInfo = NULL;
-const char*										SonyCommerce_Orbis::m_pProductID = NULL;
-char*											SonyCommerce_Orbis::m_pCategoryID = NULL;
+SonyCommerce_Orbis::CategoryInfo*				SonyCommerce_Orbis::m_pCategoryInfo = nullptr;
+const char*										SonyCommerce_Orbis::m_pProductID = nullptr;
+char*											SonyCommerce_Orbis::m_pCategoryID = nullptr;
 SonyCommerce_Orbis::CheckoutInputParams			SonyCommerce_Orbis::m_checkoutInputParams;
 SonyCommerce_Orbis::DownloadListInputParams		SonyCommerce_Orbis::m_downloadInputParams;
 
-SonyCommerce_Orbis::CallbackFunc				SonyCommerce_Orbis::m_callbackFunc = NULL;
+SonyCommerce_Orbis::CallbackFunc				SonyCommerce_Orbis::m_callbackFunc = nullptr;
 // sys_memory_container_t						SonyCommerce_Orbis::m_memContainer = SYS_MEMORY_CONTAINER_ID_INVALID;
 bool											SonyCommerce_Orbis::m_bUpgradingTrial = false;
 
@@ -38,7 +38,7 @@ bool											SonyCommerce_Orbis::m_contextCreated=false;	///< npcommerce2 cont
 SonyCommerce_Orbis::Phase						SonyCommerce_Orbis::m_currentPhase = e_phase_stopped;		///< Current commerce2 util
 // char											SonyCommerce_Orbis::m_commercebuffer[SCE_NP_COMMERCE2_RECV_BUF_SIZE];
 
-C4JThread*										SonyCommerce_Orbis::m_tickThread = NULL;
+C4JThread*										SonyCommerce_Orbis::m_tickThread = nullptr;
 bool											SonyCommerce_Orbis::m_bLicenseChecked=false;	 // Check the trial/full license for the game
 
 
@@ -52,12 +52,12 @@ sce::Toolkit::NP::Utilities::Future<sce::Toolkit::NP::ProductInfoDetailed>			g_d
 SonyCommerce_Orbis::ProductInfoDetailed s_trialUpgradeProductInfoDetailed;
 void SonyCommerce_Orbis::Delete()
 {
-	m_pProductInfoList=NULL;
-	m_pProductInfoDetailed=NULL;
-	m_pProductInfo=NULL;
-	m_pCategoryInfo = NULL;
-	m_pProductID = NULL;
-	m_pCategoryID = NULL;
+	m_pProductInfoList=nullptr;
+	m_pProductInfoDetailed=nullptr;
+	m_pProductInfo=nullptr;
+	m_pCategoryInfo = nullptr;
+	m_pProductID = nullptr;
+	m_pCategoryID = nullptr;
 }
 
 void SonyCommerce_Orbis::Init()
@@ -95,7 +95,7 @@ bool SonyCommerce_Orbis::LicenseChecked()
 
 void SonyCommerce_Orbis::CheckForTrialUpgradeKey()
 {
-	StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, NULL);
+	StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, nullptr);
 }
 
 int SonyCommerce_Orbis::Shutdown()
@@ -112,7 +112,7 @@ int SonyCommerce_Orbis::Shutdown()
 	DeleteCriticalSection(&m_queueLock);
 
 	// clear any possible callback function
-	m_callbackFunc = NULL;
+	m_callbackFunc = nullptr;
 	
 	return ret;
 }
@@ -582,7 +582,7 @@ int SonyCommerce_Orbis::createContext()
 // 	}
 // 
 // 	// Create commerce2 context
-// 	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, NULL, &m_contextId);
+// 	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, nullptr, &m_contextId);
 // 	if (ret < 0) 
 // 	{
 // 		app.DebugPrintf(4,"createContext sceNpCommerce2CreateCtx problem\n");
@@ -657,7 +657,7 @@ void SonyCommerce_Orbis::commerce2Handler( const sce::Toolkit::NP::Event& event)
 	case sce::Toolkit::NP::Event::UserEvent::commerceGotCategoryInfo:
 		{
 			copyCategoryInfo(m_pCategoryInfo, g_categoryInfo.get());
-			m_pCategoryInfo = NULL;
+			m_pCategoryInfo = nullptr;
 			m_event = e_event_commerceGotCategoryInfo;
 			break;
 		}
@@ -665,7 +665,7 @@ void SonyCommerce_Orbis::commerce2Handler( const sce::Toolkit::NP::Event& event)
 	case sce::Toolkit::NP::Event::UserEvent::commerceGotProductList:
 		{
 			copyProductList(m_pProductInfoList, g_productList.get());
-			m_pProductInfoDetailed = NULL;
+			m_pProductInfoDetailed = nullptr;
 			m_event = e_event_commerceGotProductList;
 			break;
 		}
@@ -675,12 +675,12 @@ void SonyCommerce_Orbis::commerce2Handler( const sce::Toolkit::NP::Event& event)
 			if(m_pProductInfoDetailed)
 			{
 				copyDetailedProductInfo(m_pProductInfoDetailed, g_detailedProductInfo.get());
-				m_pProductInfoDetailed = NULL;
+				m_pProductInfoDetailed = nullptr;
 			}
 			else
 			{
 				copyAddDetailedProductInfo(m_pProductInfo, g_detailedProductInfo.get());
-				m_pProductInfo = NULL;
+				m_pProductInfo = nullptr;
 			}
 			m_event = e_event_commerceGotDetailedProductInfo;
 			break;
@@ -1027,7 +1027,7 @@ void SonyCommerce_Orbis::processEvent()
 	case e_event_commerceProductBrowseFinished:
 		app.DebugPrintf(4,"e_event_commerceProductBrowseFinished succeeded: 0x%x\n", m_errorCode);
 
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1076,7 +1076,7 @@ void SonyCommerce_Orbis::processEvent()
 		}
 
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1094,7 +1094,7 @@ void SonyCommerce_Orbis::processEvent()
 		}
 
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1154,8 +1154,8 @@ void SonyCommerce_Orbis::CreateSession( CallbackFunc cb, LPVOID lpParam )
 	m_messageQueue.push(e_message_commerceEnd);
 	m_event = e_event_commerceSessionCreated;
 
-	if(m_tickThread == NULL)
-		m_tickThread = new C4JThread(TickLoop, NULL, "SonyCommerce_Orbis tick");
+	if(m_tickThread == nullptr)
+		m_tickThread = new C4JThread(TickLoop, nullptr, "SonyCommerce_Orbis tick");
 	if(m_tickThread->isRunning() == false)
 	{
 		m_currentPhase = e_phase_idle;

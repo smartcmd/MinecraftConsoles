@@ -12,7 +12,7 @@ ResourceLocation VillagerRenderer::VILLAGER_BUTCHER_LOCATION = ResourceLocation(
 
 VillagerRenderer::VillagerRenderer() : MobRenderer(new VillagerModel(0), 0.5f)
 {
-	villagerModel = (VillagerModel *) model;
+	villagerModel = static_cast<VillagerModel *>(model);
 }
 
 int VillagerRenderer::prepareArmor(shared_ptr<LivingEntity> villager, int layer, float a)

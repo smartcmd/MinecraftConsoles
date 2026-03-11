@@ -6,7 +6,7 @@
 
 WeighedTreasure::WeighedTreasure(int itemId, int auxValue, int minCount, int maxCount, int weight) : WeighedRandomItem(weight)
 {
-	this->item = shared_ptr<ItemInstance>( new ItemInstance(itemId, 1, auxValue) );
+	this->item = std::make_shared<ItemInstance>(itemId, 1, auxValue);
 	this->minCount = minCount;
 	this->maxCount = maxCount;
 }
@@ -22,7 +22,7 @@ void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, 
 {
 	for (int r = 0; r < numRolls; r++)
 	{
-		WeighedTreasure *treasure = (WeighedTreasure *) WeighedRandom::getRandomItem(random, *((WeighedRandomItemArray *)&items));
+		WeighedTreasure *treasure = static_cast<WeighedTreasure *>(WeighedRandom::getRandomItem(random, *((WeighedRandomItemArray *)&items)));
 
 		int count = treasure->minCount + random->nextInt(treasure->maxCount - treasure->minCount + 1);
 		if (treasure->item->getMaxStackSize() >= count)
@@ -48,7 +48,7 @@ void WeighedTreasure::addDispenserItems(Random *random, WeighedTreasureArray ite
 {
 	for (int r = 0; r < numRolls; r++)
 	{
-		WeighedTreasure *treasure = (WeighedTreasure *) WeighedRandom::getRandomItem(random, *((WeighedRandomItemArray *)&items));
+		WeighedTreasure *treasure = static_cast<WeighedTreasure *>(WeighedRandom::getRandomItem(random, *((WeighedRandomItemArray *)&items)));
 
 		int count = treasure->minCount + random->nextInt(treasure->maxCount - treasure->minCount + 1);
 		if (treasure->item->getMaxStackSize() >= count)

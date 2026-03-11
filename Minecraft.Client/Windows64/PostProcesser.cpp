@@ -21,13 +21,17 @@ const char* PostProcesser::g_gammaPSCode =
     "cbuffer GammaCB : register(b0)\n"
     "{\n"
     "    float gamma;\n"
-    "    float3 pad;\n"
+    "    float _pad;\n"
+    "    float2 uvOffset;\n"
+    "    float2 uvScale;\n"
+    "    float2 _pad2;\n"
     "};\n"
     "Texture2D sceneTex : register(t0);\n"
     "SamplerState sceneSampler : register(s0);\n"
     "float4 main(float4 pos : SV_Position, float2 uv : TEXCOORD0) : SV_Target\n"
     "{\n"
-    "    float4 color = sceneTex.Sample(sceneSampler, uv);\n"
+    "    float2 texUV = uvOffset + uv * uvScale;\n"
+    "    float4 color = sceneTex.Sample(sceneSampler, texUV);\n"
     "\n"
     "    color.rgb = max(color.rgb, 0.0);\n"
     "\n"
@@ -158,7 +162,7 @@ void PostProcesser::Init()
     cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-    GammaCBData initData = {1.0f, {0, 0, 0}};
+    GammaCBData initData = {1.0f, 0, 0.0f, 0.0f, 1.0f, 1.0f, {0, 0}};
     D3D11_SUBRESOURCE_DATA srData;
     srData.pSysMem = &initData;
     srData.SysMemPitch = 0;
@@ -237,6 +241,10 @@ void PostProcesser::Apply() const
     {
         GammaCBData *cb = static_cast<GammaCBData *>(mapped.pData);
         cb->gamma = m_gamma;
+        cb->uvOffsetX = 0.0f;
+        cb->uvOffsetY = 0.0f;
+        cb->uvScaleX = 1.0f;
+        cb->uvScaleY = 1.0f;
         ctx->Unmap(m_pGammaCB, 0);
     }
 
@@ -333,27 +341,6 @@ void PostProcesser::ApplyFromCopied() const
 
     ID3D11DeviceContext* ctx = g_pImmediateContext;
 
-    D3D11_MAPPED_SUBRESOURCE mapped;
-    const D3D11_MAP mapType = m_wineMode ? D3D11_MAP_WRITE_NO_OVERWRITE : D3D11_MAP_WRITE_DISCARD;
-    const HRESULT hr = ctx->Map(m_pGammaCB, 0, mapType, 0, &mapped);
-    if (SUCCEEDED(hr))
-    {
-        const auto cb = static_cast<GammaCBData*>(mapped.pData);
-        cb->gamma = m_gamma;
-        ctx->Unmap(m_pGammaCB, 0);
-    }
-
-    ID3D11RenderTargetView* oldRTV = nullptr;
-    ID3D11DepthStencilView* oldDSV = nullptr;
-    ctx->OMGetRenderTargets(1, &oldRTV, &oldDSV);
-
-    UINT numViewports = 1;
-    D3D11_VIEWPORT oldViewport = {};
-    ctx->RSGetViewports(&numViewports, &oldViewport);
-
-    ID3D11RenderTargetView* bbRTV = g_pRenderTargetView;
-    ctx->OMSetRenderTargets(1, &bbRTV, nullptr);
-
     D3D11_VIEWPORT vp;
     if (m_useCustomViewport)
     {
@@ -368,6 +355,33 @@ void PostProcesser::ApplyFromCopied() const
         vp.TopLeftX = 0;
         vp.TopLeftY = 0;
     }
+
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    const D3D11_MAP mapType = m_wineMode ? D3D11_MAP_WRITE_NO_OVERWRITE : D3D11_MAP_WRITE_DISCARD;
+    const HRESULT hr = ctx->Map(m_pGammaCB, 0, mapType, 0, &mapped);
+    if (SUCCEEDED(hr))
+    {
+        const auto cb = static_cast<GammaCBData*>(mapped.pData);
+        cb->gamma = m_gamma;
+        const float texW = static_cast<float>(m_gammaTexWidth);
+        const float texH = static_cast<float>(m_gammaTexHeight);
+        cb->uvOffsetX = vp.TopLeftX / texW;
+        cb->uvOffsetY = vp.TopLeftY / texH;
+        cb->uvScaleX = vp.Width / texW;
+        cb->uvScaleY = vp.Height / texH;
+        ctx->Unmap(m_pGammaCB, 0);
+    }
+
+    ID3D11RenderTargetView* oldRTV = nullptr;
+    ID3D11DepthStencilView* oldDSV = nullptr;
+    ctx->OMGetRenderTargets(1, &oldRTV, &oldDSV);
+
+    UINT numViewports = 1;
+    D3D11_VIEWPORT oldViewport = {};
+    ctx->RSGetViewports(&numViewports, &oldViewport);
+
+    ID3D11RenderTargetView* bbRTV = g_pRenderTargetView;
+    ctx->OMSetRenderTargets(1, &bbRTV, nullptr);
 
     ctx->RSSetViewports(1, &vp);
 

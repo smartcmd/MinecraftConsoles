@@ -4,7 +4,7 @@
 NetworkPlayerSony::NetworkPlayerSony(SQRNetworkPlayer *qnetPlayer)
 {
 	m_sqrPlayer = qnetPlayer;
-	m_pSocket = NULL;
+	m_pSocket = nullptr;
 	m_lastChunkPacketTime = 0;
 }
 
@@ -16,12 +16,12 @@ unsigned char NetworkPlayerSony::GetSmallId()
 void NetworkPlayerSony::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority, bool ack)
 {
 	// TODO - handle priority
-	m_sqrPlayer->SendData( ((NetworkPlayerSony *)player)->m_sqrPlayer, pvData, dataSize, ack );
+	m_sqrPlayer->SendData( static_cast<NetworkPlayerSony *>(player)->m_sqrPlayer, pvData, dataSize, ack );
 }
 
 bool NetworkPlayerSony::IsSameSystem(INetworkPlayer *player)
 {
-	return m_sqrPlayer->IsSameSystem(((NetworkPlayerSony *)player)->m_sqrPlayer);
+	return m_sqrPlayer->IsSameSystem(static_cast<NetworkPlayerSony *>(player)->m_sqrPlayer);
 }
 
 int NetworkPlayerSony::GetOutstandingAckCount()
@@ -133,5 +133,5 @@ int NetworkPlayerSony::GetTimeSinceLastChunkPacket_ms()
 	}
 
 	int64_t currentTime = System::currentTimeMillis();
-	return (int)( currentTime - m_lastChunkPacketTime );
+	return static_cast<int>(currentTime - m_lastChunkPacketTime);
 }

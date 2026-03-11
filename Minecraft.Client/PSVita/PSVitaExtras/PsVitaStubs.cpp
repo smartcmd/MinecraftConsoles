@@ -108,7 +108,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 {
 	size_t n;
 
-	//      Note that we do not check if s == NULL, because we do not
+	//      Note that we do not check if s == nullptr, because we do not
 	//      return errno_t...
 
 	for (n = 0; n < maxsize && *wcs; n++, wcs++)
@@ -162,7 +162,7 @@ VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
 	lpSystemTime->wMilliseconds = sceRtcGetMicrosecond(&dateTime)/1000;
 }
 
-HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PSVITA_STUBBED; return NULL; }
+HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PSVITA_STUBBED; return nullptr; }
 VOID Sleep(DWORD dwMilliseconds)
 {
 	C4JThread::Sleep(dwMilliseconds);
@@ -186,7 +186,7 @@ VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	char name[1] = {0};
 
-	int err = sceKernelCreateLwMutex((SceKernelLwMutexWork *)(&CriticalSection->mutex), name, SCE_KERNEL_LW_MUTEX_ATTR_TH_PRIO | SCE_KERNEL_LW_MUTEX_ATTR_RECURSIVE, 0, NULL);
+	int err = sceKernelCreateLwMutex((SceKernelLwMutexWork *)(&CriticalSection->mutex), name, SCE_KERNEL_LW_MUTEX_ATTR_TH_PRIO | SCE_KERNEL_LW_MUTEX_ATTR_RECURSIVE, 0, nullptr);
 	PSVITA_ASSERT_SCE_ERROR(err);
 }
 
@@ -207,7 +207,7 @@ extern CRITICAL_SECTION g_singleThreadCS;
 
 VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
-	int err = sceKernelLockLwMutex ((SceKernelLwMutexWork *)(&CriticalSection->mutex), 1, NULL);
+	int err = sceKernelLockLwMutex ((SceKernelLwMutexWork *)(&CriticalSection->mutex), 1, nullptr);
 	PSVITA_ASSERT_SCE_ERROR(err);
 }
 
@@ -233,7 +233,7 @@ VOID InitializeCriticalRWSection(PCRITICAL_RW_SECTION CriticalSection)
 {
 	char name[1] = {0};
 
-	CriticalSection->RWLock = sceKernelCreateRWLock(name, SCE_KERNEL_RW_LOCK_ATTR_TH_PRIO | SCE_KERNEL_RW_LOCK_ATTR_RECURSIVE, NULL);
+	CriticalSection->RWLock = sceKernelCreateRWLock(name, SCE_KERNEL_RW_LOCK_ATTR_TH_PRIO | SCE_KERNEL_RW_LOCK_ATTR_RECURSIVE, nullptr);
 }
 
 VOID DeleteCriticalRWSection(PCRITICAL_RW_SECTION CriticalSection)
@@ -270,11 +270,9 @@ VOID LeaveCriticalRWSection(PCRITICAL_RW_SECTION CriticalSection, bool Write)
 	PSVITA_ASSERT_SCE_ERROR(err);
 }
 
-
-
 BOOL CloseHandle(HANDLE hObject)
 {
-	sceFiosFHCloseSync(NULL,(SceFiosFH)((int32_t)hObject));
+	sceFiosFHCloseSync(nullptr,(SceFiosFH)(reinterpret_cast<int32_t>(hObject)));
 	return true;
 }
 
@@ -514,7 +512,7 @@ BOOL VirtualWriteFile(LPCSTR lpFileName, LPCVOID lpBuffer, DWORD nNumberOfBytesT
 		void* Data = VirtualAllocs[Page];
 
 		DWORD numberOfBytesWritten=0;
-		WriteFileWithName(lpFileName, Data, BytesToWrite, &numberOfBytesWritten,NULL);
+		WriteFileWithName(lpFileName, Data, BytesToWrite, &numberOfBytesWritten,nullptr);
 		*lpNumberOfBytesWritten += numberOfBytesWritten;
 
 		nNumberOfBytesToWrite -= BytesToWrite;
@@ -656,7 +654,7 @@ DWORD GetFileSize( HANDLE hFile, LPDWORD lpFileSizeHigh	)
 	//SceFiosSize FileSize;
 	//FileSize=sceFiosFHGetSize(fh);
 	SceFiosStat statData;
-	int err = sceFiosFHStatSync(NULL,fh,&statData);
+	int err = sceFiosFHStatSync(nullptr,fh,&statData);
 	SceFiosOffset FileSize = statData.fileSize;
 
 	if(lpFileSizeHigh)
@@ -675,7 +673,7 @@ BOOL WriteFileWithName(LPCSTR lpFileName,  LPCVOID lpBuffer, DWORD nNumberOfByte
 {
 	char filePath[256];
 	sprintf(filePath,"%s/%s",getUsrDirPath(), lpFileName );
-	SceFiosSize bytesWritten = sceFiosFileWriteSync( NULL, filePath, lpBuffer, nNumberOfBytesToWrite, 0 );
+	SceFiosSize bytesWritten = sceFiosFileWriteSync( nullptr, filePath, lpBuffer, nNumberOfBytesToWrite, 0 );
 	if(bytesWritten != nNumberOfBytesToWrite)
 	{
 		// error
@@ -698,7 +696,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
-	SceFiosSize bytesRead = sceFiosFHReadSync(NULL, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
+	SceFiosSize bytesRead = sceFiosFHReadSync(nullptr, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
 	if(bytesRead < 0)
 	{
 		// error
@@ -718,7 +716,7 @@ BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHi
 	uint64_t bitsToMove = (int64_t) lDistanceToMove;
 	SceFiosOffset pos = 0;
 
-	if (lpDistanceToMoveHigh != NULL)
+	if (lpDistanceToMoveHigh != nullptr)
 		bitsToMove |= ((uint64_t) (*lpDistanceToMoveHigh)) << 32;
 
 	SceFiosWhence whence = SCE_FIOS_SEEK_SET;
@@ -761,7 +759,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	if( dwDesiredAccess == GENERIC_WRITE )
 	{
 		//CD - Create a blank file
-		int err = sceFiosFileWriteSync( NULL, filePath, NULL, 0, 0 );
+		int err = sceFiosFileWriteSync( nullptr, filePath, nullptr, 0, 0 );
 		assert( err == SCE_FIOS_OK );
 	}
 
@@ -770,7 +768,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 #endif
 
 	SceFiosFH fh;
-	int err = sceFiosFHOpenSync(NULL, &fh, filePath, NULL);
+	int err = sceFiosFHOpenSync(nullptr, &fh, filePath, nullptr);
 	assert( err == SCE_FIOS_OK );
 
 	return (void*)fh;
@@ -816,7 +814,7 @@ DWORD GetFileAttributesA(LPCSTR lpFileName)
 
 	// check if the file exists first
 	SceFiosStat  statData;
-	if(sceFiosStatSync(NULL, filePath, &statData) != SCE_FIOS_OK)
+	if(sceFiosStatSync(nullptr, filePath, &statData) != SCE_FIOS_OK)
 	{
 		app.DebugPrintf("*** sceFiosStatSync Failed\n");
 		return -1;
@@ -904,7 +902,7 @@ BOOL GetFileAttributesExA(LPCSTR lpFileName,GET_FILEEX_INFO_LEVELS fInfoLevelId,
 
 	// check if the file exists first
 	SceFiosStat  statData;
-	if(sceFiosStatSync(NULL, filePath, &statData) != SCE_FIOS_OK)
+	if(sceFiosStatSync(nullptr, filePath, &statData) != SCE_FIOS_OK)
 	{
 		app.DebugPrintf("*** sceFiosStatSync Failed\n");
 		return false;
@@ -937,7 +935,7 @@ errno_t _i64toa_s(long long _Val, char * _DstBuf, size_t _Size, int _Radix) { if
 
 int _wtoi(const wchar_t *_Str)
 {
-	return wcstol(_Str, NULL, 10);
+	return wcstol(_Str, nullptr, 10);
 }
 
 DWORD XGetLanguage()

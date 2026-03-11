@@ -14,11 +14,11 @@ private:
 public:
 	DLCTextureFile(const wstring &path);
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
-	virtual PBYTE getData(DWORD &dwBytes);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
+    PBYTE getData(DWORD &dwBytes) override;
 
-	virtual void addParameter(DLCManager::EDLCParameterType type, const wstring &value);
+    void addParameter(DLCManager::EDLCParameterType type, const wstring &value) override;
 
-	virtual wstring getParameterAsString(DLCManager::EDLCParameterType type);
-	virtual bool getParameterAsBool(DLCManager::EDLCParameterType type);
+    wstring getParameterAsString(DLCManager::EDLCParameterType type) override;
+    bool getParameterAsBool(DLCManager::EDLCParameterType type) override;
 };

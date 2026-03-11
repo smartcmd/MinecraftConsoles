@@ -18,7 +18,7 @@ public:
 		else type = 1;
 
 		dos->writeByte(type);
-		dos->writeInt((int)list.size());
+		dos->writeInt(static_cast<int>(list.size()));
 
 		for ( auto& it : list )
 			it->write(dos);
@@ -26,21 +26,16 @@ public:
 
 	void load(DataInput *dis, int tagDepth)
 	{
-		if (tagDepth > MAX_DEPTH)
-		{
-#ifndef _CONTENT_PACKAGE
-			printf("Tried to read NBT tag with too high complexity, depth > %d", MAX_DEPTH);
-			__debugbreak();
-#endif
-			return;
-		}
 		type = dis->readByte();
 		int size = dis->readInt();
+        if (size < 0 || size > MAX_DEPTH)
+			size = 0;
 
 		list.clear();
 		for (int i = 0; i < size; i++)
 		{
 			Tag *tag = Tag::newTag(type, L"");
+            if (tag == nullptr) break;
 			tag->load(dis, tagDepth);
 			list.push_back(tag);
 		}
@@ -83,12 +78,12 @@ public:
 
 	T *get(int index)
 	{
-		return (T *) list[index];
+		return static_cast<T *>(list[index]);
 	}
 
 	int size()
 	{
-		return (int)list.size();
+		return static_cast<int>(list.size());
 	}
 
 	virtual ~ListTag()
@@ -105,7 +100,7 @@ public:
 		res->type = type;
 		for ( auto& it : list )
 		{
-			T *copy = (T *) it->copy();
+			T *copy = static_cast<T *>(it->copy());
 			res->list.push_back(copy);
 		}
 		return res;
@@ -115,7 +110,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			ListTag *o = (ListTag *) obj;
+			ListTag *o = static_cast<ListTag *>(obj);
 			if (type == o->type)
 			{
 				bool equal = false;

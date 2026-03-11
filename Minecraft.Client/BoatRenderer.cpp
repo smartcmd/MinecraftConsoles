@@ -20,7 +20,7 @@ void BoatRenderer::render(shared_ptr<Entity> _boat, double x, double y, double z
 
     glPushMatrix();
 
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
     glRotatef(180-rot, 0, 1, 0);
     float hurt = boat->getHurtTime() - a;

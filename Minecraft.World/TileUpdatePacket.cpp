@@ -31,7 +31,7 @@ void TileUpdatePacket::read(DataInputStream *dis) //throws IOException
 	y = dis->readUnsignedByte();
 	z = dis->readInt();
 	
-	block = (int)dis->readShort() & 0xffff;
+	block = static_cast<int>(dis->readShort()) & 0xffff;
 
 	BYTE dataLevel = dis->readByte();
 	data = dataLevel & 0xf;

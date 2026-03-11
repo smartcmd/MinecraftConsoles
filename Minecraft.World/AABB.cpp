@@ -8,7 +8,7 @@
 #include "HitResult.h"
 
 DWORD AABB::tlsIdx = 0;
-AABB::ThreadStorage *AABB::tlsDefault = NULL;
+AABB::ThreadStorage *AABB::tlsDefault = nullptr;
 
 AABB::ThreadStorage::ThreadStorage()
 {
@@ -25,7 +25,7 @@ AABB::ThreadStorage::~ThreadStorage()
 void AABB::CreateNewThreadStorage()
 {
 	ThreadStorage *tls = new ThreadStorage();
-	if(tlsDefault == NULL )
+	if(tlsDefault == nullptr )
 	{
 		tlsIdx = TlsAlloc();
 		tlsDefault = tls;
@@ -41,7 +41,7 @@ void AABB::UseDefaultThreadStorage()
 
 void AABB::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
@@ -62,7 +62,7 @@ void AABB::resetPool()
 
 AABB *AABB::newTemp(double x0, double y0, double z0, double x1, double y1, double z1)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	AABB *thisAABB = &tls->pool[tls->poolPointer];
 	thisAABB->set(x0, y0, z0, x1, y1, z1);
 	tls->poolPointer = ( tls->poolPointer + 1 ) % ThreadStorage::POOL_SIZE;
@@ -286,23 +286,23 @@ HitResult *AABB::clip(Vec3 *a, Vec3 *b)
 	Vec3 *zh0 = a->clipZ(b, z0);
 	Vec3 *zh1 = a->clipZ(b, z1);
 
-	if (!containsX(xh0)) xh0 = NULL;
-	if (!containsX(xh1)) xh1 = NULL;
-	if (!containsY(yh0)) yh0 = NULL;
-	if (!containsY(yh1)) yh1 = NULL;
-	if (!containsZ(zh0)) zh0 = NULL;
-	if (!containsZ(zh1)) zh1 = NULL;
+	if (!containsX(xh0)) xh0 = nullptr;
+	if (!containsX(xh1)) xh1 = nullptr;
+	if (!containsY(yh0)) yh0 = nullptr;
+	if (!containsY(yh1)) yh1 = nullptr;
+	if (!containsZ(zh0)) zh0 = nullptr;
+	if (!containsZ(zh1)) zh1 = nullptr;
 
-	Vec3 *closest = NULL;
+	Vec3 *closest = nullptr;
 
-	if (xh0 != NULL && (closest == NULL || a->distanceToSqr(xh0) < a->distanceToSqr(closest))) closest = xh0;
-	if (xh1 != NULL && (closest == NULL || a->distanceToSqr(xh1) < a->distanceToSqr(closest))) closest = xh1;
-	if (yh0 != NULL && (closest == NULL || a->distanceToSqr(yh0) < a->distanceToSqr(closest))) closest = yh0;
-	if (yh1 != NULL && (closest == NULL || a->distanceToSqr(yh1) < a->distanceToSqr(closest))) closest = yh1;
-	if (zh0 != NULL && (closest == NULL || a->distanceToSqr(zh0) < a->distanceToSqr(closest))) closest = zh0;
-	if (zh1 != NULL && (closest == NULL || a->distanceToSqr(zh1) < a->distanceToSqr(closest))) closest = zh1;
+	if (xh0 != nullptr && (closest == nullptr || a->distanceToSqr(xh0) < a->distanceToSqr(closest))) closest = xh0;
+	if (xh1 != nullptr && (closest == nullptr || a->distanceToSqr(xh1) < a->distanceToSqr(closest))) closest = xh1;
+	if (yh0 != nullptr && (closest == nullptr || a->distanceToSqr(yh0) < a->distanceToSqr(closest))) closest = yh0;
+	if (yh1 != nullptr && (closest == nullptr || a->distanceToSqr(yh1) < a->distanceToSqr(closest))) closest = yh1;
+	if (zh0 != nullptr && (closest == nullptr || a->distanceToSqr(zh0) < a->distanceToSqr(closest))) closest = zh0;
+	if (zh1 != nullptr && (closest == nullptr || a->distanceToSqr(zh1) < a->distanceToSqr(closest))) closest = zh1;
 
-	if (closest == NULL) return NULL;
+	if (closest == nullptr) return nullptr;
 
 	int face = -1;
 
@@ -319,19 +319,19 @@ HitResult *AABB::clip(Vec3 *a, Vec3 *b)
 
 bool AABB::containsX(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->y >= y0 && v->y <= y1 && v->z >= z0 && v->z <= z1;
 }
 
 bool AABB::containsY(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->x >= x0 && v->x <= x1 && v->z >= z0 && v->z <= z1;
 }
 
 bool AABB::containsZ(Vec3 *v)
 {
-	if (v == NULL) return false;
+	if (v == nullptr) return false;
 	return v->x >= x0 && v->x <= x1 && v->y >= y0 && v->y <= y1;
 }
 

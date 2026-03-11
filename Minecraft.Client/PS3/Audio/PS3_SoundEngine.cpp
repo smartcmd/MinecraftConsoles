@@ -37,7 +37,7 @@ int SoundEngine::initAudioHardware( int minimum_chans )
 		a_config.channel = ch_pcm;
 		a_config.encoder = CELL_AUDIO_OUT_CODING_TYPE_LPCM;
 		a_config.downMixer = CELL_AUDIO_OUT_DOWNMIXER_NONE; /* No downmixer is used */
-		cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, NULL, 0 );
+		cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, nullptr, 0 );
 
 		ret = ch_pcm;
 	}
@@ -51,7 +51,7 @@ int SoundEngine::initAudioHardware( int minimum_chans )
 			a_config.channel = 6; 
 			a_config.encoder = CELL_AUDIO_OUT_CODING_TYPE_LPCM;
 			a_config.downMixer = CELL_AUDIO_OUT_DOWNMIXER_TYPE_B; 
-			if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, NULL, 0 ) != CELL_OK )
+			if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, nullptr, 0 ) != CELL_OK )
 			{
 				return 0; // error - the downmixer didn't init
 			}
@@ -83,7 +83,7 @@ int SoundEngine::initAudioHardware( int minimum_chans )
 					ret = 8;
 				}
 
-				if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, NULL, 0 ) == CELL_OK )
+				if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, nullptr, 0 ) == CELL_OK )
 				{
 					break;
 				}
@@ -94,7 +94,7 @@ int SoundEngine::initAudioHardware( int minimum_chans )
 			a_config.channel = 2;
 			a_config.encoder   = CELL_AUDIO_OUT_CODING_TYPE_LPCM;
 			a_config.downMixer = CELL_AUDIO_OUT_DOWNMIXER_TYPE_A;
-			if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, NULL, 0 ) != CELL_OK )
+			if ( cellAudioOutConfigure( CELL_AUDIO_OUT_PRIMARY, &a_config, nullptr, 0 ) != CELL_OK )
 			{
 				return 0; // error - downmixer didn't work
 			}
