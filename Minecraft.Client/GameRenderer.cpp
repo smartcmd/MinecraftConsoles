@@ -411,7 +411,7 @@ float GameRenderer::getFov(float a, bool applyEffects)
 
 float GameRenderer::getViewmodelFov(float a)
 {
-	// The first-person hand/item should not scale with the user's world FOV (Java-like viewmodel feel).
+	// 4J - keep the hand/item looking sensible when the player cranks the world FOV
 	if (cameraFlip > 0) return 90;
 
 	shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
@@ -645,7 +645,7 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 
 void GameRenderer::getViewmodelFovAndAspect(float& fov, float& aspect, float a)
 {
-	// Use the real window dimensions so the perspective updates on resize.
+	// 4J - same as getFovAndAspect(), but for the hand/item pass
 	extern int g_rScreenWidth;
 	extern int g_rScreenHeight;
 	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
