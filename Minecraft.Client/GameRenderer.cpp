@@ -994,70 +994,91 @@ float GameRenderer::ComputeGammaFromSlider(float slider0to100)
 
 void GameRenderer::CachePlayerGammas()
 {
-    const float slider = app.GetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_Gamma);
-    const float gamma = ComputeGammaFromSlider(slider);
-
     for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES; ++j)
-        m_cachedGammaPerPlayer[j] = gamma;
+    {
+        std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+        if (!player)
+        {
+            m_cachedGammaPerPlayer[j] = 1.0f;
+            continue;
+        }
+
+        const float slider = app.GetGameSettings(j, eGameSetting_Gamma); // 0..100
+        m_cachedGammaPerPlayer[j] = ComputeGammaFromSlider(slider);
+    }
 }
 
 bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
 {
+    // Use the actual backbuffer dimensions so viewports adapt to window resize.
     extern int g_rScreenWidth;
     extern int g_rScreenHeight;
 
-    std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
-    if (!player)
+    int active = 0;
+    int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
+    for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
+    {
+        if (Minecraft::GetInstance()->localplayers[i])
+            indexMap[active++] = i;
+    }
+
+    if (active <= 1)
+    {
+        outViewport.TopLeftX = 0.0f;
+        outViewport.TopLeftY = 0.0f;
+        outViewport.Width = static_cast<FLOAT>(g_rScreenWidth);
+        outViewport.Height = static_cast<FLOAT>(g_rScreenHeight);
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
+
+    int k = -1;
+    for (int ord = 0; ord < active; ++ord)
+        if (indexMap[ord] == j)
+        {
+            k = ord;
+            break;
+        }
+    if (k < 0)
         return false;
 
-    const float w = static_cast<float>(g_rScreenWidth);
-    const float h = static_cast<float>(g_rScreenHeight);
-    const float halfW = w * 0.5f;
-    const float halfH = h * 0.5f;
+    const float width = static_cast<float>(g_rScreenWidth);
+    const float height = static_cast<float>(g_rScreenHeight);
 
-    outViewport.MinDepth = 0.0f;
-    outViewport.MaxDepth = 1.0f;
-
-    switch (static_cast<C4JRender::eViewportType>(player->m_iScreenSection))
+    if (active == 2)
     {
-    case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = w;     outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
-        outViewport.Width    = w;     outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = h;
-        break;
-    case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = h;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-        outViewport.TopLeftX = halfW; outViewport.TopLeftY = halfH;
-        outViewport.Width    = halfW; outViewport.Height   = halfH;
-        break;
-    default:
-        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
-        outViewport.Width    = w;     outViewport.Height   = h;
-        break;
+        const float halfH = height * 0.5f;
+        outViewport.TopLeftX = 0.0f;
+        outViewport.Width = width;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        if (k == 0)
+        {
+            outViewport.TopLeftY = 0.0f;
+            outViewport.Height = halfH;
+        }
+        else
+        {
+            outViewport.TopLeftY = halfH;
+            outViewport.Height = halfH;
+        }
+        return true;
     }
-    return true;
+    else
+    {
+        const float halfW = width * 0.5f;
+        const float halfH = height * 0.5f;
+        const int row = (k >= 2) ? 1 : 0;
+        const int col = (k % 2);
+        outViewport.TopLeftX = col ? halfW : 0.0f;
+        outViewport.TopLeftY = row ? halfH : 0.0f;
+        outViewport.Width = halfW;
+        outViewport.Height = halfH;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
 }
 
 uint32_t GameRenderer::BuildPlayerViewports(D3D11_VIEWPORT *outViewports, float *outGammas, UINT maxCount) const
