@@ -120,3 +120,123 @@ InetSocketAddress^ Player::getAddress()
 	InetAddress^ address = gcnew InetAddress(addressBytes, hostAddress, hostName, canonicalHostName);
 	return gcnew InetSocketAddress(hostName, hostString, data.port, data.unresolved, address);
 }
+
+bool Player::getAllowFlight()
+{
+	return NativePlayerCallbacks::GetAllowFlight(m_name);
+}
+
+void Player::setAllowFlight(bool flight)
+{
+	NativePlayerCallbacks::SetAllowFlight(m_name, flight);
+}
+
+float Player::getExhaustion()
+{
+	return NativePlayerCallbacks::GetExhaustion(m_name);
+}
+
+void Player::setExhaustion(float value)
+{
+	NativePlayerCallbacks::SetExhaustion(m_name, value);
+}
+
+float Player::getSaturation()
+{
+	return NativePlayerCallbacks::GetSaturation(m_name);
+}
+
+void Player::setSaturation(float value)
+{
+	NativePlayerCallbacks::SetSaturation(m_name, value);
+}
+
+void Player::giveExp(int amount)
+{
+	NativePlayerCallbacks::GiveExp(m_name, amount);
+}
+
+void Player::giveExpLevels(int amount)
+{
+	NativePlayerCallbacks::GiveExpLevels(m_name, amount);
+}
+
+int Player::getTotalExperience()
+{
+	return NativePlayerCallbacks::GetTotalExperience(m_name);
+}
+
+bool Player::isFlying()
+{
+	return NativePlayerCallbacks::IsFlying(m_name);
+}
+
+void Player::setFlying(bool value)
+{
+	NativePlayerCallbacks::SetFlying(m_name, value);
+}
+
+void Player::setExp(float exp)
+{
+	NativePlayerCallbacks::SetExp(m_name, exp);
+}
+
+void Player::setLevel(int level)
+{
+	NativePlayerCallbacks::SetPlayerLevel(m_name, level);
+}
+
+void Player::setWalkSpeed(float value)
+{
+	NativePlayerCallbacks::SetWalkSpeed(m_name, value);
+}
+
+float Player::getWalkSpeed()
+{
+	return NativePlayerCallbacks::GetWalkSpeed(m_name);
+}
+
+ItemStack^ Player::getItemInHand()
+{
+	ItemInHandData data;
+	if (!NativePlayerCallbacks::GetItemInHand(m_name, &data) || !data.hasItem)
+	{
+		return nullptr;
+	}
+
+	return gcnew ItemStack(data.itemId, data.count, data.data);
+}
+
+void Player::setItemInHand(ItemStack^ item)
+{
+	if (item == nullptr)
+	{
+		NativePlayerCallbacks::SetItemInHand(m_name, 0, 0, 0);
+	}
+	else
+	{
+		NativePlayerCallbacks::SetItemInHand(m_name, item->getTypeId(), item->getAmount(), item->getData());
+	}
+}
+
+GameMode Player::getGameMode()
+{
+	int mode = NativePlayerCallbacks::GetGameMode(m_name);
+	switch (mode)
+	{
+	case 0: return GameMode::SURVIVAL;
+	case 1: return GameMode::CREATIVE;
+	case 2: return GameMode::ADVENTURE;
+	default: return GameMode::SURVIVAL;
+	}
+}
+
+void Player::setGameMode(GameMode mode)
+{
+	NativePlayerCallbacks::SetPlayerGameMode(m_name, (int)mode);
+}
+
+bool Player::isSleeping()
+{
+	return NativePlayerCallbacks::IsSleepingPlayer(m_name);
+}

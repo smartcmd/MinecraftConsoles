@@ -23,6 +23,9 @@
 #include "..\Minecraft.World\ItemInstance.h"
 #include "..\Minecraft.World\LightningBolt.h"
 #include "..\Minecraft.World\AddGlobalEntityPacket.h"
+#include "..\Minecraft.World\SetExperiencePacket.h"
+#include "..\Minecraft.Client\ServerPlayerGameMode.h"
+#include "..\Minecraft.World\LevelSettings.h"
 
 #if defined(_WINDOWS64)
 #include "..\Minecraft.Client\Windows64\Network\WinsockNetLayer.h"
@@ -197,6 +200,247 @@ namespace FourKit
 		{
 			it->second->setSprinting(sprinting != 0);
 		}
+	}
+
+	int NativeCallback_GetAllowFlight(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->abilities.mayfly ? 1 : 0;
+		}
+		return 0;
+	}
+
+	void NativeCallback_SetAllowFlight(const char* playerName, int flight)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->abilities.mayfly = (flight != 0);
+			it->second->onUpdateAbilities();
+		}
+	}
+
+	float NativeCallback_GetExhaustion(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->getFoodData()->getExhaustionLevel();
+		}
+		return 0.0f;
+	}
+
+	void NativeCallback_SetExhaustion(const char* playerName, float value)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->getFoodData()->setExhaustion(value);
+		}
+	}
+
+	float NativeCallback_GetSaturation(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->getFoodData()->getSaturationLevel();
+		}
+		return 0.0f;
+	}
+
+	void NativeCallback_SetSaturation(const char* playerName, float value)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->getFoodData()->setSaturation(value);
+		}
+	}
+
+	void NativeCallback_GiveExp(const char* playerName, int amount)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->increaseXp(amount);
+		}
+	}
+
+	void NativeCallback_GiveExpLevels(const char* playerName, int amount)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->giveExperienceLevels(amount);
+		}
+	}
+
+	int NativeCallback_GetTotalExperience(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->totalExperience;
+		}
+		return 0;
+	}
+
+	int NativeCallback_IsFlying(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->abilities.flying ? 1 : 0;
+		}
+		return 0;
+	}
+
+	void NativeCallback_SetFlying(const char* playerName, int value)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->abilities.flying = (value != 0);
+			it->second->onUpdateAbilities();
+		}
+	}
+
+	void NativeCallback_SetExp(const char* playerName, float exp)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->experienceProgress = exp;
+			if (it->second->connection)
+			{
+				it->second->connection->send(std::make_shared<SetExperiencePacket>(
+					it->second->experienceProgress, 
+					it->second->totalExperience, 
+					it->second->experienceLevel
+				));
+			}
+		}
+	}
+
+	void NativeCallback_SetPlayerLevel(const char* playerName, int level)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->experienceLevel = level;
+			if (it->second->connection)
+			{
+				it->second->connection->send(std::make_shared<SetExperiencePacket>(
+					it->second->experienceProgress, 
+					it->second->totalExperience, 
+					it->second->experienceLevel
+				));
+			}
+		}
+	}
+
+	void NativeCallback_SetWalkSpeed(const char* playerName, float value)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->abilities.setWalkingSpeed(value);
+			it->second->onUpdateAbilities();
+		}
+	}
+
+	float NativeCallback_GetWalkSpeed(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->abilities.getWalkingSpeed();
+		}
+		return 0.0f;
+	}
+
+	int NativeCallback_IsSleepingPlayer(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->isSleeping() ? 1 : 0;
+		}
+		return 0;
+	}
+
+	int NativeCallback_GetGameMode(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second && it->second->gameMode)
+		{
+			GameType* gt = it->second->gameMode->getGameModeForPlayer();
+			return gt != NULL ? gt->getId() : -1;
+		}
+		return -1;
+	}
+
+	void NativeCallback_SetPlayerGameMode(const char* playerName, int mode)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			GameType* gt = GameType::byId(mode);
+			if (gt != NULL)
+			{
+				it->second->setGameMode(gt);
+			}
+		}
+	}
+
+	void NativeCallback_SetItemInHand(const char* playerName, int itemId, int count, int data)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second && it->second->inventory)
+		{
+			if (itemId <= 0 || count <= 0)
+			{
+				it->second->inventory->setItem(it->second->inventory->selected, nullptr);
+			}
+			else
+			{
+				it->second->inventory->setItem(it->second->inventory->selected,
+					shared_ptr<ItemInstance>(new ItemInstance(itemId, count, data)));
+			}
+		}
+	}
+
+	bool NativeCallback_GetItemInHand(const char* playerName, ItemInHandData* outData)
+	{
+		if (playerName == nullptr || outData == nullptr)
+		{
+			return false;
+		}
+
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it == g_nativePlayerMap.end() || it->second == nullptr)
+		{
+			return false;
+		}
+
+		shared_ptr<ItemInstance> item = it->second->getSelectedItem();
+		if (item == nullptr)
+		{
+			outData->hasItem = false;
+			outData->itemId = 0;
+			outData->count = 0;
+			outData->data = 0;
+			return true;
+		}
+
+		outData->hasItem = true;
+		outData->itemId = item->id;
+		outData->count = item->count;
+		outData->data = item->getAuxValue();
+		return true;
 	}
 
 	void NativeCallback_BlockBreakNaturally(int x, int y, int z, int dimension)
@@ -754,35 +998,55 @@ namespace FourKit
 			if (!g_callbacksRegistered)
 			{
 				FourKit_SetNativeCallbacks(
-					&NativeCallback_SetFallDistance,
-					&NativeCallback_SetHealth,
-					&NativeCallback_SetFood,
-					&NativeCallback_SendMessage,
-					&NativeCallback_TeleportTo,
-					&NativeCallback_Kick,
-					&NativeCallback_IsSneaking,
-					&NativeCallback_SetSneaking,
-					&NativeCallback_IsSprinting,
-					&NativeCallback_SetSprinting,
-					&NativeCallback_BlockBreakNaturally,
-					&NativeCallback_GetBlockType,
-					&NativeCallback_SetBlockType,
-					&NativeCallback_GetBlockData,
-					&NativeCallback_SetBlockData,
-					&NativeCallback_GetPlayerSnapshot,
-					&NativeCallback_GetPlayerNetworkAddress,
-					&NativeCallback_GetWorldInfo,
-					&NativeCallback_CreateExplosion,
-					&NativeCallback_DropItem,
-					&NativeCallback_GetHighestBlockYAt,
-					&NativeCallback_SetFullTime,
-					&NativeCallback_SetSpawnLocation,
-					&NativeCallback_SetStorm,
-					&NativeCallback_SetThunderDuration,
-					&NativeCallback_SetThundering,
-					&NativeCallback_SetTime,
-					&NativeCallback_SetWeatherDuration,
-					&NativeCallback_StrikeLightning);
+						&NativeCallback_SetFallDistance,
+						&NativeCallback_SetHealth,
+						&NativeCallback_SetFood,
+						&NativeCallback_SendMessage,
+						&NativeCallback_TeleportTo,
+						&NativeCallback_Kick,
+						&NativeCallback_IsSneaking,
+						&NativeCallback_SetSneaking,
+						&NativeCallback_IsSprinting,
+						&NativeCallback_SetSprinting,
+						&NativeCallback_GetAllowFlight,
+						&NativeCallback_SetAllowFlight,
+						&NativeCallback_GetExhaustion,
+						&NativeCallback_SetExhaustion,
+						&NativeCallback_GetSaturation,
+						&NativeCallback_SetSaturation,
+						&NativeCallback_GiveExp,
+						&NativeCallback_GiveExpLevels,
+						&NativeCallback_GetTotalExperience,
+						&NativeCallback_IsFlying,
+						&NativeCallback_SetFlying,
+						&NativeCallback_SetExp,
+						&NativeCallback_SetPlayerLevel,
+						&NativeCallback_SetWalkSpeed,
+						&NativeCallback_GetWalkSpeed,
+						&NativeCallback_IsSleepingPlayer,
+						&NativeCallback_GetGameMode,
+						&NativeCallback_SetPlayerGameMode,
+						&NativeCallback_SetItemInHand,
+						&NativeCallback_BlockBreakNaturally,
+						&NativeCallback_GetBlockType,
+						&NativeCallback_SetBlockType,
+						&NativeCallback_GetBlockData,
+						&NativeCallback_SetBlockData,
+						&NativeCallback_GetPlayerSnapshot,
+						&NativeCallback_GetPlayerNetworkAddress,
+						&NativeCallback_GetItemInHand,
+						&NativeCallback_GetWorldInfo,
+						&NativeCallback_CreateExplosion,
+						&NativeCallback_DropItem,
+						&NativeCallback_GetHighestBlockYAt,
+						&NativeCallback_SetFullTime,
+						&NativeCallback_SetSpawnLocation,
+						&NativeCallback_SetStorm,
+						&NativeCallback_SetThunderDuration,
+						&NativeCallback_SetThundering,
+						&NativeCallback_SetTime,
+						&NativeCallback_SetWeatherDuration,
+						&NativeCallback_StrikeLightning);
 				g_callbacksRegistered = true;
 			}
 

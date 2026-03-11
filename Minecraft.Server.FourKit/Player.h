@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InetSocketAddress.h"
+#include "ItemStack.h"
 #include "CommandSender.h"
 
 // todo: improve a little
@@ -9,11 +10,18 @@ using namespace System;
 
 ref class World;
 
+public enum class GameMode
+{
+	SURVIVAL = 0,
+	CREATIVE = 1,
+	ADVENTURE = 2
+};
+
 public ref class Player : public CommandSender
 {
 public:
 	Player(String^ name);
-	
+
 	String^ getName() { return m_name; }
 	float getHealth() { return m_health; }
 	int getFood() { return m_food; }
@@ -28,15 +36,36 @@ public:
 	int getDimension() { return m_dimension; }
 	World^ getWorld();
 	InetSocketAddress^ getAddress();
-	
+
 	void setFallDistance(float distance);
 	void setHealth(float health);
 	void setFood(int food);
 	//void setSneaking(bool sneaking); doesnt work rn
 	void setSprinting(bool sprinting);
 	virtual void sendMessage(String^ message) override;
-    void kickPlayer(); // String^ reason
+	void kickPlayer(); // String^ reason
 	void teleport(double x, double y, double z);
+
+	bool getAllowFlight();
+	void setAllowFlight(bool flight);
+	float getExhaustion();
+	void setExhaustion(float value);
+	float getSaturation();
+	void setSaturation(float value);
+	void giveExp(int amount);
+	void giveExpLevels(int amount);
+	int getTotalExperience();
+	bool isFlying();
+	void setFlying(bool value);
+	void setExp(float exp);
+	void setLevel(int level);
+	void setWalkSpeed(float value);
+	float getWalkSpeed();
+	ItemStack^ getItemInHand();
+	void setItemInHand(ItemStack^ item);
+	GameMode getGameMode();
+	void setGameMode(GameMode mode);
+	bool isSleeping();
 
 internal:
     property String ^

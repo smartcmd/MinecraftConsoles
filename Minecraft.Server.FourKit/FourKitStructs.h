@@ -266,6 +266,22 @@ struct WorldInfoData
 	}
 };
 
+struct ItemInHandData
+{
+	int itemId;
+	int count;
+	int data;
+	bool hasItem;
+
+	ItemInHandData()
+		: itemId(0)
+		, count(0)
+		, data(0)
+		, hasItem(false)
+	{
+	}
+};
+
 struct DroppedItemData
 {
 	int entityId;

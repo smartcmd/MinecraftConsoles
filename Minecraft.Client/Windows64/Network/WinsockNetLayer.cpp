@@ -17,7 +17,7 @@
 #include <string>
 
 static bool RecvExact(SOCKET sock, BYTE* buf, int len);
-#if defined(MINECRAFT_SERVER_BUILD)
+#ifdef _WINDOWS64
 static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp);
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;

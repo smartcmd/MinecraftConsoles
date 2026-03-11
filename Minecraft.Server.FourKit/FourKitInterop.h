@@ -14,7 +14,26 @@
 	X(IsSneaking, int, (const char* playerName)) \
 	X(SetSneaking, void, (const char* playerName, int sneaking)) \
 	X(IsSprinting, int, (const char* playerName)) \
-	X(SetSprinting, void, (const char* playerName, int sprinting))
+	X(SetSprinting, void, (const char* playerName, int sprinting)) \
+	X(GetAllowFlight, int, (const char* playerName)) \
+	X(SetAllowFlight, void, (const char* playerName, int flight)) \
+	X(GetExhaustion, float, (const char* playerName)) \
+	X(SetExhaustion, void, (const char* playerName, float value)) \
+	X(GetSaturation, float, (const char* playerName)) \
+	X(SetSaturation, void, (const char* playerName, float value)) \
+	X(GiveExp, void, (const char* playerName, int amount)) \
+	X(GiveExpLevels, void, (const char* playerName, int amount)) \
+	X(GetTotalExperience, int, (const char* playerName)) \
+	X(IsFlying, int, (const char* playerName)) \
+	X(SetFlying, void, (const char* playerName, int value)) \
+	X(SetExp, void, (const char* playerName, float exp)) \
+	X(SetPlayerLevel, void, (const char* playerName, int level)) \
+	X(SetWalkSpeed, void, (const char* playerName, float value)) \
+	X(GetWalkSpeed, float, (const char* playerName)) \
+	X(IsSleepingPlayer, int, (const char* playerName)) \
+	X(GetGameMode, int, (const char* playerName)) \
+	X(SetPlayerGameMode, void, (const char* playerName, int mode)) \
+	X(SetItemInHand, void, (const char* playerName, int itemId, int count, int data))
 
 #define PB_BLOCK_CALLBACK_LIST(X) \
 	X(BlockBreakNaturally, void, (int x, int y, int z, int dimension)) \
@@ -25,7 +44,8 @@
 
 #define PB_QUERY_CALLBACK_LIST(X) \
 	X(GetPlayerSnapshot, bool, (const char* playerName, PlayerJoinData* outData)) \
-	X(GetPlayerNetworkAddress, bool, (const char* playerName, PlayerNetworkAddressData* outData))
+	X(GetPlayerNetworkAddress, bool, (const char* playerName, PlayerNetworkAddressData* outData)) \
+	X(GetItemInHand, bool, (const char* playerName, ItemInHandData* outData))
 
 #define PB_WORLD_CALLBACK_LIST(X) \
 	X(GetWorldInfo, bool, (int dimension, WorldInfoData* outData)) \
@@ -58,6 +78,25 @@
 	FourKitSetSneakingCallback SetSneaking, \
 	FourKitIsSprintingCallback IsSprinting, \
 	FourKitSetSprintingCallback SetSprinting, \
+	FourKitGetAllowFlightCallback GetAllowFlight, \
+	FourKitSetAllowFlightCallback SetAllowFlight, \
+	FourKitGetExhaustionCallback GetExhaustion, \
+	FourKitSetExhaustionCallback SetExhaustion, \
+	FourKitGetSaturationCallback GetSaturation, \
+	FourKitSetSaturationCallback SetSaturation, \
+	FourKitGiveExpCallback GiveExp, \
+	FourKitGiveExpLevelsCallback GiveExpLevels, \
+	FourKitGetTotalExperienceCallback GetTotalExperience, \
+	FourKitIsFlyingCallback IsFlying, \
+	FourKitSetFlyingCallback SetFlying, \
+	FourKitSetExpCallback SetExp, \
+	FourKitSetPlayerLevelCallback SetPlayerLevel, \
+	FourKitSetWalkSpeedCallback SetWalkSpeed, \
+	FourKitGetWalkSpeedCallback GetWalkSpeed, \
+	FourKitIsSleepingPlayerCallback IsSleepingPlayer, \
+	FourKitGetGameModeCallback GetGameMode, \
+	FourKitSetPlayerGameModeCallback SetPlayerGameMode, \
+	FourKitSetItemInHandCallback SetItemInHand, \
 	FourKitBlockBreakNaturallyCallback BlockBreakNaturally, \
 	FourKitGetBlockTypeCallback GetBlockType, \
 	FourKitSetBlockTypeCallback SetBlockType, \
@@ -65,6 +104,7 @@
 	FourKitSetBlockDataCallback SetBlockData, \
 	FourKitGetPlayerSnapshotCallback GetPlayerSnapshot, \
 	FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress, \
+	FourKitGetItemInHandCallback GetItemInHand, \
 	FourKitGetWorldInfoCallback GetWorldInfo, \
 	FourKitCreateExplosionCallback CreateExplosion, \
 	FourKitDropItemCallback DropItem, \
@@ -89,6 +129,25 @@
 	SetSneaking, \
 	IsSprinting, \
 	SetSprinting, \
+	GetAllowFlight, \
+	SetAllowFlight, \
+	GetExhaustion, \
+	SetExhaustion, \
+	GetSaturation, \
+	SetSaturation, \
+	GiveExp, \
+	GiveExpLevels, \
+	GetTotalExperience, \
+	IsFlying, \
+	SetFlying, \
+	SetExp, \
+	SetPlayerLevel, \
+	SetWalkSpeed, \
+	GetWalkSpeed, \
+	IsSleepingPlayer, \
+	GetGameMode, \
+	SetPlayerGameMode, \
+	SetItemInHand, \
 	BlockBreakNaturally, \
 	GetBlockType, \
 	SetBlockType, \
@@ -96,6 +155,7 @@
 	SetBlockData, \
 	GetPlayerSnapshot, \
 	GetPlayerNetworkAddress, \
+	GetItemInHand, \
 	GetWorldInfo, \
 	CreateExplosion, \
 	DropItem, \

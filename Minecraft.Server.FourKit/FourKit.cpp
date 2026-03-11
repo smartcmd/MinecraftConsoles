@@ -973,6 +973,17 @@ static int DispatchPlayerCommandExport(const char *playerName, const char *comma
     X(Kick, (const char *playerName, const char *reason), (playerName, reason))                  \
     X(SetSneaking, (const char *playerName, int sneaking), (playerName, sneaking))               \
     X(SetSprinting, (const char *playerName, int sprinting), (playerName, sprinting))            \
+    X(SetAllowFlight, (const char *playerName, int flight), (playerName, flight))                \
+    X(SetExhaustion, (const char *playerName, float value), (playerName, value))                 \
+    X(SetSaturation, (const char *playerName, float value), (playerName, value))                 \
+    X(GiveExp, (const char *playerName, int amount), (playerName, amount))                       \
+    X(GiveExpLevels, (const char *playerName, int amount), (playerName, amount))                 \
+    X(SetFlying, (const char *playerName, int value), (playerName, value))                       \
+    X(SetExp, (const char *playerName, float exp), (playerName, exp))                            \
+    X(SetPlayerLevel, (const char *playerName, int level), (playerName, level))                  \
+    X(SetWalkSpeed, (const char *playerName, float value), (playerName, value))                  \
+    X(SetItemInHand, (const char *playerName, int itemId, int count, int data), (playerName, itemId, count, data)) \
+    X(SetPlayerGameMode, (const char *playerName, int mode), (playerName, mode))                 \
     X(BlockBreakNaturally, (int x, int y, int z, int dimension), (x, y, z, dimension))           \
     X(SetBlockType, (int x, int y, int z, int dimension, int id), (x, y, z, dimension, id))      \
     X(SetBlockData, (int x, int y, int z, int dimension, int data), (x, y, z, dimension, data))  \
@@ -986,10 +997,19 @@ static int DispatchPlayerCommandExport(const char *playerName, const char *comma
 #define PB_NATIVE_VALUE_EXPORT_LIST(X)                                                                                                                                                                                       \
     X(IsSneaking, int, (const char *playerName), 0, (playerName))                                                                                                                                                            \
     X(IsSprinting, int, (const char *playerName), 0, (playerName))                                                                                                                                                           \
+    X(GetAllowFlight, int, (const char *playerName), 0, (playerName))                                                                                                                                                        \
+    X(GetExhaustion, float, (const char *playerName), 0.0f, (playerName))                                                                                                                                                    \
+    X(GetSaturation, float, (const char *playerName), 0.0f, (playerName))                                                                                                                                                    \
+    X(GetTotalExperience, int, (const char *playerName), 0, (playerName))                                                                                                                                                    \
+    X(IsFlying, int, (const char *playerName), 0, (playerName))                                                                                                                                                              \
+    X(GetWalkSpeed, float, (const char *playerName), 0.0f, (playerName))                                                                                                                                                     \
+    X(IsSleepingPlayer, int, (const char *playerName), 0, (playerName))                                                                                                                                                      \
+    X(GetGameMode, int, (const char *playerName), -1, (playerName))                                                                                                                                                          \
     X(GetBlockType, int, (int x, int y, int z, int dimension), 0, (x, y, z, dimension))                                                                                                                                      \
     X(GetBlockData, int, (int x, int y, int z, int dimension), 0, (x, y, z, dimension))                                                                                                                                      \
     X(GetPlayerSnapshot, bool, (const char *playerName, PlayerJoinData *outData), false, (playerName, outData))                                                                                                              \
     X(GetPlayerNetworkAddress, bool, (const char *playerName, PlayerNetworkAddressData *outData), false, (playerName, outData))                                                                                              \
+    X(GetItemInHand, bool, (const char *playerName, ItemInHandData *outData), false, (playerName, outData))                                                                                                                  \
     X(GetWorldInfo, bool, (int dimension, WorldInfoData *outData), false, (dimension, outData))                                                                                                                              \
     X(CreateExplosion, int, (int dimension, double x, double y, double z, float power, int setFire, int breakBlocks), 0, (dimension, x, y, z, power, setFire, breakBlocks))                                                  \
     X(DropItem, bool, (int dimension, double x, double y, double z, int itemId, int count, int data, int naturalOffset, DroppedItemData *outData), false, (dimension, x, y, z, itemId, count, data, naturalOffset, outData)) \

@@ -149,3 +149,263 @@ bool NativePlayerCallbacks::GetPlayerNetworkAddress(String^ playerName, PlayerNe
 		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
 	}
 }
+
+bool NativePlayerCallbacks::GetAllowFlight(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetAllowFlight(namePtr) != 0;
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetAllowFlight(String^ playerName, bool flight)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetAllowFlight(namePtr, flight ? 1 : 0);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+float NativePlayerCallbacks::GetExhaustion(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetExhaustion(namePtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetExhaustion(String^ playerName, float value)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetExhaustion(namePtr, value);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+float NativePlayerCallbacks::GetSaturation(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetSaturation(namePtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetSaturation(String^ playerName, float value)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetSaturation(namePtr, value);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::GiveExp(String^ playerName, int amount)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_GiveExp(namePtr, amount);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::GiveExpLevels(String^ playerName, int amount)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_GiveExpLevels(namePtr, amount);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+int NativePlayerCallbacks::GetTotalExperience(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetTotalExperience(namePtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+bool NativePlayerCallbacks::IsFlying(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_IsFlying(namePtr) != 0;
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetFlying(String^ playerName, bool value)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetFlying(namePtr, value ? 1 : 0);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetExp(String^ playerName, float exp)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetExp(namePtr, exp);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetPlayerLevel(String^ playerName, int level)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetPlayerLevel(namePtr, level);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetWalkSpeed(String^ playerName, float value)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetWalkSpeed(namePtr, value);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+float NativePlayerCallbacks::GetWalkSpeed(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetWalkSpeed(namePtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+bool NativePlayerCallbacks::GetItemInHand(String^ playerName, ItemInHandData* outData)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetItemInHand(namePtr, outData);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetItemInHand(String^ playerName, int itemId, int count, int data)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetItemInHand(namePtr, itemId, count, data);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+bool NativePlayerCallbacks::IsSleepingPlayer(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_IsSleepingPlayer(namePtr) != 0;
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+int NativePlayerCallbacks::GetGameMode(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetGameMode(namePtr);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetPlayerGameMode(String^ playerName, int mode)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetPlayerGameMode(namePtr, mode);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
