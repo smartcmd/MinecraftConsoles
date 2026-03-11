@@ -19,6 +19,7 @@
 #include "Windows64/KeyboardMouseInput.h"
 #include "Windows64/Network/WinsockNetLayer.h"
 #include "Windows64/Windows64_UIController.h"
+#include "Common/UI/UI.h"
 
 #include "../../Minecraft.World/AABB.h"
 #include "../../Minecraft.World/Vec3.h"
