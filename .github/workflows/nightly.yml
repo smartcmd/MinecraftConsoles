@@ -1,4 +1,4 @@
-name: Nightly Release
+name: Nightly Releases
 
 on:
   workflow_dispatch: 
@@ -9,6 +9,9 @@ on:
       - '.gitignore'
       - '*.md'
       - '.github/*.md'
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -28,13 +31,16 @@ jobs:
     - name: Zip Build
       run: 7z a -r LCEWindows64.zip ./x64/Release/*
 
-    - name: Update release
+    - name: Zip Dedicated Server Build
+      run: 7z a -r LCEServerWindows64.zip ./x64/Minecraft.Server/Release/* -x!obj -x!*.pch
+
+    - name: Update Client release
       uses: andelf/nightly-release@main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: nightly
-        name: Nightly Release
+        name: Nightly Client Release
         body: |
           Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
           
@@ -44,3 +50,19 @@ jobs:
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe
             ./x64/Release/Minecraft.Client.pdb
+
+    - name: Update Dedicated Server release
+      uses: andelf/nightly-release@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: nightly-dedicated-server
+        name: Nightly Server Release
+        body: |
+          Dedicated server runtime for Windows64.
+
+          Download `LCEServerWindows64.zip` and extract it to a folder where you'd like to keep the server runtime.
+        files: |
+            LCEServerWindows64.zip
+            ./x64/Minecraft.Server/Release/Minecraft.Server.exe
+            ./x64/Minecraft.Server/Release/Minecraft.Server.pdb
