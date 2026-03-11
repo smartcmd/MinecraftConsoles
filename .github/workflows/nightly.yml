@@ -25,6 +25,9 @@ jobs:
     - name: Set platform lowercase
       run: echo "PLATFORM=$('${{ matrix.platform }}'.ToLower())" >> $env:GITHUB_ENV
 
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
     - name: Setup CMake
       uses: lukka/get-cmake@latest
     
