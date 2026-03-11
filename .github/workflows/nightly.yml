@@ -22,11 +22,13 @@ jobs:
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: Configure
+      run: cmake -B out/build --preset windows64
     - name: Build
-      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
+      run: cmake --build out/build --preset windows64-release --target Minecraft.Client
 
     - name: Zip Build
-      run: 7z a -r LCEWindows64.zip ./x64/Release/*
+      run: 7z a -r LCEWindows64.zip ./out/build/Minecraft.Client/Release/*
 
     - name: Update release
       uses: andelf/nightly-release@main
@@ -42,5 +44,5 @@ jobs:
           If you've never downloaded the game before, you need to download `LCEWindows64.zip` and extract it to the folder where you'd like to keep the game. The other files are included in this `.zip` file!
         files: |
             LCEWindows64.zip
-            ./x64/Release/Minecraft.Client.exe
-            ./x64/Release/Minecraft.Client.pdb
+            ./out/build/Minecraft.Client/Release/Minecraft.Client.exe
+            ./out/build/Minecraft.Client/Release/Minecraft.Client.pdb
