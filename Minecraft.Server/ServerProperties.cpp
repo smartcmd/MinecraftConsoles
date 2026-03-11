@@ -71,6 +71,7 @@ static const ServerPropertyDefault kServerPropertyDefaults[] =
 	{ "server-ip", "0.0.0.0" },
 	{ "server-name", "DedicatedServer" },
 	{ "server-port", "25565" },
+	{ "white-list", "false" },
 	{ "lan-advertise", "false" },
 	{ "spawn-animals", "true" },
 	{ "spawn-monsters", "true" },
@@ -691,6 +692,7 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 	config.serverPort = ReadNormalizedIntProperty(&merged, "server-port", kDefaultServerPort, 1, 65535, &shouldWrite);
 	config.serverIp = ReadNormalizedStringProperty(&merged, "server-ip", "0.0.0.0", 255, &shouldWrite);
 	config.lanAdvertise = ReadNormalizedBoolProperty(&merged, kLanAdvertisePropertyKey, false, &shouldWrite);
+	config.whiteListEnabled = ReadNormalizedBoolProperty(&merged, "white-list", false, &shouldWrite);
 	config.serverName = ReadNormalizedStringProperty(&merged, "server-name", "DedicatedServer", 16, &shouldWrite);
 	config.maxPlayers = ReadNormalizedIntProperty(&merged, "max-players", kDefaultMaxPlayers, 1, kMaxDedicatedPlayers, &shouldWrite);
 	config.seed = 0;
@@ -750,7 +752,7 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
  *
  * Saves world identity fields while preserving as many other settings as possible
  * - Reads existing file and merges including unknown keys
- * - Updates only `level-name` and `level-id` before writing back
+ * - Updates `level-name`, `level-id`, and `white-list` before writing back
  * ワールド識別情報の保存処理
  */
 bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config)
@@ -787,6 +789,7 @@ bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config)
 
 	merged["level-name"] = worldName;
 	merged["level-id"] = worldSaveId;
+	merged["white-list"] = BoolToString(config.whiteListEnabled);
 
 	return WriteServerPropertiesFile(kServerPropertiesPath, merged);
 }

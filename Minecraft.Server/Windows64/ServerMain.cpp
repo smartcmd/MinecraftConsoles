@@ -389,13 +389,14 @@ int main(int argc, char **argv)
 	LogStartupStep("initializing server log manager");
 	ServerRuntime::ServerLogManager::Initialize();
 	LogStartupStep("initializing dedicated access control");
-	if (!ServerRuntime::Access::Initialize("."))
+	if (!ServerRuntime::Access::Initialize(".", serverProperties.whiteListEnabled))
 	{
 		LogError("startup", "Failed to initialize dedicated server access control.");
 		return 2;
 	}
 	accessShutdownGuard.Activate();
 	LogInfof("startup", "LAN advertise: %s", serverProperties.lanAdvertise ? "enabled" : "disabled");
+	LogInfof("startup", "Whitelist: %s", serverProperties.whiteListEnabled ? "enabled" : "disabled");
 
 	LogStartupStep("registering hidden window class");
 	HINSTANCE hInstance = GetModuleHandle(NULL);

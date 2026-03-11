@@ -21,6 +21,8 @@ namespace ServerRuntime
 		std::string serverIp;
 		/** `lan-advertise` */
 		bool lanAdvertise;
+		/** `white-list` */
+		bool whiteListEnabled;
 		/** `server-name` (max 16 chars at runtime) */
 		std::string serverName;
 		/** `max-players` */
@@ -85,9 +87,10 @@ namespace ServerRuntime
 	 * server.properties saver
 	 *
 	 * - `level-name` と `level-id` を更新
+	 * - `white-list` を更新
 	 * - それ以外の既存キーは極力保持
 	 *
-	 * @param config 保存するワールド識別情報
+	 * @param config 保存するワールド識別情報と永続化対象設定
 	 * @return 書き込み成功時 `true`
 	 */
 	bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config);

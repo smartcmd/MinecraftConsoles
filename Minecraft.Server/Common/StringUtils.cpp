@@ -101,6 +101,36 @@ namespace ServerRuntime
 			return lowered;
 		}
 
+		std::string JoinTokens(const std::vector<std::string> &tokens, size_t startIndex, const char *separator)
+		{
+			if (startIndex >= tokens.size())
+			{
+				return std::string();
+			}
+
+			const auto joinSeparator = std::string((separator != nullptr) ? separator : " ");
+			size_t totalLength = 0;
+			for (size_t i = startIndex; i < tokens.size(); ++i)
+			{
+				totalLength += tokens[i].size();
+			}
+
+			totalLength += (tokens.size() - startIndex - 1) * joinSeparator.size();
+			std::string joined;
+			joined.reserve(totalLength);
+			for (size_t i = startIndex; i < tokens.size(); ++i)
+			{
+				if (!joined.empty())
+				{
+					joined += joinSeparator;
+				}
+
+				joined += tokens[i];
+			}
+
+			return joined;
+		}
+
 		bool StartsWithIgnoreCase(const std::string &value, const std::string &prefix)
 		{
 			if (prefix.size() > value.size())

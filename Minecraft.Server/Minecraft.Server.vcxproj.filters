@@ -60,6 +60,9 @@
     <ClCompile Include="Access\BanManager.cpp">
       <Filter>Server\Access</Filter>
     </ClCompile>
+    <ClCompile Include="Access\WhitelistManager.cpp">
+      <Filter>Server\Access</Filter>
+    </ClCompile>
     <ClCompile Include="Common\FileUtils.cpp">
       <Filter>Server\Common</Filter>
     </ClCompile>
@@ -588,6 +591,9 @@
     <ClCompile Include="Console\commands\CliCommandTp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="Console\commands\CliCommandWhitelist.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\ServerCli.h">
@@ -606,6 +612,9 @@
       <Filter>Server\Access</Filter>
     </ClInclude>
     <ClInclude Include="Access\BanManager.h">
+      <Filter>Server\Access</Filter>
+    </ClInclude>
+    <ClInclude Include="Access\WhitelistManager.h">
       <Filter>Server\Access</Filter>
     </ClInclude>
     <ClInclude Include="Common\FileUtils.h">
@@ -658,6 +667,9 @@
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Console\commands\CliCommandTp.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\CliCommandWhitelist.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Console\commands\IServerCliCommand.h">
