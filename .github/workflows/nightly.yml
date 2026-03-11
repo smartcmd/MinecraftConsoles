@@ -25,14 +25,13 @@ jobs:
     - name: Set platform lowercase
       run: echo "PLATFORM=$('${{ matrix.platform }}'.ToLower())" >> $env:GITHUB_ENV
 
-    - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
-
     - name: Setup CMake
       uses: lukka/get-cmake@latest
     
     - name: Run CMake
       uses: lukka/run-cmake@v10
+      env:
+        VCPKG_ROOT: "" # Disable vcpkg for CI builds
       with:
         configurePreset: ${{ env.PLATFORM }}
         buildPreset: ${{ env.PLATFORM }}-release

@@ -17,14 +17,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v6
 
-    - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
-
     - name: Setup CMake
       uses: lukka/get-cmake@latest
     
     - name: Run CMake
       uses: lukka/run-cmake@v10
+      env:
+        VCPKG_ROOT: "" # Disable vcpkg for CI builds
       with:
         configurePreset: windows64
         buildPreset: windows64-debug
