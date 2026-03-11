@@ -367,19 +367,17 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 	else
 	{
 		//		printf("NULLing player %d, chunks @ 0x%x\n",playerIndex,chunks[playerIndex]);
-		if( chunks[playerIndex].data != nullptr )
-		{
-			for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
-			{
-				chunks[playerIndex][i].chunk->_delete();
-				delete chunks[playerIndex][i].chunk;
-			}
-			delete chunks[playerIndex].data;
-			chunks[playerIndex].data = nullptr;
-			chunks[playerIndex].length = 0;
-			//			delete sortedChunks[playerIndex];	// 4J - removed - not sorting our chunks anymore
-			//			sortedChunks[playerIndex] = nullptr;	// 4J - removed - not sorting our chunks anymore
-		}
+        if (chunks[playerIndex].data != nullptr)
+        {
+            for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
+            {
+                chunks[playerIndex][i].chunk->_delete();
+                delete chunks[playerIndex][i].chunk;
+            }
+            delete[] chunks[playerIndex].data;
+            chunks[playerIndex].data = nullptr;
+            chunks[playerIndex].length = 0;
+        }
 
 		// 4J Stu - If we do this for splitscreen players leaving, then all the tile entities in the world dissappear
 		// We should only do this when actually exiting the game, so only when the primary player sets there level to nullptr
@@ -451,7 +449,7 @@ void LevelRenderer::allChanged(int playerIndex)
 			chunks[playerIndex][i].chunk->_delete();
 			delete chunks[playerIndex][i].chunk;
 		}
-		delete chunks[playerIndex].data;
+        delete[] chunks[playerIndex].data;
 		//		delete sortedChunks[playerIndex];	// 4J - removed - not sorting our chunks anymore
 	}
 

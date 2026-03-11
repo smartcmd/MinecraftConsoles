@@ -13,12 +13,6 @@
 Region::~Region()
 {
 	// flatChunksHeap automatically freed by unique_ptr
-
-	// AP - added a caching system for Chunk::rebuild to take advantage of
-	if( CachedTiles )
-	{
-		free(CachedTiles);
-	}
 }
 
 Region::Region(Level *level, int x1, int y1, int z1, int x2, int y2, int z2, int r)
@@ -127,11 +121,11 @@ void Region::setCachedTiles(unsigned char *tiles, int xc, int zc)
 	xcCached = xc;
 	zcCached = zc;
 	int size = 16 * 16 * Level::maxBuildHeight;
-	if( CachedTiles == nullptr )
-	{
-		CachedTiles = static_cast<unsigned char *>(malloc(size));
-	}
-	memcpy(CachedTiles, tiles, size);
+    if (!CachedTiles)
+    {
+        CachedTiles = std::make_unique<unsigned char[]>(size);
+    }
+    std::copy(tiles, tiles + size, CachedTiles.get());
 }
 
 LevelChunk* Region::getLevelChunk(int x, int y, int z)

@@ -34,13 +34,9 @@ private:
 	float xoo, yoo, zoo;
     int _normal;
 
-	// 4J - added for thread local storage
-public:
-	static void CreateNewThreadStorage(int bytes);
-private:
-	static DWORD tlsIdx;
-public:
-	static Tesselator *getInstance();
+ public:
+    static void CreateNewThreadStorage(int bytes);
+    static Tesselator *getInstance();
 
 private:
 	bool tesselating;
@@ -52,6 +48,7 @@ private:
     int vboCounts;
     int size;
 
+  public:
     Tesselator(int size);
 public:
     Tesselator *getUniqueInstance(int size);

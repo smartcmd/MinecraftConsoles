@@ -24,17 +24,16 @@ int normal;
 
 
 */
-DWORD Tesselator::tlsIdx = TlsAlloc();
+static thread_local std::unique_ptr<Tesselator> tlsInstance;
 
 Tesselator *Tesselator::getInstance()
 {
-	return static_cast<Tesselator *>(TlsGetValue(tlsIdx));
+    return tlsInstance.get();
 }
 
 void Tesselator::CreateNewThreadStorage(int bytes)
 {
-	Tesselator *instance = new Tesselator(bytes/4);
-	TlsSetValue(tlsIdx, instance);
+    tlsInstance = std::make_unique<Tesselator>(bytes / 4);
 }
 
 Tesselator::Tesselator(int size)

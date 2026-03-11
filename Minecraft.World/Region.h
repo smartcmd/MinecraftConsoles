@@ -19,8 +19,8 @@ private:
 	bool allEmpty;
 
 	// AP - added a caching system for Chunk::rebuild to take advantage of
-	int xcCached, zcCached;
-	unsigned char *CachedTiles;
+    int xcCached, zcCached;
+    std::unique_ptr<unsigned char[]> CachedTiles;
 
 public:
 	Region(Level *level, int x1, int y1, int z1, int x2, int y2, int z2, int r);
