@@ -1103,16 +1103,21 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 	if (uiSetting == 0)
     {
-        textScale = textScale * 1.5;
-		bgfirsty = 5;
+        textScale = textScale * 1.5; //20pixels wrong (correct is 21)
+		bgfirsty = 5; //15pixels correct
+		bgsecondy = 10; //10pixels wrong (correct is 14)
     }
     else if (uiSetting == 1)
     {
-        textScale = textScale * 1;
+        textScale = textScale * 1; //20 pixels wrong (correct is 21)
+		bgfirsty = 2; //9pixels wrong (correct is 15)
+		bgsecondy = 9; //20pixels wrong (correct is 14)
     }
     else if (uiSetting == 2)
     {
-        textScale = textScale * 0.75;
+        textScale = textScale * 0.75; //20 pixels wrong (correct is 21)
+		bgfirsty = 2; //12pixels wrong (correct is 15)
+		bgsecondy = 9; //34pixels wrong (correct is 14)
     }
 
     glPushMatrix();
