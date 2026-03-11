@@ -185,6 +185,7 @@ public:
 	virtual void knockback(shared_ptr<Entity> source, float dmg, double xd, double zd);
 
 protected:
+	virtual int getCriticalSound();
 	virtual int getHurtSound();
 	virtual int getDeathSound();
 
