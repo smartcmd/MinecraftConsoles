@@ -2,7 +2,7 @@
 
 set(COPY_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyAssets.cmake")
 
-# Source;Dest pairs relative to Minecraft.Client/ and the build output.
+# Source;Dest pairs relative to the current source dir and the build output.
 # Order matters — later entries overwrite earlier ones on conflict.
 set(ASSET_FOLDER_PAIRS
   "music"              "music"
@@ -22,6 +22,7 @@ set(ASSET_EXCLUDE_FILES
   "*.bat" "*.cmd"
   "*.msscmp" "*.binka"
   "*.swf" # These are built into the .arc
+  "*.xui"
 )
 
 # Join the exclusion patterns into a single string for passing to the copy script
@@ -40,7 +41,7 @@ function(setup_asset_copy_targets)
 
     list(APPEND copy_commands
       COMMAND ${CMAKE_COMMAND}
-        "-DCOPY_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/${src}"
+        "-DCOPY_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}/${src}"
         "-DCOPY_DEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/${dest}"
         "-DEXCLUDE_FILES=${ASSET_EXCLUDE_FILES_STR}"
         -P "${COPY_SCRIPT}"
@@ -53,7 +54,7 @@ function(setup_asset_copy_targets)
     VERBATIM
   )
 
-  add_dependencies(MinecraftClient AssetCopyTargets)
+  add_dependencies(Minecraft.Client AssetCopyTargets)
 
   set_property(TARGET AssetCopyTargets PROPERTY FOLDER "Build")
 endfunction()

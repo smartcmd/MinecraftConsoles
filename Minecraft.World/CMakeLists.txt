@@ -1,5 +1,5 @@
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/Common.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/Durango.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/sources/Common.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/sources/Durango.cmake")
 
 include("${CMAKE_SOURCE_DIR}/cmake/CommonSources.cmake")
 
@@ -9,5 +9,22 @@ set(MINECRAFT_WORLD_SOURCES
   ${MINECRAFT_WORLD_COMMON}
   # ${MINECRAFT_WORLD_DURANGO}
   ${SOURCES_COMMON}
-  PARENT_SCOPE
 )
+
+add_library(Minecraft.World STATIC ${MINECRAFT_WORLD_SOURCES})
+
+target_include_directories(Minecraft.World
+  PRIVATE
+  "${CMAKE_BINARY_DIR}/generated/"
+  "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_SOURCE_DIR}/include/"
+  PUBLIC
+  "${CMAKE_CURRENT_SOURCE_DIR}/x64headers"
+)
+target_compile_definitions(Minecraft.World PRIVATE
+  ${MINECRAFT_SHARED_DEFINES}
+  _LIB
+)
+if(MSVC)
+  configure_msvc_target(Minecraft.World)
+endif()
