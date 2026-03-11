@@ -27,10 +27,87 @@
 	X(GetPlayerSnapshot, bool, (const char* playerName, PlayerJoinData* outData)) \
 	X(GetPlayerNetworkAddress, bool, (const char* playerName, PlayerNetworkAddressData* outData))
 
+#define PB_WORLD_CALLBACK_LIST(X) \
+	X(GetWorldInfo, bool, (int dimension, WorldInfoData* outData)) \
+	X(CreateExplosion, int, (int dimension, double x, double y, double z, float power, int setFire, int breakBlocks)) \
+	X(DropItem, bool, (int dimension, double x, double y, double z, int itemId, int count, int data, int naturalOffset, DroppedItemData* outData)) \
+	X(GetHighestBlockYAt, int, (int dimension, int x, int z)) \
+	X(SetFullTime, void, (int dimension, long long time)) \
+	X(SetSpawnLocation, int, (int dimension, int x, int y, int z)) \
+	X(SetStorm, void, (int dimension, int hasStorm)) \
+	X(SetThunderDuration, void, (int dimension, int duration)) \
+	X(SetThundering, void, (int dimension, int thundering)) \
+	X(SetTime, void, (int dimension, long long time)) \
+	X(SetWeatherDuration, void, (int dimension, int duration)) \
+	X(StrikeLightning, int, (int dimension, double x, double y, double z, int effectOnly))
+
 #define PB_NATIVE_CALLBACK_LIST(X) \
 	PB_PLAYER_CALLBACK_LIST(X) \
 	PB_BLOCK_CALLBACK_LIST(X) \
-	PB_QUERY_CALLBACK_LIST(X)
+	PB_QUERY_CALLBACK_LIST(X) \
+	PB_WORLD_CALLBACK_LIST(X)
+
+#define PB_SET_NATIVE_CALLBACK_PARAMS \
+	FourKitSetFallDistanceCallback SetFallDistance, \
+	FourKitSetHealthCallback SetHealth, \
+	FourKitSetFoodCallback SetFood, \
+	FourKitSendMessageCallback SendMessage, \
+	FourKitTeleportToCallback TeleportTo, \
+	FourKitKickCallback Kick, \
+	FourKitIsSneakingCallback IsSneaking, \
+	FourKitSetSneakingCallback SetSneaking, \
+	FourKitIsSprintingCallback IsSprinting, \
+	FourKitSetSprintingCallback SetSprinting, \
+	FourKitBlockBreakNaturallyCallback BlockBreakNaturally, \
+	FourKitGetBlockTypeCallback GetBlockType, \
+	FourKitSetBlockTypeCallback SetBlockType, \
+	FourKitGetBlockDataCallback GetBlockData, \
+	FourKitSetBlockDataCallback SetBlockData, \
+	FourKitGetPlayerSnapshotCallback GetPlayerSnapshot, \
+	FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress, \
+	FourKitGetWorldInfoCallback GetWorldInfo, \
+	FourKitCreateExplosionCallback CreateExplosion, \
+	FourKitDropItemCallback DropItem, \
+	FourKitGetHighestBlockYAtCallback GetHighestBlockYAt, \
+	FourKitSetFullTimeCallback SetFullTime, \
+	FourKitSetSpawnLocationCallback SetSpawnLocation, \
+	FourKitSetStormCallback SetStorm, \
+	FourKitSetThunderDurationCallback SetThunderDuration, \
+	FourKitSetThunderingCallback SetThundering, \
+	FourKitSetTimeCallback SetTime, \
+	FourKitSetWeatherDurationCallback SetWeatherDuration, \
+	FourKitStrikeLightningCallback StrikeLightning
+
+#define PB_SET_NATIVE_CALLBACK_ARGS \
+	SetFallDistance, \
+	SetHealth, \
+	SetFood, \
+	SendMessage, \
+	TeleportTo, \
+	Kick, \
+	IsSneaking, \
+	SetSneaking, \
+	IsSprinting, \
+	SetSprinting, \
+	BlockBreakNaturally, \
+	GetBlockType, \
+	SetBlockType, \
+	GetBlockData, \
+	SetBlockData, \
+	GetPlayerSnapshot, \
+	GetPlayerNetworkAddress, \
+	GetWorldInfo, \
+	CreateExplosion, \
+	DropItem, \
+	GetHighestBlockYAt, \
+	SetFullTime, \
+	SetSpawnLocation, \
+	SetStorm, \
+	SetThunderDuration, \
+	SetThundering, \
+	SetTime, \
+	SetWeatherDuration, \
+	StrikeLightning
 
 extern "C"
 {
@@ -54,24 +131,7 @@ extern "C"
 	__declspec(dllexport) void FourKit_FireOnExit();
 	__declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData* deathData);
 
-	__declspec(dllexport) void FourKit_SetNativeCallbacks(
-		FourKitSetFallDistanceCallback SetFallDistance,
-		FourKitSetHealthCallback SetHealth,
-		FourKitSetFoodCallback SetFood,
-		FourKitSendMessageCallback SendMessage,
-		FourKitTeleportToCallback TeleportTo,
-		FourKitKickCallback Kick,
-		FourKitIsSneakingCallback IsSneaking,
-		FourKitSetSneakingCallback SetSneaking,
-		FourKitIsSprintingCallback IsSprinting,
-		FourKitSetSprintingCallback SetSprinting,
-		FourKitBlockBreakNaturallyCallback BlockBreakNaturally,
-		FourKitGetBlockTypeCallback GetBlockType,
-		FourKitSetBlockTypeCallback SetBlockType,
-		FourKitGetBlockDataCallback GetBlockData,
-		FourKitSetBlockDataCallback SetBlockData,
-		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot,
-		FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress);
+	__declspec(dllexport) void FourKit_SetNativeCallbacks(PB_SET_NATIVE_CALLBACK_PARAMS);
 
 #define PB_DECLARE_NATIVE_EXPORT(Name, Ret, Sig) __declspec(dllexport) Ret NativeCallback_##Name Sig;
 	PB_NATIVE_CALLBACK_LIST(PB_DECLARE_NATIVE_EXPORT)

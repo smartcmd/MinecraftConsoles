@@ -235,3 +235,57 @@ struct PlayerDeathData
 		deathMessage[0] = '\0';
 	}
 };
+
+struct WorldInfoData
+{
+	int dimension;
+	long long seed;
+	long long fullTime;
+	long long dayTime;
+	int spawnX;
+	int spawnY;
+	int spawnZ;
+	int thunderDuration;
+	int weatherDuration;
+	bool hasStorm;
+	bool thundering;
+
+	WorldInfoData()
+		: dimension(0)
+		, seed(0)
+		, fullTime(0)
+		, dayTime(0)
+		, spawnX(0)
+		, spawnY(0)
+		, spawnZ(0)
+		, thunderDuration(0)
+		, weatherDuration(0)
+		, hasStorm(false)
+		, thundering(false)
+	{
+	}
+};
+
+struct DroppedItemData
+{
+	int entityId;
+	double x;
+	double y;
+	double z;
+	int dimension;
+	int itemId;
+	int count;
+	int data;
+
+	DroppedItemData()
+		: entityId(-1)
+		, x(0.0)
+		, y(0.0)
+		, z(0.0)
+		, dimension(0)
+		, itemId(0)
+		, count(0)
+		, data(0)
+	{
+	}
+};

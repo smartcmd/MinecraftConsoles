@@ -172,6 +172,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="FourKit.cpp" />
     <ClCompile Include="PluginLogger.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
@@ -182,15 +183,19 @@
     <ClInclude Include="CommandExecutor.h" />
     <ClInclude Include="InetAddress.h" />
     <ClInclude Include="InetSocketAddress.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemStack.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="NativeBlockCallbacks.h" />
     <ClInclude Include="NativePlayerCallbacks.h" />
+    <ClInclude Include="NativeWorldCallbacks.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="FourKit.h" />
     <ClInclude Include="FourKitInterop.h" />
     <ClInclude Include="FourKitStructs.h" />
     <ClInclude Include="PluginCommand.h" />
     <ClInclude Include="PluginLogger.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

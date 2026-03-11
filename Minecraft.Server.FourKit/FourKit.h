@@ -12,22 +12,28 @@
 #include "PluginCommand.h"
 #include "FourKitStructs.h"
 
+ref class World;
+
 public ref class FourKit
 {
 public:
 	static void addListener(Listener^ listener);
 	static Block^ getBlockAt(double x, double y, double z);
 	static Player^ getPlayer(String^ name);
+	static World^ getWorld(int dimension);
+	static World^ getWorld(String^ name);
 	static PluginCommand^ getCommand(String^ name);
 private:
 	static List<ServerPlugin^>^ pluginList;
 	static Dictionary<String^, PluginCommand^>^ commandMap;
+	static System::Collections::Generic::HashSet<String^>^ onlinePlayerNames;
 
 	static FourKit()
 	{
 		// Visual Studio Pls
 		pluginList = gcnew List<ServerPlugin^>();
 		commandMap = gcnew Dictionary<String^, PluginCommand^>(StringComparer::OrdinalIgnoreCase);
+		onlinePlayerNames = gcnew System::Collections::Generic::HashSet<String^>(StringComparer::OrdinalIgnoreCase);
 	}
 internal:
 	static bool Initialize();
@@ -37,6 +43,7 @@ internal:
     static bool LoadPlugin(String ^ pluginPath);
 
     static List<ServerPlugin ^> ^ GetLoadedPlugins();
+    static List<Player^>^ GetPlayersInDimension(int dimension);
 
     static void LogPlugin(String ^ pluginName, String ^ message);
     static void FireEventOnLoad();

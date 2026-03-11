@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "NativePlayerCallbacks.h"
+#include "World.h"
 
 using namespace System;
 using namespace System::Net;
@@ -74,6 +75,11 @@ void Player::teleport(double x, double y, double z)
 	m_y = y;
 	m_z = z;
 	NativePlayerCallbacks::TeleportTo(m_name, x, y, z);
+}
+
+World^ Player::getWorld()
+{
+	return gcnew World(m_dimension);
 }
 
 InetSocketAddress^ Player::getAddress()

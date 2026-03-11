@@ -7,6 +7,8 @@
 
 using namespace System;
 
+ref class World;
+
 public ref class Player : public CommandSender
 {
 public:
@@ -24,6 +26,7 @@ public:
 	double getY() { return m_y; }
 	double getZ() { return m_z; }
 	int getDimension() { return m_dimension; }
+	World^ getWorld();
 	InetSocketAddress^ getAddress();
 	
 	void setFallDistance(float distance);

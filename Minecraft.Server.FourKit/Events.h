@@ -49,16 +49,19 @@ public enum class BlockFace
 public ref class Location
 {
 public:
-	Location(double x, double y, double z) : m_x(x), m_y(y), m_z(z) {}
+	Location(double x, double y, double z) : Location(x, y, z, 0) {}
+	Location(double x, double y, double z, int dimension) : m_x(x), m_y(y), m_z(z), m_dimension(dimension) {}
 
 	double getX() { return m_x; }
 	double getY() { return m_y; }
 	double getZ() { return m_z; }
+	int getDimension() { return m_dimension; }
 
 private:
 	double m_x;
 	double m_y;
 	double m_z;
+	int m_dimension;
 };
 
 public ref class ServerLoadEvent

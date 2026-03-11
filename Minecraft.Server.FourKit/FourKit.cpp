@@ -1,5 +1,5 @@
 // 100% better way of doing this. i just kind adumb
-// todo: redo this
+// todo: partially rewritten but i should split into different files now like a Responsible Human Being Programmer
 
 #include "FourKit.h"
 #include "FourKitInterop.h"
@@ -7,6 +7,7 @@
 #include "PluginLogger.h"
 #include "NativeBlockCallbacks.h"
 #include "PluginCommand.h"
+#include "World.h"
 
 using namespace System;
 using namespace System::Reflection;
@@ -75,6 +76,42 @@ namespace
 		return player;
 	}
 
+	bool TryGetDimensionFromWorldName(String^ name, int% dimension)
+	{
+		if (String::IsNullOrWhiteSpace(name))
+		{
+			return false;
+		}
+
+		String^ normalized = name->Trim();
+		int parsedDimension = 0;
+		if (Int32::TryParse(normalized, parsedDimension))
+		{
+			dimension = parsedDimension;
+			return true;
+		}
+
+		if (String::Equals(normalized, "world", StringComparison::OrdinalIgnoreCase))
+		{
+			dimension = 0;
+			return true;
+		}
+
+		if (String::Equals(normalized, "world_nether", StringComparison::OrdinalIgnoreCase))
+		{
+			dimension = -1;
+			return true;
+		}
+
+		if (String::Equals(normalized, "world_the_end", StringComparison::OrdinalIgnoreCase))
+		{
+			dimension = 1;
+			return true;
+		}
+
+		return false;
+	}
+
 	static cli::array<String^>^ ParseCommandArguments(String^ commandLine, String^% outLabel)
 	{
 		outLabel = String::Empty;
@@ -129,6 +166,7 @@ bool FourKit::Initialize()
         }
 
         pluginList->Clear();
+        onlinePlayerNames->Clear();
 
         cli::array<String ^> ^ dllFiles = Directory::GetFiles(pluginsFolderPath, "*.dll");
 
@@ -159,6 +197,7 @@ void FourKit::Shutdown()
     {
         FireEventOnExit();
         pluginList->Clear();
+        onlinePlayerNames->Clear();
         PluginLogger::LogInfo("fourkit", "Plugin system shut down");
     }
     catch (Exception ^ ex)
@@ -231,6 +270,21 @@ bool FourKit::LoadPlugin(String ^ pluginPath)
 List<ServerPlugin ^> ^ FourKit::GetLoadedPlugins()
 {
     return pluginList;
+}
+
+List<Player^>^ FourKit::GetPlayersInDimension(int dimension)
+{
+	System::Collections::Generic::List<Player^>^ players = gcnew System::Collections::Generic::List<Player^>(0);
+	for each (String^ name in onlinePlayerNames)
+	{
+		Player^ player = ResolvePlayerByName(name);
+		if (player != nullptr && player->getDimension() == dimension)
+		{
+			players->Add(player);
+		}
+	}
+
+	return players;
 }
 
 void FourKit::LogPlugin(String ^ pluginName, String ^ message)
@@ -306,6 +360,10 @@ void FourKit::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
     try
     {
         String ^ name = gcnew String(playerData.playerName);
+        if (!String::IsNullOrEmpty(name))
+        {
+            onlinePlayerNames->Add(name);
+        }
 
         Player ^ player = gcnew Player(name);
         player->SetPlayerData(playerData.health, playerData.food, playerData.fallDistance,
@@ -340,6 +398,11 @@ void FourKit::FireEventOnPlayerLeave(const PlayerLeaveData &playerData)
         PlayerLeaveEvent ^ event = gcnew PlayerLeaveEvent();
         event->PlayerObject = player;
         EventManager::FireEvent(event);
+
+        if (!String::IsNullOrEmpty(name))
+        {
+            onlinePlayerNames->Remove(name);
+        }
 
         //PluginLogger::LogInfo("fourkit", String::Format("Firing OnPlayerLeave event for {0}", name));
     }
@@ -775,6 +838,25 @@ Player ^ FourKit::getPlayer(String ^ name)
     return ResolvePlayerByName(name);
 }
 
+World^ FourKit::getWorld(int dimension)
+{
+	switch (dimension)
+	{
+	case -1:
+	case 0:
+	case 1:
+		return gcnew World(dimension);
+	default:
+		return nullptr;
+	}
+}
+
+World^ FourKit::getWorld(String^ name)
+{
+	int dimension = 0;
+	return TryGetDimensionFromWorldName(name, dimension) ? getWorld(dimension) : nullptr;
+}
+
 PluginCommand^ FourKit::getCommand(String^ name)
 {
 	if (String::IsNullOrWhiteSpace(name))
@@ -856,261 +938,121 @@ bool FourKit::DispatchPlayerCommand(String^ playerName, String^ commandLine)
 	return command->execute(sender, label, args);
 }
 
+// AAAAH
+// AJHHHHH
+static void SetNativeCallbacksExport(PB_SET_NATIVE_CALLBACK_PARAMS)
+{
+#define PB_ASSIGN_STORAGE(Name, Ret, Sig) g_##Name = Name;
+    PB_NATIVE_CALLBACK_LIST(PB_ASSIGN_STORAGE)
+#undef PB_ASSIGN_STORAGE
+}
 
-// todo: redo how this export stuff works
-// messy
+static int DispatchPlayerCommandExport(const char *playerName, const char *commandLine)
+{
+    String ^ managedPlayerName = gcnew String((playerName != nullptr) ? playerName : "");
+    String ^ managedCommandLine = gcnew String((commandLine != nullptr) ? commandLine : "");
+
+    try
+    {
+        return FourKit::DispatchPlayerCommand(managedPlayerName, managedCommandLine) ? 1 : 0;
+    }
+    catch (Exception ^ ex)
+    {
+        PluginLogger::LogError("fourkit", String::Format("Error dispatching command: {0}", ex->Message));
+        return 0;
+    }
+}
+
+// stolen from the other callbacks
+#define PB_NATIVE_VOID_EXPORT_LIST(X)                                                            \
+    X(SetFallDistance, (const char *playerName, float distance), (playerName, distance))         \
+    X(SetHealth, (const char *playerName, float health), (playerName, health))                   \
+    X(SetFood, (const char *playerName, int food), (playerName, food))                           \
+    X(SendMessage, (const char *playerName, const char *message), (playerName, message))         \
+    X(TeleportTo, (const char *playerName, double x, double y, double z), (playerName, x, y, z)) \
+    X(Kick, (const char *playerName, const char *reason), (playerName, reason))                  \
+    X(SetSneaking, (const char *playerName, int sneaking), (playerName, sneaking))               \
+    X(SetSprinting, (const char *playerName, int sprinting), (playerName, sprinting))            \
+    X(BlockBreakNaturally, (int x, int y, int z, int dimension), (x, y, z, dimension))           \
+    X(SetBlockType, (int x, int y, int z, int dimension, int id), (x, y, z, dimension, id))      \
+    X(SetBlockData, (int x, int y, int z, int dimension, int data), (x, y, z, dimension, data))  \
+    X(SetFullTime, (int dimension, long long time), (dimension, time))                           \
+    X(SetStorm, (int dimension, int hasStorm), (dimension, hasStorm))                            \
+    X(SetThunderDuration, (int dimension, int duration), (dimension, duration))                  \
+    X(SetThundering, (int dimension, int thundering), (dimension, thundering))                   \
+    X(SetTime, (int dimension, long long time), (dimension, time))                               \
+    X(SetWeatherDuration, (int dimension, int duration), (dimension, duration))
+
+#define PB_NATIVE_VALUE_EXPORT_LIST(X)                                                                                                                                                                                       \
+    X(IsSneaking, int, (const char *playerName), 0, (playerName))                                                                                                                                                            \
+    X(IsSprinting, int, (const char *playerName), 0, (playerName))                                                                                                                                                           \
+    X(GetBlockType, int, (int x, int y, int z, int dimension), 0, (x, y, z, dimension))                                                                                                                                      \
+    X(GetBlockData, int, (int x, int y, int z, int dimension), 0, (x, y, z, dimension))                                                                                                                                      \
+    X(GetPlayerSnapshot, bool, (const char *playerName, PlayerJoinData *outData), false, (playerName, outData))                                                                                                              \
+    X(GetPlayerNetworkAddress, bool, (const char *playerName, PlayerNetworkAddressData *outData), false, (playerName, outData))                                                                                              \
+    X(GetWorldInfo, bool, (int dimension, WorldInfoData *outData), false, (dimension, outData))                                                                                                                              \
+    X(CreateExplosion, int, (int dimension, double x, double y, double z, float power, int setFire, int breakBlocks), 0, (dimension, x, y, z, power, setFire, breakBlocks))                                                  \
+    X(DropItem, bool, (int dimension, double x, double y, double z, int itemId, int count, int data, int naturalOffset, DroppedItemData *outData), false, (dimension, x, y, z, itemId, count, data, naturalOffset, outData)) \
+    X(GetHighestBlockYAt, int, (int dimension, int x, int z), -1, (dimension, x, z))                                                                                                                                         \
+    X(SetSpawnLocation, int, (int dimension, int x, int y, int z), 0, (dimension, x, y, z))                                                                                                                                  \
+    X(StrikeLightning, int, (int dimension, double x, double y, double z, int effectOnly), 0, (dimension, x, y, z, effectOnly))
+
+#define PB_FOURKIT_VOID_EXPORT_LIST(X)                                                                                                                   \
+    X(FourKit_SetNativeCallbacks, (PB_SET_NATIVE_CALLBACK_PARAMS), (SetNativeCallbacksExport(PB_SET_NATIVE_CALLBACK_ARGS)))                              \
+    X(FourKit_Initialize, (), (FourKit::Initialize()))                                                                                                   \
+    X(FourKit_Shutdown, (), (FourKit::Shutdown()))                                                                                                       \
+    X(FourKit_FireOnPlayerJoin, (const PlayerJoinData &playerData), (FourKit::FireEventOnPlayerJoin(playerData)))                                        \
+    X(FourKit_FireOnPlayerLeave, (const PlayerLeaveData &playerData), (FourKit::FireEventOnPlayerLeave(playerData)))                                     \
+    X(FourKit_FireOnPlayerDeath, (PlayerDeathData * deathData), (FourKit::FireEventOnPlayerDeath(deathData)))                                            \
+    X(FourKit_FireOnChat, (const PlayerChatData &chatData, bool *cancelled), (FourKit::FireEventOnPlayerChat(chatData, cancelled)))                      \
+    X(FourKit_FireOnBlockBreak, (const BlockBreakData &blockBreakData, bool *cancelled), (FourKit::FireEventOnBlockBreak(blockBreakData, cancelled)))    \
+    X(FourKit_FireOnBlockPlace, (const BlockPlaceData &blockPlaceData, bool *cancelled), (FourKit::FireEventOnBlockPlace(blockPlaceData, cancelled)))    \
+    X(FourKit_FireOnPlayerMove, (const PlayerMoveData &moveData, bool *cancelled), (FourKit::FireEventOnPlayerMove(moveData, cancelled)))                \
+    X(FourKit_FireOnPlayerPortal, (PlayerPortalData * portalData, bool *cancelled), (FourKit::FireEventOnPlayerPortal(portalData, cancelled)))           \
+    X(FourKit_FireOnSignChange, (SignChangeData * signData, bool *cancelled), (FourKit::FireEventOnSignChange(signData, cancelled)))                     \
+    X(FourKit_FireOnPlayerInteract, (PlayerInteractData * interactData, bool *cancelled), (FourKit::FireEventOnPlayerInteract(interactData, cancelled))) \
+    X(FourKit_FireOnLoad, (), (FourKit::FireEventOnLoad()))                                                                                              \
+    X(FourKit_FireOnExit, (), (FourKit::FireEventOnExit()))
+
+#define PB_FOURKIT_VALUE_EXPORT_LIST(X) \
+    X(FourKit_DispatchPlayerCommand, int, (const char *playerName, const char *commandLine), (DispatchPlayerCommandExport(playerName, commandLine)))
 
 extern "C"
 {
-	__declspec(dllexport) void FourKit_SetNativeCallbacks(
-		FourKitSetFallDistanceCallback SetFallDistance,
-		FourKitSetHealthCallback SetHealth,
-		FourKitSetFoodCallback SetFood,
-		FourKitSendMessageCallback SendMessage,
-		FourKitTeleportToCallback TeleportTo,
-		FourKitKickCallback Kick,
-		FourKitIsSneakingCallback IsSneaking,
-		FourKitSetSneakingCallback SetSneaking,
-		FourKitIsSprintingCallback IsSprinting,
-		FourKitSetSprintingCallback SetSprinting,
-		FourKitBlockBreakNaturallyCallback BlockBreakNaturally,
-		FourKitGetBlockTypeCallback GetBlockType,
-		FourKitSetBlockTypeCallback SetBlockType,
-		FourKitGetBlockDataCallback GetBlockData,
-		FourKitSetBlockDataCallback SetBlockData,
-		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot,
-		FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress)
-	{
-#define PB_ASSIGN_STORAGE(Name, Ret, Sig) g_##Name = Name;
-		PB_NATIVE_CALLBACK_LIST(PB_ASSIGN_STORAGE)
-#undef PB_ASSIGN_STORAGE
-	}
-
-	__declspec(dllexport) void NativeCallback_SetFallDistance(const char* playerName, float distance)
-	{
-		if (g_SetFallDistance != nullptr)
-		{
-			g_SetFallDistance(playerName, distance);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_SetHealth(const char* playerName, float health)
-	{
-		if (g_SetHealth != nullptr)
-		{
-			g_SetHealth(playerName, health);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_SetFood(const char* playerName, int food)
-	{
-		if (g_SetFood != nullptr)
-		{
-			g_SetFood(playerName, food);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_SendMessage(const char* playerName, const char* message)
-	{
-		if (g_SendMessage != nullptr)
-		{
-			g_SendMessage(playerName, message);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_TeleportTo(const char* playerName, double x, double y, double z)
-	{
-		if (g_TeleportTo != nullptr)
-		{
-			g_TeleportTo(playerName, x, y, z);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_Kick(const char* playerName, const char* reason)
-	{
-		if (g_Kick != nullptr)
-		{
-			g_Kick(playerName, reason);
-		}
-	}
-
-	__declspec(dllexport) int NativeCallback_IsSneaking(const char* playerName)
-	{
-		if (g_IsSneaking != nullptr)
-		{
-			return g_IsSneaking(playerName);
-		}
-		return 0;
-	}
-
-	__declspec(dllexport) void NativeCallback_SetSneaking(const char* playerName, int sneaking)
-	{
-		if (g_SetSneaking != nullptr)
-		{
-			g_SetSneaking(playerName, sneaking);
-		}
-	}
-
-	__declspec(dllexport) int NativeCallback_IsSprinting(const char* playerName)
-	{
-		if (g_IsSprinting != nullptr)
-		{
-			return g_IsSprinting(playerName);
-		}
-		return 0;
-	}
-
-	__declspec(dllexport) void NativeCallback_SetSprinting(const char* playerName, int sprinting)
-	{
-		if (g_SetSprinting != nullptr)
-		{
-			g_SetSprinting(playerName, sprinting);
-		}
-	}
-
-	__declspec(dllexport) void NativeCallback_BlockBreakNaturally(int x, int y, int z, int dimension)
-	{
-		if (g_BlockBreakNaturally != nullptr)
-		{
-			g_BlockBreakNaturally(x, y, z, dimension);
-		}
-	}
-
-	__declspec(dllexport) int NativeCallback_GetBlockType(int x, int y, int z, int dimension)
-	{
-		if (g_GetBlockType != nullptr)
-		{
-			return g_GetBlockType(x, y, z, dimension);
-		}
-		return 0;
-	}
-
-	__declspec(dllexport) void NativeCallback_SetBlockType(int x, int y, int z, int dimension, int id)
-	{
-		if (g_SetBlockType != nullptr)
-		{
-			g_SetBlockType(x, y, z, dimension, id);
-		}
-	}
-
-	__declspec(dllexport) int NativeCallback_GetBlockData(int x, int y, int z, int dimension)
-	{
-		if (g_GetBlockData != nullptr)
-		{
-			return g_GetBlockData(x, y, z, dimension);
-		}
-		return 0;
-	}
-
-	__declspec(dllexport) void NativeCallback_SetBlockData(int x, int y, int z, int dimension, int data)
-	{
-		if (g_SetBlockData != nullptr)
-		{
-			g_SetBlockData(x, y, z, dimension, data);
-		}
-	}
-
-	__declspec(dllexport) bool NativeCallback_GetPlayerSnapshot(const char* playerName, PlayerJoinData* outData)
-	{
-		if (g_GetPlayerSnapshot != nullptr)
-		{
-			return g_GetPlayerSnapshot(playerName, outData);
-		}
-		return false;
-	}
-
-	__declspec(dllexport) bool NativeCallback_GetPlayerNetworkAddress(const char* playerName, PlayerNetworkAddressData* outData)
-	{
-		if (g_GetPlayerNetworkAddress != nullptr)
-		{
-			return g_GetPlayerNetworkAddress(playerName, outData);
-		}
-		return false;
-	}
-
-	__declspec(dllexport) int FourKit_DispatchPlayerCommand(const char* playerName, const char* commandLine)
-	{
-		String^ managedPlayerName = gcnew String((playerName != nullptr) ? playerName : "");
-		String^ managedCommandLine = gcnew String((commandLine != nullptr) ? commandLine : "");
-
-		try
-		{
-			return FourKit::DispatchPlayerCommand(managedPlayerName, managedCommandLine) ? 1 : 0;
-		}
-		catch (Exception^ ex)
-		{
-			PluginLogger::LogError("fourkit", String::Format("Error dispatching command: {0}", ex->Message));
-			return 0;
-		}
-	}
-
-    __declspec(dllexport) void FourKit_Initialize()
-    {
-        FourKit::Initialize();
+#define PB_DECLARE_NATIVE_VOID_EXPORT(Name, Sig, Args)   \
+    __declspec(dllexport) void NativeCallback_##Name Sig \
+    {                                                    \
+        if (g_##Name != nullptr)                         \
+        {                                                \
+            g_##Name Args;                               \
+        }                                                \
     }
 
-    __declspec(dllexport) void FourKit_Shutdown()
-    {
-        FourKit::Shutdown();
+#define PB_DECLARE_NATIVE_VALUE_EXPORT(Name, Ret, Sig, DefaultValue, Args) \
+    __declspec(dllexport) Ret NativeCallback_##Name Sig                    \
+    {                                                                      \
+        return g_##Name != nullptr ? g_##Name Args : DefaultValue;         \
     }
 
-    __declspec(dllexport) void FourKit_FireOnPlayerJoin(const PlayerJoinData &playerData)
-    {
-        FourKit::FireEventOnPlayerJoin(playerData);
+#define PB_DECLARE_FOURKIT_VOID_EXPORT(Name, Sig, Call) \
+    __declspec(dllexport) void Name Sig                 \
+    {                                                   \
+        Call;                                           \
     }
 
-    __declspec(dllexport) void FourKit_FireOnPlayerLeave(const PlayerLeaveData &playerData)
-    {
-        FourKit::FireEventOnPlayerLeave(playerData);
+#define PB_DECLARE_FOURKIT_VALUE_EXPORT(Name, Ret, Sig, Call) \
+    __declspec(dllexport) Ret Name Sig                        \
+    {                                                         \
+        return Call;                                          \
     }
 
-    __declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData* deathData)
-    {
-        FourKit::FireEventOnPlayerDeath(deathData);
-    }
+    PB_NATIVE_VOID_EXPORT_LIST(PB_DECLARE_NATIVE_VOID_EXPORT)
+    PB_NATIVE_VALUE_EXPORT_LIST(PB_DECLARE_NATIVE_VALUE_EXPORT)
+    PB_FOURKIT_VOID_EXPORT_LIST(PB_DECLARE_FOURKIT_VOID_EXPORT)
+    PB_FOURKIT_VALUE_EXPORT_LIST(PB_DECLARE_FOURKIT_VALUE_EXPORT)
 
-    __declspec(dllexport) void FourKit_FireOnChat(const PlayerChatData &chatData, bool* cancelled)
-    {
-        FourKit::FireEventOnPlayerChat(chatData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnBlockBreak(const BlockBreakData &blockBreakData, bool* cancelled)
-    {
-        FourKit::FireEventOnBlockBreak(blockBreakData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnBlockPlace(const BlockPlaceData &blockPlaceData, bool* cancelled)
-    {
-        FourKit::FireEventOnBlockPlace(blockPlaceData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnPlayerMove(const PlayerMoveData &moveData, bool* cancelled)
-    {
-        FourKit::FireEventOnPlayerMove(moveData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnPlayerPortal(PlayerPortalData* portalData, bool* cancelled)
-    {
-        FourKit::FireEventOnPlayerPortal(portalData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnSignChange(SignChangeData* signData, bool* cancelled)
-    {
-        FourKit::FireEventOnSignChange(signData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnPlayerInteract(PlayerInteractData* interactData, bool* cancelled)
-    {
-        FourKit::FireEventOnPlayerInteract(interactData, cancelled);
-    }
-
-    __declspec(dllexport) void FourKit_FireOnLoad()
-    {
-        FourKit::FireEventOnLoad();
-    }
-
-    __declspec(dllexport) void FourKit_FireOnExit()
-    {
-        FourKit::FireEventOnExit();
-    }
+#undef PB_DECLARE_NATIVE_VOID_EXPORT
+#undef PB_DECLARE_NATIVE_VALUE_EXPORT
+#undef PB_DECLARE_FOURKIT_VOID_EXPORT
+#undef PB_DECLARE_FOURKIT_VALUE_EXPORT
 }
