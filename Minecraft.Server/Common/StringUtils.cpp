@@ -3,6 +3,9 @@
 #include "StringUtils.h"
 
 #include <cctype>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace ServerRuntime
 {
@@ -149,6 +152,60 @@ namespace ServerRuntime
 			}
 
 			return true;
+		}
+
+		bool TryParseUnsignedLongLong(const std::string &value, unsigned long long *outValue)
+		{
+			if (outValue == nullptr)
+			{
+				return false;
+			}
+
+			const std::string trimmed = TrimAscii(value);
+			if (trimmed.empty())
+			{
+				return false;
+			}
+
+			errno = 0;
+			char *end = nullptr;
+			const unsigned long long parsed = _strtoui64(trimmed.c_str(), &end, 0);
+			if (end == trimmed.c_str() || errno != 0)
+			{
+				return false;
+			}
+
+			while (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')
+			{
+				++end;
+			}
+
+			if (*end != 0)
+			{
+				return false;
+			}
+
+			*outValue = parsed;
+			return true;
+		}
+
+		std::string GetCurrentUtcTimestampIso8601()
+		{
+			SYSTEMTIME utc = {};
+			GetSystemTime(&utc);
+
+			char created[64] = {};
+			sprintf_s(
+				created,
+				sizeof(created),
+				"%04u-%02u-%02uT%02u:%02u:%02uZ",
+				(unsigned)utc.wYear,
+				(unsigned)utc.wMonth,
+				(unsigned)utc.wDay,
+				(unsigned)utc.wHour,
+				(unsigned)utc.wMinute,
+				(unsigned)utc.wSecond);
+			return created;
 		}
 	}
 }

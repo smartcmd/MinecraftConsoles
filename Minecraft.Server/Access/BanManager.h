@@ -93,8 +93,6 @@ namespace ServerRuntime
 			static BanMetadata BuildDefaultMetadata(const char *source = "Server");
 
 		private:
-			static std::string NormalizeXuid(const std::string &xuid);
-			static std::string NormalizeIp(const std::string &ip);
 			static void NormalizeMetadata(BanMetadata *metadata);
 
 			std::string BuildPath(const char *fileName) const;

@@ -705,6 +705,8 @@
     <ClInclude Include="Console\ServerCliParser.h" />
     <ClInclude Include="Console\ServerCliRegistry.h" />
     <ClInclude Include="Common\FileUtils.h" />
+    <ClInclude Include="Common\AccessStorageUtils.h" />
+    <ClInclude Include="Common\NetworkUtils.h" />
     <ClInclude Include="Common\StringUtils.h" />
     <ClInclude Include="ServerLogger.h" />
     <ClInclude Include="ServerLogManager.h" />

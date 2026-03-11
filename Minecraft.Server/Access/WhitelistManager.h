@@ -7,10 +7,6 @@ namespace ServerRuntime
 {
 	namespace Access
 	{
-		/**
-		 * Information stored with dedicated-server whitelist entries
-		 * ホワイトリスト項目に保存する補助情報
-		 */
 		struct WhitelistMetadata
 		{
 			std::string created;
@@ -25,7 +21,7 @@ namespace ServerRuntime
 		};
 
 		/**
-		 * Dedicated server whitelist file manager.
+		 * whitelist manager
 		 *
 		 * Files:
 		 * - whitelist.json
@@ -56,7 +52,6 @@ namespace ServerRuntime
 			static WhitelistMetadata BuildDefaultMetadata(const char *source = "Server");
 
 		private:
-			static std::string NormalizeXuid(const std::string &xuid);
 			static void NormalizeMetadata(WhitelistMetadata *metadata);
 
 			std::string BuildPath(const char *fileName) const;

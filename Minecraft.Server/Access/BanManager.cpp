@@ -2,13 +2,14 @@
 
 #include "BanManager.h"
 
+#include "..\Common\AccessStorageUtils.h"
 #include "..\Common\FileUtils.h"
+#include "..\Common\NetworkUtils.h"
 #include "..\Common\StringUtils.h"
 #include "..\ServerLogger.h"
 #include "..\vendor\nlohmann\json.hpp"
 
 #include <algorithm>
-#include <errno.h>
 #include <stdio.h>
 
 namespace ServerRuntime
@@ -21,85 +22,6 @@ namespace ServerRuntime
 		{
 			static const char *kBannedPlayersFileName = "banned-players.json";
 			static const char *kBannedIpsFileName = "banned-ips.json";
-
-			static bool FileExists(const std::string &path)
-			{
-				const std::wstring widePath = StringUtils::Utf8ToWide(path);
-				if (widePath.empty())
-				{
-					return false;
-				}
-
-				DWORD attrs = GetFileAttributesW(widePath.c_str());
-				return (attrs != INVALID_FILE_ATTRIBUTES) && ((attrs & FILE_ATTRIBUTE_DIRECTORY) == 0);
-			}
-
-			/**
-			 * Creates an empty array file for access lists that do not exist yet
-			 * 未作成のアクセス一覧に空配列ファイルを作る
-			 */
-			static bool EnsureJsonListFile(const std::string &path)
-			{
-				if (FileExists(path))
-				{
-					return true;
-				}
-				return FileUtils::WriteTextFileAtomic(path, "[]\n");
-			}
-
-			static bool TryParseNumericXuid(const std::string &text, unsigned long long *outValue)
-			{
-				if (outValue == nullptr)
-				{
-					return false;
-				}
-
-				std::string trimmed = StringUtils::TrimAscii(text);
-				if (trimmed.empty())
-				{
-					return false;
-				}
-
-				errno = 0;
-				char *end = nullptr;
-				// Accept both decimal and hexadecimal XUID text so manual edits and tool output stay compatible.
-				unsigned long long value = _strtoui64(trimmed.c_str(), &end, 0);
-				if (end == trimmed.c_str() || errno != 0)
-				{
-					return false;
-				}
-
-				while (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')
-				{
-					++end;
-				}
-
-				if (*end != 0)
-				{
-					return false;
-				}
-
-				*outValue = value;
-				return true;
-			}
-
-			static bool TryGetStringField(const OrderedJson &object, const char *key, std::string *outValue)
-			{
-				if (key == nullptr || outValue == nullptr || !object.is_object())
-				{
-					return false;
-				}
-
-				OrderedJson::const_iterator it = object.find(key);
-				if (it == object.end() || !it->is_string())
-				{
-					return false;
-				}
-
-				*outValue = it->get<std::string>();
-				return true;
-			}
-
 
 			static bool TryParseUtcTimestamp(const std::string &text, unsigned long long *outFileTime)
 			{
@@ -173,8 +95,8 @@ namespace ServerRuntime
 			const std::string playersPath = GetBannedPlayersFilePath();
 			const std::string ipsPath = GetBannedIpsFilePath();
 
-			bool playersOk = EnsureJsonListFile(playersPath);
-			bool ipsOk = EnsureJsonListFile(ipsPath);
+			const bool playersOk = AccessStorageUtils::EnsureJsonListFileExists(playersPath);
+			const bool ipsOk = AccessStorageUtils::EnsureJsonListFileExists(ipsPath);
 			if (!playersOk)
 			{
 				LogErrorf("access", "failed to create %s", playersPath.c_str());
@@ -253,9 +175,8 @@ namespace ServerRuntime
 			}
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < root.size(); ++i)
+			for (const auto &object : root)
 			{
-				const OrderedJson &object = root[i];
 				if (!object.is_object())
 				{
 					LogWarnf("access", "skipping banned player entry that is not an object in %s", path.c_str());
@@ -263,25 +184,25 @@ namespace ServerRuntime
 				}
 
 				std::string rawXuid;
-				if (!TryGetStringField(object, "xuid", &rawXuid))
+				if (!AccessStorageUtils::TryGetStringField(object, "xuid", &rawXuid))
 				{
 					LogWarnf("access", "skipping banned player entry without xuid in %s", path.c_str());
 					continue;
 				}
 
 				BannedPlayerEntry entry;
-				entry.xuid = NormalizeXuid(rawXuid);
+				entry.xuid = AccessStorageUtils::NormalizeXuid(rawXuid);
 				if (entry.xuid.empty())
 				{
 					LogWarnf("access", "skipping banned player entry with empty xuid in %s", path.c_str());
 					continue;
 				}
 
-				TryGetStringField(object, "name", &entry.name);
-				TryGetStringField(object, "created", &entry.metadata.created);
-				TryGetStringField(object, "source", &entry.metadata.source);
-				TryGetStringField(object, "expires", &entry.metadata.expires);
-				TryGetStringField(object, "reason", &entry.metadata.reason);
+				AccessStorageUtils::TryGetStringField(object, "name", &entry.name);
+				AccessStorageUtils::TryGetStringField(object, "created", &entry.metadata.created);
+				AccessStorageUtils::TryGetStringField(object, "source", &entry.metadata.source);
+				AccessStorageUtils::TryGetStringField(object, "expires", &entry.metadata.expires);
+				AccessStorageUtils::TryGetStringField(object, "reason", &entry.metadata.reason);
 				NormalizeMetadata(&entry.metadata);
 
 				// Ignore entries that already expired before reload so the in-memory cache starts from the active set.
@@ -334,9 +255,8 @@ namespace ServerRuntime
 			}
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < root.size(); ++i)
+			for (const auto &object : root)
 			{
-				const OrderedJson &object = root[i];
 				if (!object.is_object())
 				{
 					LogWarnf("access", "skipping banned ip entry that is not an object in %s", path.c_str());
@@ -344,24 +264,24 @@ namespace ServerRuntime
 				}
 
 				std::string rawIp;
-				if (!TryGetStringField(object, "ip", &rawIp))
+				if (!AccessStorageUtils::TryGetStringField(object, "ip", &rawIp))
 				{
 					LogWarnf("access", "skipping banned ip entry without ip in %s", path.c_str());
 					continue;
 				}
 
 				BannedIpEntry entry;
-				entry.ip = NormalizeIp(rawIp);
+				entry.ip = NetworkUtils::NormalizeIpToken(rawIp);
 				if (entry.ip.empty())
 				{
 					LogWarnf("access", "skipping banned ip entry with empty ip in %s", path.c_str());
 					continue;
 				}
 
-				TryGetStringField(object, "created", &entry.metadata.created);
-				TryGetStringField(object, "source", &entry.metadata.source);
-				TryGetStringField(object, "expires", &entry.metadata.expires);
-				TryGetStringField(object, "reason", &entry.metadata.reason);
+				AccessStorageUtils::TryGetStringField(object, "created", &entry.metadata.created);
+				AccessStorageUtils::TryGetStringField(object, "source", &entry.metadata.source);
+				AccessStorageUtils::TryGetStringField(object, "expires", &entry.metadata.expires);
+				AccessStorageUtils::TryGetStringField(object, "reason", &entry.metadata.reason);
 				NormalizeMetadata(&entry.metadata);
 
 				// Ignore entries that already expired before reload so the in-memory cache starts from the active set.
@@ -378,15 +298,15 @@ namespace ServerRuntime
 		bool BanManager::SavePlayers(const std::vector<BannedPlayerEntry> &entries) const
 		{
 			OrderedJson root = OrderedJson::array();
-			for (size_t i = 0; i < entries.size(); ++i)
+			for (const auto &entry : entries)
 			{
 				OrderedJson object = OrderedJson::object();
-				object["xuid"] = NormalizeXuid(entries[i].xuid);
-				object["name"] = entries[i].name;
-				object["created"] = entries[i].metadata.created;
-				object["source"] = entries[i].metadata.source;
-				object["expires"] = entries[i].metadata.expires;
-				object["reason"] = entries[i].metadata.reason;
+				object["xuid"] = AccessStorageUtils::NormalizeXuid(entry.xuid);
+				object["name"] = entry.name;
+				object["created"] = entry.metadata.created;
+				object["source"] = entry.metadata.source;
+				object["expires"] = entry.metadata.expires;
+				object["reason"] = entry.metadata.reason;
 				root.push_back(object);
 			}
 
@@ -403,14 +323,14 @@ namespace ServerRuntime
 		bool BanManager::SaveIps(const std::vector<BannedIpEntry> &entries) const
 		{
 			OrderedJson root = OrderedJson::array();
-			for (size_t i = 0; i < entries.size(); ++i)
+			for (const auto &entry : entries)
 			{
 				OrderedJson object = OrderedJson::object();
-				object["ip"] = NormalizeIp(entries[i].ip);
-				object["created"] = entries[i].metadata.created;
-				object["source"] = entries[i].metadata.source;
-				object["expires"] = entries[i].metadata.expires;
-				object["reason"] = entries[i].metadata.reason;
+				object["ip"] = NetworkUtils::NormalizeIpToken(entry.ip);
+				object["created"] = entry.metadata.created;
+				object["source"] = entry.metadata.source;
+				object["expires"] = entry.metadata.expires;
+				object["reason"] = entry.metadata.reason;
 				root.push_back(object);
 			}
 
@@ -445,11 +365,11 @@ namespace ServerRuntime
 			outEntries->reserve(m_bannedPlayers.size());
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < m_bannedPlayers.size(); ++i)
+			for (const auto &entry : m_bannedPlayers)
 			{
-				if (!IsMetadataExpired(m_bannedPlayers[i].metadata, nowFileTime))
+				if (!IsMetadataExpired(entry.metadata, nowFileTime))
 				{
-					outEntries->push_back(m_bannedPlayers[i]);
+					outEntries->push_back(entry);
 				}
 			}
 			return true;
@@ -466,51 +386,49 @@ namespace ServerRuntime
 			outEntries->reserve(m_bannedIps.size());
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < m_bannedIps.size(); ++i)
+			for (const auto &entry : m_bannedIps)
 			{
-				if (!IsMetadataExpired(m_bannedIps[i].metadata, nowFileTime))
+				if (!IsMetadataExpired(entry.metadata, nowFileTime))
 				{
-					outEntries->push_back(m_bannedIps[i]);
+					outEntries->push_back(entry);
 				}
 			}
 			return true;
 		}
 		bool BanManager::IsPlayerBannedByXuid(const std::string &xuid) const
 		{
-			const std::string normalized = NormalizeXuid(xuid);
+			const std::string normalized = AccessStorageUtils::NormalizeXuid(xuid);
 			if (normalized.empty())
 			{
 				return false;
 			}
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < m_bannedPlayers.size(); ++i)
-			{
-				if (m_bannedPlayers[i].xuid == normalized && !IsMetadataExpired(m_bannedPlayers[i].metadata, nowFileTime))
+			return std::any_of(
+				m_bannedPlayers.begin(),
+				m_bannedPlayers.end(),
+				[&normalized, nowFileTime](const BannedPlayerEntry &entry)
 				{
-					return true;
-				}
-			}
-			return false;
+					return entry.xuid == normalized && !IsMetadataExpired(entry.metadata, nowFileTime);
+				});
 		}
 
 		bool BanManager::IsIpBanned(const std::string &ip) const
 		{
-			const std::string normalized = NormalizeIp(ip);
+			const std::string normalized = NetworkUtils::NormalizeIpToken(ip);
 			if (normalized.empty())
 			{
 				return false;
 			}
 
 			const unsigned long long nowFileTime = FileUtils::GetCurrentUtcFileTime();
-			for (size_t i = 0; i < m_bannedIps.size(); ++i)
-			{
-				if (m_bannedIps[i].ip == normalized && !IsMetadataExpired(m_bannedIps[i].metadata, nowFileTime))
+			return std::any_of(
+				m_bannedIps.begin(),
+				m_bannedIps.end(),
+				[&normalized, nowFileTime](const BannedIpEntry &entry)
 				{
-					return true;
-				}
-			}
-			return false;
+					return entry.ip == normalized && !IsMetadataExpired(entry.metadata, nowFileTime);
+				});
 		}
 
 		bool BanManager::AddPlayerBan(const BannedPlayerEntry &entry)
@@ -522,26 +440,30 @@ namespace ServerRuntime
 			}
 
 			BannedPlayerEntry normalized = entry;
-			normalized.xuid = NormalizeXuid(normalized.xuid);
+			normalized.xuid = AccessStorageUtils::NormalizeXuid(normalized.xuid);
 			NormalizeMetadata(&normalized.metadata);
 			if (normalized.xuid.empty())
 			{
 				return false;
 			}
 
-			for (size_t i = 0; i < updatedEntries.size(); ++i)
+			const auto existing = std::find_if(
+				updatedEntries.begin(),
+				updatedEntries.end(),
+				[&normalized](const BannedPlayerEntry &candidate)
+				{
+					return candidate.xuid == normalized.xuid;
+				});
+			if (existing != updatedEntries.end())
 			{
 				// Update the existing entry in place so the stored list remains unique by canonical XUID.
-				if (updatedEntries[i].xuid == normalized.xuid)
+				*existing = normalized;
+				if (!SavePlayers(updatedEntries))
 				{
-					updatedEntries[i] = normalized;
-					if (!SavePlayers(updatedEntries))
-					{
-						return false;
-					}
-					m_bannedPlayers.swap(updatedEntries);
-					return true;
+					return false;
 				}
+				m_bannedPlayers.swap(updatedEntries);
+				return true;
 			}
 
 			updatedEntries.push_back(normalized);
@@ -562,26 +484,30 @@ namespace ServerRuntime
 			}
 
 			BannedIpEntry normalized = entry;
-			normalized.ip = NormalizeIp(normalized.ip);
+			normalized.ip = NetworkUtils::NormalizeIpToken(normalized.ip);
 			NormalizeMetadata(&normalized.metadata);
 			if (normalized.ip.empty())
 			{
 				return false;
 			}
 
-			for (size_t i = 0; i < updatedEntries.size(); ++i)
+			const auto existing = std::find_if(
+				updatedEntries.begin(),
+				updatedEntries.end(),
+				[&normalized](const BannedIpEntry &candidate)
+				{
+					return candidate.ip == normalized.ip;
+				});
+			if (existing != updatedEntries.end())
 			{
 				// Update the existing entry in place so the stored list remains unique by normalized IP.
-				if (updatedEntries[i].ip == normalized.ip)
+				*existing = normalized;
+				if (!SaveIps(updatedEntries))
 				{
-					updatedEntries[i] = normalized;
-					if (!SaveIps(updatedEntries))
-					{
-						return false;
-					}
-					m_bannedIps.swap(updatedEntries);
-					return true;
+					return false;
 				}
+				m_bannedIps.swap(updatedEntries);
+				return true;
 			}
 
 			updatedEntries.push_back(normalized);
@@ -595,7 +521,7 @@ namespace ServerRuntime
 
 		bool BanManager::RemovePlayerBanByXuid(const std::string &xuid)
 		{
-			const std::string normalized = NormalizeXuid(xuid);
+			const std::string normalized = AccessStorageUtils::NormalizeXuid(xuid);
 			if (normalized.empty())
 			{
 				return false;
@@ -630,7 +556,7 @@ namespace ServerRuntime
 
 		bool BanManager::RemoveIpBan(const std::string &ip)
 		{
-			const std::string normalized = NormalizeIp(ip);
+			const std::string normalized = NetworkUtils::NormalizeIpToken(ip);
 			if (normalized.empty())
 			{
 				return false;
@@ -675,58 +601,11 @@ namespace ServerRuntime
 		BanMetadata BanManager::BuildDefaultMetadata(const char *source)
 		{
 			BanMetadata metadata;
-
-			SYSTEMTIME utc;
-			GetSystemTime(&utc);
-
-			char created[64] = {};
-			sprintf_s(
-				created,
-				sizeof(created),
-				"%04u-%02u-%02uT%02u:%02u:%02uZ",
-				(unsigned)utc.wYear,
-				(unsigned)utc.wMonth,
-				(unsigned)utc.wDay,
-				(unsigned)utc.wHour,
-				(unsigned)utc.wMinute,
-				(unsigned)utc.wSecond);
-			metadata.created = created;
+			metadata.created = StringUtils::GetCurrentUtcTimestampIso8601();
 			metadata.source = (source != nullptr) ? source : "Server";
 			metadata.expires = "";
 			metadata.reason = "";
 			return metadata;
-		}
-
-
-		std::string BanManager::NormalizeXuid(const std::string &xuid)
-		{
-			std::string trimmed = StringUtils::TrimAscii(xuid);
-			if (trimmed.empty())
-			{
-				return "";
-			}
-
-			unsigned long long numericXuid = 0;
-			// Canonicalize numeric XUID input into a lowercase hexadecimal string so lookups stay stable.
-			if (TryParseNumericXuid(trimmed, &numericXuid))
-			{
-				if (numericXuid == 0ULL)
-				{
-					return "";
-				}
-
-				char buffer[32] = {};
-				sprintf_s(buffer, sizeof(buffer), "0x%016llx", numericXuid);
-				return buffer;
-			}
-
-			return StringUtils::ToLowerAscii(trimmed);
-		}
-
-
-		std::string BanManager::NormalizeIp(const std::string &ip)
-		{
-			return StringUtils::ToLowerAscii(StringUtils::TrimAscii(ip));
 		}
 
 
@@ -746,36 +625,7 @@ namespace ServerRuntime
 
 		std::string BanManager::BuildPath(const char *fileName) const
 		{
-			if (fileName == nullptr || fileName[0] == 0)
-			{
-				return "";
-			}
-
-			const std::wstring wideFileName = StringUtils::Utf8ToWide(fileName);
-			if (wideFileName.empty())
-			{
-				return "";
-			}
-
-			if (m_baseDirectory.empty() || m_baseDirectory == ".")
-			{
-				return StringUtils::WideToUtf8(wideFileName);
-			}
-
-			const std::wstring wideBaseDirectory = StringUtils::Utf8ToWide(m_baseDirectory);
-			if (wideBaseDirectory.empty())
-			{
-				return StringUtils::WideToUtf8(wideFileName);
-			}
-
-			// Join Unicode-aware path strings after conversion so non-ASCII dedicated-server directories remain supported.
-			const wchar_t last = wideBaseDirectory[wideBaseDirectory.size() - 1];
-			if (last == L'\\' || last == L'/')
-			{
-				return StringUtils::WideToUtf8(wideBaseDirectory + wideFileName);
-			}
-
-			return StringUtils::WideToUtf8(wideBaseDirectory + L"\\" + wideFileName);
+			return AccessStorageUtils::BuildPathFromBaseDirectory(m_baseDirectory, fileName);
 		}
 	}
 }

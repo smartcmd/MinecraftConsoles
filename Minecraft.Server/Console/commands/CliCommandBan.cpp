@@ -16,23 +16,9 @@ namespace ServerRuntime
 {
 	namespace
 	{
-		static std::string JoinTokens(const std::vector<std::string> &tokens, size_t startIndex)
-		{
-			std::string joined;
-			for (size_t i = startIndex; i < tokens.size(); ++i)
-			{
-				if (!joined.empty())
-				{
-					joined.push_back(' ');
-				}
-				joined += tokens[i];
-			}
-			return joined;
-		}
-
 		static void AppendUniqueXuid(PlayerUID xuid, std::vector<PlayerUID> *out)
 		{
-			if (out == NULL || xuid == INVALID_XUID)
+			if (out == nullptr || xuid == INVALID_XUID)
 			{
 				return;
 			}
@@ -45,7 +31,7 @@ namespace ServerRuntime
 
 		static void CollectPlayerBanXuids(const std::shared_ptr<ServerPlayer> &player, std::vector<PlayerUID> *out)
 		{
-			if (player == NULL || out == NULL)
+			if (player == nullptr || out == nullptr)
 			{
 				return;
 			}
@@ -88,8 +74,8 @@ namespace ServerRuntime
 			return false;
 		}
 
-		std::shared_ptr<ServerPlayer> target = engine->FindPlayerByNameUtf8(line.tokens[1]);
-		if (target == NULL)
+		const auto target = engine->FindPlayerByNameUtf8(line.tokens[1]);
+		if (target == nullptr)
 		{
 			engine->LogWarn("Unknown player: " + line.tokens[1] + " (this server build can only ban players that are currently online).");
 			return false;
@@ -103,15 +89,10 @@ namespace ServerRuntime
 			return false;
 		}
 
-		bool hasUnbannedIdentity = false;
-		for (size_t i = 0; i < xuids.size(); ++i)
-		{
-			if (!ServerRuntime::Access::IsPlayerBanned(xuids[i]))
-			{
-				hasUnbannedIdentity = true;
-				break;
-			}
-		}
+		const bool hasUnbannedIdentity = std::any_of(
+			xuids.begin(),
+			xuids.end(),
+			[](PlayerUID xuid) { return !ServerRuntime::Access::IsPlayerBanned(xuid); });
 		if (!hasUnbannedIdentity)
 		{
 			engine->LogWarn("That player is already banned.");
@@ -119,28 +100,28 @@ namespace ServerRuntime
 		}
 
 		ServerRuntime::Access::BanMetadata metadata = ServerRuntime::Access::BanManager::BuildDefaultMetadata("Console");
-		metadata.reason = JoinTokens(line.tokens, 2);
+		metadata.reason = StringUtils::JoinTokens(line.tokens, 2);
 		if (metadata.reason.empty())
 		{
 			metadata.reason = "Banned by an operator.";
 		}
 
 		const std::string playerName = StringUtils::WideToUtf8(target->getName());
-		for (size_t i = 0; i < xuids.size(); ++i)
+		for (const auto xuid : xuids)
 		{
-			if (ServerRuntime::Access::IsPlayerBanned(xuids[i]))
+			if (ServerRuntime::Access::IsPlayerBanned(xuid))
 			{
 				continue;
 			}
 
-			if (!ServerRuntime::Access::AddPlayerBan(xuids[i], playerName, metadata))
+			if (!ServerRuntime::Access::AddPlayerBan(xuid, playerName, metadata))
 			{
 				engine->LogError("Failed to write player ban.");
 				return false;
 			}
 		}
 
-		if (target->connection != NULL)
+		if (target->connection != nullptr)
 		{
 			target->connection->disconnect(DisconnectPacket::eDisconnect_Banned);
 		}

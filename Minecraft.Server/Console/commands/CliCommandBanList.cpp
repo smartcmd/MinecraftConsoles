@@ -15,7 +15,7 @@ namespace ServerRuntime
 	{
 		static void AppendUniqueText(const std::string &text, std::vector<std::string> *out)
 		{
-			if (out == NULL || text.empty())
+			if (out == nullptr || text.empty())
 			{
 				return;
 			}
@@ -41,16 +41,16 @@ namespace ServerRuntime
 			}
 
 			std::vector<std::string> names;
-			for (size_t i = 0; i < entries.size(); ++i)
+			for (const auto &entry : entries)
 			{
-				AppendUniqueText(entries[i].name, &names);
+				AppendUniqueText(entry.name, &names);
 			}
 			std::sort(names.begin(), names.end(), CompareLowerAscii);
 
 			engine->LogInfo("There are " + std::to_string(names.size()) + " banned player(s).");
-			for (size_t i = 0; i < names.size(); ++i)
+			for (const auto &name : names)
 			{
-				engine->LogInfo("  " + names[i]);
+				engine->LogInfo("  " + name);
 			}
 			return true;
 		}
@@ -65,16 +65,16 @@ namespace ServerRuntime
 			}
 
 			std::vector<std::string> ips;
-			for (size_t i = 0; i < entries.size(); ++i)
+			for (const auto &entry : entries)
 			{
-				AppendUniqueText(entries[i].ip, &ips);
+				AppendUniqueText(entry.ip, &ips);
 			}
 			std::sort(ips.begin(), ips.end(), CompareLowerAscii);
 
 			engine->LogInfo("There are " + std::to_string(ips.size()) + " banned IP(s).");
-			for (size_t i = 0; i < ips.size(); ++i)
+			for (const auto &ip : ips)
 			{
-				engine->LogInfo("  " + ips[i]);
+				engine->LogInfo("  " + ip);
 			}
 			return true;
 		}

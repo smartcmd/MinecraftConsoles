@@ -5,10 +5,8 @@
 #include "..\Common\StringUtils.h"
 #include "..\ServerLogger.h"
 
-#include <errno.h>
 #include <memory>
 #include <mutex>
-#include <stdlib.h>
 
 namespace ServerRuntime
 {
@@ -86,31 +84,13 @@ namespace ServerRuntime
 				return false;
 			}
 
-			std::string trimmed = StringUtils::TrimAscii(text);
-			if (trimmed.empty())
+			unsigned long long parsed = 0;
+			if (!StringUtils::TryParseUnsignedLongLong(text, &parsed) || parsed == 0ULL)
 			{
 				return false;
 			}
 
-			errno = 0;
-			char *end = nullptr;
-			unsigned long long value = _strtoui64(trimmed.c_str(), &end, 0);
-			if (end == trimmed.c_str() || errno != 0)
-			{
-				return false;
-			}
-
-			while (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')
-			{
-				++end;
-			}
-
-			if (*end != 0 || value == 0ULL)
-			{
-				return false;
-			}
-
-			*outXuid = (PlayerUID)value;
+			*outXuid = (PlayerUID)parsed;
 			return true;
 		}
 

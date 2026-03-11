@@ -620,6 +620,12 @@
     <ClInclude Include="Common\FileUtils.h">
       <Filter>Server\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Common\AccessStorageUtils.h">
+      <Filter>Server\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\NetworkUtils.h">
+      <Filter>Server\Common</Filter>
+    </ClInclude>
     <ClInclude Include="Common\StringUtils.h">
       <Filter>Server\Common</Filter>
     </ClInclude>

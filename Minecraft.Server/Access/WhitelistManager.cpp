@@ -2,15 +2,13 @@
 
 #include "WhitelistManager.h"
 
+#include "..\Common\AccessStorageUtils.h"
 #include "..\Common\FileUtils.h"
 #include "..\Common\StringUtils.h"
 #include "..\ServerLogger.h"
 #include "..\vendor\nlohmann\json.hpp"
 
 #include <algorithm>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 namespace ServerRuntime
 {
@@ -21,79 +19,6 @@ namespace ServerRuntime
 		namespace
 		{
 			static const char *kWhitelistFileName = "whitelist.json";
-
-			static bool FileExists(const std::string &path)
-			{
-				const std::wstring widePath = StringUtils::Utf8ToWide(path);
-				if (widePath.empty())
-				{
-					return false;
-				}
-
-				DWORD attrs = GetFileAttributesW(widePath.c_str());
-				return (attrs != INVALID_FILE_ATTRIBUTES) && ((attrs & FILE_ATTRIBUTE_DIRECTORY) == 0);
-			}
-
-			static bool EnsureJsonListFile(const std::string &path)
-			{
-				if (FileExists(path))
-				{
-					return true;
-				}
-				return FileUtils::WriteTextFileAtomic(path, "[]\n");
-			}
-
-			static bool TryParseNumericXuid(const std::string &text, unsigned long long *outValue)
-			{
-				if (outValue == nullptr)
-				{
-					return false;
-				}
-
-				std::string trimmed = StringUtils::TrimAscii(text);
-				if (trimmed.empty())
-				{
-					return false;
-				}
-
-				errno = 0;
-				char *end = nullptr;
-				unsigned long long value = _strtoui64(trimmed.c_str(), &end, 0);
-				if (end == trimmed.c_str() || errno != 0)
-				{
-					return false;
-				}
-
-				while (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')
-				{
-					++end;
-				}
-
-				if (*end != 0)
-				{
-					return false;
-				}
-
-				*outValue = value;
-				return true;
-			}
-
-			static bool TryGetStringField(const OrderedJson &object, const char *key, std::string *outValue)
-			{
-				if (key == nullptr || outValue == nullptr || !object.is_object())
-				{
-					return false;
-				}
-
-				const auto it = object.find(key);
-				if (it == object.end() || !it->is_string())
-				{
-					return false;
-				}
-
-				*outValue = it->get<std::string>();
-				return true;
-			}
 		}
 
 		WhitelistManager::WhitelistManager(const std::string &baseDirectory)
@@ -104,7 +29,7 @@ namespace ServerRuntime
 		bool WhitelistManager::EnsureWhitelistFileExists() const
 		{
 			const std::string path = GetWhitelistFilePath();
-			if (!EnsureJsonListFile(path))
+			if (!AccessStorageUtils::EnsureJsonListFileExists(path))
 			{
 				LogErrorf("access", "failed to create %s", path.c_str());
 				return false;
@@ -177,23 +102,23 @@ namespace ServerRuntime
 				}
 
 				std::string rawXuid;
-				if (!TryGetStringField(object, "xuid", &rawXuid))
+				if (!AccessStorageUtils::TryGetStringField(object, "xuid", &rawXuid))
 				{
 					LogWarnf("access", "skipping whitelist entry without xuid in %s", path.c_str());
 					continue;
 				}
 
 				WhitelistedPlayerEntry entry;
-				entry.xuid = NormalizeXuid(rawXuid);
+				entry.xuid = AccessStorageUtils::NormalizeXuid(rawXuid);
 				if (entry.xuid.empty())
 				{
 					LogWarnf("access", "skipping whitelist entry with empty xuid in %s", path.c_str());
 					continue;
 				}
 
-				TryGetStringField(object, "name", &entry.name);
-				TryGetStringField(object, "created", &entry.metadata.created);
-				TryGetStringField(object, "source", &entry.metadata.source);
+				AccessStorageUtils::TryGetStringField(object, "name", &entry.name);
+				AccessStorageUtils::TryGetStringField(object, "created", &entry.metadata.created);
+				AccessStorageUtils::TryGetStringField(object, "source", &entry.metadata.source);
 				NormalizeMetadata(&entry.metadata);
 
 				outEntries->push_back(entry);
@@ -208,7 +133,7 @@ namespace ServerRuntime
 			for (const auto &entry : entries)
 			{
 				OrderedJson object = OrderedJson::object();
-				object["xuid"] = NormalizeXuid(entry.xuid);
+				object["xuid"] = AccessStorageUtils::NormalizeXuid(entry.xuid);
 				object["name"] = entry.name;
 				object["created"] = entry.metadata.created;
 				object["source"] = entry.metadata.source;
@@ -243,7 +168,7 @@ namespace ServerRuntime
 
 		bool WhitelistManager::IsPlayerWhitelistedByXuid(const std::string &xuid) const
 		{
-			const auto normalized = NormalizeXuid(xuid);
+			const auto normalized = AccessStorageUtils::NormalizeXuid(xuid);
 			if (normalized.empty())
 			{
 				return false;
@@ -267,7 +192,7 @@ namespace ServerRuntime
 			}
 
 			auto normalized = entry;
-			normalized.xuid = NormalizeXuid(normalized.xuid);
+			normalized.xuid = AccessStorageUtils::NormalizeXuid(normalized.xuid);
 			NormalizeMetadata(&normalized.metadata);
 			if (normalized.xuid.empty())
 			{
@@ -306,7 +231,7 @@ namespace ServerRuntime
 
 		bool WhitelistManager::RemovePlayerByXuid(const std::string &xuid)
 		{
-			const auto normalized = NormalizeXuid(xuid);
+			const auto normalized = AccessStorageUtils::NormalizeXuid(xuid);
 			if (normalized.empty())
 			{
 				return false;
@@ -348,48 +273,9 @@ namespace ServerRuntime
 		WhitelistMetadata WhitelistManager::BuildDefaultMetadata(const char *source)
 		{
 			WhitelistMetadata metadata;
-
-			SYSTEMTIME utc;
-			GetSystemTime(&utc);
-
-			char created[64] = {};
-			sprintf_s(
-				created,
-				sizeof(created),
-				"%04u-%02u-%02uT%02u:%02u:%02uZ",
-				(unsigned)utc.wYear,
-				(unsigned)utc.wMonth,
-				(unsigned)utc.wDay,
-				(unsigned)utc.wHour,
-				(unsigned)utc.wMinute,
-				(unsigned)utc.wSecond);
-			metadata.created = created;
+			metadata.created = StringUtils::GetCurrentUtcTimestampIso8601();
 			metadata.source = (source != nullptr) ? source : "Server";
 			return metadata;
-		}
-
-		std::string WhitelistManager::NormalizeXuid(const std::string &xuid)
-		{
-			std::string trimmed = StringUtils::TrimAscii(xuid);
-			if (trimmed.empty())
-			{
-				return "";
-			}
-
-			unsigned long long numericXuid = 0;
-			if (TryParseNumericXuid(trimmed, &numericXuid))
-			{
-				if (numericXuid == 0ULL)
-				{
-					return "";
-				}
-
-				char buffer[32] = {};
-				sprintf_s(buffer, sizeof(buffer), "0x%016llx", numericXuid);
-				return buffer;
-			}
-
-			return StringUtils::ToLowerAscii(trimmed);
 		}
 
 		void WhitelistManager::NormalizeMetadata(WhitelistMetadata *metadata)
@@ -405,35 +291,7 @@ namespace ServerRuntime
 
 		std::string WhitelistManager::BuildPath(const char *fileName) const
 		{
-			if (fileName == nullptr || fileName[0] == 0)
-			{
-				return "";
-			}
-
-			const std::wstring wideFileName = StringUtils::Utf8ToWide(fileName);
-			if (wideFileName.empty())
-			{
-				return "";
-			}
-
-			if (m_baseDirectory.empty() || m_baseDirectory == ".")
-			{
-				return StringUtils::WideToUtf8(wideFileName);
-			}
-
-			const std::wstring wideBaseDirectory = StringUtils::Utf8ToWide(m_baseDirectory);
-			if (wideBaseDirectory.empty())
-			{
-				return StringUtils::WideToUtf8(wideFileName);
-			}
-
-			const wchar_t last = wideBaseDirectory[wideBaseDirectory.size() - 1];
-			if (last == L'\\' || last == L'/')
-			{
-				return StringUtils::WideToUtf8(wideBaseDirectory + wideFileName);
-			}
-
-			return StringUtils::WideToUtf8(wideBaseDirectory + L"\\" + wideFileName);
+			return AccessStorageUtils::BuildPathFromBaseDirectory(m_baseDirectory, fileName);
 		}
 	}
 }
