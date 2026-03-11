@@ -60,7 +60,7 @@ void ServerConnection::stop()
 		}
 	}
 
-	// Disconnect through PlayerConnection so clients receive a proper DisconnectPacket before socket close.
+	// Snapshot to avoid iterator invalidation if disconnect modifies the vector.
 	std::vector<shared_ptr<PlayerConnection> > playerSnapshot = players;
 	for (unsigned int i = 0; i < playerSnapshot.size(); i++)
 	{
@@ -89,7 +89,7 @@ void ServerConnection::tick()
 	//            uc.disconnect("Internal server error");
 	//            logger.log(Level.WARNING, "Failed to handle packet: " + e, e);
 	//        }
-			if(uc->connection != NULL) uc->connection->flush();
+			if(uc->connection != nullptr) uc->connection->flush();
 		}
 	}
 
@@ -118,7 +118,10 @@ void ServerConnection::tick()
             players.erase(players.begin()+i);
 			i--;
         }
-        player->connection->flush();
+        else
+        {
+            player->connection->flush();
+        }
     }
 
 }
@@ -178,7 +181,7 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 	{
 		for(unsigned int i = 0; i < pMinecraft->levels.length; ++i)
 		{
-			if( pMinecraft->levels[i] != NULL )
+			if( pMinecraft->levels[i] != nullptr )
 			{
 				app.DebugPrintf("ClientConnection::handleServerSettingsChanged - Difficulty = %d",packet->data);
 				pMinecraft->levels[i]->difficulty = packet->data;

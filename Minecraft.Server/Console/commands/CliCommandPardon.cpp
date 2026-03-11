@@ -16,7 +16,7 @@ namespace ServerRuntime
 	{
 		static void AppendUniqueText(const std::string &text, std::vector<std::string> *out)
 		{
-			if (out == NULL || text.empty())
+			if (out == nullptr || text.empty())
 			{
 				return;
 			}
@@ -29,7 +29,7 @@ namespace ServerRuntime
 
 		static void AppendUniqueXuid(PlayerUID xuid, std::vector<PlayerUID> *out)
 		{
-			if (out == NULL || xuid == INVALID_XUID)
+			if (out == nullptr || xuid == INVALID_XUID)
 			{
 				return;
 			}
@@ -76,7 +76,7 @@ namespace ServerRuntime
 		std::vector<PlayerUID> xuidsToRemove;
 		std::vector<std::string> matchedNames;
 		std::shared_ptr<ServerPlayer> onlineTarget = engine->FindPlayerByNameUtf8(line.tokens[1]);
-		if (onlineTarget != NULL)
+		if (onlineTarget != nullptr)
 		{
 			if (ServerRuntime::Access::IsPlayerBanned(onlineTarget->getXuid()))
 			{
@@ -96,16 +96,16 @@ namespace ServerRuntime
 		}
 
 		const std::string loweredTarget = StringUtils::ToLowerAscii(line.tokens[1]);
-		for (size_t i = 0; i < entries.size(); ++i)
+		for (const auto &entry : entries)
 		{
-			if (StringUtils::ToLowerAscii(entries[i].name) == loweredTarget)
+			if (StringUtils::ToLowerAscii(entry.name) == loweredTarget)
 			{
-				unsigned long long numericXuid = _strtoui64(entries[i].xuid.c_str(), NULL, 0);
-				if (numericXuid != 0ULL)
+				PlayerUID parsedXuid = INVALID_XUID;
+				if (ServerRuntime::Access::TryParseXuid(entry.xuid, &parsedXuid))
 				{
-					AppendUniqueXuid((PlayerUID)numericXuid, &xuidsToRemove);
+					AppendUniqueXuid(parsedXuid, &xuidsToRemove);
 				}
-				AppendUniqueText(entries[i].name, &matchedNames);
+				AppendUniqueText(entry.name, &matchedNames);
 			}
 		}
 
@@ -115,9 +115,9 @@ namespace ServerRuntime
 			return false;
 		}
 
-		for (size_t i = 0; i < xuidsToRemove.size(); ++i)
+		for (const auto xuid : xuidsToRemove)
 		{
-			if (!ServerRuntime::Access::RemovePlayerBan(xuidsToRemove[i]))
+			if (!ServerRuntime::Access::RemovePlayerBan(xuid))
 			{
 				engine->LogError("Failed to remove player ban.");
 				return false;
@@ -129,7 +129,7 @@ namespace ServerRuntime
 		{
 			playerName = matchedNames[0];
 		}
-		else if (onlineTarget != NULL)
+		else if (onlineTarget != nullptr)
 		{
 			playerName = StringUtils::WideToUtf8(onlineTarget->getName());
 		}
@@ -144,7 +144,7 @@ namespace ServerRuntime
 	 */
 	void CliCommandPardon::Complete(const ServerCliCompletionContext &context, const ServerCliEngine *engine, std::vector<std::string> *out) const
 	{
-		if (context.currentTokenIndex != 1 || out == NULL)
+		if (context.currentTokenIndex != 1 || out == nullptr)
 		{
 			return;
 		}
@@ -152,18 +152,17 @@ namespace ServerRuntime
 		std::vector<ServerRuntime::Access::BannedPlayerEntry> entries;
 		if (ServerRuntime::Access::SnapshotBannedPlayers(&entries))
 		{
-			const std::string loweredPrefix = StringUtils::ToLowerAscii(context.prefix);
 			std::vector<std::string> names;
-			for (size_t i = 0; i < entries.size(); ++i)
+			for (const auto &entry : entries)
 			{
-				AppendUniqueText(entries[i].name, &names);
+				AppendUniqueText(entry.name, &names);
 			}
 
-			for (size_t i = 0; i < names.size(); ++i)
+			for (const auto &name : names)
 			{
-				if (StringUtils::ToLowerAscii(names[i]).compare(0, loweredPrefix.size(), loweredPrefix) == 0)
+				if (StringUtils::StartsWithIgnoreCase(name, context.prefix))
 				{
-					out->push_back(context.linePrefix + names[i]);
+					out->push_back(context.linePrefix + name);
 				}
 			}
 		}

@@ -82,7 +82,7 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 
 	m_bGameModeCreative = false;
 	m_iGameModeId = GameType::SURVIVAL->getId();
-	m_pDLCPack = NULL;
+	m_pDLCPack = nullptr;
 	m_bRebuildTouchBoxes = false;
 
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
@@ -96,7 +96,7 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 	// #ifdef __PS3__
 	// 	if(ProfileManager.IsSignedInLive( m_iPad ))
 	// 	{
-	// 		ProfileManager.GetChatAndContentRestrictions(m_iPad,true,&bChatRestricted,&bContentRestricted,NULL);
+	// 		ProfileManager.GetChatAndContentRestrictions(m_iPad,true,&bChatRestricted,&bContentRestricted,nullptr);
 	// 	}
 	// #endif
 
@@ -184,7 +184,7 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 #if TO_BE_IMPLEMENTED
 		// 4J-PB - there may be texture packs we don't have, so use the info from TMS for this
 
-		DLC_INFO *pDLCInfo=NULL;
+		DLC_INFO *pDLCInfo=nullptr;
 
 		// first pass - look to see if there are any that are not in the list
 		bool bTexturePackAlreadyListed;
@@ -288,7 +288,6 @@ void UIScene_CreateWorldMenu::handleDestroy()
 void UIScene_CreateWorldMenu::tick()
 {
 	UIScene::tick();
-
 
 	if(m_iSetTexturePackDescription >= 0 )
 	{
@@ -432,7 +431,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_EditWorldName:
 		{
@@ -482,7 +481,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 		break;
 	case eControl_TexturePackList:
 		{
-			UpdateCurrentTexturePack((int)childId);
+			UpdateCurrentTexturePack(static_cast<int>(childId));
 		}
 		break;
 	case eControl_NewWorld:
@@ -528,7 +527,7 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 		// texture pack hasn't been set yet, so check what it will be
 		TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);
 
-		if(pTexturePack==NULL)
+		if(pTexturePack==nullptr)
 		{
 #if TO_BE_IMPLEMENTED
 			// They've selected a texture pack they don't have yet
@@ -578,7 +577,7 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 	{
 		// texture pack hasn't been set yet, so check what it will be
 		TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexturePack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexturePack);
 		m_pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
 		// do we have a license?
@@ -606,7 +605,7 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 				DLC_INFO *pDLCInfo = app.GetDLCInfoForTrialOfferID(m_pDLCPack->getPurchaseOfferId());
 				ULONGLONG ullOfferID_Full;
 
-				if(pDLCInfo!=NULL)
+				if(pDLCInfo!=nullptr)
 				{
 					ullOfferID_Full=pDLCInfo->ullOfferID_Full;
 				}
@@ -649,8 +648,8 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 void UIScene_CreateWorldMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Difficulty:
 		m_sliderDifficulty.handleSliderMove(value);
@@ -725,7 +724,7 @@ void UIScene_CreateWorldMenu::handleTimerComplete(int id)
 				if(m_iConfigA[i]!=-1)
 				{
 					DWORD dwBytes=0;
-					PBYTE pbData=NULL;
+					PBYTE pbData=nullptr;
 					//app.DebugPrintf("Retrieving iConfig %d from TPD\n",m_iConfigA[i]);
 
 					app.GetTPD(m_iConfigA[i],&pbData,&dwBytes);
@@ -734,7 +733,7 @@ void UIScene_CreateWorldMenu::handleTimerComplete(int id)
 					if(dwBytes > 0 && pbData)
 					{
 						DWORD dwImageBytes=0;
-						PBYTE pbImageData=NULL;
+						PBYTE pbImageData=nullptr;
 
 						app.GetFileFromTPD(eTPDFileType_Icon,pbData,dwBytes,&pbImageData,&dwImageBytes );
 						ListInfo.fEnabled = TRUE;
@@ -764,7 +763,7 @@ void UIScene_CreateWorldMenu::handleGainFocus(bool navBack)
 
 int UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_CreateWorldMenu *pClass=(UIScene_CreateWorldMenu *)lpParam;
+	UIScene_CreateWorldMenu *pClass=static_cast<UIScene_CreateWorldMenu *>(lpParam);
 	pClass->m_bIgnoreInput=false;
 	// 4J HEG - No reason to set value if keyboard was cancelled
 	if (bRes)
@@ -891,7 +890,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 				// MGH -  added this so we don't try and upsell when we don't know if the player has PS Plus yet (if it can't connect to the PS Plus server).
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_OK;
-				ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL);
+				ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), nullptr, nullptr);
 				return;
 			}
 
@@ -911,7 +910,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 // 			UINT uiIDA[2];
 // 			uiIDA[0]=IDS_PLAY_OFFLINE;
 // 			uiIDA[1]=IDS_PLAYSTATIONPLUS_SIGNUP;
-// 			ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),NULL,0,false);
+// 			ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),nullptr,0,false);
 			return;
 		}
 	}
@@ -951,7 +950,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 #if defined(__PS3__) || defined(__PSVITA__)
 		if(isOnlineGame && isSignedInLive)
 		{
-			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,NULL,&bContentRestricted,NULL);
+			ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,nullptr,&bContentRestricted,nullptr);
 		}
 #endif
 
@@ -980,7 +979,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 					// MGH -  added this so we don't try and upsell when we don't know if the player has PS Plus yet (if it can't connect to the PS Plus server).
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_OK;
-					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL);
+					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), nullptr, nullptr);
 					return;
 				}
 
@@ -998,7 +997,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 // 				UINT uiIDA[2];
 // 				uiIDA[0]=IDS_PLAY_OFFLINE;
 // 				uiIDA[1]=IDS_PLAYSTATIONPLUS_SIGNUP;
-// 				ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),NULL,0,false);
+// 				ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),nullptr,0,false);
 			}
 
 #endif
@@ -1040,7 +1039,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 					// MGH -  added this so we don't try and upsell when we don't know if the player has PS Plus yet (if it can't connect to the PS Plus server).
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_OK;
-					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL);
+					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), nullptr, nullptr);
 					return;
 				}
 
@@ -1062,7 +1061,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 // 				UINT uiIDA[2];
 // 				uiIDA[0]=IDS_PLAY_OFFLINE;
 // 				uiIDA[1]=IDS_PLAYSTATIONPLUS_SIGNUP;
-// 				ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),NULL,0,false);
+// 				ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_PLAYSTATIONPLUS, uiIDA,2,ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::PSPlusReturned,this, app.GetStringTable(),nullptr,0,false);
 			}
 
 #endif
@@ -1072,7 +1071,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 				if(isOnlineGame)
 				{
 					bool chatRestricted = false;
-					ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,NULL,NULL);
+					ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,nullptr,nullptr);
 					if(chatRestricted)
 					{
 						ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_CHAT_RESTRICTION, ProfileManager.GetPrimaryPad() );
@@ -1136,7 +1135,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	if (wSeed.length() != 0)
 	{
 		int64_t value = 0;
-		unsigned int len = (unsigned int)wSeed.length();
+		unsigned int len = static_cast<unsigned int>(wSeed.length());
 
 		//Check if the input string contains a numerical value
 		bool isNumber = true;
@@ -1174,7 +1173,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 
 
 	param->seed = seedValue;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 	param->texturePackId = pClass->m_MoreOptionsParams.dwTexturePack;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -1210,8 +1209,8 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	app.SetGameHostOption(eGameHostOption_WasntSaveOwner, false);
 #ifdef _LARGE_WORLDS
 	app.SetGameHostOption(eGameHostOption_WorldSize, pClass->m_MoreOptionsParams.worldSize+1 );  // 0 is GAME_HOST_OPTION_WORLDSIZE_UNKNOWN
-	pClass->m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
-	pClass->m_MoreOptionsParams.newWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
+	pClass->m_MoreOptionsParams.currentWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
+	pClass->m_MoreOptionsParams.newWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
 #endif
 
 	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
@@ -1253,7 +1252,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -1271,7 +1270,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 
 int UIScene_CreateWorldMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_CreateWorldMenu* pClass = (UIScene_CreateWorldMenu*)pParam;
+	UIScene_CreateWorldMenu* pClass = static_cast<UIScene_CreateWorldMenu *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -1379,7 +1378,7 @@ int UIScene_CreateWorldMenu::StartGame_SignInReturned(void *pParam,bool bContinu
 
 int UIScene_CreateWorldMenu::ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_CreateWorldMenu* pClass = (UIScene_CreateWorldMenu*)pParam;
+	UIScene_CreateWorldMenu* pClass = static_cast<UIScene_CreateWorldMenu *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -1432,7 +1431,7 @@ int UIScene_CreateWorldMenu::ConfirmCreateReturned(void *pParam,int iPad,C4JStor
 				if(isOnlineGame)
 				{
 					bool chatRestricted = false;
-					ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,NULL,NULL);
+					ProfileManager.GetChatAndContentRestrictions(ProfileManager.GetPrimaryPad(),false,&chatRestricted,nullptr,nullptr);
 					if(chatRestricted)
 					{
 						ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_CHAT_RESTRICTION, ProfileManager.GetPrimaryPad() );

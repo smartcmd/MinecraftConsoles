@@ -751,7 +751,7 @@ static void api_free_resource(GDrawHandle *r)
    S32 i;
    for (i=0; i < MAX_SAMPLERS; i++)
       if (gdraw->active_tex[i] == (GDrawTexture *) r)
-         gdraw->active_tex[i] = NULL;
+         gdraw->active_tex[i] = nullptr;
 }
 
 static void RADLINK gdraw_UnlockHandles(GDrawStats *stats)
@@ -772,7 +772,7 @@ extern GDrawTexture *gdraw_GCM_WrappedTextureCreate(CellGcmTexture *gcm_tex)
    memset(&stats, 0, sizeof(stats));
    GDrawHandle *p = gdraw_res_alloc_begin(gdraw->texturecache, 0, &stats); // it may need to free one item to give us a handle
    p->handle.tex.gcm_ptr = 0;
-   gdraw_HandleCacheAllocateEnd(p, 0, NULL, GDRAW_HANDLE_STATE_user_owned);
+   gdraw_HandleCacheAllocateEnd(p, 0, nullptr, GDRAW_HANDLE_STATE_user_owned);
    gdraw_GCM_WrappedTextureChange((GDrawTexture *) p, gcm_tex);
    return (GDrawTexture *) p;
 }
@@ -816,11 +816,11 @@ static bool is_texture_swizzled(S32 w, S32 h)
 static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height, gdraw_texture_format gformat, U32 flags, GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *stats)
 {
    S32 bytes_pixel = 4;
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    bool swizzled = false;
 
    if (width > 4096 || height > 4096) {
-      IggyGDrawSendWarning(NULL, "GDraw %d x %d texture not supported by hardware (dimension size limit 4096)", width, height);
+      IggyGDrawSendWarning(nullptr, "GDraw %d x %d texture not supported by hardware (dimension size limit 4096)", width, height);
       return false;
    }
 
@@ -893,7 +893,7 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
    if (swizzled || (flags & GDRAW_MAKETEXTURE_FLAGS_mipmap)) {
       rrbool ok;
 
-      assert(p->temp_buffer != NULL);
+      assert(p->temp_buffer != nullptr);
       ok = gdraw_MipmapBegin(&gdraw->mipmap, width, height, mipmaps,
          bytes_pixel, p->temp_buffer, p->temp_buffer_bytes);
       assert(ok); // this should never hit unless the temp_buffer is way too small
@@ -1023,8 +1023,8 @@ static void RADLINK gdraw_UpdateTextureEnd(GDrawTexture *t, void *unique_id, GDr
 static void RADLINK gdraw_FreeTexture(GDrawTexture *tt, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *t = (GDrawHandle *) tt;
-   assert(t != NULL); // @GDRAW_ASSERT
-   if (t->owner == unique_id || unique_id == NULL) {
+   assert(t != nullptr); // @GDRAW_ASSERT
+   if (t->owner == unique_id || unique_id == nullptr) {
       if (t->cache == &gdraw->rendertargets) {
          gdraw_HandleCacheUnlock(t);
          // cache it by simply not freeing it
@@ -1121,7 +1121,7 @@ static rrbool RADLINK gdraw_TryLockVertexBuffer(GDrawVertexBuffer *vb, void *uni
 static void RADLINK gdraw_FreeVertexBuffer(GDrawVertexBuffer *vb, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *h = (GDrawHandle *) vb;
-   assert(h != NULL); // @GDRAW_ASSERT
+   assert(h != nullptr); // @GDRAW_ASSERT
    if (h->owner == unique_id)
       gdraw_res_kill(h, stats);
 }
@@ -1152,19 +1152,19 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 
    t = gdraw_HandleCacheAllocateBegin(&gdraw->rendertargets);
    if (!t) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: hit handle limit");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: hit handle limit");
       return t;
    }
 
    void *ptr = gdraw_arena_alloc(&gdraw->rt_arena, size, 1);
    if (!ptr) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget allocation failed: out of rendertarget texture memory");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget allocation failed: out of rendertarget texture memory");
       gdraw_HandleCacheAllocateFail(t);
-      return NULL;
+      return nullptr;
    }
 
    t->fence = get_next_fence(); // we're about to start using it immediately, so...
-   t->raw_ptr = NULL;
+   t->raw_ptr = nullptr;
 
    t->handle.tex.gcm_ptr = ptr;
 
@@ -1329,14 +1329,14 @@ static void set_common_renderstate()
 
    // reset our state caching
    for (i=0; i < MAX_SAMPLERS; i++) {
-      gdraw->active_tex[i] = NULL;
+      gdraw->active_tex[i] = nullptr;
       cellGcmSetTextureControl(gcm, i, CELL_GCM_FALSE, 0, 0, 0);
    }
 
    assert(gdraw->aa_tex.offset != 0); // if you hit this, your initialization is screwed up.
    set_rsx_texture(gdraw->gcm, AATEX_SAMPLER, &gdraw->aa_tex, GDRAW_WRAP_clamp, 0);
 
-   gdraw->cur_fprog = NULL;
+   gdraw->cur_fprog = nullptr;
    gdraw->vert_format = -1;
    gdraw->scissor_state = ~0u;
    gdraw->blend_mode = -1;
@@ -1363,7 +1363,7 @@ static void clear_renderstate(void)
 
 static void set_render_target()
 {
-   GcmTexture *tex = NULL;
+   GcmTexture *tex = nullptr;
    S32 i;
    CellGcmSurface surf = gdraw->main_surface;
 
@@ -1384,7 +1384,7 @@ static void set_render_target()
 
    // invalidate current textures (need to reset them to force L1 texture cache flush)
    for (i=0; i < MAX_SAMPLERS; ++i)
-      gdraw->active_tex[i] = NULL;
+      gdraw->active_tex[i] = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1513,19 +1513,19 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    GDrawFramebufferState *n = gdraw->cur+1;
    GDrawHandle *t;
    if (gdraw->tw == 0 || gdraw->th == 0) {
-      IggyGDrawSendWarning(NULL, "GDraw warning: w=0,h=0 rendertarget");
+      IggyGDrawSendWarning(nullptr, "GDraw warning: w=0,h=0 rendertarget");
       return false;
    }
 
    if (n >= &gdraw->frame[MAX_RENDER_STACK_DEPTH]) {
       assert(0);
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget nesting exceeds MAX_RENDER_STACK_DEPTH");
       return false;
    }
 
    if (owner) {
       // @TODO implement
-      t = NULL;
+      t = nullptr;
       assert(0); // nyi
    } else {
       t = get_color_rendertarget(stats);
@@ -1534,9 +1534,9 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    }
 
    n->color_buffer = t;
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
-   n->cached = owner != NULL;
+   n->cached = owner != nullptr;
    if (owner) {
       n->base_x = region->x0;
       n->base_y = region->y0;
@@ -1617,9 +1617,9 @@ static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *stats)
    assert(m >= gdraw->frame);  // bug in Iggy -- unbalanced
 
    if (m != gdraw->frame) {
-      assert(m->color_buffer != NULL); // @GDRAW_ASSERT
+      assert(m->color_buffer != nullptr); // @GDRAW_ASSERT
    }
-   assert(n->color_buffer != NULL); // @GDRAW_ASSERT
+   assert(n->color_buffer != nullptr); // @GDRAW_ASSERT
 
    // wait for render to texture operation to finish
    // can't put down a backend fence directly, there might still be
@@ -1694,7 +1694,7 @@ static void set_fragment_para(GDraw * RADRESTRICT gd, U32 ucode_offs, int para, 
    if (para == -1)
       return;
 
-   gd->cur_fprog = NULL; // need to re-set shader after patching
+   gd->cur_fprog = nullptr; // need to re-set shader after patching
 
    const U64 *inv = (const U64 *) values;
    const int *patch_offs = (const int *) para;
@@ -1728,7 +1728,7 @@ static void set_fragment_para(GDraw * RADRESTRICT gd, U32 ucode_offs, int para, 
 static RADINLINE void set_texture(S32 texunit, GDrawTexture *tex)
 {
    assert(texunit < MAX_SAMPLERS);
-   assert(tex != NULL);
+   assert(tex != nullptr);
 
    if (gdraw->active_tex[texunit] != tex) {
       gdraw->active_tex[texunit] = tex;
@@ -1983,7 +1983,7 @@ static RADINLINE void set_vertex_decl(GDraw * RADRESTRICT gd, CellGcmContextData
 //   Draw triangles with a given renderstate
 //
 
-static RADINLINE void fence_resources(GDraw * RADRESTRICT gd, void *r1, void *r2=NULL, void *r3=NULL, void *r4=NULL)
+static RADINLINE void fence_resources(GDraw * RADRESTRICT gd, void *r1, void *r2=nullptr, void *r3=nullptr, void *r4=nullptr)
 {
    GDrawFence fence;
    fence.value = gd->next_fence_index;
@@ -2046,7 +2046,7 @@ static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimiti
          while (pos < p->num_indices) {
             S32 vert_count = RR_MIN(p->num_indices - pos, verts_per_chunk);
             void *ring = gdraw_bufring_alloc(&gd->dyn_vb, vert_count * vsize, CELL_GCM_VERTEX_TEXTURE_CACHE_LINE_SIZE);
-            assert(ring != NULL); // we specifically chunked so this alloc succeeds!
+            assert(ring != nullptr); // we specifically chunked so this alloc succeeds!
 
             // prepare for painting...
             cellGcmSetInvalidateVertexCache(gcm);
@@ -2083,7 +2083,7 @@ static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimiti
          S32 vert_count = RR_MIN(p->num_vertices - pos, verts_per_chunk);
          U32 chunk_bytes = vert_count * vsize;
          void *ring = gdraw_bufring_alloc(&gd->dyn_vb, chunk_bytes, CELL_GCM_VERTEX_TEXTURE_CACHE_LINE_SIZE);
-         assert(ring != NULL); // we picked the chunk size so this alloc succeeds!
+         assert(ring != nullptr); // we picked the chunk size so this alloc succeeds!
 
          memcpy(ring, (U8 *)p->vertices + pos * vsize, chunk_bytes);
          cellGcmSetInvalidateVertexCache(gcm);
@@ -2203,7 +2203,7 @@ static void gdraw_Filter(GDrawRenderState *r, gswf_recti *s, float *tc, int isbe
 {
    ProgramWithCachedVariableLocations *prg = &gdraw->filter_prog[isbevel][r->filter_mode];
    U32 ucode_offs = prg->cfg.offset;
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, NULL, stats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, stats))
       return;
 
    set_texture(0, r->tex[0]);
@@ -2287,14 +2287,14 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
             assert(0);
       }
    } else {
-      GDrawHandle *blend_tex = NULL;
+      GDrawHandle *blend_tex = nullptr;
       GDraw *gd = gdraw;
 
       // for crazy blend modes, we need to read back from the framebuffer
       // and do the blending in the pixel shader. so we need to copy the
       // relevant pixels from our active render target into a texture.
       if (r->blend_mode == GDRAW_BLEND_special &&
-          (blend_tex = get_color_rendertarget(stats)) != NULL) {
+          (blend_tex = get_color_rendertarget(stats)) != nullptr) {
          // slightly different logic depending on whether we were rendering
          // to the main color buffer or a render target, because the former
          // has tile origin-based coordinates while the latter don't. also,
@@ -2344,7 +2344,7 @@ static void create_fragment_program(ProgramWithCachedVariableLocations *p, Progr
       cellGcmCgGetUCode(p->program, &ucode_main, &ucode_size);
 
       ucode_local = gdraw_arena_alloc(&gdraw->local_arena, ucode_size + 400, CELL_GCM_FRAGMENT_UCODE_LOCAL_ALIGN_OFFSET); // 400 for overfetch
-      assert(ucode_local != NULL); // if this triggers, it's a GDraw bug
+      assert(ucode_local != nullptr); // if this triggers, it's a GDraw bug
       memcpy(ucode_local, ucode_main, ucode_size);
 
       cellGcmCgGetCgbFragmentProgramConfiguration(p->program, &p->cfg, 0, 1, 0);
@@ -2408,7 +2408,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_gcm_resourcetype type, U32 alig
    U32 header_size = is_vertex ? 0 : sizeof(GcmTexture) * num_handles;
 
    if (!num_handles)
-      return NULL;
+      return nullptr;
 
    GDrawHandleCache *cache = (GDrawHandleCache *) IggyGDrawMalloc(cache_size + header_size);
    if (cache) {
@@ -2427,7 +2427,7 @@ static GDrawHandleCache *make_handle_cache(gdraw_gcm_resourcetype type, U32 alig
       cache->alloc = gfxalloc_create(gdraw_mem[type].ptr, num_bytes, align, num_handles);
       if (!cache->alloc) {
          IggyGDrawFree(cache);
-         cache = NULL;
+         cache = nullptr;
       }
    }
 
@@ -2496,14 +2496,14 @@ int gdraw_GCM_SetResourceMemory(gdraw_gcm_resourcetype type, S32 num_handles, vo
          free_handle_cache(gdraw->texturecache);
          gdraw->texturecache = make_handle_cache(GDRAW_GCM_RESOURCE_texture, CELL_GCM_TEXTURE_SWIZZLE_ALIGN_OFFSET);
          gdraw->tex_loc = get_location(ptr);
-         return gdraw->texturecache != NULL;
+         return gdraw->texturecache != nullptr;
 
       case GDRAW_GCM_RESOURCE_vertexbuffer:
          free_handle_cache(gdraw->vbufcache);
          gdraw->vbufcache = make_handle_cache(GDRAW_GCM_RESOURCE_vertexbuffer, CELL_GCM_SURFACE_LINEAR_ALIGN_OFFSET);
          gdraw->vbuf_base = ptr ? (U8 *) ptr - addr2offs(ptr) : 0;
          gdraw->vbuf_loc = get_location(ptr);
-         return gdraw->vbufcache != NULL;
+         return gdraw->vbufcache != nullptr;
 
       case GDRAW_GCM_RESOURCE_dyn_vertexbuffer:
          gdraw_bufring_shutdown(&gdraw->dyn_vb);
@@ -2549,10 +2549,10 @@ int gdraw_GCM_SetRendertargetMemory(void *ptr, S32 num_bytes, S32 width, S32 hei
 
 void gdraw_GCM_ResetAllResourceMemory()
 {
-   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_texture, 0, NULL, 0);
-   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_vertexbuffer, 0, NULL, 0);
-   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_dyn_vertexbuffer, 0, NULL, 0);
-   gdraw_GCM_SetRendertargetMemory(NULL, 0, 0, 0, 0);
+   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_texture, 0, nullptr, 0);
+   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_vertexbuffer, 0, nullptr, 0);
+   gdraw_GCM_SetResourceMemory(GDRAW_GCM_RESOURCE_dyn_vertexbuffer, 0, nullptr, 0);
+   gdraw_GCM_SetRendertargetMemory(nullptr, 0, 0, 0, 0);
 }
 
 GDrawFunctions *gdraw_GCM_CreateContext(CellGcmContextData *gcm, void *local_workmem, U8 rsx_label_index)
@@ -2560,7 +2560,7 @@ GDrawFunctions *gdraw_GCM_CreateContext(CellGcmContextData *gcm, void *local_wor
    S32 i;
 
    gdraw = (GDraw *) IggyGDrawMalloc(sizeof(*gdraw)); // make sure gdraw struct is PPU cache line aligned
-   if (!gdraw) return NULL;
+   if (!gdraw) return nullptr;
 
    memset(gdraw, 0, sizeof(*gdraw));
 
@@ -2648,7 +2648,7 @@ void gdraw_GCM_DestroyContext(void)
       free_handle_cache(gdraw->texturecache);
       free_handle_cache(gdraw->vbufcache);
       IggyGDrawFree(gdraw);
-      gdraw = NULL;
+      gdraw = nullptr;
    }
 }
 

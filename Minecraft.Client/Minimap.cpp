@@ -133,10 +133,10 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 #ifdef __PSVITA__
 	Offset = -0.03f;
 #endif
-    t->vertexUV((float)(x + 0 + vo), (float)( y + h - vo), (float)( Offset), (float)( 0), (float)( 1));
-    t->vertexUV((float)(x + w - vo), (float)( y + h - vo), (float)( Offset), (float)( 1), (float)( 1));
-    t->vertexUV((float)(x + w - vo), (float)( y + 0 + vo), (float)( Offset), (float)( 1), (float)( 0));
-    t->vertexUV((float)(x + 0 + vo), (float)( y + 0 + vo), (float)( Offset), (float)( 0), (float)( 0));
+    t->vertexUV((float)(x + 0 + vo), (float)( y + h - vo), (float)( Offset), static_cast<float>(0), static_cast<float>(1));
+    t->vertexUV((float)(x + w - vo), (float)( y + h - vo), (float)( Offset), static_cast<float>(1), static_cast<float>(1));
+    t->vertexUV((float)(x + w - vo), (float)( y + 0 + vo), (float)( Offset), static_cast<float>(1), static_cast<float>(0));
+    t->vertexUV((float)(x + 0 + vo), (float)( y + 0 + vo), (float)( Offset), static_cast<float>(0), static_cast<float>(0));
     t->end();
     glEnable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
@@ -165,9 +165,9 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 		}
 #endif
 
-		// 4J Stu - For item frame renders, the player is NULL. We do not want to show player icons on the frames.
-		if(player == NULL && (imgIndex != 12)) continue;
-		else if (player != NULL && imgIndex == 12) continue;
+		// 4J Stu - For item frame renders, the player is nullptr. We do not want to show player icons on the frames.
+		if(player == nullptr && (imgIndex != 12)) continue;
+		else if (player != nullptr && imgIndex == 12) continue;
 		else if( imgIndex == 12 && dec->entityId != entityId) continue;
 
         glPushMatrix();
@@ -182,10 +182,10 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
         float v1 = (imgIndex / 4 + 1) / 4.0f;
 
         t->begin();
-        t->vertexUV((float)(-1), (float)( +1), (float)( 0), (float)( u0), (float)( v0));
-        t->vertexUV((float)(+1), (float)( +1), (float)( 0), (float)( u1), (float)( v0));
-        t->vertexUV((float)(+1), (float)( -1), (float)( 0), (float)( u1), (float)( v1));
-        t->vertexUV((float)(-1), (float)( -1), (float)( 0), (float)( u0), (float)( v1));
+        t->vertexUV(static_cast<float>(-1), static_cast<float>(+1), static_cast<float>(0), (float)( u0), (float)( v0));
+        t->vertexUV(static_cast<float>(+1), static_cast<float>(+1), static_cast<float>(0), (float)( u1), (float)( v0));
+        t->vertexUV(static_cast<float>(+1), static_cast<float>(-1), static_cast<float>(0), (float)( u1), (float)( v1));
+        t->vertexUV(static_cast<float>(-1), static_cast<float>(-1), static_cast<float>(0), (float)( u0), (float)( v1));
         t->end();
         glPopMatrix();
 		fIconZ-=0.01f;
@@ -201,9 +201,9 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 		char imgIndex = dec->img;
 		imgIndex -= 16;
 
-		// 4J Stu - For item frame renders, the player is NULL. We do not want to show player icons on the frames.
-		if(player == NULL && (imgIndex != 12)) continue;
-		else if (player != NULL && imgIndex == 12) continue;
+		// 4J Stu - For item frame renders, the player is nullptr. We do not want to show player icons on the frames.
+		if(player == nullptr && (imgIndex != 12)) continue;
+		else if (player != nullptr && imgIndex == 12) continue;
 		else if( imgIndex == 12 && dec->entityId != entityId) continue;
 
         glPushMatrix();
@@ -218,10 +218,10 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
         float v1 = (imgIndex / 4 + 1) / 4.0f;
 
         t->begin();
-        t->vertexUV((float)(-1), (float)( +1), (float)( 0), (float)( u0), (float)( v0));
-        t->vertexUV((float)(+1), (float)( +1), (float)( 0), (float)( u1), (float)( v0));
-        t->vertexUV((float)(+1), (float)( -1), (float)( 0), (float)( u1), (float)( v1));
-        t->vertexUV((float)(-1), (float)( -1), (float)( 0), (float)( u0), (float)( v1));
+        t->vertexUV(static_cast<float>(-1), static_cast<float>(+1), static_cast<float>(0), (float)( u0), (float)( v0));
+        t->vertexUV(static_cast<float>(+1), static_cast<float>(+1), static_cast<float>(0), (float)( u1), (float)( v0));
+        t->vertexUV(static_cast<float>(+1), static_cast<float>(-1), static_cast<float>(0), (float)( u1), (float)( v1));
+        t->vertexUV(static_cast<float>(-1), static_cast<float>(-1), static_cast<float>(0), (float)( u0), (float)( v1));
         t->end();
         glPopMatrix();
 		fIconZ-=0.01f;
@@ -239,7 +239,7 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 //#else
 	// 4J Stu - TU-1 hotfix
 	// DCR: Render the players current position here instead
-	if(player != NULL)
+	if(player != nullptr)
 	{
 		wchar_t playerPosText[32];
 		ZeroMemory(&playerPosText, sizeof(wchar_t) * 32);

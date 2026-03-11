@@ -170,7 +170,7 @@ void ConsoleUIController::HandleDLCInstalled(int iPad)
 	CustomMessage_DLCInstalled( &xuiMsg );
 
 	// The DLC message should only happen in the main menus, so it should go to the default xui scenes
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	if(bNotInGame)
 	{
@@ -188,7 +188,7 @@ void ConsoleUIController::HandleTMSDLCFileRetrieved(int iPad)
 	XUIMessage xuiMsg;
 	CustomMessage_TMS_DLCFileRetrieved( &xuiMsg );
 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	if(bNotInGame)
 	{
@@ -204,7 +204,7 @@ void ConsoleUIController::HandleTMSBanFileRetrieved(int iPad)
 {
 	XUIMessage xuiMsg;
 	CustomMessage_TMS_BanFileRetrieved( &xuiMsg );
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	if(bNotInGame)
 	{
@@ -319,7 +319,7 @@ C4JStorage::EMessageResult ConsoleUIController::RequestMessageBox(UINT uiTitle, 
 	return StorageManager.RequestMessageBox(uiTitle, uiText, uiOptionA, uiOptionC, dwPad, Func, lpParam, pStringTable, pwchFormatString, dwFocusButton);
 }
 
-C4JStorage::EMessageResult ConsoleUIController::RequestUGCMessageBox(UINT title/* = -1 */, UINT message/* = -1 */, int iPad/* = -1*/, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)/* = NULL*/, LPVOID lpParam/* = NULL*/)
+C4JStorage::EMessageResult ConsoleUIController::RequestUGCMessageBox(UINT title/* = -1 */, UINT message/* = -1 */, int iPad/* = -1*/, int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)/* = nullptr*/, LPVOID lpParam/* = nullptr*/)
 {
 	// Default title / messages
 	if (title == -1)
@@ -337,5 +337,5 @@ C4JStorage::EMessageResult ConsoleUIController::RequestUGCMessageBox(UINT title/
 
 	UINT uiIDA[1];
 	uiIDA[0]=IDS_CONFIRM_OK;
-	return ui.RequestMessageBox(title, message, uiIDA, 1, iPad, Func, lpParam, app.GetStringTable(), NULL, 0, false);
+	return ui.RequestMessageBox(title, message, uiIDA, 1, iPad, Func, lpParam, app.GetStringTable(), nullptr, 0, false);
 }

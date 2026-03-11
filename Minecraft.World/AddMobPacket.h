@@ -32,6 +32,6 @@ public:
 	vector<shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddMobPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AddMobPacket>(); }
 	virtual int getId() { return 24; }
 };

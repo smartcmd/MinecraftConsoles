@@ -3,7 +3,7 @@
 #include "net.minecraft.world.entity.npc.h"
 #include "LookAtTradingPlayerGoal.h"
 
-LookAtTradingPlayerGoal::LookAtTradingPlayerGoal(Villager *villager) : LookAtPlayerGoal((Mob *)villager, typeid(Player), 8)
+LookAtTradingPlayerGoal::LookAtTradingPlayerGoal(Villager *villager) : LookAtPlayerGoal(static_cast<Mob *>(villager), typeid(Player), 8)
 {
 	this->villager = villager;
 }

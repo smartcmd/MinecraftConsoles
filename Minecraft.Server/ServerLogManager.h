@@ -27,6 +27,7 @@ namespace ServerRuntime
         enum ELoginRejectReason
         {
             eLoginRejectReason_BannedXuid = 0,
+            eLoginRejectReason_NotWhitelisted,
             eLoginRejectReason_DuplicateXuid,
             eLoginRejectReason_DuplicateName
         };

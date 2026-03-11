@@ -192,6 +192,7 @@ private:
 public:
 	virtual void containerChanged();
 	virtual bool canSpawn();
+	virtual bool removeWhenFarAway() override;
 
 protected:
 	virtual shared_ptr<EntityHorse> getClosestMommy(shared_ptr<Entity> baby, double searchRadius);

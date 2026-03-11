@@ -14,7 +14,7 @@ bool SwampTreeFeature::place(Level *level, Random *random, int x, int y, int z)
 	if (y < 1 || y + treeHeight + 1 > Level::genDepth) return false;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 		bool intersects = levelGenOptions->checkIntersects(x - 3, y - 1, z - 3, x + 3, y + treeHeight, z + 3);

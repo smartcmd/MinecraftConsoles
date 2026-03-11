@@ -23,8 +23,8 @@ TeleportEntityPacket::TeleportEntityPacket(shared_ptr<Entity> e)
 	x = Mth::floor(e->x * 32);
 	y = Mth::floor(e->y * 32);
 	z = Mth::floor(e->z * 32);
-	yRot = (byte) (e->yRot * 256 / 360);
-	xRot = (byte) (e->xRot * 256 / 360);
+	yRot = static_cast<byte>(e->yRot * 256 / 360);
+	xRot = static_cast<byte>(e->xRot * 256 / 360);
 }
 
 TeleportEntityPacket::TeleportEntityPacket(int id, int x, int y, int z, byte yRot, byte xRot)

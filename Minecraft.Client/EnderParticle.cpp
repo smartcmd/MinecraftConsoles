@@ -28,14 +28,14 @@ EnderParticle::EnderParticle(Level *level, double x, double y, double z, double 
 
 	oSize = size = random->nextFloat()*0.2f+0.5f;
 
-    lifetime = (int) (Math::random()*10) + 40;
+    lifetime = static_cast<int>(Math::random() * 10) + 40;
     noPhysics = true;
-    setMiscTex((int)(Math::random()*8));
+    setMiscTex(static_cast<int>(Math::random() * 8));
 }
 
 void EnderParticle::render(Tesselator *t, float a, float xa, float ya, float za, float xa2, float za2)
 {
-    float s = (age + a) / (float) lifetime;
+    float s = (age + a) / static_cast<float>(lifetime);
     s = 1-s;
     s = s*s;
     s = 1-s;
@@ -48,13 +48,13 @@ int EnderParticle::getLightColor(float a)
 {
     int br = Particle::getLightColor(a);
 
-    float pos = age/(float)lifetime;
+    float pos = age/static_cast<float>(lifetime);
     pos = pos*pos;
     pos = pos*pos;
         
     int br1 = (br) & 0xff;
     int br2 = (br >> 16) & 0xff;
-    br2 += (int) (pos * 15 * 16);
+    br2 += static_cast<int>(pos * 15 * 16);
     if (br2 > 15 * 16) br2 = 15 * 16;
     return br1 | br2 << 16;
 }
@@ -62,7 +62,7 @@ int EnderParticle::getLightColor(float a)
 float EnderParticle::getBrightness(float a)
 {
     float br = Particle::getBrightness(a);
-    float pos = age/(float)lifetime;
+    float pos = age/static_cast<float>(lifetime);
     pos = pos*pos;
     pos = pos*pos;
     return br*(1-pos)+pos;
@@ -74,7 +74,7 @@ void EnderParticle::tick()
     yo = y;
     zo = z;
         
-    float pos = age/(float)lifetime;
+    float pos = age/static_cast<float>(lifetime);
     float a = pos;
     pos = -pos+pos*pos*2;
 //        pos = pos*pos;

@@ -53,9 +53,9 @@ typedef struct _NetworkGameInitData
 	_NetworkGameInitData()
 	{
 		seed = 0;
-		saveData = NULL;
+		saveData = nullptr;
 		settings = 0;
-		levelGen = NULL;
+		levelGen = nullptr;
 		texturePackId = 0;
 		findSeed = false;
 		dedicatedNoLocalHostPlayer = false;
@@ -238,8 +238,7 @@ private:
 public:
 	void					addPostProcessRequest(ChunkSource *chunkSource, int x, int z);
 
-public:
-	static PlayerList *getPlayerList() { if( server != NULL ) return server->players; else return NULL; }
+    static PlayerList *getPlayerList() { if( server != nullptr) return server->players; else return nullptr; }
 	static void SetTimeOfDay(int64_t time) { setTimeOfDayAtEndOfTick = true; setTimeOfDay = time; }
 	static void SetTime(int64_t time) { setTimeAtEndOfTick = true; setTime = time; }
 

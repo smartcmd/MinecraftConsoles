@@ -11,16 +11,16 @@ UIScene_HorseInventoryMenu::UIScene_HorseInventoryMenu(int iPad, void *_initData
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	HorseScreenInput *initData = (HorseScreenInput *)_initData;
+	HorseScreenInput *initData = static_cast<HorseScreenInput *>(_initData);
 
 	m_labelHorse.init( initData->container->getName() );
 	m_inventory = initData->inventory;
 	m_horse = initData->horse;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[iPad] != NULL )
+	if( pMinecraft->localgameModes[iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Horse_Menu, this);
 	}
@@ -240,7 +240,7 @@ void UIScene_HorseInventoryMenu::setSectionSelectedSlot(ESceneSection eSection, 
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionHorseArmor:
@@ -268,7 +268,7 @@ void UIScene_HorseInventoryMenu::setSectionSelectedSlot(ESceneSection eSection, 
 
 UIControl *UIScene_HorseInventoryMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionHorseArmor:
@@ -296,7 +296,7 @@ UIControl *UIScene_HorseInventoryMenu::getSection(ESceneSection eSection)
 void UIScene_HorseInventoryMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return;
 
 	if(wcscmp((wchar_t *)region->name,L"horse")==0)
 	{

@@ -127,6 +127,7 @@
     <ClCompile Include="Access\Access.cpp" />
     <ClCompile Include="Access\BanManager.cpp" />
     <ClCompile Include="FourKitNative.cpp" />
+    <ClCompile Include="Access\WhitelistManager.cpp" />
     <ClCompile Include="ServerLogManager.cpp" />
     <ClCompile Include="..\Minecraft.Client\AbstractTexturePack.cpp" />
     <ClCompile Include="..\Minecraft.Client\AchievementPopup.cpp" />
@@ -663,6 +664,7 @@
     <ClCompile Include="Console\commands\CliCommandPardonIp.cpp" />
     <ClCompile Include="Console\commands\CliCommandStop.cpp" />
     <ClCompile Include="Console\commands\CliCommandTp.cpp" />
+    <ClCompile Include="Console\commands\CliCommandWhitelist.cpp" />
     <ClCompile Include="Console\ServerCliEngine.cpp" />
     <ClCompile Include="Console\ServerCliParser.cpp" />
     <ClCompile Include="Console\ServerCliRegistry.cpp" />
@@ -685,6 +687,7 @@
   <ItemGroup>
     <ClInclude Include="Access\Access.h" />
     <ClInclude Include="Access\BanManager.h" />
+    <ClInclude Include="Access\WhitelistManager.h" />
     <ClInclude Include="Console\ServerCli.h" />
     <ClInclude Include="Console\ServerCliInput.h" />
     <ClInclude Include="Console\commands\CliCommandBan.h" />
@@ -697,11 +700,14 @@
     <ClInclude Include="Console\commands\CliCommandPardonIp.h" />
     <ClInclude Include="Console\commands\CliCommandStop.h" />
     <ClInclude Include="Console\commands\CliCommandTp.h" />
+    <ClInclude Include="Console\commands\CliCommandWhitelist.h" />
     <ClInclude Include="Console\commands\IServerCliCommand.h" />
     <ClInclude Include="Console\ServerCliEngine.h" />
     <ClInclude Include="Console\ServerCliParser.h" />
     <ClInclude Include="Console\ServerCliRegistry.h" />
     <ClInclude Include="Common\FileUtils.h" />
+    <ClInclude Include="Common\AccessStorageUtils.h" />
+    <ClInclude Include="Common\NetworkUtils.h" />
     <ClInclude Include="Common\StringUtils.h" />
     <ClInclude Include="FourKitNative.h" />
     <ClInclude Include="FourKitNativeCallbacks.h" />

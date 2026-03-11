@@ -19,10 +19,12 @@
 #include "Windows64/KeyboardMouseInput.h"
 #include "Windows64/Network/WinsockNetLayer.h"
 #include "Windows64/Windows64_UIController.h"
+#include "Common/UI/UI.h"
 
 #include "../../Minecraft.World/AABB.h"
 #include "../../Minecraft.World/Vec3.h"
 #include "../../Minecraft.World/IntCache.h"
+#include "../../Minecraft.World/ChunkSource.h"
 #include "../../Minecraft.World/TilePos.h"
 #include "../../Minecraft.World/compression.h"
 #include "../../Minecraft.World/OldChunkStorage.h"
@@ -62,6 +64,9 @@ struct DedicatedServerConfig
 	char bindIP[256];
 	char name[17];
 	int maxPlayers;
+	int worldSize;
+	int worldSizeChunks;
+	int worldHellScale;
 	__int64 seed;
 	ServerRuntime::EServerLogLevel logLevel;
 	bool hasSeed;
@@ -300,6 +305,9 @@ static void ApplyServerPropertiesToDedicatedConfig(const ServerPropertiesConfig 
 		serverProperties.serverName.empty() ? "DedicatedServer" : serverProperties.serverName.c_str(),
 		_TRUNCATE);
 	config->maxPlayers = serverProperties.maxPlayers;
+	config->worldSize = serverProperties.worldSize;
+	config->worldSizeChunks = serverProperties.worldSizeChunks;
+	config->worldHellScale = serverProperties.worldHellScale;
 	config->logLevel = serverProperties.logLevel;
 	config->hasSeed = serverProperties.hasSeed;
 	config->seed = serverProperties.seed;
@@ -346,6 +354,9 @@ int main(int argc, char **argv)
 	strncpy_s(config.bindIP, sizeof(config.bindIP), "0.0.0.0", _TRUNCATE);
 	strncpy_s(config.name, sizeof(config.name), "DedicatedServer", _TRUNCATE);
 	config.maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
+	config.worldSize = e_worldSize_Classic;
+	config.worldSizeChunks = LEVEL_WIDTH_CLASSIC;
+	config.worldHellScale = HELL_LEVEL_SCALE_CLASSIC;
 	config.seed = 0;
 	config.logLevel = ServerRuntime::eServerLogLevel_Info;
 	config.hasSeed = false;
@@ -390,13 +401,22 @@ int main(int argc, char **argv)
 	LogStartupStep("initializing server log manager");
 	ServerRuntime::ServerLogManager::Initialize();
 	LogStartupStep("initializing dedicated access control");
-	if (!ServerRuntime::Access::Initialize("."))
+	if (!ServerRuntime::Access::Initialize(".", serverProperties.whiteListEnabled))
 	{
 		LogError("startup", "Failed to initialize dedicated server access control.");
 		return 2;
 	}
 	accessShutdownGuard.Activate();
 	LogInfof("startup", "LAN advertise: %s", serverProperties.lanAdvertise ? "enabled" : "disabled");
+	LogInfof("startup", "Whitelist: %s", serverProperties.whiteListEnabled ? "enabled" : "disabled");
+#ifdef _LARGE_WORLDS
+	LogInfof(
+		"startup",
+		"World size preset: %d (xz=%d, hell-scale=%d)",
+		config.worldSize,
+		config.worldSizeChunks,
+		config.worldHellScale);
+#endif
 
 	LogStartupStep("registering hidden window class");
 	HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -512,6 +532,13 @@ int main(int argc, char **argv)
 	app.SetGameHostOption(eGameHostOption_DoTileDrops, serverProperties.doTileDrops ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, serverProperties.naturalRegeneration ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, serverProperties.doDaylightCycle ? 1 : 0);
+#ifdef _LARGE_WORLDS
+	app.SetGameHostOption(eGameHostOption_WorldSize, serverProperties.worldSize);
+	// Apply desired target size for loading existing worlds.
+	// Expansion happens only when target size is larger than current level size.
+	app.SetGameNewWorldSize(serverProperties.worldSizeChunks, true);
+	app.SetGameNewHellScale(serverProperties.worldHellScale);
+#endif
 
 	StorageManager.SetSaveDisabled(serverProperties.disableSaving);
 	// Read world name and fixed save-id from server.properties
@@ -552,6 +579,10 @@ int main(int argc, char **argv)
 	{
 		param->seed = config.seed;
 	}
+#ifdef _LARGE_WORLDS
+	param->xzSize = (unsigned int)config.worldSizeChunks;
+	param->hellScale = (unsigned char)config.worldHellScale;
+#endif
 	param->saveData = worldBootstrap.saveData;
 	param->settings = app.GetGameHostOption(eGameHostOption_All);
 	param->dedicatedNoLocalHostPlayer = true;

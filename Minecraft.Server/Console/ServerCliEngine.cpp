@@ -15,6 +15,7 @@
 #include "commands\CliCommandPardonIp.h"
 #include "commands\CliCommandStop.h"
 #include "commands\CliCommandTp.h"
+#include "commands\CliCommandWhitelist.h"
 #include "..\Common\StringUtils.h"
 #include "..\ServerShutdown.h"
 #include "..\ServerLogger.h"
@@ -49,6 +50,7 @@ namespace ServerRuntime
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandPardon()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandPardonIp()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandBanList()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandWhitelist()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandTp()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandGamemode()));
 	}

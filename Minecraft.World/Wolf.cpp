@@ -81,7 +81,7 @@ bool Wolf::useNewAi()
 void Wolf::setTarget(shared_ptr<LivingEntity> target)
 {
 	TamableAnimal::setTarget(target);
-	if ( target == NULL )
+	if ( target == nullptr )
 	{
 		setAngry(false);
 	}
@@ -100,8 +100,8 @@ void Wolf::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 	entityData->define(DATA_HEALTH_ID, getHealth());
-	entityData->define(DATA_INTERESTED_ID, (byte)0);
-	entityData->define(DATA_COLLAR_COLOR, (byte) ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED));
+	entityData->define(DATA_INTERESTED_ID, static_cast<byte>(0));
+	entityData->define(DATA_COLLAR_COLOR, static_cast<byte>(ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED)));
 }
 
 void Wolf::playStepSound(int xt, int yt, int zt, int t)
@@ -114,7 +114,7 @@ void Wolf::addAdditonalSaveData(CompoundTag *tag)
 	TamableAnimal::addAdditonalSaveData(tag);
 
 	tag->putBoolean(L"Angry", isAngry());
-	tag->putByte(L"CollarColor", (byte) getCollarColor());
+	tag->putByte(L"CollarColor", static_cast<byte>(getCollarColor()));
 }
 
 void Wolf::readAdditionalSaveData(CompoundTag *tag) 
@@ -224,8 +224,8 @@ void Wolf::tick()
 
 			if (shakeAnim > 0.4f) 
 			{
-				float yt = (float) bb->y0;
-				int shakeCount = (int) (Mth::sin((shakeAnim - 0.4f) * PI) * 7.0f);
+				float yt = static_cast<float>(bb->y0);
+				int shakeCount = static_cast<int>(Mth::sin((shakeAnim - 0.4f) * PI) * 7.0f);
 				for (int i = 0; i < shakeCount; i++) 
 				{
 					float xo = (random->nextFloat() * 2 - 1) * bbWidth * 0.5f;
@@ -286,7 +286,7 @@ bool Wolf::hurt(DamageSource *source, float dmg)
 	if (isTame())
 	{		
 		shared_ptr<Entity> entity = source->getDirectEntity();
-		if (entity != NULL && entity->instanceof(eTYPE_PLAYER))
+		if (entity != nullptr && entity->instanceof(eTYPE_PLAYER))
 		{
 			shared_ptr<Player> attacker = dynamic_pointer_cast<Player>(entity);
 			attacker->canHarmPlayer(getOwnerUUID());
@@ -296,7 +296,7 @@ bool Wolf::hurt(DamageSource *source, float dmg)
 	if (isInvulnerable()) return false;
 	shared_ptr<Entity> sourceEntity = source->getEntity();
 	sitGoal->wantToSit(false);
-	if (sourceEntity != NULL && !(sourceEntity->instanceof(eTYPE_PLAYER) || sourceEntity->instanceof(eTYPE_ARROW))) 
+	if (sourceEntity != nullptr && !(sourceEntity->instanceof(eTYPE_PLAYER) || sourceEntity->instanceof(eTYPE_ARROW))) 
 	{
 		// Take half damage from non-players and arrows
 		dmg = (dmg + 1) / 2;
@@ -327,7 +327,7 @@ void Wolf::setTame(bool value)
 void Wolf::tame(const wstring &wsOwnerUUID, bool bDisplayTamingParticles, bool bSetSitting) 
 {
 	setTame(true);
-	setPath(NULL);
+	setPath(nullptr);
 	setTarget(nullptr);
 	sitGoal->wantToSit(bSetSitting);
 	setHealth(TAME_HEALTH);
@@ -344,9 +344,9 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 
 	if (isTame()) 
 	{
-		if (item != NULL)
+		if (item != nullptr)
 		{
-			if(dynamic_cast<FoodItem *>(Item::items[item->id]) != NULL)
+			if(dynamic_cast<FoodItem *>(Item::items[item->id]) != nullptr)
 			{
 				FoodItem *food = dynamic_cast<FoodItem *>( Item::items[item->id] );
 
@@ -387,7 +387,7 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 			{
 				sitGoal->wantToSit(!isSitting());
 				jumping = false;
-				setPath(NULL);
+				setPath(nullptr);
 				setAttackTarget(nullptr);
 				setTarget(nullptr);
 			}
@@ -395,7 +395,7 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 	}
 	else
 	{
-		if (item != NULL && item->id == Item::bone->id && !isAngry()) 
+		if (item != nullptr && item->id == Item::bone->id && !isAngry()) 
 		{
 			// 4J-PB - don't lose the bone in creative mode
 			if (player->abilities.instabuild==false)
@@ -430,7 +430,7 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 		}
 
 		// 4J-PB - stop wild wolves going in to Love Mode (even though they do on Java, but don't breed)
-		if((item != NULL) && isFood(item))
+		if((item != nullptr) && isFood(item))
 		{
 			return false;
 		}
@@ -467,9 +467,9 @@ float Wolf::getTailAngle()
 
 bool Wolf::isFood(shared_ptr<ItemInstance> item)
 {
-	if (item == NULL) return false;
-	if (dynamic_cast<FoodItem *>(Item::items[item->id]) == NULL) return false;
-	return ((FoodItem *) Item::items[item->id])->isMeat();
+	if (item == nullptr) return false;
+	if (dynamic_cast<FoodItem *>(Item::items[item->id]) == nullptr) return false;
+	return static_cast<FoodItem *>(Item::items[item->id])->isMeat();
 }
 
 int Wolf::getMaxSpawnClusterSize()
@@ -488,11 +488,11 @@ void Wolf::setAngry(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value) 
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x02));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x02));
 	} 
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x02));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x02));
 	}
 }
 
@@ -503,7 +503,7 @@ int Wolf::getCollarColor()
 
 void Wolf::setCollarColor(int color)
 {
-	entityData->set(DATA_COLLAR_COLOR, (byte) (color & 0xF));
+	entityData->set(DATA_COLLAR_COLOR, static_cast<byte>(color & 0xF));
 }
 
 // 4J-PB added for tooltips
@@ -517,7 +517,7 @@ shared_ptr<AgableMob> Wolf::getBreedOffspring(shared_ptr<AgableMob> target)
 	// 4J - added limit to wolves that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		shared_ptr<Wolf> pBabyWolf = shared_ptr<Wolf>( new Wolf(level) );
+		shared_ptr<Wolf> pBabyWolf = std::make_shared<Wolf>(level);
 
 		if(!getOwnerUUID().empty())
 		{
@@ -536,11 +536,11 @@ void Wolf::setIsInterested(bool value)
 {
 	if (value)
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 1);
+		entityData->set(DATA_INTERESTED_ID, static_cast<byte>(1));
 	}
 	else
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 0);
+		entityData->set(DATA_INTERESTED_ID, static_cast<byte>(0));
 	}
 }
 
@@ -552,7 +552,7 @@ bool Wolf::canMate(shared_ptr<Animal> animal)
 	if (!animal->instanceof(eTYPE_WOLF)) return false;
 	shared_ptr<Wolf> partner = dynamic_pointer_cast<Wolf>(animal);
 
-	if (partner == NULL) return false;
+	if (partner == nullptr) return false;
 	if (!partner->isTame()) return false;
 	if (partner->isSitting()) return false;
 

@@ -43,7 +43,7 @@ void Witch::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	getEntityData()->define(DATA_USING_ITEM, (byte) 0);
+	getEntityData()->define(DATA_USING_ITEM, static_cast<byte>(0));
 }
 
 int Witch::getAmbientSound()
@@ -63,7 +63,7 @@ int Witch::getDeathSound()
 
 void Witch::setUsingItem(bool isUsing)
 {
-	getEntityData()->set(DATA_USING_ITEM, isUsing ? (byte) 1 : (byte) 0);
+	getEntityData()->set(DATA_USING_ITEM, isUsing ? static_cast<byte>(1) : static_cast<byte>(0));
 }
 
 bool Witch::isUsingItem()
@@ -96,10 +96,10 @@ void Witch::aiStep()
 				shared_ptr<ItemInstance> item = getCarriedItem();
 				setEquippedSlot(SLOT_WEAPON, nullptr);
 
-				if (item != NULL && item->id == Item::potion_Id)
+				if (item != nullptr && item->id == Item::potion_Id)
 				{
 					vector<MobEffectInstance *> *effects = Item::potion->getMobEffects(item);
-					if (effects != NULL)
+					if (effects != nullptr)
 					{
 						for(auto& effect : *effects)
 						{
@@ -124,18 +124,18 @@ void Witch::aiStep()
 			{
 				potion = PotionBrewing::POTION_ID_HEAL;
 			}
-			else if (random->nextFloat() < 0.25f && getTarget() != NULL && !hasEffect(MobEffect::movementSpeed) && getTarget()->distanceToSqr(shared_from_this()) > 11 * 11)
+			else if (random->nextFloat() < 0.25f && getTarget() != nullptr && !hasEffect(MobEffect::movementSpeed) && getTarget()->distanceToSqr(shared_from_this()) > 11 * 11)
 			{
 				potion = PotionBrewing::POTION_ID_SWIFTNESS;
 			}
-			else if (random->nextFloat() < 0.25f && getTarget() != NULL && !hasEffect(MobEffect::movementSpeed) && getTarget()->distanceToSqr(shared_from_this()) > 11 * 11)
+			else if (random->nextFloat() < 0.25f && getTarget() != nullptr && !hasEffect(MobEffect::movementSpeed) && getTarget()->distanceToSqr(shared_from_this()) > 11 * 11)
 			{
 				potion = PotionBrewing::POTION_ID_SWIFTNESS;
 			}
 
 			if (potion > -1)
 			{
-				setEquippedSlot(SLOT_WEAPON, shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, potion)) );
+				setEquippedSlot(SLOT_WEAPON, std::make_shared<ItemInstance>(Item::potion, 1, potion));
 				usingTime = getCarriedItem()->getUseDuration();
 				setUsingItem(true);
 				AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
@@ -198,7 +198,7 @@ void Witch::performRangedAttack(shared_ptr<LivingEntity> target, float power)
 {
 	if (isUsingItem()) return;
 
-	shared_ptr<ThrownPotion> potion = shared_ptr<ThrownPotion>( new ThrownPotion(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), PotionBrewing::POTION_ID_SPLASH_DAMAGE) );
+	shared_ptr<ThrownPotion> potion = std::make_shared<ThrownPotion>(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), PotionBrewing::POTION_ID_SPLASH_DAMAGE);
 	potion->xRot -= -20;
 	double xd = (target->x + target->xd) - x;
 	double yd = (target->y + target->getHeadHeight() - 1.1f) - y;

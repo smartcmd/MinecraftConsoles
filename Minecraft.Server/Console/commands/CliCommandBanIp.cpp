@@ -5,6 +5,7 @@
 #include "..\ServerCliEngine.h"
 #include "..\ServerCliParser.h"
 #include "..\..\Access\Access.h"
+#include "..\..\Common\NetworkUtils.h"
 #include "..\..\Common\StringUtils.h"
 #include "..\..\ServerLogManager.h"
 #include "..\..\..\Minecraft.Client\MinecraftServer.h"
@@ -14,51 +15,15 @@
 #include "..\..\..\Minecraft.World\Connection.h"
 #include "..\..\..\Minecraft.World\DisconnectPacket.h"
 
-#include <WS2tcpip.h>
-
 namespace ServerRuntime
 {
 	namespace
 	{
-		static std::string JoinTokens(const std::vector<std::string> &tokens, size_t startIndex)
-		{
-			std::string joined;
-			for (size_t i = startIndex; i < tokens.size(); ++i)
-			{
-				if (!joined.empty())
-				{
-					joined.push_back(' ');
-				}
-				joined += tokens[i];
-			}
-			return joined;
-		}
-
-		// Compare IPs in a canonical lowercase form so literal input and cached values match reliably.
-		static std::string NormalizeIpToken(const std::string &ip)
-		{
-			return StringUtils::ToLowerAscii(StringUtils::TrimAscii(ip));
-		}
-
-		// Accept both IPv4 and IPv6 literals because Java Edition style ban-ip can target either form.
-		static bool IsIpLiteral(const std::string &text)
-		{
-			const std::string trimmed = StringUtils::TrimAscii(text);
-			if (trimmed.empty())
-			{
-				return false;
-			}
-
-			IN_ADDR ipv4 = {};
-			IN6_ADDR ipv6 = {};
-			return InetPtonA(AF_INET, trimmed.c_str(), &ipv4) == 1 || InetPtonA(AF_INET6, trimmed.c_str(), &ipv6) == 1;
-		}
-
 		// The dedicated server keeps the accepted remote IP in ServerLogManager, keyed by connection smallId.
 		// It's a bit strange from a responsibility standpoint, so we'll need to implement it separately.
 		static bool TryGetPlayerRemoteIp(const std::shared_ptr<ServerPlayer> &player, std::string *outIp)
 		{
-			if (outIp == NULL || player == NULL || player->connection == NULL || player->connection->connection == NULL || player->connection->connection->getSocket() == NULL)
+			if (outIp == nullptr || player == nullptr || player->connection == nullptr || player->connection->connection == nullptr || player->connection->connection->getSocket() == nullptr)
 			{
 				return false;
 			}
@@ -75,27 +40,26 @@ namespace ServerRuntime
 		// After persisting the ban, walk a snapshot of current players so every matching session is removed.
 		static int DisconnectPlayersByRemoteIp(const std::string &ip)
 		{
-			MinecraftServer *server = MinecraftServer::getInstance();
-			if (server == NULL || server->getPlayers() == NULL)
+			auto *server = MinecraftServer::getInstance();
+			if (server == nullptr || server->getPlayers() == nullptr)
 			{
 				return 0;
 			}
 
-			const std::string normalizedIp = NormalizeIpToken(ip);
-			std::vector<std::shared_ptr<ServerPlayer> > playerSnapshot = server->getPlayers()->players;
+			const std::string normalizedIp = NetworkUtils::NormalizeIpToken(ip);
+			const std::vector<std::shared_ptr<ServerPlayer>> playerSnapshot = server->getPlayers()->players;
 			int disconnectedCount = 0;
-			for (size_t i = 0; i < playerSnapshot.size(); ++i)
+			for (const auto &player : playerSnapshot)
 			{
-				std::shared_ptr<ServerPlayer> player = playerSnapshot[i];
 				std::string playerIp;
 				if (!TryGetPlayerRemoteIp(player, &playerIp))
 				{
 					continue;
 				}
 
-				if (NormalizeIpToken(playerIp) == normalizedIp)
+				if (NetworkUtils::NormalizeIpToken(playerIp) == normalizedIp)
 				{
-					if (player != NULL && player->connection != NULL)
+					if (player != nullptr && player->connection != nullptr)
 					{
 						player->connection->disconnect(DisconnectPacket::eDisconnect_Banned);
 						++disconnectedCount;
@@ -142,8 +106,8 @@ namespace ServerRuntime
 		const std::string targetToken = line.tokens[1];
 		std::string remoteIp;
 		// Match Java Edition behavior by accepting either a literal IP or an online player name.
-		std::shared_ptr<ServerPlayer> targetPlayer = engine->FindPlayerByNameUtf8(targetToken);
-		if (targetPlayer != NULL)
+		const auto targetPlayer = engine->FindPlayerByNameUtf8(targetToken);
+		if (targetPlayer != nullptr)
 		{
 			if (!TryGetPlayerRemoteIp(targetPlayer, &remoteIp))
 			{
@@ -151,7 +115,7 @@ namespace ServerRuntime
 				return false;
 			}
 		}
-		else if (IsIpLiteral(targetToken))
+		else if (NetworkUtils::IsIpLiteral(targetToken))
 		{
 			remoteIp = StringUtils::TrimAscii(targetToken);
 		}
@@ -169,7 +133,7 @@ namespace ServerRuntime
 		}
 
 		ServerRuntime::Access::BanMetadata metadata = ServerRuntime::Access::BanManager::BuildDefaultMetadata("Console");
-		metadata.reason = JoinTokens(line.tokens, 2);
+		metadata.reason = StringUtils::JoinTokens(line.tokens, 2);
 		if (metadata.reason.empty())
 		{
 			metadata.reason = "Banned by an operator.";

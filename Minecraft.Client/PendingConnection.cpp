@@ -16,6 +16,7 @@
 #include "Settings.h"
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\Access\Access.h"
 #include "..\Minecraft.World\Socket.h"
 #endif
 // #ifdef __PS3__
@@ -33,15 +34,14 @@ namespace
 {
 	static unsigned char GetPendingConnectionSmallId(Connection *connection)
 	{
-		if (connection != NULL)
+		if (connection != nullptr)
 		{
 			Socket *socket = connection->getSocket();
-			if (socket != NULL)
+			if (socket != nullptr)
 			{
 				return socket->getSmallId();
 			}
 		}
-
 		return 0;
 	}
 }
@@ -68,7 +68,7 @@ PendingConnection::~PendingConnection()
 
 void PendingConnection::tick()
 {
-	if (acceptedLogin != NULL)
+	if (acceptedLogin != nullptr)
 	{
 		this->handleAcceptedLogin(acceptedLogin);
 		acceptedLogin = nullptr;
@@ -88,7 +88,7 @@ void PendingConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 	//   try {	// 4J - removed try/catch
 	//        logger.info("Disconnecting " + getName() + ": " + reason);
 	app.DebugPrintf("Pending connection disconnect: %d\n", reason );
-	connection->send( shared_ptr<DisconnectPacket>( new DisconnectPacket(reason) ) );
+	connection->send(std::make_shared<DisconnectPacket>(reason));
 	connection->sendAndQuit();
 	done = true;
 	//    } catch (Exception e) {
@@ -144,7 +144,7 @@ void PendingConnection::sendPreLoginResponse()
 			// Need to use the online XUID otherwise friend checks will fail on the client
 			ugcXuids[ugcXuidCount] = player->connection->m_onlineXUID;
 
-			if( player->connection->getNetworkPlayer() != NULL && player->connection->getNetworkPlayer()->IsHost() ) hostIndex = ugcXuidCount;
+			if( player->connection->getNetworkPlayer() != nullptr && player->connection->getNetworkPlayer()->IsHost() ) hostIndex = ugcXuidCount;
 
 			++ugcXuidCount;
 		}
@@ -159,9 +159,9 @@ void PendingConnection::sendPreLoginResponse()
 	else
 #endif
 	{
-		DWORD cappedCount = (ugcXuidCount > 255u) ? 255u : static_cast<DWORD>(ugcXuidCount);
+		DWORD cappedCount = (ugcXuidCount > 255u) ? 255u : ugcXuidCount;
 		BYTE cappedHostIndex = (hostIndex >= 255u) ? 254 : static_cast<BYTE>(hostIndex);
-		connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(L"-", ugcXuids, cappedCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion,szUniqueMapName,app.GetGameHostOption(eGameHostOption_All),cappedHostIndex, server->m_texturePackId) ) );
+		connection->send(std::make_shared<PreLoginPacket>(L"-", ugcXuids, cappedCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion, szUniqueMapName, app.GetGameHostOption(eGameHostOption_All), cappedHostIndex, server->m_texturePackId));
 	}
 }
 
@@ -213,6 +213,22 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		bannedXuid = server->getPlayers()->isXuidBanned(packet->m_onlineXuid);
 	}
 
+	bool whitelistSatisfied = true;
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (ServerRuntime::Access::IsWhitelistEnabled())
+	{
+		whitelistSatisfied = false;
+		if (loginXuid != INVALID_XUID)
+		{
+			whitelistSatisfied = ServerRuntime::Access::IsPlayerWhitelisted(loginXuid);
+		}
+		if (!whitelistSatisfied && packet->m_onlineXuid != INVALID_XUID && packet->m_onlineXuid != loginXuid)
+		{
+			whitelistSatisfied = ServerRuntime::Access::IsPlayerWhitelisted(packet->m_onlineXuid);
+		}
+	}
+#endif
+
 	if( sentDisconnect )
 	{
 		// Do nothing
@@ -224,13 +240,22 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 #endif
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
+	else if (!whitelistSatisfied)
+	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_NotWhitelisted);
+#endif
+		disconnect(DisconnectPacket::eDisconnect_Banned);
+	}
 	else if (duplicateXuid)
 	{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 		ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_DuplicateXuid);
 #endif
-		// if same XUID already in use by another player so disconnect this one.
-		app.DebugPrintf("Rejecting duplicate xuid for name: %ls\n", name.c_str());
+		// Reject the incoming connection — a player with this UID is already
+		// on the server.  Allowing duplicates causes invisible players and
+		// other undefined behaviour.
+		app.DebugPrintf("LOGIN: Rejecting duplicate xuid for name: %ls\n", name.c_str());
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
 #ifdef _WINDOWS64
@@ -240,7 +265,7 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		vector<shared_ptr<ServerPlayer> >& pl = server->getPlayers()->players;
 		for (const auto& i : pl)
 		{
-			if (i != NULL && i->name == name)
+			if (i != nullptr && i->name == name)
 			{
 				nameTaken = true;
 				break;
@@ -306,13 +331,13 @@ void PendingConnection::handleAcceptedLogin(shared_ptr<LoginPacket> packet)
 	if(playerXuid == INVALID_XUID) playerXuid = packet->m_onlineXuid;
 
 	shared_ptr<ServerPlayer> playerEntity = server->getPlayers()->getPlayerForLogin(this, name, playerXuid,packet->m_onlineXuid);
-	if (playerEntity != NULL)
+	if (playerEntity != nullptr)
 	{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 		ServerRuntime::ServerLogManager::OnAcceptedPlayerLogin(GetPendingConnectionSmallId(connection), name);
 #endif
 		server->getPlayers()->placeNewPlayer(connection, playerEntity, packet);
-		connection = NULL;	// We've moved responsibility for this over to the new PlayerConnection, NULL so we don't delete our reference to it here in our dtor
+		connection = nullptr;	// We've moved responsibility for this over to the new PlayerConnection, nullptr so we don't delete our reference to it here in our dtor
 	}
 	done = true;
 
@@ -329,7 +354,7 @@ void PendingConnection::handleGetInfo(shared_ptr<GetInfoPacket> packet)
 	//try {
 	//String message = server->motd + "�" + server->players->getPlayerCount() + "�" + server->players->getMaxPlayers();
 	//connection->send(new DisconnectPacket(message));
-	connection->send(shared_ptr<DisconnectPacket>(new DisconnectPacket(DisconnectPacket::eDisconnect_ServerFull) ) );
+	connection->send(std::make_shared<DisconnectPacket>(DisconnectPacket::eDisconnect_ServerFull));
 	connection->sendAndQuit();
 	server->connection->removeSpamProtection(connection->getSocket());
 	done = true;

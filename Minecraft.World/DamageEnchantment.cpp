@@ -51,7 +51,7 @@ int DamageEnchantment::getDescriptionId()
 
 bool DamageEnchantment::isCompatibleWith(Enchantment *other) const
 {
-	return dynamic_cast<DamageEnchantment *>(other) == NULL;
+	return dynamic_cast<DamageEnchantment *>(other) == nullptr;
 }
 
 bool DamageEnchantment::canEnchant(shared_ptr<ItemInstance> item)

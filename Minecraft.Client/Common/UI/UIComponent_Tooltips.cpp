@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIComponent_Tooltips.h"
+#include "UISplitScreenHelpers.h"
 
 UIComponent_Tooltips::UIComponent_Tooltips(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
@@ -154,8 +155,8 @@ void UIComponent_Tooltips::tick()
 		{
 			if(uiOpacityTimer<10)
 			{
-				float fStep=(80.0f-(float)ucAlpha)/10.0f;
-				fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+				float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+				fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 			}
 			else
 			{
@@ -164,7 +165,7 @@ void UIComponent_Tooltips::tick()
 		}
 		else
 		{
-			fVal=0.01f*(float)ucAlpha;
+			fVal=0.01f*static_cast<float>(ucAlpha);
 		}
 	}
 	else
@@ -174,7 +175,7 @@ void UIComponent_Tooltips::tick()
 		{
 			ucAlpha=15;
 		}
-		fVal=0.01f*(float)ucAlpha;
+		fVal=0.01f*static_cast<float>(ucAlpha);
 	}
 	setOpacity(fVal);
 
@@ -206,15 +207,15 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -224,32 +225,42 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 		S32 tileWidth = width;
 		S32 tileHeight = height;
 
+		bool needsYTile = false;
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			tileHeight = (S32)(ui.getScreenHeight());
+			tileHeight = static_cast<S32>(ui.getScreenHeight());
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
-			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
+			needsYTile = true;
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
+		F32 scale;
+		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+
+		// For vertical split, scale down to fit the full SWF height when the
+		// window is shorter than the movie (same fix as HUD).
+		if(!needsYTile && m_movieHeight > 0)
+		{
+			F32 scaleH = (F32)tileHeight / (F32)m_movieHeight;
+			if(scaleH < scale)
+				scale = scaleH;
+		}
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
 		IggyPlayerDrawTilesStart ( getMovie() );
-		
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 		IggyPlayerDrawTile ( getMovie() ,
@@ -257,7 +268,7 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
@@ -351,7 +362,7 @@ void UIComponent_Tooltips::_SetTooltip(unsigned int iToolTipId, UIString label, 
 void UIComponent_Tooltips::_Relayout()
 {
 	IggyDataValue result;
-	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcUpdateLayout, 0 , NULL );
+	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcUpdateLayout, 0 , nullptr );
 
 #ifdef __PSVITA__
 	// rebuild touchboxes

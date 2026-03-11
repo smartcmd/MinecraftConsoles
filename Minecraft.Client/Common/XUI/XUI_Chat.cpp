@@ -5,7 +5,7 @@
 
 HRESULT CScene_Chat::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -37,7 +37,7 @@ HRESULT CScene_Chat::OnTimer( XUIMessageTimer *pXUIMessageTimer, BOOL &bHandled)
 			m_Labels[i].SetOpacity(0);
 		}
 	}
-	if(pMinecraft->localplayers[m_iPad]!= NULL)
+	if(pMinecraft->localplayers[m_iPad]!= nullptr)
 	{
 		m_Jukebox.SetText( pGui->getJukeboxMessage(m_iPad).c_str() );
 		m_Jukebox.SetOpacity( pGui->getJukeboxOpacity(m_iPad) );

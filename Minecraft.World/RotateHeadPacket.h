@@ -22,6 +22,6 @@ public:
 	virtual bool isAync();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new RotateHeadPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<RotateHeadPacket>(); }
 	virtual int getId() { return 35; }
 };

@@ -6,10 +6,10 @@
 
 ## Introduction
 
-This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) from https://archive.org/details/minecraft-legacy-console-edition-source-code, with some fixes and improvements applied.
+This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) with some fixes and improvements applied.
 
 ## Download
-Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file) and add servers to connect to in `servers.txt`
+Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
 
 ## Platform Support
 
@@ -35,29 +35,10 @@ Basic LAN multiplayer is available on the Windows build
 - Other players on the same LAN can discover the session from the in-game Join Game menu
 - Game connections use TCP port `25565` by default
 - LAN discovery uses UDP port `25566`
-- Add servers to your server list with `servers.txt` (temp solution)
+- Add servers to your server list with the in-game Add Server button (temp)
 - Rename yourself without losing data by keeping your `uid.dat`
 
 Parts of this feature are based on code from [LCEMP](https://github.com/LCEMP/LCEMP) (thanks!)
-
-### servers.txt
-
-To add a server to your game, create the `servers.txt` file in the same directory as you have `Minecraft.Client.exe`. Inside, follow this format:
-```
-serverip.example.com
-25565
-The name of your server in UI!
-```
-
-For example, here's a valid servers.txt
-```
-1.1.1.1
-25565
-Cloudflare's Very Own LCE Server
-127.0.0.1
-25565
-Localhost Test Crap
-```
 
 ### Launch Arguments
 
@@ -116,6 +97,65 @@ Persistent files are bind-mounted to host:
 - `./server-data/server.properties` -> `/srv/mc/server.properties`
 - `./server-data/GameHDD` -> `/srv/mc/Windows64/GameHDD`
 
+### About `server.properties`
+
+`Minecraft.Server` reads `server.properties` from the executable working directory (Docker image: `/srv/mc/server.properties`).
+If the file is missing or contains invalid values, defaults are auto-generated/normalized on startup.
+
+Important keys:
+
+| Key | Values / Range | Default | Notes |
+|-----|-----------------|---------|-------|
+| `server-port` | `1-65535` | `25565` | Listen TCP port |
+| `server-ip` | string | `0.0.0.0` | Bind address |
+| `server-name` | string (max 16 chars) | `DedicatedServer` | Host display name |
+| `max-players` | `1-8` | `8` | Public player slots |
+| `level-name` | string | `world` | Display world name |
+| `level-id` | safe ID string | derived from `level-name` | Save folder ID; normalized automatically |
+| `level-seed` | int64 or empty | empty | Empty = random seed |
+| `world-size` | `classic\|small\|medium\|large` | `classic` | World size preset for new worlds and expansion target for existing worlds |
+| `log-level` | `debug\|info\|warn\|error` | `info` | Server log verbosity |
+| `autosave-interval` | `5-3600` | `60` | Seconds between autosaves |
+| `white-list` | `true/false` | `false` | Enable access list checks |
+| `lan-advertise` | `true/false` | `false` | LAN session advertisement |
+
+Minimal example:
+
+```properties
+server-name=DedicatedServer
+server-port=25565
+max-players=8
+level-name=world
+level-seed=
+world-size=classic
+log-level=info
+white-list=false
+lan-advertise=false
+autosave-interval=60
+```
+
+### Dedicated Server launch arguments
+
+The server loads base settings from `server.properties`, then CLI arguments override those values.
+
+| Argument | Description |
+|----------|-------------|
+| `-port <1-65535>` | Override `server-port` |
+| `-ip <addr>` | Override `server-ip` |
+| `-bind <addr>` | Alias of `-ip` |
+| `-name <name>` | Override `server-name` (max 16 chars) |
+| `-maxplayers <1-8>` | Override `max-players` |
+| `-seed <int64>` | Override `level-seed` |
+| `-loglevel <level>` | Override `log-level` (`debug`, `info`, `warn`, `error`) |
+| `-help` / `--help` / `-h` | Print usage and exit |
+
+Examples:
+
+```powershell
+Minecraft.Server.exe -name MyServer -port 25565 -ip 0.0.0.0 -maxplayers 8 -loglevel info
+Minecraft.Server.exe -seed 123456789
+```
+
 ## Controls (Keyboard & Mouse)
 
 - **Movement**: `W` `A` `S` `D`
@@ -145,7 +185,7 @@ Persistent files are bind-mounted to host:
 2. Clone the repository.
 3. Open the project by double-clicking `MinecraftConsoles.sln`.
 4. Make sure `Minecraft.Client` is set as the Startup Project.
-5. Set the build configuration to **Debug** (Release is also OK but has some bugs) and the target platform to **Windows64**, then build and run.
+5. Set the build configuration to **Debug** (Release is also ok but missing some debug features) and the target platform to **Windows64**, then build and run.
 
 ### CMake (Windows x64)
 

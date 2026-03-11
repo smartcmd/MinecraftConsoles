@@ -30,6 +30,6 @@ public:
 	virtual bool isInvalidatedBy(shared_ptr<Packet> packet);
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new TileDestructionPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<TileDestructionPacket>(); }
 	virtual int getId() { return 55; }
 };

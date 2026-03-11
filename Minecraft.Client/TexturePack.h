@@ -35,11 +35,11 @@ public:
 		*/
 		return name;
     }
-	virtual DLCPack * getDLCPack() { return NULL;}
+	virtual DLCPack * getDLCPack() { return nullptr;}
 
 
 	// 4J Added
-	virtual wstring getPath(bool bTitleUpdateTexture = false, const char *pchBDPatchFilename=NULL);
+	virtual wstring getPath(bool bTitleUpdateTexture = false, const char *pchBDPatchFilename=nullptr);
 	virtual wstring getAnimationString(const wstring &textureName, const wstring &path, bool allowFallback) = 0;
 	virtual BufferedImage *getImageResource(const wstring& File, bool filenameHasExtension = false, bool bTitleUpdateTexture=false, const wstring &drive =L"") = 0;
 	virtual void loadColourTable() = 0;

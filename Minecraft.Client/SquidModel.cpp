@@ -14,17 +14,17 @@ SquidModel::SquidModel() : Model()
 	{
         tentacles[i] = new ModelPart(this, 48, 0);
 
-        double angle = i * PI * 2.0 / (double) TENTACLES_LENGTH;	// 4J - 8 was tentacles.length
-        float xo = Mth::cos((float)angle) * 5;
-        float yo = Mth::sin((float)angle) * 5;
+        double angle = i * PI * 2.0 / static_cast<double>(TENTACLES_LENGTH);	// 4J - 8 was tentacles.length
+        float xo = Mth::cos(static_cast<float>(angle)) * 5;
+        float yo = Mth::sin(static_cast<float>(angle)) * 5;
         tentacles[i]->addBox(-1, 0, -1, 2, 18, 2);
 
         tentacles[i]->x = xo;
         tentacles[i]->z = yo;
-        tentacles[i]->y = (float)(31 + yoffs);
+        tentacles[i]->y = static_cast<float>(31 + yoffs);
 
-        angle = i * PI * -2.0 / (double) TENTACLES_LENGTH + PI * .5;  // 4J - 8 was tentacles.length
-        tentacles[i]->yRot = (float) angle;
+        angle = i * PI * -2.0 / static_cast<double>(TENTACLES_LENGTH) + PI * .5;  // 4J - 8 was tentacles.length
+        tentacles[i]->yRot = static_cast<float>(angle);
 
 		// 4J added - compile now to avoid random performance hit first time cubes are rendered
 		tentacles[i]->compile(1.0f/16.0f);

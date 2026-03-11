@@ -157,6 +157,7 @@ namespace ServerRuntime
 				switch (reason)
 				{
 				case eLoginRejectReason_BannedXuid: return "banned-xuid";
+				case eLoginRejectReason_NotWhitelisted: return "not-whitelisted";
 				case eLoginRejectReason_DuplicateXuid: return "duplicate-xuid";
 				case eLoginRejectReason_DuplicateName: return "duplicate-name";
 				default: return "unknown";

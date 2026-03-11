@@ -140,7 +140,7 @@ public:
 	static int LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes);
 	static int setDataThread(void* lpParam);
 
-	SonyRemoteStorage() : m_memPoolBuffer(NULL), m_bInitialised(false),m_getInfoStatus(e_noInfoFound) {}
+	SonyRemoteStorage() : m_getInfoStatus(e_noInfoFound), m_bInitialised(false),m_memPoolBuffer(nullptr) {}
 
 protected:
 	const char* getRemoteSaveFilename();

@@ -16,12 +16,12 @@ C4JThread::EventArray *ShutdownManager::s_eventArray[eThreadIdCount];
 void ShutdownManager::Initialise()
 {
 #ifdef __PS3__
-	cellSysutilRegisterCallback( 1, SysUtilCallback, NULL );
+	cellSysutilRegisterCallback( 1, SysUtilCallback, nullptr );
 	for( int i = 0; i < eThreadIdCount; i++ )
 	{
 		s_threadShouldRun[i] = true;
 		s_threadRunning[i] = 0;
-		s_eventArray[i] = NULL;
+		s_eventArray[i] = nullptr;
 	}
 	// Special case for storage manager, which we will manually set now to be considered as running - this will be unset by StorageManager.ExitRequest if required
 	s_threadRunning[eStorageManagerThreads] = true;

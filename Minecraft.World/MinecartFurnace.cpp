@@ -37,7 +37,7 @@ int MinecartFurnace::getType()
 void MinecartFurnace::defineSynchedData()
 {
 	Minecart::defineSynchedData();
-	entityData->define(DATA_ID_FUEL, (byte) 0);
+	entityData->define(DATA_ID_FUEL, static_cast<byte>(0));
 }
 
 void MinecartFurnace::tick()
@@ -66,7 +66,7 @@ void MinecartFurnace::destroy(DamageSource *source)
 
 	if (!source->isExplosion())
 	{
-		spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Tile::furnace, 1)), 0);
+		spawnAtLocation(std::make_shared<ItemInstance>(Tile::furnace, 1), 0);
 	}
 }
 
@@ -123,7 +123,7 @@ void MinecartFurnace::applyNaturalSlowdown()
 bool MinecartFurnace::interact(shared_ptr<Player> player)
 {
 	shared_ptr<ItemInstance> selected = player->inventory->getSelected();
-	if (selected != NULL && selected->id == Item::coal_Id)
+	if (selected != nullptr && selected->id == Item::coal_Id)
 	{
 		if (!player->abilities.instabuild && --selected->count == 0) player->inventory->setItem(player->inventory->selected, nullptr);
 		fuel += SharedConstants::TICKS_PER_SECOND * 180;
@@ -140,7 +140,7 @@ void MinecartFurnace::addAdditonalSaveData(CompoundTag *base)
 	Minecart::addAdditonalSaveData(base);
 	base->putDouble(L"PushX", xPush);
 	base->putDouble(L"PushZ", zPush);
-	base->putShort(L"Fuel", (short) fuel);
+	base->putShort(L"Fuel", static_cast<short>(fuel));
 }
 
 void MinecartFurnace::readAdditionalSaveData(CompoundTag *base)
@@ -160,11 +160,11 @@ void MinecartFurnace::setHasFuel(bool fuel)
 {
 	if (fuel)
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) | 1));
+		entityData->set(DATA_ID_FUEL, static_cast<byte>(entityData->getByte(DATA_ID_FUEL) | 1));
 	}
 	else
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) & ~1));
+		entityData->set(DATA_ID_FUEL, static_cast<byte>(entityData->getByte(DATA_ID_FUEL) & ~1));
 	}
 }
 

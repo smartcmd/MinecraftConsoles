@@ -144,11 +144,11 @@ void LargeCaveFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArray b
 							{
 								if (yy < 10)
 								{
-									blocks[p] = (byte) Tile::lava_Id;
+									blocks[p] = static_cast<byte>(Tile::lava_Id);
 								}
 								else
 								{
-									blocks[p] = (byte) 0;
+									blocks[p] = static_cast<byte>(0);
 									if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = (byte) level->getBiome(xx + xOffs * 16, zz + zOffs * 16)->topMaterial;
 								}
 							}

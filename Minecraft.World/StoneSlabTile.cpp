@@ -80,5 +80,5 @@ int StoneSlabTile::getAuxName(int auxValue)
 
 shared_ptr<ItemInstance> StoneSlabTile::getSilkTouchItemInstance(int data)
 {
-	return shared_ptr<ItemInstance>(new ItemInstance(Tile::stoneSlabHalf_Id, 2, data & TYPE_MASK));
+	return std::make_shared<ItemInstance>(Tile::stoneSlabHalf_Id, 2, data & TYPE_MASK);
 }

@@ -40,7 +40,7 @@ void MoveEntityPacket::write(DataOutputStream *dos) //throws IOException
 		// We shouln't be tracking an entity that doesn't have a short type of id
 		__debugbreak();
 	}
-	dos->writeShort((short)id);
+	dos->writeShort(static_cast<short>(id));
 }
 
 void MoveEntityPacket::handle(PacketListener *listener)
@@ -61,7 +61,7 @@ bool MoveEntityPacket::canBeInvalidated()
 bool MoveEntityPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	shared_ptr<MoveEntityPacket> target = dynamic_pointer_cast<MoveEntityPacket>(packet);
-	return target != NULL && target->id == id;
+	return target != nullptr && target->id == id;
 }
 
 MoveEntityPacket::PosRot::PosRot()

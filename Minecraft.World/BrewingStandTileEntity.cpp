@@ -96,7 +96,7 @@ int BrewingStandTileEntity::getBrewTime()
 
 bool BrewingStandTileEntity::isBrewable()
 {
-	if (items[INGREDIENT_SLOT] == NULL || items[INGREDIENT_SLOT]->count <= 0)
+	if (items[INGREDIENT_SLOT] == nullptr || items[INGREDIENT_SLOT]->count <= 0)
 	{
 		return false;
 	}
@@ -111,7 +111,7 @@ bool BrewingStandTileEntity::isBrewable()
 		bool oneResult = false;
 		for (int dest = 0; dest < 3; dest++)
 		{
-			if (items[dest] != NULL && items[dest]->id == Item::potion_Id)
+			if (items[dest] != nullptr && items[dest]->id == Item::potion_Id)
 			{
 				int currentBrew = items[dest]->getAuxValue();
 				int newBrew = NORMALISE_POTION_AUXVAL( applyIngredient(currentBrew, ingredient) );
@@ -129,7 +129,7 @@ bool BrewingStandTileEntity::isBrewable()
 				// TODO - find out whether actually checking pointers to MobEffectInstance classes for equality
 				// is of any use
 				bool equals = false;
-				if( ( currentEffects != NULL ) && ( newEffects != NULL ) )
+				if( ( currentEffects != nullptr ) && ( newEffects != nullptr ) )
 				{
 					if( currentEffects->size() == newEffects->size() )
 					{
@@ -141,7 +141,7 @@ bool BrewingStandTileEntity::isBrewable()
 				}
 
 				if ((currentBrew > 0 && currentEffects == newEffects) ||
-					(currentEffects != NULL && (equals || newEffects == NULL)))
+					(currentEffects != nullptr && (equals || newEffects == nullptr)))
 				{
 				}
 				else if (currentBrew != newBrew)
@@ -166,7 +166,7 @@ bool BrewingStandTileEntity::isBrewable()
 		bool oneResult = false;
 		for (int dest = 0; dest < 3; dest++)
 		{
-			if (items[dest] != NULL && items[dest]->id == Item::potion_Id)
+			if (items[dest] != nullptr && items[dest]->id == Item::potion_Id)
 			{
 				int currentBrew = items[dest]->getAuxValue();
 				int newBrew = NORMALISE_POTION_AUXVAL( applyIngredient(currentBrew, ingredient) );
@@ -176,7 +176,7 @@ bool BrewingStandTileEntity::isBrewable()
 					break;
 				}
 			}
-			else if (isWater && items[dest] != NULL && items[dest]->id == Item::glassBottle_Id)
+			else if (isWater && items[dest] != nullptr && items[dest]->id == Item::glassBottle_Id)
 			{
 				oneResult = true;
 				break;
@@ -199,7 +199,7 @@ void BrewingStandTileEntity::doBrew()
 	{
 		for (int dest = 0; dest < 3; dest++)
 		{
-			if (items[dest] != NULL && items[dest]->id == Item::potion_Id)
+			if (items[dest] != nullptr && items[dest]->id == Item::potion_Id)
 			{
 				int currentBrew = items[dest]->getAuxValue();
 				int newBrew = NORMALISE_POTION_AUXVAL( applyIngredient(currentBrew, ingredient) );
@@ -211,7 +211,7 @@ void BrewingStandTileEntity::doBrew()
 				// TODO - find out whether actually checking pointers to MobEffectInstance classes for equality
 				// is of any use
 				bool equals = false;
-				if( ( currentEffects != NULL ) && ( newEffects != NULL ) )
+				if( ( currentEffects != nullptr ) && ( newEffects != nullptr ) )
 				{
 					if( currentEffects->size() == newEffects->size() )
 					{
@@ -223,7 +223,7 @@ void BrewingStandTileEntity::doBrew()
 				}
 
 				if ((currentBrew > 0 && currentEffects == newEffects) ||
-					(currentEffects != NULL && (equals || newEffects == NULL)))
+					(currentEffects != nullptr && (equals || newEffects == nullptr)))
 				{
 					if (!PotionItem::isThrowable(currentBrew) && PotionItem::isThrowable(newBrew))
 					{
@@ -246,22 +246,22 @@ void BrewingStandTileEntity::doBrew()
 
 		for (int dest = 0; dest < 3; dest++)
 		{
-			if (items[dest] != NULL && items[dest]->id == Item::potion_Id)
+			if (items[dest] != nullptr && items[dest]->id == Item::potion_Id)
 			{
 				int currentBrew = items[dest]->getAuxValue();
 				int newBrew = NORMALISE_POTION_AUXVAL( applyIngredient(currentBrew, ingredient) );
 				items[dest]->setAuxValue(newBrew);
 			}
-			else if (isWater && items[dest] != NULL && items[dest]->id == Item::glassBottle_Id)
+			else if (isWater && items[dest] != nullptr && items[dest]->id == Item::glassBottle_Id)
 			{
-				items[dest] = shared_ptr<ItemInstance>(new ItemInstance(Item::potion));
+				items[dest] = std::make_shared<ItemInstance>(Item::potion);
 			}
 		}
 	}
 
 	if (Item::items[ingredient->id]->hasCraftingRemainingItem())
 	{
-		items[INGREDIENT_SLOT] = shared_ptr<ItemInstance>(new ItemInstance(Item::items[ingredient->id]->getCraftingRemainingItem()));
+		items[INGREDIENT_SLOT] = std::make_shared<ItemInstance>(Item::items[ingredient->id]->getCraftingRemainingItem());
 	}
 	else
 	{
@@ -275,7 +275,7 @@ void BrewingStandTileEntity::doBrew()
 
 int BrewingStandTileEntity::applyIngredient(int currentBrew, shared_ptr<ItemInstance> ingredient)
 {
-	if (ingredient == NULL)
+	if (ingredient == nullptr)
 	{
 		return currentBrew;
 	}
@@ -322,15 +322,15 @@ void BrewingStandTileEntity::save(CompoundTag *base)
 {
 	TileEntity::save(base);
 
-	base->putShort(L"BrewTime", (short) (brewTime));
+	base->putShort(L"BrewTime", static_cast<short>(brewTime));
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
 	for (int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -354,7 +354,7 @@ shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int slot, i
 	// option on the ingredients slot
 	// Fix for #65373 - TU8: Content: UI: Command "Take Half" in the Brewing Stand interface doesn't work as intended.
 
-	if (slot >= 0 && slot < items.length && items[slot] != NULL)
+	if (slot >= 0 && slot < items.length && items[slot] != nullptr)
 	{
 		if (items[slot]->count <= count)
 		{
@@ -445,7 +445,7 @@ int BrewingStandTileEntity::getPotionBits()
 	int newCount = 0;
 	for (int potion = 0; potion < 3; potion++)
 	{
-		if (items[potion] != NULL)
+		if (items[potion] != nullptr)
 		{
 			newCount |= (1 << potion);
 		}
@@ -476,7 +476,7 @@ bool BrewingStandTileEntity::canTakeItemThroughFace(int slot, shared_ptr<ItemIns
 // 4J Added
 shared_ptr<TileEntity> BrewingStandTileEntity::clone()
 {
-	shared_ptr<BrewingStandTileEntity> result = shared_ptr<BrewingStandTileEntity>( new BrewingStandTileEntity() );
+	shared_ptr<BrewingStandTileEntity> result = std::make_shared<BrewingStandTileEntity>();
 	TileEntity::clone(result);
 
 	result->brewTime = brewTime;
@@ -485,7 +485,7 @@ shared_ptr<TileEntity> BrewingStandTileEntity::clone()
 
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items.data[i] != NULL)
+		if (items.data[i] != nullptr)
 		{
 			result->items.data[i] = ItemInstance::clone(items.data[i]);
 		}

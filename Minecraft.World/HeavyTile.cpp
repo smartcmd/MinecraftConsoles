@@ -60,7 +60,7 @@ void HeavyTile::checkSlide(Level *level, int x, int y, int z)
 				return;
 			}
 
-			shared_ptr<FallingTile> e = shared_ptr<FallingTile>( new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id, level->getData(x, y, z)) );
+			shared_ptr<FallingTile> e = std::make_shared<FallingTile>(level, x + 0.5f, y + 0.5f, z + 0.5f, id, level->getData(x, y, z));
 			falling(e);
 			level->addEntity(e);
 		}

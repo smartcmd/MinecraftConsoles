@@ -24,7 +24,7 @@ void DQRNetworkManager::BytesReceived(int smallId, BYTE *bytes, int byteCount)
 	DQRNetworkPlayer *host = GetPlayerBySmallId(m_hostSmallId);
 	DQRNetworkPlayer *client = GetPlayerBySmallId(smallId);
 
-	if( ( host == NULL ) || ( client == NULL ) )
+	if( ( host == nullptr ) || ( client == nullptr ) )
 	{
 		return;
 	}
@@ -113,7 +113,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 			case DQRConnectionInfo::ConnectionState_InternalAssignSmallId2:
 			case DQRConnectionInfo::ConnectionState_InternalAssignSmallId3:
 				{
-					int channel = ((int)connectionInfo->m_internalDataState) - DQRConnectionInfo::ConnectionState_InternalAssignSmallId0;
+					int channel = static_cast<int>(connectionInfo->m_internalDataState) - DQRConnectionInfo::ConnectionState_InternalAssignSmallId0;
 
 					if( ( connectionInfo->m_smallIdReadMask & ( 1 << channel ) ) && ( !connectionInfo->m_channelActive[channel] ) )
 					{
@@ -137,7 +137,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 
 							DQRNetworkPlayer *pPlayer = new DQRNetworkPlayer(this, DQRNetworkPlayer::DNP_TYPE_REMOTE, true, 0, sessionAddress);
 							pPlayer->SetSmallId(byte);
-							pPlayer->SetUID(PlayerUID(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId->Data()));
+							pPlayer->SetUID(static_cast<PlayerUID>(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId->Data()));
 
 							HostGamertagResolveDetails *resolveDetails = new HostGamertagResolveDetails();
 							resolveDetails->m_pPlayer = pPlayer;
@@ -238,7 +238,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 					UpdateRoomSyncPlayers((RoomSyncData *)connectionInfo->m_pucRoomSyncData);
 					
 					delete connectionInfo->m_pucRoomSyncData;
-					connectionInfo->m_pucRoomSyncData = NULL;
+					connectionInfo->m_pucRoomSyncData = nullptr;
 					connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
 
 					// If we haven't actually established a connection yet for this channel, then this is the point where we can consider this active
@@ -267,7 +267,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						{
 							if( m_currentUserMask & ( 1 << i ) )
 							{
-								if( GetLocalPlayerByUserIndex(i) == NULL )
+								if( GetLocalPlayerByUserIndex(i) == nullptr )
 								{
 									allLocalPlayersHere = false;
 								}
@@ -307,7 +307,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 					// XUID fully read, can now handle what to do with it
 					AddPlayerFailed(ref new Platform::String( (wchar_t *)connectionInfo->m_pucAddFailedPlayerData ) );
 					delete [] connectionInfo->m_pucAddFailedPlayerData;
-					connectionInfo->m_pucAddFailedPlayerData = NULL;
+					connectionInfo->m_pucAddFailedPlayerData = nullptr;
 					connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
 				}
 
@@ -371,7 +371,7 @@ void DQRNetworkManager::SendBytesChat(unsigned int address, BYTE *bytes, int byt
 void DQRNetworkManager::SendBytes(int smallId, BYTE *bytes, int byteCount)
 {
 	EnterCriticalSection(&m_csSendBytes);
-	unsigned char *tempSendBuffer = (unsigned char *)malloc(8191 + 2);
+	unsigned char *tempSendBuffer = static_cast<unsigned char *>(malloc(8191 + 2));
 
 	BYTE *data = bytes;
 	BYTE *dataEnd = bytes + byteCount;
@@ -381,7 +381,7 @@ void DQRNetworkManager::SendBytes(int smallId, BYTE *bytes, int byteCount)
 	// blocks of this size.
 	do
 	{
-		int bytesToSend = (int)(dataEnd - data);
+		int bytesToSend = static_cast<int>(dataEnd - data);
 		if( bytesToSend > 8191 ) bytesToSend = 8191;
 
 		// Send header with data sending mode - see full comment in DQRNetworkManagerEventHandlers::DataReceivedHandler
