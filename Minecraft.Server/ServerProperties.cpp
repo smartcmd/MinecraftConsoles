@@ -5,6 +5,7 @@
 #include "ServerLogger.h"
 #include "Common\\StringUtils.h"
 #include "Common\\FileUtils.h"
+#include "..\\Minecraft.World\\ChunkSource.h"
 
 #include <cctype>
 #include <map>
@@ -61,6 +62,7 @@ static const ServerPropertyDefault kServerPropertyDefaults[] =
 	{ "level-name", "world" },
 	{ "level-seed", "" },
 	{ "level-type", "default" },
+	{ "world-size", "classic" },
 	{ "log-level", "info" },
 	{ "max-build-height", "256" },
 	{ "max-players", "8" },
@@ -605,6 +607,128 @@ static std::string ReadNormalizedLevelTypeProperty(
 	return normalized;
 }
 
+static std::string WorldSizeToPropertyValue(int worldSize)
+{
+	switch (worldSize)
+	{
+	case e_worldSize_Small:
+		return "small";
+	case e_worldSize_Medium:
+		return "medium";
+	case e_worldSize_Large:
+		return "large";
+	case e_worldSize_Classic:
+	default:
+		return "classic";
+	}
+}
+
+static int WorldSizeToXzChunks(int worldSize)
+{
+	switch (worldSize)
+	{
+	case e_worldSize_Small:
+		return LEVEL_WIDTH_SMALL;
+	case e_worldSize_Medium:
+		return LEVEL_WIDTH_MEDIUM;
+	case e_worldSize_Large:
+		return LEVEL_WIDTH_LARGE;
+	case e_worldSize_Classic:
+	default:
+		return LEVEL_WIDTH_CLASSIC;
+	}
+}
+
+static int WorldSizeToHellScale(int worldSize)
+{
+	switch (worldSize)
+	{
+	case e_worldSize_Small:
+		return HELL_LEVEL_SCALE_SMALL;
+	case e_worldSize_Medium:
+		return HELL_LEVEL_SCALE_MEDIUM;
+	case e_worldSize_Large:
+		return HELL_LEVEL_SCALE_LARGE;
+	case e_worldSize_Classic:
+	default:
+		return HELL_LEVEL_SCALE_CLASSIC;
+	}
+}
+
+static bool TryParseWorldSize(const std::string &lowered, int *outWorldSize)
+{
+	if (outWorldSize == NULL)
+	{
+		return false;
+	}
+
+	if (lowered == "classic" || lowered == "54" || lowered == "1")
+	{
+		*outWorldSize = e_worldSize_Classic;
+		return true;
+	}
+	if (lowered == "small" || lowered == "64" || lowered == "2")
+	{
+		*outWorldSize = e_worldSize_Small;
+		return true;
+	}
+	if (lowered == "medium" || lowered == "192" || lowered == "3")
+	{
+		*outWorldSize = e_worldSize_Medium;
+		return true;
+	}
+	if (lowered == "large" || lowered == "320" || lowered == "4")
+	{
+		*outWorldSize = e_worldSize_Large;
+		return true;
+	}
+
+	return false;
+}
+
+static int ReadNormalizedWorldSizeProperty(
+	std::unordered_map<std::string, std::string> *properties,
+	const char *key,
+	int defaultWorldSize,
+	int *outXzChunks,
+	int *outHellScale,
+	bool *shouldWrite)
+{
+	std::string raw = TrimAscii((*properties)[key]);
+	std::string lowered = ToLowerAscii(raw);
+
+	int worldSize = defaultWorldSize;
+	if (!raw.empty())
+	{
+		int parsedWorldSize = defaultWorldSize;
+		if (TryParseWorldSize(lowered, &parsedWorldSize))
+		{
+			worldSize = parsedWorldSize;
+		}
+	}
+
+	std::string normalized = WorldSizeToPropertyValue(worldSize);
+	if (raw != normalized)
+	{
+		(*properties)[key] = normalized;
+		if (shouldWrite != NULL)
+		{
+			*shouldWrite = true;
+		}
+	}
+
+	if (outXzChunks != NULL)
+	{
+		*outXzChunks = WorldSizeToXzChunks(worldSize);
+	}
+	if (outHellScale != NULL)
+	{
+		*outHellScale = WorldSizeToHellScale(worldSize);
+	}
+
+	return worldSize;
+}
+
 /**
  * **Load Effective Server Properties Config**
  *
@@ -702,6 +826,13 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 
 	config.difficulty = ReadNormalizedIntProperty(&merged, "difficulty", 1, 0, 3, &shouldWrite);
 	config.gameMode = ReadNormalizedIntProperty(&merged, "gamemode", 0, 0, 1, &shouldWrite);
+	config.worldSize = ReadNormalizedWorldSizeProperty(
+		&merged,
+		"world-size",
+		e_worldSize_Classic,
+		&config.worldSizeChunks,
+		&config.worldHellScale,
+		&shouldWrite);
 	config.levelType = ReadNormalizedLevelTypeProperty(&merged, "level-type", &config.levelTypeFlat, &shouldWrite);
 	config.generateStructures = ReadNormalizedBoolProperty(&merged, "generate-structures", true, &shouldWrite);
 	config.bonusChest = ReadNormalizedBoolProperty(&merged, "bonus-chest", false, &shouldWrite);

@@ -39,6 +39,12 @@ namespace ServerRuntime
 		/** host options / game settings */
 		int difficulty;
 		int gameMode;
+		/** `world-size` preset (`classic` / `small` / `medium` / `large`) */
+		int worldSize;
+		/** Overworld chunk width derived from `world-size` */
+		int worldSizeChunks;
+		/** Nether scale derived from `world-size` */
+		int worldHellScale;
 		bool levelTypeFlat;
 		bool generateStructures;
 		bool bonusChest;
