@@ -3,6 +3,7 @@ class Mob;
 class Options;
 using namespace std;
 #include "..\..\Minecraft.World\SoundTypes.h"
+#include "MusicTrackManager.h"
 
 #include "miniaudio.h"
 
@@ -17,6 +18,10 @@ enum eMUSICFILES
 	eStream_Overworld_hal4,
 	eStream_Overworld_nuance1,
 	eStream_Overworld_nuance2,
+	eStream_Overworld_piano1,
+	eStream_Overworld_piano2,
+	eStream_Overworld_piano3, // <-- make piano3 the last overworld one
+
 #ifndef _XBOX
 	// Add the new music tracks
 	eStream_Overworld_Creative1,
@@ -25,14 +30,12 @@ enum eMUSICFILES
 	eStream_Overworld_Creative4,
 	eStream_Overworld_Creative5,
 	eStream_Overworld_Creative6,
+
 	eStream_Overworld_Menu1,
 	eStream_Overworld_Menu2,
 	eStream_Overworld_Menu3,
 	eStream_Overworld_Menu4,
 #endif
-	eStream_Overworld_piano1,
-	eStream_Overworld_piano2,
-	eStream_Overworld_piano3, // <-- make piano3 the last overworld one
 	// Nether
 	eStream_Nether1,
 	eStream_Nether2,
@@ -106,6 +109,7 @@ extern std::vector<MiniAudioSound*> m_activeSounds;
 class SoundEngine : public ConsoleSoundEngine
 {
 	static const int MAX_SAME_SOUNDS_PLAYING = 8; // 4J added
+
 public:
 	SoundEngine();
     void destroy() override;
@@ -125,10 +129,11 @@ public:
     void addMusic(const wstring& name, File *file) override;
     void addStreaming(const wstring& name, File *file) override;
     char *ConvertSoundPathToName(const wstring& name, bool bConvertSpaces=false) override;
-	bool isStreamingWavebankReady();		// 4J Added
-	int getMusicID(int iDomain);
+	bool isStreamingWavebankReady();
+	MusicTrackManager::Domain determineCurrentMusicDomain() const;
+	int getTrackForDomain(MusicTrackManager::Domain domain);
 	int getMusicID(const wstring& name);
-	void SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1);
+	void SetStreamingSounds(int iMenuMin, int iMenuMax, int iOverworldSurvivalMin, int iOverWorldSurvivalMax, int iOverworldCreativeMin, int iOverWorldCreativeMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1);
 	void updateMiniAudio();
 	void playMusicUpdate();
 
@@ -141,8 +146,10 @@ private:
 	int initAudioHardware(int iMinSpeakers) override
     { return iMinSpeakers;}
 #endif
-	
-	int GetRandomishTrack(int iStart,int iEnd);
+
+	Random* random;
+	MusicTrackManager m_musicTrackManager;
+	MusicTrackManager::Domain m_currentMusicDomain;
 
 	ma_engine m_engine;
 	ma_engine_config m_engineConfig;
@@ -157,8 +164,6 @@ private:
 	AUDIO_LISTENER m_ListenerA[MAX_LOCAL_PLAYERS];
 	int m_validListenerCount;
 
-
-	Random *random;
 	int m_musicID;
 	int m_iMusicDelay;
 	int m_StreamState;
@@ -174,12 +179,7 @@ private:
 	char m_szStreamName[255];
 	int CurrentSoundsPlaying[eSoundType_MAX+eSFX_MAX];
 
-	// streaming music files - will be different for mash-up packs
-	int m_iStream_Overworld_Min,m_iStream_Overworld_Max;
-	int m_iStream_Nether_Min,m_iStream_Nether_Max;
-	int m_iStream_End_Min,m_iStream_End_Max;
 	int m_iStream_CD_1;
-	bool *m_bHeardTrackA;
 
 #ifdef __ORBIS__
 	int32_t m_hBGMAudio;

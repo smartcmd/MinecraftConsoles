@@ -114,6 +114,9 @@ const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"hal4",
 	"nuance1",
 	"nuance2",
+	"piano1",
+	"piano2",
+	"piano3", // 11
 
 #ifndef _XBOX
 	"creative1",
@@ -121,26 +124,23 @@ const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"creative3",
 	"creative4",
 	"creative5",
-	"creative6",
+	"creative6", // 17
+
 	"menu1",
 	"menu2",
 	"menu3",
-	"menu4",
+	"menu4", // 21
 #endif
-
-	"piano1",
-	"piano2",
-	"piano3",
 
 	// Nether
 	"nether1",
 	"nether2",
 	"nether3",
-	"nether4",
+	"nether4", // 25
 
 	// The End
 	"the_end_dragon_alive",
-	"the_end_end",
+	"the_end_end", // 27
 	
 	// CDs
 	"11",
@@ -191,23 +191,22 @@ void SoundEngine::init(Options* pOptions)
     return;
 }
 
-void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1)
+void SoundEngine::SetStreamingSounds(int iMenuMin, int iMenuMax,
+	int iOverworldSurvivalMin, int iOverWorldSurvivalMax,
+	int iOverworldCreativeMin, int iOverWorldCreativeMax,
+	int iNetherMin, int iNetherMax,
+	int iEndMin, int iEndMax,
+	int iCD1)
 {
-	m_iStream_Overworld_Min=iOverworldMin;
-	m_iStream_Overworld_Max=iOverWorldMax;
-	m_iStream_Nether_Min=iNetherMin;
-	m_iStream_Nether_Max=iNetherMax;
-	m_iStream_End_Min=iEndMin;
-	m_iStream_End_Max=iEndMax;
-	m_iStream_CD_1=iCD1;
+	using Domain = MusicTrackManager::Domain;
 
-	// array to monitor recently played tracks
-	if(m_bHeardTrackA)
-	{
-		delete [] m_bHeardTrackA;
-	}
-	m_bHeardTrackA = new bool[iEndMax+1];
-	memset(m_bHeardTrackA,0,sizeof(bool)*iEndMax+1);
+	m_musicTrackManager.setDomainRange(Domain::Menu, iMenuMin, iMenuMax);
+	m_musicTrackManager.setDomainRange(Domain::OverworldSurvival, iOverworldSurvivalMin, iOverWorldSurvivalMax);
+	m_musicTrackManager.setDomainRange(Domain::OverworldCreative, iOverworldCreativeMin, iOverWorldCreativeMax);
+	m_musicTrackManager.setDomainRange(Domain::Nether, iNetherMin, iNetherMax);
+	m_musicTrackManager.setDomainRange(Domain::End, iEndMin, iEndMax);
+
+	m_iStream_CD_1 = iCD1;
 }
 
 void SoundEngine::updateMiniAudio()
@@ -391,9 +390,8 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 //	SoundEngine
 //
 /////////////////////////////////////////////
-SoundEngine::SoundEngine()
+SoundEngine::SoundEngine(): random(new Random()), m_musicTrackManager(random), m_currentMusicDomain(MusicTrackManager::Domain::Menu)
 {
-	random = new Random();
 	memset(&m_engine, 0, sizeof(ma_engine));
     memset(&m_engineConfig, 0, sizeof(ma_engine_config));
     m_musicStreamActive = false;
@@ -401,15 +399,29 @@ SoundEngine::SoundEngine()
 	m_iMusicDelay=0;
 	m_validListenerCount=0; 
 
-	m_bHeardTrackA=nullptr;
+    m_musicTrackManager.setDomainRange(MusicTrackManager::Domain::Menu,
+        eStream_Overworld_Menu1,
+        eStream_Overworld_Menu4);
 
-	// Start the streaming music playing some music from the overworld
-	SetStreamingSounds(eStream_Overworld_Calm1,eStream_Overworld_piano3,
-		eStream_Nether1,eStream_Nether4,
-		eStream_end_dragon,eStream_end_end,
-		eStream_CD_1);
+    m_musicTrackManager.setDomainRange(MusicTrackManager::Domain::OverworldSurvival,
+        eStream_Overworld_Calm1,
+        eStream_Overworld_piano3);
 
-	m_musicID=getMusicID(LevelData::DIMENSION_OVERWORLD);
+    m_musicTrackManager.setDomainRange(MusicTrackManager::Domain::OverworldCreative,
+        eStream_Overworld_Creative1,
+        eStream_Overworld_Creative6);
+
+    m_musicTrackManager.setDomainRange(MusicTrackManager::Domain::Nether,
+        eStream_Nether1,
+        eStream_Nether4);
+
+    m_musicTrackManager.setDomainRange(MusicTrackManager::Domain::End,
+        eStream_end_dragon,
+        eStream_end_end);
+
+    m_iStream_CD_1 = eStream_CD_1;
+
+    m_musicID = getTrackForDomain(MusicTrackManager::Domain::Menu);
 
 	m_StreamingAudioInfo.bIs3D=false;
 	m_StreamingAudioInfo.x=0;
@@ -660,176 +672,80 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
 //	playStreaming
 //
 /////////////////////////////////////////////
-void SoundEngine::playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay)
+MusicTrackManager::Domain SoundEngine::determineCurrentMusicDomain() const
 {
-	// This function doesn't actually play a streaming sound, just sets states and an id for the music tick to play it
-	// Level audio will be played when a play with an empty name comes in
-	// CD audio will be played when a named stream comes in
+	Minecraft* mc = Minecraft::GetInstance();
+	if (!mc || !mc->level)
+		return MusicTrackManager::Domain::Menu;
 
-	m_StreamingAudioInfo.x=x;
-	m_StreamingAudioInfo.y=y;
-	m_StreamingAudioInfo.z=z;
-	m_StreamingAudioInfo.volume=volume;
-	m_StreamingAudioInfo.pitch=pitch;
+	bool inEnd = false, inNether = false, creative = false;
 
-	if(m_StreamState==eMusicStreamState_Playing)
+	for (unsigned int i = 0; i < MAX_LOCAL_PLAYERS; ++i)
 	{
-		m_StreamState=eMusicStreamState_Stop;
+		auto player = mc->localplayers[i];
+		if (!player) continue;
+
+		if (player->dimension == LevelData::DIMENSION_END)
+			inEnd = true;
+		else if (player->dimension == LevelData::DIMENSION_NETHER)
+			inNether = true;
+
+		if (player->level->getLevelData()->getGameType()->isCreative())
+			creative = true;
 	}
-	else if(m_StreamState==eMusicStreamState_Opening)
-	{
-		m_StreamState=eMusicStreamState_OpeningCancel;
-	}
 
-	if(name.empty())
-	{
-		// music, or stop CD
-		m_StreamingAudioInfo.bIs3D=false;
+	if (inEnd) return MusicTrackManager::Domain::End;
+	if (inNether) return MusicTrackManager::Domain::Nether;
+	if (creative) return MusicTrackManager::Domain::OverworldCreative;
+	return MusicTrackManager::Domain::OverworldSurvival;
+}
 
-		// we need a music id
-		// random delay of up to 3 minutes for music
-		m_iMusicDelay = random->nextInt(20 * 60 * 3);//random->nextInt(20 * 60 * 10) + 20 * 60 * 10;
+void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, float volume, float pitch, bool bMusicDelay)
+{
+	m_StreamingAudioInfo.x = x;
+	m_StreamingAudioInfo.y = y;
+	m_StreamingAudioInfo.z = z;
+	m_StreamingAudioInfo.volume = volume;
+	m_StreamingAudioInfo.pitch = pitch;
+
+	if (m_StreamState == eMusicStreamState_Playing)
+		m_StreamState = eMusicStreamState_Stop;
+	else if (m_StreamState == eMusicStreamState_Opening)
+		m_StreamState = eMusicStreamState_OpeningCancel;
+
+	if (name.empty())
+	{
+		m_StreamingAudioInfo.bIs3D = false;
+		m_iMusicDelay = bMusicDelay ? random->nextInt(20 * 60 * 3) : 0;
 
 #ifdef _DEBUG
-		m_iMusicDelay=0;
+		m_iMusicDelay = 0;
 #endif
-		Minecraft *pMinecraft=Minecraft::GetInstance();
 
-		bool playerInEnd=false;
-		bool playerInNether=false;
-
-		for(unsigned int i=0;i<MAX_LOCAL_PLAYERS;i++)
-		{
-			if(pMinecraft->localplayers[i]!=nullptr)
-			{
-				if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_END)
-				{
-					playerInEnd=true;
-				}
-				else if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_NETHER)
-				{
-					playerInNether=true;
-				}
-			}
-		}
-		if(playerInEnd)
-		{
-			m_musicID = getMusicID(LevelData::DIMENSION_END);
-		}
-		else if(playerInNether)
-		{
-			m_musicID = getMusicID(LevelData::DIMENSION_NETHER);
-		}
-		else
-		{
-			m_musicID = getMusicID(LevelData::DIMENSION_OVERWORLD);
-		}
+		MusicTrackManager::Domain domain = determineCurrentMusicDomain();
+        m_currentMusicDomain = domain;
+        m_musicID = getTrackForDomain(domain);
 	}
 	else
 	{
-		// jukebox
-		m_StreamingAudioInfo.bIs3D=true;
-		m_musicID=getMusicID(name);
-		m_iMusicDelay=0;
+		// Disk (jukebox)
+		m_StreamingAudioInfo.bIs3D = true;
+		m_musicID = getMusicID(name);
+		m_iMusicDelay = 0;
 	}
 }
 
-
-int SoundEngine::GetRandomishTrack(int iStart,int iEnd)
-{
-	// 4J-PB - make it more likely that we'll get a track we've not heard for a while, although repeating tracks sometimes is fine
-
-	// if all tracks have been heard, clear the flags
-	bool bAllTracksHeard=true;
-	int iVal=iStart;
-	for(size_t i=iStart;i<=iEnd;i++)
-	{
-		if(m_bHeardTrackA[i]==false) 
-		{
-			bAllTracksHeard=false;
-			app.DebugPrintf("Not heard all tracks yet\n");
-			break;
-		}
-	}
-
-	if(bAllTracksHeard)
-	{
-		app.DebugPrintf("Heard all tracks - resetting the tracking array\n");
-
-		for(size_t i=iStart;i<=iEnd;i++)
-		{
-			m_bHeardTrackA[i]=false;
-		}
-	}
-
-	// trying to get a track we haven't heard, but not too hard		
-	for(size_t i=0;i<=((iEnd-iStart)/2);i++)
-	{
-		// random->nextInt(1) will always return 0
-		iVal=random->nextInt((iEnd-iStart)+1)+iStart;
-		if(m_bHeardTrackA[iVal]==false)
-		{
-			// not heard this
-			app.DebugPrintf("(%d) Not heard track %d yet, so playing it now\n",i,iVal);
-			m_bHeardTrackA[iVal]=true;
-			break;
-		}
-		else
-		{
-			app.DebugPrintf("(%d) Skipping track %d already heard it recently\n",i,iVal);
-		}
-	}
-
-	app.DebugPrintf("Select track %d\n",iVal);
-	return iVal;
-}
 /////////////////////////////////////////////
 //
-//	getMusicID
+//	getTrackForDomain(MusicTrackManager::Domain domain)
 //
 /////////////////////////////////////////////
-int SoundEngine::getMusicID(int iDomain)
+int SoundEngine::getTrackForDomain(MusicTrackManager::Domain domain)
 {
-	int iRandomVal=0;
-	Minecraft *pMinecraft=Minecraft::GetInstance();
-
-	// Before the game has started?
-	if(pMinecraft==nullptr)
-	{
-		// any track from the overworld
-		return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
-	}
-
-	if(pMinecraft->skins->isUsingDefaultSkin())
-	{
-		switch(iDomain)
-		{
-		case LevelData::DIMENSION_END:
-			// the end isn't random - it has different music depending on whether the dragon is alive or not, but we've not added the dead dragon music yet
-			return m_iStream_End_Min;
-		case LevelData::DIMENSION_NETHER:
-			return GetRandomishTrack(m_iStream_Nether_Min,m_iStream_Nether_Max);
-			//return m_iStream_Nether_Min + random->nextInt(m_iStream_Nether_Max-m_iStream_Nether_Min);
-		default: //overworld
-			//return m_iStream_Overworld_Min + random->nextInt(m_iStream_Overworld_Max-m_iStream_Overworld_Min);
-			return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
-		}
-	}
-	else
-	{
-		// using a texture pack - may have multiple End music tracks
-		switch(iDomain)
-		{
-		case LevelData::DIMENSION_END:
-			return GetRandomishTrack(m_iStream_End_Min,m_iStream_End_Max);
-		case LevelData::DIMENSION_NETHER:
-			//return m_iStream_Nether_Min + random->nextInt(m_iStream_Nether_Max-m_iStream_Nether_Min);
-			return GetRandomishTrack(m_iStream_Nether_Min,m_iStream_Nether_Max);
-		default: //overworld
-			//return m_iStream_Overworld_Min + random->nextInt(m_iStream_Overworld_Max-m_iStream_Overworld_Min);
-			return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
-		}
-	}
+    if (domain == MusicTrackManager::Domain::End)
+        return m_musicTrackManager.getDomainMin(domain);
+    else
+        return m_musicTrackManager.selectTrack(domain);
 }
 
 /////////////////////////////////////////////
@@ -958,516 +874,485 @@ void SoundEngine::playMusicTick()
 #endif
 }
 
-// AP - moved to a separate function so it can be called from the mixer callback on Vita
-void SoundEngine::playMusicUpdate() 
+//=============================================================================
+// playMusicUpdate
+// Called every frame (or via mixer callback on Vita) to manage streaming music.
+// Handles state machine for background music and music discs (jukebox).
+//=============================================================================
+void SoundEngine::playMusicUpdate()
 {
-	static float fMusicVol = 0.0f;
-	fMusicVol = getMasterMusicVolume();
+    // Cache the current master music volume (may be zero if system music is playing)
+    float masterVolume = getMasterMusicVolume();
 
-	switch(m_StreamState)
-	{
-	case eMusicStreamState_Idle:
+    //-------------------------------------------------------------------------
+    // State machine for streaming audio (background music or discs)
+    //-------------------------------------------------------------------------
+    switch (m_StreamState)
+    {
+        //---------------------------------------------------------------------
+        // IDLE – no stream is open; waiting for a delay or ready to start
+        //---------------------------------------------------------------------
+    case eMusicStreamState_Idle:
+    {
+        // If a delay is active (e.g., between tracks), decrement and wait
+        if (m_iMusicDelay > 0)
+        {
+            m_iMusicDelay--;
+            return;
+        }
 
-		// start a stream playing
-		if (m_iMusicDelay > 0)
-		{
-			m_iMusicDelay--;
-			return;
-		}
+        // Sanity check: if a stream is already active, something went wrong
+        if (m_musicStreamActive)
+        {
+            app.DebugPrintf("WARNING: m_musicStreamActive already true in Idle state, resetting to Playing\n");
+            m_StreamState = eMusicStreamState_Playing;
+            return;
+        }
 
-		if (m_musicStreamActive)
-		{
-			app.DebugPrintf("WARNING: m_musicStreamActive already true in Idle state, resetting to Playing\n");
-			m_StreamState = eMusicStreamState_Playing;
-			return;
-		}
+        // If no track ID is selected, fallback to a default (should not happen)
+        if (m_musicID == -1)
+        {
+            m_musicID = m_musicTrackManager.selectTrack(MusicTrackManager::Domain::Menu);
+        }
 
-		if(m_musicID!=-1)
-		{
-			// start playing it
-
-
-#if ( defined __PS3__  || defined __PSVITA__ || defined __ORBIS__ )
-
+        // Build the full file path for the selected music ID.
+        // This block handles platform-specific paths, DLC/mash-up packs, and CD music.
+        // The result is stored in m_szStreamName.
+        {
+            // Start with the base music path (platform‑dependent)
+#if (defined __PS3__ || defined __PSVITA__ || defined __ORBIS__)
 #ifdef __PS3__
-			// 4J-PB - Need to check if we are a patched BD build
-			if(app.GetBootedFromDiscPatch())
-			{
-				sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szMusicPath), m_szMusicPath );		
-				app.DebugPrintf("SoundEngine::playMusicUpdate - (booted from disc patch) music path - %s",m_szStreamName);
-			}
-			else
-			{
-				sprintf(m_szStreamName,"%s/%s",getUsrDirPath(), m_szMusicPath );
-			}
+            // PS3 special case: booted from disc patch vs. installed data
+            if (app.GetBootedFromDiscPatch())
+            {
+                sprintf(m_szStreamName, "%s/%s", app.GetBDUsrDirPath(m_szMusicPath), m_szMusicPath);
+                app.DebugPrintf("SoundEngine::playMusicUpdate - (booted from disc patch) music path - %s", m_szStreamName);
+            }
+            else
+            {
+                sprintf(m_szStreamName, "%s/%s", getUsrDirPath(), m_szMusicPath);
+            }
 #else
-			sprintf(m_szStreamName,"%s/%s",getUsrDirPath(), m_szMusicPath );
+            // Other consoles (Vita, Orbis)
+            sprintf(m_szStreamName, "%s/%s", getUsrDirPath(), m_szMusicPath);
+#endif
+#else
+                // Windows / Durango – plain relative path
+            strcpy((char*)m_szStreamName, m_szMusicPath);
 #endif
 
-#else
-			strcpy((char *)m_szStreamName,m_szMusicPath);
-#endif
-			// are we using a mash-up pack?
-			//if(pMinecraft && !pMinecraft->skins->isUsingDefaultSkin() && pMinecraft->skins->getSelected()->hasAudio())
-			if(Minecraft::GetInstance()->skins->getSelected()->hasAudio())
-			{
-				// It's a mash-up - need to use the DLC path for the music
-				TexturePack *pTexPack=Minecraft::GetInstance()->skins->getSelected();
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexPack;
-				DLCPack *pack = pDLCTexPack->getDLCInfoParentPack();
-				DLCAudioFile *dlcAudioFile = (DLCAudioFile *) pack->getFile(DLCManager::e_DLCType_Audio, 0);
+            // Check if a mash‑up pack (DLC) is active and has custom audio
+            if (Minecraft::GetInstance()->skins->getSelected()->hasAudio())
+            {
+                // Mash‑up pack: use DLC audio files
+                TexturePack* pTexPack = Minecraft::GetInstance()->skins->getSelected();
+                DLCTexturePack* pDLCTexPack = (DLCTexturePack*)pTexPack;
+                DLCPack* pack = pDLCTexPack->getDLCInfoParentPack();
+                DLCAudioFile* dlcAudioFile = (DLCAudioFile*)pack->getFile(DLCManager::e_DLCType_Audio, 0);
 
-				app.DebugPrintf("Mashup pack \n");
+                app.DebugPrintf("Mashup pack\n");
 
-				// build the name
+                // Determine whether this is game music (track index < first CD) or a CD
+                if (m_musicID < m_iStream_CD_1)
+                {
+                    // Game music from the mash‑up pack
+                    SetIsPlayingStreamingGameMusic(true);
+                    SetIsPlayingStreamingCDMusic(false);
+                    m_MusicType = eMusicType_Game;
+                    m_StreamingAudioInfo.bIs3D = false;
 
-				// if the music ID is beyond the end of the texture pack music files, then it's a CD
-				if(m_musicID<m_iStream_CD_1)
-				{
-					SetIsPlayingStreamingGameMusic(true);
-					SetIsPlayingStreamingCDMusic(false);
-					m_MusicType=eMusicType_Game;
-					m_StreamingAudioInfo.bIs3D=false;
-				
 #ifdef _XBOX_ONE
-					wstring &wstrSoundName=dlcAudioFile->GetSoundName(m_musicID);
-					wstring wstrFile=L"TPACK:\\Data\\" + wstrSoundName +L".wav";
-					std::wstring mountedPath = StorageManager.GetMountedPath(wstrFile);
-					wcstombs(m_szStreamName,mountedPath.c_str(),255);
+                    // Xbox One: use StorageManager to resolve TPACK path
+                    wstring& wstrSoundName = dlcAudioFile->GetSoundName(m_musicID);
+                    wstring wstrFile = L"TPACK:\\Data\\" + wstrSoundName + L".wav";
+                    std::wstring mountedPath = StorageManager.GetMountedPath(wstrFile);
+                    wcstombs(m_szStreamName, mountedPath.c_str(), 255);
 #else
-					wstring &wstrSoundName=dlcAudioFile->GetSoundName(m_musicID);
-					char szName[255];
-					wcstombs(szName,wstrSoundName.c_str(),255);
+                    // Other platforms: convert wstring to char and build TPACK path
+                    wstring& wstrSoundName = dlcAudioFile->GetSoundName(m_musicID);
+                    char szName[255];
+                    wcstombs(szName, wstrSoundName.c_str(), 255);
 
 #if defined __PS3__ || defined __ORBIS__ || defined __PSVITA__
-					string strFile="TPACK:/Data/" + string(szName) + ".wav";
+                    string strFile = "TPACK:/Data/" + string(szName) + ".wav";
 #else
-					string strFile="TPACK:\\Data\\" + string(szName) + ".wav";
+                    string strFile = "TPACK:\\Data\\" + string(szName) + ".wav";
 #endif
-					std::string mountedPath = StorageManager.GetMountedPath(strFile);
-					strcpy(m_szStreamName,mountedPath.c_str());
+                    std::string mountedPath = StorageManager.GetMountedPath(strFile);
+                    strcpy(m_szStreamName, mountedPath.c_str());
 #endif
-				}
-				else
-				{
-					SetIsPlayingStreamingGameMusic(false);
-					SetIsPlayingStreamingCDMusic(true);
-					m_MusicType=eMusicType_CD;
-					m_StreamingAudioInfo.bIs3D=true;
+                }
+                else
+                {
+                    // CD track from the mash‑up pack
+                    SetIsPlayingStreamingGameMusic(false);
+                    SetIsPlayingStreamingCDMusic(true);
+                    m_MusicType = eMusicType_CD;
+                    m_StreamingAudioInfo.bIs3D = true;
 
-					// Need to adjust to index into the cds in the game's m_szStreamFileA
-					strcat((char *)m_szStreamName,"cds/");
-					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID-m_iStream_CD_1+eStream_CD_1]);
-					strcat((char *)m_szStreamName,".wav");
-				}
-			}
-			else
-			{	
-				// 4J-PB - if this is a PS3 disc patch, we have to check if the music file is in the patch data
+                    // Append "cds/" and the base filename (from the global stream file array)
+                    strcat((char*)m_szStreamName, "cds/");
+                    strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID - m_iStream_CD_1 + eStream_CD_1]);
+                    strcat((char*)m_szStreamName, ".wav");
+                }
+            }
+            else
+            {
+                // No mash‑up pack – use standard Minecraft music files
 #ifdef __PS3__
-				if(app.GetBootedFromDiscPatch() && (m_musicID<m_iStream_CD_1))
-				{
-					// rebuild the path for the music
-					strcpy((char *)m_szStreamName,m_szMusicPath);
-					strcat((char *)m_szStreamName,"music/");
-					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".wav");
+                    // PS3 disc patch handling
+                if (app.GetBootedFromDiscPatch() && (m_musicID < m_iStream_CD_1))
+                {
+                    // Rebuild path for patch data
+                    strcpy((char*)m_szStreamName, m_szMusicPath);
+                    strcat((char*)m_szStreamName, "music/");
+                    strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
+                    strcat((char*)m_szStreamName, ".wav");
 
-					// check if this is in the patch data
-					sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szStreamName), m_szMusicPath );		
-					strcat((char *)m_szStreamName,"music/");
-					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".wav");
+                    // Check if file exists in patch area; if not, fallback to original path
+                    sprintf(m_szStreamName, "%s/%s", app.GetBDUsrDirPath(m_szStreamName), m_szMusicPath);
+                    strcat((char*)m_szStreamName, "music/");
+                    strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
+                    strcat((char*)m_szStreamName, ".wav");
 
-					SetIsPlayingStreamingGameMusic(true);
-					SetIsPlayingStreamingCDMusic(false);
-					m_MusicType=eMusicType_Game;
-					m_StreamingAudioInfo.bIs3D=false;
-				}
-				else if(m_musicID<m_iStream_CD_1)
-				{
-					SetIsPlayingStreamingGameMusic(true);
-					SetIsPlayingStreamingCDMusic(false);
-					m_MusicType=eMusicType_Game;
-					m_StreamingAudioInfo.bIs3D=false;
-					// build the name
-					strcat((char *)m_szStreamName,"music/");
-					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".wav");
-				}
-
-				else
-				{
-					SetIsPlayingStreamingGameMusic(false);
-					SetIsPlayingStreamingCDMusic(true);
-					m_MusicType=eMusicType_CD;
-					m_StreamingAudioInfo.bIs3D=true;
-					// build the name
-					strcat((char *)m_szStreamName,"cds/");
-					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".wav");
-				}
-#else						
-				if(m_musicID<m_iStream_CD_1)
-				{
-					SetIsPlayingStreamingGameMusic(true);
-					SetIsPlayingStreamingCDMusic(false);
-					m_MusicType=eMusicType_Game;
-					m_StreamingAudioInfo.bIs3D=false;
-					// build the name
-					strcat((char *)m_szStreamName,"music/");
-				}
-				else
-				{
-					SetIsPlayingStreamingGameMusic(false);
-					SetIsPlayingStreamingCDMusic(true);
-					m_MusicType=eMusicType_CD;
-					m_StreamingAudioInfo.bIs3D=true;
-					// build the name
-					strcat((char *)m_szStreamName,"cds/");
-				}
-				strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-				strcat((char *)m_szStreamName,".wav");
-				
+                    SetIsPlayingStreamingGameMusic(true);
+                    SetIsPlayingStreamingCDMusic(false);
+                    m_MusicType = eMusicType_Game;
+                    m_StreamingAudioInfo.bIs3D = false;
+                }
+                else if (m_musicID < m_iStream_CD_1)
+                {
+                    // Standard game music (non‑CD)
+                    SetIsPlayingStreamingGameMusic(true);
+                    SetIsPlayingStreamingCDMusic(false);
+                    m_MusicType = eMusicType_Game;
+                    m_StreamingAudioInfo.bIs3D = false;
+                    strcat((char*)m_szStreamName, "music/");
+                    strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
+                    strcat((char*)m_szStreamName, ".wav");
+            }
+                else
+                {
+                    // CD music
+                    SetIsPlayingStreamingGameMusic(false);
+                    SetIsPlayingStreamingCDMusic(true);
+                    m_MusicType = eMusicType_CD;
+                    m_StreamingAudioInfo.bIs3D = true;
+                    strcat((char*)m_szStreamName, "cds/");
+                    strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
+                    strcat((char*)m_szStreamName, ".wav");
+                }
+#else
+                    // Non‑PS3 platforms
+                if (m_musicID < m_iStream_CD_1)
+                {
+                    // Game music
+                    SetIsPlayingStreamingGameMusic(true);
+                    SetIsPlayingStreamingCDMusic(false);
+                    m_MusicType = eMusicType_Game;
+                    m_StreamingAudioInfo.bIs3D = false;
+                    strcat((char*)m_szStreamName, "music/");
+                }
+                else
+                {
+                    // CD music
+                    SetIsPlayingStreamingGameMusic(false);
+                    SetIsPlayingStreamingCDMusic(true);
+                    m_MusicType = eMusicType_CD;
+                    m_StreamingAudioInfo.bIs3D = true;
+                    strcat((char*)m_szStreamName, "cds/");
+                }
+                // Append the base filename (from global array) and extension
+                strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
+                strcat((char*)m_szStreamName, ".wav");
 #endif
-			}
+        }
 
-			// 			wstring name = m_szStreamFileA[m_musicID];
-			// 			char *SoundName = (char *)ConvertSoundPathToName(name);
-			// 			strcat((char *)szStreamName,SoundName);
+            // Verify that the file exists; if not, try alternative extensions (.ogg, .mp3)
+            FILE* pFile = nullptr;
+            if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+            {
+                fclose(pFile);
+            }
+            else
+            {
+                // File not found – try changing the extension
+                const char* extensions[] = { ".ogg", ".mp3", ".wav" };
+                size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
+                bool found = false;
 
-			FILE* pFile = nullptr;
-			
-			if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
-			{
-				fclose(pFile);
-			}
-			else
-			{
-				const char* extensions[] = { ".ogg", ".mp3", ".wav" };
-				size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
-				bool found = false;
+                // Find the position of the current extension (assumed to be ".wav")
+                char* dotPos = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
+                if (dotPos != nullptr && (dotPos - reinterpret_cast<char*>(m_szStreamName)) < 250)
+                {
+                    for (size_t i = 0; i < extCount; ++i)
+                    {
+                        strcpy_s(dotPos, 5, extensions[i]);  // Replace extension
+                        if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+                        {
+                            fclose(pFile);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
 
-				char* dotPos = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
-				if (dotPos != nullptr && (dotPos - reinterpret_cast<char*>(m_szStreamName)) < 250)
-				{
-					for (size_t i = 0; i < extCount; i++)
-					{
-						strcpy_s(dotPos, 5, extensions[i]);
-						
-						if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
-						{
-							fclose(pFile);
-							found = true;
-							break;
-						}
-					}
-				}
+                if (!found)
+                {
+                    // Restore original extension for error message
+                    if (dotPos != nullptr)
+                        strcpy_s(dotPos, 5, ".wav");
+                    app.DebugPrintf("WARNING: No audio file found for music ID %d (tried .ogg, .mp3, .wav)\n", m_musicID);
+                    return;  // Abort – stay in Idle
+                }
+            }
+    } // end file path construction
 
-				if (!found)
-				{
-					if (dotPos != nullptr)
-					{
-						strcpy_s(dotPos, 5, ".wav");
-					}
-					app.DebugPrintf("WARNING: No audio file found for music ID %d (tried .ogg, .mp3, .wav)\n", m_musicID);
-					return;
-				}
-			}
+        app.DebugPrintf("Starting streaming - %s\n", m_szStreamName);
 
-			app.DebugPrintf("Starting streaming - %s\n",m_szStreamName);
-			m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
-			m_openStreamThread->Run();
-			m_StreamState = eMusicStreamState_Opening;
-		}
-		break;
+        // Launch a thread to open the audio file (prevents blocking the main thread)
+        m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
+        m_openStreamThread->Run();
+        m_StreamState = eMusicStreamState_Opening;
+        break;
+    }
 
-	case eMusicStreamState_Opening:
-		if( !m_openStreamThread->isRunning() )
-		{
-			delete m_openStreamThread;
-			m_openStreamThread = nullptr;
+    //---------------------------------------------------------------------
+    // OPENING – waiting for the background thread to finish opening the file
+    //---------------------------------------------------------------------
+    case eMusicStreamState_Opening:
+    {
+        if (!m_openStreamThread->isRunning())
+        {
+            // Thread finished
+            delete m_openStreamThread;
+            m_openStreamThread = nullptr;
 
-			app.DebugPrintf("OpenStreamThreadProc finished. m_musicStreamActive=%d\n", m_musicStreamActive);
+            app.DebugPrintf("OpenStreamThreadProc finished. m_musicStreamActive=%d\n", m_musicStreamActive);
 
-			if (!m_musicStreamActive)
-			{
-				const char* currentExt = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
-				if (currentExt && _stricmp(currentExt, ".wav") == 0)
-				{
-					const bool isCD = (m_musicID >= m_iStream_CD_1);
-					const char* folder = isCD ? "cds/" : "music/";
-					
-					int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s.wav", m_szMusicPath, folder, m_szStreamFileA[m_musicID]);
-					
-					if (n > 0)
-					{
-						FILE* pFile = nullptr;
-						if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
-						{
-							fclose(pFile);
-													
-							m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
-							m_openStreamThread->Run();
-							break;
-						}
-					}
-				}
-				
-				m_StreamState = eMusicStreamState_Idle;
-				break;
-			}
-			
-			if (m_StreamingAudioInfo.bIs3D)
-			{
-				ma_sound_set_spatialization_enabled(&m_musicStream, MA_TRUE);
-				ma_sound_set_position(&m_musicStream, m_StreamingAudioInfo.x, m_StreamingAudioInfo.y, m_StreamingAudioInfo.z);
-			}
-			else
-			{
-				ma_sound_set_spatialization_enabled(&m_musicStream, MA_FALSE);
-			}
+            // If the stream failed to open, try a fallback (e.g., if we used a numbered variant)
+            if (!m_musicStreamActive)
+            {
+                const char* currentExt = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
+                if (currentExt && _stricmp(currentExt, ".wav") == 0)
+                {
+                    // Attempt to rebuild the path using the base filename (without number)
+                    const bool isCD = (m_musicID >= m_iStream_CD_1);
+                    const char* folder = isCD ? "cds/" : "music/";
+                    int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s.wav",
+                        m_szMusicPath, folder, m_szStreamFileA[m_musicID]);
+                    if (n > 0)
+                    {
+                        FILE* pFile = nullptr;
+                        if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+                        {
+                            fclose(pFile);
+                            // Retry opening with the new path
+                            m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
+                            m_openStreamThread->Run();
+                            break;  // stay in Opening
+                        }
+                    }
+                }
+                // No fallback worked – go back to Idle
+                m_StreamState = eMusicStreamState_Idle;
+                break;
+            }
 
-			ma_sound_set_pitch(&m_musicStream, m_StreamingAudioInfo.pitch);
+            // Stream opened successfully; configure spatialization, pitch, volume
+            if (m_StreamingAudioInfo.bIs3D)
+            {
+                ma_sound_set_spatialization_enabled(&m_musicStream, MA_TRUE);
+                ma_sound_set_position(&m_musicStream,
+                    m_StreamingAudioInfo.x,
+                    m_StreamingAudioInfo.y,
+                    m_StreamingAudioInfo.z);
+            }
+            else
+            {
+                ma_sound_set_spatialization_enabled(&m_musicStream, MA_FALSE);
+            }
 
-			float finalVolume = m_StreamingAudioInfo.volume * getMasterMusicVolume();
+            ma_sound_set_pitch(&m_musicStream, m_StreamingAudioInfo.pitch);
 
-			ma_sound_set_volume(&m_musicStream, finalVolume);
-			ma_result startResult = ma_sound_start(&m_musicStream);
-			app.DebugPrintf("ma_sound_start result: %d\n", startResult);
+            float finalVolume = m_StreamingAudioInfo.volume * masterVolume;
+            ma_sound_set_volume(&m_musicStream, finalVolume);
 
-			m_StreamState=eMusicStreamState_Playing;
-		}
-		break;
-	case eMusicStreamState_OpeningCancel:
-		if( !m_openStreamThread->isRunning() )
-		{
-			delete m_openStreamThread;
-			m_openStreamThread = nullptr;
-			m_StreamState = eMusicStreamState_Stop;
-		}
-		break;
-	case eMusicStreamState_Stop:
-		if (m_musicStreamActive)
-		{
-			ma_sound_stop(&m_musicStream);
-			ma_sound_uninit(&m_musicStream);
-			m_musicStreamActive = false;
-		}
+            // Start playback
+            ma_result startResult = ma_sound_start(&m_musicStream);
+            app.DebugPrintf("ma_sound_start result: %d\n", startResult);
 
-		SetIsPlayingStreamingCDMusic(false);
-		SetIsPlayingStreamingGameMusic(false);
+            m_StreamState = eMusicStreamState_Playing;
+        }
+        break;
+    }
 
-		m_StreamState = eMusicStreamState_Idle;
-	break;
-	case eMusicStreamState_Stopping:
-		break;
-	case eMusicStreamState_Play:
-		break;
-	case eMusicStreamState_Playing:
-		{
-			static int frameCount = 0;
-			if (frameCount++ % 60 == 0)
-			{
-				if (m_musicStreamActive)
-				{
-					bool isPlaying = ma_sound_is_playing(&m_musicStream);
-					float vol = ma_sound_get_volume(&m_musicStream);
-					bool isAtEnd = ma_sound_at_end(&m_musicStream);
-				}
-			}
-		}
-		if(GetIsPlayingStreamingGameMusic())
-		{
-			//if(m_MusicInfo.pCue!=nullptr)
-			{
-				bool playerInEnd = false;
-				bool playerInNether=false;
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				for(unsigned int i = 0; i < MAX_LOCAL_PLAYERS; ++i)
-				{
-					if(pMinecraft->localplayers[i]!=nullptr)
-					{
-						if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_END)
-						{
-							playerInEnd=true;
-						}
-						else if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_NETHER)
-						{
-							playerInNether=true;
-						}
-					}
-				}
+    //---------------------------------------------------------------------
+    // OPENINGCANCEL – user requested stop while opening
+    //---------------------------------------------------------------------
+    case eMusicStreamState_OpeningCancel:
+    {
+        if (!m_openStreamThread->isRunning())
+        {
+            delete m_openStreamThread;
+            m_openStreamThread = nullptr;
+            m_StreamState = eMusicStreamState_Stop;
+        }
+        break;
+    }
 
-				if(playerInEnd && !GetIsPlayingEndMusic())
-				{
-					m_StreamState=eMusicStreamState_Stop;
+    //---------------------------------------------------------------------
+    // STOP – actively stop the current stream
+    //---------------------------------------------------------------------
+    case eMusicStreamState_Stop:
+    {
+        if (m_musicStreamActive)
+        {
+            ma_sound_stop(&m_musicStream);
+            ma_sound_uninit(&m_musicStream);
+            m_musicStreamActive = false;
+        }
 
-					// Set the end track
-					m_musicID = getMusicID(LevelData::DIMENSION_END);
-					SetIsPlayingEndMusic(true);
-					SetIsPlayingNetherMusic(false);					
-				}
-				else if(!playerInEnd && GetIsPlayingEndMusic())
-				{
-					if(playerInNether)
-					{
-						m_StreamState=eMusicStreamState_Stop;
+        // Clear flags indicating what type of music was playing
+        SetIsPlayingStreamingCDMusic(false);
+        SetIsPlayingStreamingGameMusic(false);
 
-						// Set the end track
-						m_musicID = getMusicID(LevelData::DIMENSION_NETHER);
-						SetIsPlayingEndMusic(false);
-						SetIsPlayingNetherMusic(true);					
-					}
-					else
-					{
-						m_StreamState=eMusicStreamState_Stop;
+        m_StreamState = eMusicStreamState_Idle;
+        break;
+    }
 
-						// Set the end track
-						m_musicID = getMusicID(LevelData::DIMENSION_OVERWORLD);
-						SetIsPlayingEndMusic(false);
-						SetIsPlayingNetherMusic(false);					
-					}
-				}
-				else if (playerInNether && !GetIsPlayingNetherMusic())
-				{
-					m_StreamState=eMusicStreamState_Stop;
-					// set the Nether track
-					m_musicID = getMusicID(LevelData::DIMENSION_NETHER);
-					SetIsPlayingNetherMusic(true);
-					SetIsPlayingEndMusic(false);
-				}
-				else if(!playerInNether && GetIsPlayingNetherMusic())
-				{
-					if(playerInEnd)
-					{
-						m_StreamState=eMusicStreamState_Stop;
-						// set the Nether track
-						m_musicID = getMusicID(LevelData::DIMENSION_END);
-						SetIsPlayingNetherMusic(false);
-						SetIsPlayingEndMusic(true);
-					}
-					else
-					{
-						m_StreamState=eMusicStreamState_Stop;
-						// set the Nether track
-						m_musicID = getMusicID(LevelData::DIMENSION_OVERWORLD);
-						SetIsPlayingNetherMusic(false);
-						SetIsPlayingEndMusic(false);
-					}
-				}
+    //---------------------------------------------------------------------
+    // PLAYING – the stream is actively playing
+    //---------------------------------------------------------------------
+    case eMusicStreamState_Playing:
+    {
+        // Optional periodic debug logging (once per second at 60 fps)
+        static int frameCount = 0;
+        if (frameCount++ % 60 == 0)
+        {
+            if (m_musicStreamActive)
+            {
+                bool isPlaying = ma_sound_is_playing(&m_musicStream);
+                float vol = ma_sound_get_volume(&m_musicStream);
+                bool isAtEnd = ma_sound_at_end(&m_musicStream);
+                // (debug info could be printed here if needed)
+            }
+        }
 
-				// volume change required?
-				if (m_musicStreamActive)
-				{
-					float finalVolume = m_StreamingAudioInfo.volume * fMusicVol;
+        // Separate handling for game music (background) and CD music (jukebox)
+        if (GetIsPlayingStreamingGameMusic())
+        {
+            // Background music: check if the musical context has changed
+            MusicTrackManager::Domain currentDomain = determineCurrentMusicDomain();
 
-					ma_sound_set_volume(&m_musicStream, finalVolume);
-				}
-			}
-		}
-		else
-		{
-			// Music disc playing - if it's a 3D stream, then set the position - we don't have any streaming audio in the world that moves, so this isn't
-			// required unless we have more than one listener, and are setting the listening position to the origin and setting a fake position
-			// for the sound down  the z axis
-			if (m_StreamingAudioInfo.bIs3D && m_validListenerCount > 1)
-			{
-				int iClosestListener = 0;
-				float fClosestDist = 1e6f;
+            // If the domain changed, we need to stop the current track
+            // so that a new one (appropriate for the new domain) will start.
+            if (currentDomain != m_currentMusicDomain)
+            {
+                m_StreamState = eMusicStreamState_Stop;
+                // Store the new domain for when we restart
+                m_currentMusicDomain = currentDomain;
+                m_musicID = getTrackForDomain(currentDomain);
+                break;
+            }
 
-				for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
-				{
-					if (m_ListenerA[i].bValid)
-					{
-						float dx = m_StreamingAudioInfo.x - m_ListenerA[i].vPosition.x;
-						float dy = m_StreamingAudioInfo.y - m_ListenerA[i].vPosition.y;
-						float dz = m_StreamingAudioInfo.z - m_ListenerA[i].vPosition.z;
-						float dist = sqrtf(dx*dx + dy*dy + dz*dz);
+            // Update volume if master volume changed
+            if (m_musicStreamActive)
+            {
+                float finalVolume = m_StreamingAudioInfo.volume * masterVolume;
+                ma_sound_set_volume(&m_musicStream, finalVolume);
+            }
+        }
+        else
+        {
+            // Music disc playing (jukebox)
+            if (m_StreamingAudioInfo.bIs3D && m_validListenerCount > 1)
+            {
+                // For split‑screen, we need to position the sound relative to the closest listener.
+                // (The engine's listener is set to the origin; we simulate distance by moving the sound.)
+                int iClosestListener = 0;
+                float fClosestDist = 1e6f;
 
-						if (dist < fClosestDist)
-						{
-							fClosestDist = dist;
-							iClosestListener = i;
-						}
-					}
-				}
+                for (size_t i = 0; i < MAX_LOCAL_PLAYERS; ++i)
+                {
+                    if (m_ListenerA[i].bValid)
+                    {
+                        float dx = m_StreamingAudioInfo.x - m_ListenerA[i].vPosition.x;
+                        float dy = m_StreamingAudioInfo.y - m_ListenerA[i].vPosition.y;
+                        float dz = m_StreamingAudioInfo.z - m_ListenerA[i].vPosition.z;
+                        float dist = sqrtf(dx * dx + dy * dy + dz * dz);
 
-				float relX = m_StreamingAudioInfo.x - m_ListenerA[iClosestListener].vPosition.x;
-				float relY = m_StreamingAudioInfo.y - m_ListenerA[iClosestListener].vPosition.y;
-				float relZ = m_StreamingAudioInfo.z - m_ListenerA[iClosestListener].vPosition.z;
+                        if (dist < fClosestDist)
+                        {
+                            fClosestDist = dist;
+                            iClosestListener = i;
+                        }
+                    }
+                }
 
-				if (m_musicStreamActive)
-				{
-					ma_sound_set_position(&m_musicStream, relX, relY, relZ);
-				}
-			}
-		}
+                // Compute sound position relative to that listener
+                float relX = m_StreamingAudioInfo.x - m_ListenerA[iClosestListener].vPosition.x;
+                float relY = m_StreamingAudioInfo.y - m_ListenerA[iClosestListener].vPosition.y;
+                float relZ = m_StreamingAudioInfo.z - m_ListenerA[iClosestListener].vPosition.z;
 
-		break;
+                if (m_musicStreamActive)
+                {
+                    ma_sound_set_position(&m_musicStream, relX, relY, relZ);
+                }
+            }
+        }
+        break;
+    }
 
-	case eMusicStreamState_Completed:
-		{	
-			// random delay of up to 3 minutes for music
-			m_iMusicDelay = random->nextInt(20 * 60 * 3);//random->nextInt(20 * 60 * 10) + 20 * 60 * 10;
-			// Check if we have a local player in The Nether or in The End, and play that music if they are
-			Minecraft *pMinecraft=Minecraft::GetInstance();
-			bool playerInEnd=false;
-			bool playerInNether=false;
+    //---------------------------------------------------------------------
+    // COMPLETED – the current track reached its end naturally
+    //---------------------------------------------------------------------
+    case eMusicStreamState_Completed:
+    {
+        // Set a random delay (0–3 minutes) before playing the next track
+        m_iMusicDelay = random->nextInt(20 * 60 * 3);
 
-			for(unsigned int i=0;i<MAX_LOCAL_PLAYERS;i++)
-			{
-				if(pMinecraft->localplayers[i]!=nullptr)
-				{
-					if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_END)
-					{
-						playerInEnd=true;
-					}
-					else if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_NETHER)
-					{
-						playerInNether=true;
-					}
-				}
-			}
-			if(playerInEnd)
-			{
-				m_musicID = getMusicID(LevelData::DIMENSION_END);
-				SetIsPlayingEndMusic(true);
-				SetIsPlayingNetherMusic(false);
-			}
-			else if(playerInNether)
-			{
-				m_musicID = getMusicID(LevelData::DIMENSION_NETHER);
-				SetIsPlayingNetherMusic(true);
-				SetIsPlayingEndMusic(false);
-			}
-			else
-			{
-				m_musicID = getMusicID(LevelData::DIMENSION_OVERWORLD);
-				SetIsPlayingNetherMusic(false);
-				SetIsPlayingEndMusic(false);
-			}
+        // Determine the current musical context
+        m_currentMusicDomain = determineCurrentMusicDomain();
 
-			m_StreamState=eMusicStreamState_Idle;
-		}
-		break;
-	}
+        // Select a new track ID appropriate for that domain
+        m_musicID = getTrackForDomain(m_currentMusicDomain);
 
-	// check the status of the stream - this is for when a track completes rather than is stopped by the user action
+        // Update the flags that track which domain is active (for compatibility)
+        // These are used elsewhere; we keep them in sync.
+        SetIsPlayingMenuMusic(m_currentMusicDomain == MusicTrackManager::Domain::Menu);
+        SetIsPlayingEndMusic(m_currentMusicDomain == MusicTrackManager::Domain::End);
+        SetIsPlayingNetherMusic(m_currentMusicDomain == MusicTrackManager::Domain::Nether);
 
-	if (m_musicStreamActive)
-	{
-		if (!ma_sound_is_playing(&m_musicStream) && ma_sound_at_end(&m_musicStream))
-		{
-			ma_sound_uninit(&m_musicStream);
-			m_musicStreamActive = false;
+        m_StreamState = eMusicStreamState_Idle;
+        break;
+    }
 
-			SetIsPlayingStreamingCDMusic(false);
-			SetIsPlayingStreamingGameMusic(false);
+    //---------------------------------------------------------------------
+    // States that require no action (STOPPING, PLAY – unused)
+    //---------------------------------------------------------------------
+    case eMusicStreamState_Stopping:
+    case eMusicStreamState_Play:
+        break;
+}
 
-			m_StreamState = eMusicStreamState_Completed;
-		}
-	}
+    //-------------------------------------------------------------------------
+    // End-of‑stream detection (common to all states)
+    // If the stream is active but has finished playing, transition to Completed.
+    //-------------------------------------------------------------------------
+    if (m_musicStreamActive)
+    {
+        if (!ma_sound_is_playing(&m_musicStream) && ma_sound_at_end(&m_musicStream))
+        {
+            ma_sound_uninit(&m_musicStream);
+            m_musicStreamActive = false;
+
+            SetIsPlayingStreamingCDMusic(false);
+            SetIsPlayingStreamingGameMusic(false);
+
+            m_StreamState = eMusicStreamState_Completed;
+        }
+    }
 }
 
 

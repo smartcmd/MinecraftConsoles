@@ -18,6 +18,10 @@ void ConsoleSoundEngine::SetIsPlayingStreamingGameMusic(bool bVal)
 {
 	m_bIsPlayingStreamingGameMusic=bVal;
 }
+bool ConsoleSoundEngine::GetIsPlayingMenuMusic()
+{
+	return m_bIsPlayingMenuMusic;
+}
 bool ConsoleSoundEngine::GetIsPlayingEndMusic()						
 { 
 	return m_bIsPlayingEndMusic;
@@ -25,6 +29,10 @@ bool ConsoleSoundEngine::GetIsPlayingEndMusic()
 bool ConsoleSoundEngine::GetIsPlayingNetherMusic()					
 { 
 	return m_bIsPlayingNetherMusic;
+}
+void ConsoleSoundEngine::SetIsPlayingMenuMusic(bool bVal)
+{
+	m_bIsPlayingMenuMusic = bVal;
 }
 void ConsoleSoundEngine::SetIsPlayingEndMusic(bool bVal)			
 {
