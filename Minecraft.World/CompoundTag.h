@@ -42,10 +42,16 @@ public:
 		}
 		tags.clear();
 		Tag *tag;
-		while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
-		{
-			tags[tag->getName()] = tag;
-		}
+        int tagCount = 0;
+        const int MAX_COMPOUND_TAGS = 10000;
+        while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
+        {
+            tags[tag->getName()] = tag;
+            if (++tagCount >= MAX_COMPOUND_TAGS)
+            {
+                break;
+            }
+        }
 		delete tag;
 	}
 

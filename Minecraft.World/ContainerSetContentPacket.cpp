@@ -32,6 +32,9 @@ void ContainerSetContentPacket::read(DataInputStream *dis) //throws IOException
 {
 	containerId = dis->readByte();
 	int count = dis->readShort();
+
+	if (count < 0 || count > 256) count = 0;
+
 	items = ItemInstanceArray(count);
 	for (int i = 0; i < count; i++) 
 	{

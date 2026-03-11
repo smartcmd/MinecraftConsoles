@@ -108,8 +108,8 @@ Connection::Connection(Socket *socket, const wstring& id, PacketListener *packet
 	const char *szId = wstringtofilename(id);
 	char readThreadName[256];
 	char writeThreadName[256];
-	sprintf(readThreadName,"%s read\n",szId);
-	sprintf(writeThreadName,"%s write\n",szId);
+    sprintf_s(readThreadName, sizeof(readThreadName), "%.240s read\n", szId);
+    sprintf_s(writeThreadName, sizeof(writeThreadName), "%.240s write\n", szId);
 
 	readThread = new C4JThread(runRead, static_cast<void *>(this), readThreadName, READ_STACK_SIZE);
 	writeThread = new C4JThread(runWrite, this, writeThreadName, WRITE_STACK_SIZE);

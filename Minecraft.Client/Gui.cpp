@@ -851,7 +851,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 #ifndef _FINAL_BUILD
 	MemSect(31);
-    if (minecraft->options->renderDebug && minecraft->player != nullptr && minecraft->level != nullptr)
+
+	// temporarily render overlay at all times so version is more obvious in bug reports
+	// we can turn this off once things stabilize 
+    if (true)// minecraft->options->renderDebug && minecraft->player != nullptr && minecraft->level != nullptr)
 	{
 		const int debugLeft = 1;
 		const int debugTop = 1;
@@ -870,117 +873,120 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		vector<wstring> lines;
 
         lines.push_back(ClientConstants::VERSION_STRING);
-        lines.push_back(minecraft->fpsString);
-        lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
-		// TODO Add server information with packet counts - once multiplayer is more stable
-        int renderDistance = app.GetGameSettings(iPad, eGameSetting_RenderDistance);
-		// Calculate the chunk sections using 16 * (2n + 1)^2
-        lines.push_back(L"C: " + std::to_wstring(16 * (2 * renderDistance + 1) * (2 * renderDistance + 1)) + L" D: " + std::to_wstring(renderDistance));
-        lines.push_back(minecraft->gatherStats4()); // Chunk Cache
-
-		// Dimension
-        wstring dimension = L"unknown";
-        switch (minecraft->player->dimension)
+        lines.push_back(ClientConstants::BRANCH_STRING);
+        if (minecraft->options->renderDebug && minecraft->player != nullptr && minecraft->level != nullptr)
         {
-        case -1:
-            dimension = L"minecraft:the_nether";
-            break;
-        case 0:
-            dimension = L"minecraft:overworld";
-            break;
-        case 1:
-			dimension = L"minecraft:the_end";
-			break;
-		}
-        lines.push_back(dimension);
+            lines.push_back(minecraft->fpsString);
+            lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
+                                                                                                  // TODO Add server information with packet counts - once multiplayer is more stable
+            int renderDistance = app.GetGameSettings(iPad, eGameSetting_RenderDistance);
+            // Calculate the chunk sections using 16 * (2n + 1)^2
+            lines.push_back(L"C: " + std::to_wstring(16 * (2 * renderDistance + 1) * (2 * renderDistance + 1)) + L" D: " + std::to_wstring(renderDistance));
+            lines.push_back(minecraft->gatherStats4()); // Chunk Cache
 
-        lines.push_back(L""); // Spacer
+            // Dimension
+            wstring dimension = L"unknown";
+            switch (minecraft->player->dimension)
+            {
+            case -1:
+                dimension = L"minecraft:the_nether";
+                break;
+            case 0:
+                dimension = L"minecraft:overworld";
+                break;
+            case 1:
+                dimension = L"minecraft:the_end";
+                break;
+            }
+            lines.push_back(dimension);
 
-		// Players block pos
-        int xBlockPos = Mth::floor(minecraft->player->x);
-        int yBlockPos = Mth::floor(minecraft->player->y);
-        int zBlockPos = Mth::floor(minecraft->player->z);
+            lines.push_back(L""); // Spacer
 
-		// Chunk player is in
-        int xChunkPos = xBlockPos >> 4;
-        int yChunkPos = yBlockPos >> 4;
-        int zChunkPos = zBlockPos >> 4;
+            // Players block pos
+            int xBlockPos = Mth::floor(minecraft->player->x);
+            int yBlockPos = Mth::floor(minecraft->player->y);
+            int zBlockPos = Mth::floor(minecraft->player->z);
 
-		// Players offset within the chunk
-		int xChunkOffset = xBlockPos & 15;
-        int yChunkOffset = yBlockPos & 15;
-        int zChunkOffset = zBlockPos & 15;
+            // Chunk player is in
+            int xChunkPos = xBlockPos >> 4;
+            int yChunkPos = yBlockPos >> 4;
+            int zChunkPos = zBlockPos >> 4;
 
-		// Format the position like java with limited decumal places
-		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
-        swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
+            // Players offset within the chunk
+            int xChunkOffset = xBlockPos & 15;
+            int yChunkOffset = yBlockPos & 15;
+            int zChunkOffset = zBlockPos & 15;
 
-        lines.push_back(L"XYZ: " + std::wstring(posString));
-        lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
-        lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
+            // Format the position like java with limited decumal places
+            WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
+            swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
 
-		// Wrap the yRot to 360 then adjust to (-180 to 180) range to match java
-		float yRotDisplay = fmod(minecraft->player->yRot, 360.0f);
-        if (yRotDisplay > 180.0f)
-        {
-            yRotDisplay -= 360.0f;
+            lines.push_back(L"XYZ: " + std::wstring(posString));
+            lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
+            lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
+
+            // Wrap the yRot to 360 then adjust to (-180 to 180) range to match java
+            float yRotDisplay = fmod(minecraft->player->yRot, 360.0f);
+            if (yRotDisplay > 180.0f)
+            {
+                yRotDisplay -= 360.0f;
+            }
+            if (yRotDisplay < -180.0f)
+            {
+                yRotDisplay += 360.0f;
+            }
+            // Generate the angle string in the format "yRot / xRot" with one decimal place, similar to java edition
+            WCHAR angleString[16];
+            swprintf(angleString, 16, L"%.1f / %.1f", yRotDisplay, minecraft->player->xRot);
+
+            // Work out the named direction
+            int direction = Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3;
+            wstring cardinalDirection;
+            switch (direction)
+            {
+            case 0:
+                cardinalDirection = L"south";
+                break;
+            case 1:
+                cardinalDirection = L"west";
+                break;
+            case 2:
+                cardinalDirection = L"north";
+                break;
+            case 3:
+                cardinalDirection = L"east";
+                break;
+            }
+
+            lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
+
+            // We have to limit y to 256 as we don't get any information past that
+            if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
+            {
+                LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+                if (chunkAt != NULL)
+                {
+                    int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
+                    int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
+                    int maxLight = fmax(skyLight, blockLight);
+                    lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
+
+                    lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
+
+                    Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
+                    lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
+
+                    lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
+                }
+            }
+
+            // This is all LCE only stuff, it was never on java
+            lines.push_back(L""); // Spacer
+            lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
+            lines.push_back(minecraft->gatherStats1()); // Time to autosave
+            lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
+            lines.push_back(minecraft->gatherStats3()); // RTT
         }
-        if (yRotDisplay < -180.0f)
-        {
-            yRotDisplay += 360.0f;
-        }
-        // Generate the angle string in the format "yRot / xRot" with one decimal place, similar to java edition
-        WCHAR angleString[16];
-        swprintf(angleString, 16, L"%.1f / %.1f", yRotDisplay, minecraft->player->xRot);
-
-		// Work out the named direction
-        int direction = Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3;
-        wstring cardinalDirection;
-        switch (direction)
-        {
-        case 0:
-            cardinalDirection = L"south";
-            break;
-        case 1:
-            cardinalDirection = L"west";
-            break;
-        case 2:
-            cardinalDirection = L"north";
-            break;
-        case 3:
-            cardinalDirection = L"east";
-            break;
-        }
-
-        lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
-
-		// We have to limit y to 256 as we don't get any information past that
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
-		{
-            LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
-			if (chunkAt != NULL)
-			{
-				int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
-				int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
-				int maxLight = fmax(skyLight, blockLight);
-				lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
-
-				lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
-
-				Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
-				lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
-
-				lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
-			}
-		}
-
-
-		// This is all LCE only stuff, it was never on java
-        lines.push_back(L""); // Spacer
-        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
-        lines.push_back(minecraft->gatherStats1()); // Time to autosave
-        lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
-        lines.push_back(minecraft->gatherStats3()); // RTT
 		
 #ifdef _DEBUG // Only show terrain features in debug builds not release
         // TERRAIN FEATURES

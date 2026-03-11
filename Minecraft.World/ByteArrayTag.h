@@ -21,6 +21,7 @@ public:
 	void load(DataInput *dis, int tagDepth)
 	{
 		int length = dis->readInt();
+        if (length < 0 || length > 2 * 1024 * 1024) length = 0;
 		
 		if ( data.data ) delete[] data.data;
 		data  = byteArray(length);
