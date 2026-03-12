@@ -260,9 +260,9 @@ void SoundEngine::updateMiniAudio()
             continue;
         }
 
-        float finalVolume = s->info.volume * m_MasterEffectsVolume;
-        if (finalVolume > 1.0f)
-            finalVolume = 1.0f;
+        float finalVolume = s->info.volume * m_MasterEffectsVolume * SFX_VOLUME_MULTIPLIER;
+        if (finalVolume > SFX_MAX_GAIN)
+            finalVolume = SFX_MAX_GAIN;
 
         ma_sound_set_volume(&s->sound, finalVolume);
         ma_sound_set_pitch(&s->sound, s->info.pitch);
@@ -557,10 +557,13 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
     }
 
     ma_sound_set_spatialization_enabled(&s->sound, MA_TRUE);
+    ma_sound_set_min_distance(&s->sound, SFX_3D_MIN_DISTANCE);
+    ma_sound_set_max_distance(&s->sound, SFX_3D_MAX_DISTANCE);
+    ma_sound_set_rolloff(&s->sound, SFX_3D_ROLLOFF);
 
-    float finalVolume = volume * m_MasterEffectsVolume;
-    if (finalVolume > 1.0f)
-        finalVolume = 1.0f;
+    float finalVolume = volume * m_MasterEffectsVolume * SFX_VOLUME_MULTIPLIER;
+    if (finalVolume > SFX_MAX_GAIN)
+        finalVolume = SFX_MAX_GAIN;
 
     ma_sound_set_volume(&s->sound, finalVolume);
     ma_sound_set_pitch(&s->sound, pitch);

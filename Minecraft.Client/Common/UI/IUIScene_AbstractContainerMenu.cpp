@@ -1298,10 +1298,8 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		}
 	}
 
-	vPointerPos.x = floor(vPointerPos.x);
-	vPointerPos.x += ( static_cast<int>(vPointerPos.x)%2);
-	vPointerPos.y = floor(vPointerPos.y);
-	vPointerPos.y += ( static_cast<int>(vPointerPos.y)%2);
+	vPointerPos.x = static_cast<float>(floor(vPointerPos.x + 0.5f));
+	vPointerPos.y = static_cast<float>(floor(vPointerPos.y + 0.5f));
 	m_pointerPos = vPointerPos;
 
 	adjustPointerForSafeZone();
