@@ -21,7 +21,12 @@ set(MINECRAFT_CLIENT_SOURCES
   ${SOURCES_COMMON}
 )
 
-add_executable(Minecraft.Client WIN32 ${MINECRAFT_CLIENT_SOURCES})
+add_executable(Minecraft.Client ${MINECRAFT_CLIENT_SOURCES})
+
+# Only define executable on windows
+if(PLATFORM_NAME STREQUAL "Windows64")
+  set_target_properties(Minecraft.Client PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
 
 target_include_directories(Minecraft.Client PRIVATE
   "${CMAKE_BINARY_DIR}/generated/" # This is for the generated BuildVer.h
