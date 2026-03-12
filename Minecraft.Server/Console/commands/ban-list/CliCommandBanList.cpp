@@ -2,10 +2,10 @@
 
 #include "CliCommandBanList.h"
 
-#include "..\ServerCliEngine.h"
-#include "..\ServerCliParser.h"
-#include "..\..\Access\Access.h"
-#include "..\..\Common\StringUtils.h"
+#include "..\..\ServerCliEngine.h"
+#include "..\..\ServerCliParser.h"
+#include "..\..\..\Access\Access.h"
+#include "..\..\..\Common\StringUtils.h"
 
 #include <algorithm>
 
@@ -133,3 +133,4 @@ namespace ServerRuntime
 		(void)out;
 	}
 }
+

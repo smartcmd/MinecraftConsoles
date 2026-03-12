@@ -1,13 +1,16 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
 	/**
-	 * Removes a dedicated-server IP ban using Java Edition style syntax and Access-backed persistence
+	 * **Ban List Command**
+	 *
+	 * Lists dedicated-server player bans and IP bans in a single command output
+	 * 専用サーバーのプレイヤーBANとIP BANをまとめて表示する
 	 */
-	class CliCommandPardonIp : public IServerCliCommand
+	class CliCommandBanList : public IServerCliCommand
 	{
 	public:
 		virtual const char *Name() const;
@@ -17,3 +20,4 @@ namespace ServerRuntime
 		virtual void Complete(const ServerCliCompletionContext &context, const ServerCliEngine *engine, std::vector<std::string> *out) const;
 	};
 }
+

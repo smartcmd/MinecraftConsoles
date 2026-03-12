@@ -2,8 +2,8 @@
 
 #include "CliCommandHelp.h"
 
-#include "..\ServerCliEngine.h"
-#include "..\ServerCliRegistry.h"
+#include "..\..\ServerCliEngine.h"
+#include "..\..\ServerCliRegistry.h"
 
 namespace ServerRuntime
 {
@@ -43,3 +43,4 @@ namespace ServerRuntime
 		return true;
 	}
 }
+

@@ -653,17 +653,17 @@
     </ClCompile>
     <ClCompile Include="Console\ServerCli.cpp" />
     <ClCompile Include="Console\ServerCliInput.cpp" />
-    <ClCompile Include="Console\commands\CliCommandBan.cpp" />
-    <ClCompile Include="Console\commands\CliCommandBanIp.cpp" />
-    <ClCompile Include="Console\commands\CliCommandBanList.cpp" />
-    <ClCompile Include="Console\commands\CliCommandGamemode.cpp" />
-    <ClCompile Include="Console\commands\CliCommandHelp.cpp" />
-    <ClCompile Include="Console\commands\CliCommandList.cpp" />
-    <ClCompile Include="Console\commands\CliCommandPardon.cpp" />
-    <ClCompile Include="Console\commands\CliCommandPardonIp.cpp" />
-    <ClCompile Include="Console\commands\CliCommandStop.cpp" />
-    <ClCompile Include="Console\commands\CliCommandTp.cpp" />
-    <ClCompile Include="Console\commands\CliCommandWhitelist.cpp" />
+    <ClCompile Include="Console\commands\ban\CliCommandBan.cpp" />
+    <ClCompile Include="Console\commands\ban-ip\CliCommandBanIp.cpp" />
+    <ClCompile Include="Console\commands\ban-list\CliCommandBanList.cpp" />
+    <ClCompile Include="Console\commands\gamemode\CliCommandGamemode.cpp" />
+    <ClCompile Include="Console\commands\help\CliCommandHelp.cpp" />
+    <ClCompile Include="Console\commands\list\CliCommandList.cpp" />
+    <ClCompile Include="Console\commands\pardon\CliCommandPardon.cpp" />
+    <ClCompile Include="Console\commands\pardon-ip\CliCommandPardonIp.cpp" />
+    <ClCompile Include="Console\commands\stop\CliCommandStop.cpp" />
+    <ClCompile Include="Console\commands\tp\CliCommandTp.cpp" />
+    <ClCompile Include="Console\commands\whitelist\CliCommandWhitelist.cpp" />
     <ClCompile Include="Console\ServerCliEngine.cpp" />
     <ClCompile Include="Console\ServerCliParser.cpp" />
     <ClCompile Include="Console\ServerCliRegistry.cpp" />
@@ -689,17 +689,17 @@
     <ClInclude Include="Access\WhitelistManager.h" />
     <ClInclude Include="Console\ServerCli.h" />
     <ClInclude Include="Console\ServerCliInput.h" />
-    <ClInclude Include="Console\commands\CliCommandBan.h" />
-    <ClInclude Include="Console\commands\CliCommandBanIp.h" />
-    <ClInclude Include="Console\commands\CliCommandBanList.h" />
-    <ClInclude Include="Console\commands\CliCommandGamemode.h" />
-    <ClInclude Include="Console\commands\CliCommandHelp.h" />
-    <ClInclude Include="Console\commands\CliCommandList.h" />
-    <ClInclude Include="Console\commands\CliCommandPardon.h" />
-    <ClInclude Include="Console\commands\CliCommandPardonIp.h" />
-    <ClInclude Include="Console\commands\CliCommandStop.h" />
-    <ClInclude Include="Console\commands\CliCommandTp.h" />
-    <ClInclude Include="Console\commands\CliCommandWhitelist.h" />
+    <ClInclude Include="Console\commands\ban\CliCommandBan.h" />
+    <ClInclude Include="Console\commands\ban-ip\CliCommandBanIp.h" />
+    <ClInclude Include="Console\commands\ban-list\CliCommandBanList.h" />
+    <ClInclude Include="Console\commands\gamemode\CliCommandGamemode.h" />
+    <ClInclude Include="Console\commands\help\CliCommandHelp.h" />
+    <ClInclude Include="Console\commands\list\CliCommandList.h" />
+    <ClInclude Include="Console\commands\pardon\CliCommandPardon.h" />
+    <ClInclude Include="Console\commands\pardon-ip\CliCommandPardonIp.h" />
+    <ClInclude Include="Console\commands\stop\CliCommandStop.h" />
+    <ClInclude Include="Console\commands\tp\CliCommandTp.h" />
+    <ClInclude Include="Console\commands\whitelist\CliCommandWhitelist.h" />
     <ClInclude Include="Console\commands\IServerCliCommand.h" />
     <ClInclude Include="Console\ServerCliEngine.h" />
     <ClInclude Include="Console\ServerCliParser.h" />
@@ -731,3 +731,4 @@
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
+

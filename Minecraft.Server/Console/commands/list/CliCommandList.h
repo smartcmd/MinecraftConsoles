@@ -1,10 +1,10 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
-	class CliCommandStop : public IServerCliCommand
+	class CliCommandList : public IServerCliCommand
 	{
 	public:
 		virtual const char *Name() const;
@@ -13,3 +13,4 @@ namespace ServerRuntime
 		virtual bool Execute(const ServerCliParsedLine &line, ServerCliEngine *engine);
 	};
 }
+
