@@ -31,16 +31,26 @@ jobs:
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: Create temporary global.json
+      run: |
+        echo '{"sdk":{"version": "8.0.418"}}' > ./global.json
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '8.0.418'
+
     - name: Build Dedicated Server Runtime Only
       shell: pwsh
       run: |
+        MSBuild.exe Minecraft.Server.FourKit\Minecraft.Server.FourKit.vcxproj /p:Configuration=Release /p:Platform=x64 /p:SolutionDir="../" /m
         MSBuild.exe Minecraft.World\Minecraft.World.vcxproj /p:Configuration=Release /p:Platform=x64 /m
-        MSBuild.exe Minecraft.Server\Minecraft.Server.vcxproj /p:Configuration=Release /p:Platform=x64 /m
-
+        MSBuild.exe Minecraft.Server\Minecraft.Server.vcxproj /p:Configuration=Release /p:Platform=x64 /p:SolutionDir="../" /m
+        
     - name: Stage dedicated server runtime
       shell: pwsh
       run: |
-        $serverOut = "Minecraft.Server/x64/Minecraft.Server/Release"
+        $serverOut = "x64/Minecraft.Server/Release"
         $stage = ".artifacts/dedicated-server-runtime"
 
         if (Test-Path $stage) {
@@ -53,7 +63,11 @@ jobs:
         $required = @(
           "Minecraft.Server.exe",
           "iggy_w64.dll",
-          "Common"
+          "Common",
+          "Ijwhost.dll",
+          "Minecraft.Server.FourKit.dll",
+          "Minecraft.Server.FourKit.deps.json",
+          "Minecraft.Server.FourKit.runtimeconfig.json"
         )
 
         foreach ($entry in $required) {
@@ -67,6 +81,10 @@ jobs:
         Copy-Item -Path (Join-Path $serverOut "Minecraft.Server.exe") -Destination (Join-Path $stage "Minecraft.Server.exe") -Force
         Copy-Item -Path (Join-Path $serverOut "iggy_w64.dll") -Destination (Join-Path $stage "iggy_w64.dll") -Force
         Copy-Item -Path (Join-Path $serverOut "Common") -Destination (Join-Path $stage "Common") -Recurse -Force
+        Copy-Item -Path (Join-Path $serverOut "Ijwhost.dll") -Destination (Join-Path $stage "Ijwhost.dll") -Recurse -Force
+        Copy-Item -Path (Join-Path $serverOut "Minecraft.Server.FourKit.dll") -Destination (Join-Path $stage "Minecraft.Server.FourKit.dll") -Recurse -Force
+        Copy-Item -Path (Join-Path $serverOut "Minecraft.Server.FourKit.deps.json") -Destination (Join-Path $stage "Minecraft.Server.FourKit.deps.json") -Recurse -Force
+        Copy-Item -Path (Join-Path $serverOut "Minecraft.Server.FourKit.runtimeconfig.json") -Destination (Join-Path $stage "Minecraft.Server.FourKit.runtimeconfig.json") -Recurse -Force
         if (Test-Path (Join-Path $serverOut "Windows64")) {
           Copy-Item -Path (Join-Path $serverOut "Windows64/*") -Destination (Join-Path $stage "Windows64") -Recurse -Force
         } else {
@@ -108,6 +126,10 @@ jobs:
         rm -rf runtime
         mkdir -p runtime
         cp .artifacts/runtime/Minecraft.Server.exe runtime/Minecraft.Server.exe
+        cp .artifacts/runtime/Ijwhost.dll runtime/Ijwhost.dll
+        cp .artifacts/runtime/Minecraft.Server.FourKit.dll runtime/Minecraft.Server.FourKit.dll
+        cp .artifacts/runtime/Minecraft.Server.FourKit.deps.json runtime/Minecraft.Server.FourKit.deps.json
+        cp .artifacts/runtime/Minecraft.Server.FourKit.runtimeconfig.json runtime/Minecraft.Server.FourKit.runtimeconfig.json
         cp .artifacts/runtime/iggy_w64.dll runtime/iggy_w64.dll
         cp -R .artifacts/runtime/Common runtime/Common
         mkdir -p runtime/Windows64
@@ -117,6 +139,10 @@ jobs:
 
         test -f runtime/Minecraft.Server.exe
         test -f runtime/iggy_w64.dll
+        test -f runtime/Ijwhost.dll
+        test -f runtime/Minecraft.Server.FourKit.dll
+        test -f runtime/Minecraft.Server.FourKit.deps.json
+        test -f runtime/Minecraft.Server.FourKit.runtimeconfig.json
         test -d runtime/Common
         test -d runtime/Windows64
 
