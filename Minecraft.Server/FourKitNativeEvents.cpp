@@ -215,4 +215,29 @@ namespace FourKit
 
 		FourKit_FireOnPlayerDeath(deathData);
 	}
+
+	bool EmitPlayerDropItemEvent(ServerPlayer* nativePlayer, int itemId, int itemCount, int itemData,
+		int& outItemId, int& outItemCount, int& outItemData)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		PlayerDropItemData dropData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		dropData.playerName = nameUtf8.c_str();
+		dropData.itemId = itemId;
+		dropData.itemCount = itemCount;
+		dropData.itemData = itemData;
+
+		bool cancelled = false;
+		FourKit_FireOnPlayerDropItem(&dropData, &cancelled);
+
+		outItemId = dropData.itemId;
+		outItemCount = dropData.itemCount;
+		outItemData = dropData.itemData;
+
+		return cancelled;
+	}
 }

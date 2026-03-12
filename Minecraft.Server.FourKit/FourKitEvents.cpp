@@ -514,3 +514,57 @@ void FourKit::FireEventOnPlayerInteract(PlayerInteractData *interactData, bool *
 		}
 	}
 }
+
+void FourKit::FireEventOnPlayerDropItem(PlayerDropItemData* dropData, bool* cancelled)
+{
+	try
+	{
+		if (dropData == nullptr)
+		{
+			if (cancelled != nullptr)
+			{
+				*cancelled = false;
+			}
+			return;
+		}
+
+		String^ name = gcnew String((dropData->playerName != nullptr) ? dropData->playerName : "");
+
+		Player^ player = FourKitInternal::ResolvePlayerByName(name);
+		if (player == nullptr)
+		{
+			player = gcnew Player(name);
+		}
+
+		ItemStack^ itemStack = gcnew ItemStack(dropData->itemId, dropData->itemCount, dropData->itemData);
+		Item^ itemDrop = gcnew Item(gcnew Location(player->getX(), player->getY(), player->getZ()), itemStack);
+
+		PlayerDropItemEvent^ event = gcnew PlayerDropItemEvent();
+		event->PlayerObject = player;
+		event->ItemDrop = itemDrop;
+		event->Cancelled = false;
+
+		EventManager::FireEvent(event);
+
+		if (event->ItemDrop != nullptr && event->ItemDrop->getItemStack() != nullptr)
+		{
+			ItemStack^ modifiedStack = event->ItemDrop->getItemStack();
+			dropData->itemId = modifiedStack->getTypeId();
+			dropData->itemCount = modifiedStack->getAmount();
+			dropData->itemData = modifiedStack->getData();
+		}
+
+		if (cancelled != nullptr)
+		{
+			*cancelled = event->Cancelled;
+		}
+	}
+	catch (Exception^ ex)
+	{
+		PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerDropItem event: {0}", ex->Message));
+		if (cancelled != nullptr)
+		{
+			*cancelled = false;
+		}
+	}
+}

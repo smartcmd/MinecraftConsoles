@@ -452,11 +452,53 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 
 	if (packet->action == PlayerActionPacket::DROP_ITEM)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+		if (selectedItem != NULL && selectedItem->id > 0)
+		{
+			int outItemId = selectedItem->id;
+			int outItemCount = 1;
+			int outItemData = selectedItem->getAuxValue();
+			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, 1, selectedItem->getAuxValue(),
+				outItemId, outItemCount, outItemData))
+			{
+				return;
+			}
+			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
+			{
+				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
+				player->drop(replacedItem);
+				player->inventory->removeResource(selectedItem->id, selectedItem->getAuxValue());
+				return;
+			}
+		}
+#endif
 		player->drop(false);
 		return;
 	}
 	else if (packet->action == PlayerActionPacket::DROP_ALL_ITEMS)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+		if (selectedItem != NULL && selectedItem->id > 0)
+		{
+			int outItemId = selectedItem->id;
+			int outItemCount = selectedItem->count;
+			int outItemData = selectedItem->getAuxValue();
+			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, selectedItem->count, selectedItem->getAuxValue(),
+				outItemId, outItemCount, outItemData))
+			{
+				return;
+			}
+			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
+			{
+				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
+				player->drop(replacedItem);
+				player->inventory->removeItem(player->inventory->selected, selectedItem->count);
+				return;
+			}
+		}
+#endif
 		player->drop(true);
 		return;
 	}

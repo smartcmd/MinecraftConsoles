@@ -228,8 +228,9 @@ namespace FourKitInternal
     X(FourKit_FireOnPlayerPortal, (PlayerPortalData * portalData, bool *cancelled), (FourKit::FireEventOnPlayerPortal(portalData, cancelled)))           \
     X(FourKit_FireOnSignChange, (SignChangeData * signData, bool *cancelled), (FourKit::FireEventOnSignChange(signData, cancelled)))                     \
     X(FourKit_FireOnPlayerInteract, (PlayerInteractData * interactData, bool *cancelled), (FourKit::FireEventOnPlayerInteract(interactData, cancelled))) \
-    X(FourKit_FireOnLoad, (), (FourKit::FireEventOnLoad()))                                                                                              \
-    X(FourKit_FireOnExit, (), (FourKit::FireEventOnExit()))
+	X(FourKit_FireOnPlayerDropItem, (PlayerDropItemData * dropData, bool *cancelled), (FourKit::FireEventOnPlayerDropItem(dropData, cancelled)))         \
+	X(FourKit_FireOnLoad, (), (FourKit::FireEventOnLoad()))                                                                                              \
+	X(FourKit_FireOnExit, (), (FourKit::FireEventOnExit()))
 
 #define PB_FOURKIT_VALUE_EXPORT_LIST(X) \
     X(FourKit_DispatchPlayerCommand, int, (const char *playerName, const char *commandLine), (FourKitInternal::DispatchPlayerCommandExport(playerName, commandLine)))

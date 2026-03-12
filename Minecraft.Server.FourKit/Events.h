@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Block.h"
+#include "Item.h"
 
 using namespace System;
 
@@ -219,6 +220,19 @@ internal:
     property bool HasBlock;
     property bool HasItem;
     property bool Cancelled;
+};
+
+public ref class PlayerDropItemEvent
+{
+public:
+	Player^ getPlayer() { return PlayerObject; }
+	Item^ getItemDrop() { return ItemDrop; }
+	bool isCancelled() { return Cancelled; }
+	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+internal:
+	property Player^ PlayerObject;
+	property Item^ ItemDrop;
+	property bool Cancelled;
 };
 
 public ref class PlayerDeathEvent

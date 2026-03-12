@@ -194,8 +194,9 @@ extern "C"
 	__declspec(dllexport) void FourKit_FireOnPlayerInteract(PlayerInteractData* interactData, bool* cancelled);
 	__declspec(dllexport) int FourKit_DispatchPlayerCommand(const char* playerName, const char* commandLine);
 	__declspec(dllexport) void FourKit_FireOnLoad();
-	__declspec(dllexport) void FourKit_FireOnExit();
-	__declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData* deathData);
+    __declspec(dllexport) void FourKit_FireOnExit();
+	__declspec(dllexport) void FourKit_FireOnPlayerDropItem(PlayerDropItemData* dropData, bool* cancelled);
+	__declspec(dllexport) void FourKit_FireOnPlayerDeath(PlayerDeathData *deathData);
 
 	__declspec(dllexport) void FourKit_SetNativeCallbacks(PB_SET_NATIVE_CALLBACK_PARAMS);
 
