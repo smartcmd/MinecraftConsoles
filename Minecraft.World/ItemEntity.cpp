@@ -81,6 +81,9 @@ void ItemEntity::tick()
 	yd -= 0.04f;
 	noPhysics = checkInTile(x, (bb->y0 + bb->y1) / 2, z);
 
+	int tile = level->getTile(x, y, z);
+	if (tile == Tile::calmWater_Id) yd += 0.045f;
+
 	// 4J - added parameter here so that these don't care about colliding with other entities
 	move(xd, yd, zd, true);
 
