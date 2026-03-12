@@ -7,49 +7,100 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: archlinux:latest
-
-    strategy:
-      matrix:
-        configuration: [Release, Debug]
-
     steps:
-      - name: Install base dependencies
-        run: |
-          pacman -Syu --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel sudo git clang lld ninja cmake extra-cmake-modules python wine msitools ca-certificates libwbclient
-
-      - name: Create build user
-        run: |
-          useradd -m builder
-          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Fix permissions
-        run: chown -R builder:builder .
-
-      - name: Build
+      - name: Install Dependencies
         run: |
-          sudo -u builder sh <<'EOF'
-          set -e
+          sudo apt update
+          sudo apt install -y --no-install-recommends build-essential git clang lld ninja-build cmake extra-cmake-modules python3 wine msitools ca-certificates libwbclient0
+          CLANG_VER=$(clang --version | grep -oP '(?<=version )\d+' | head -1)
+          [ -e /usr/bin/clang-cl ]  || sudo ln -s /usr/bin/clang-cl-$CLANG_VER  /usr/bin/clang-cl
+          [ -e /usr/bin/lld-link ]  || sudo ln -s /usr/bin/lld-link-$CLANG_VER  /usr/bin/lld-link
+
+      - name: Setup Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y --no-install-recommends wine64 wine32
+      
+      - name: Setup MSVC
+        run: |
+          git clone https://github.com/mstorsjo/msvc-wine
+          cd msvc-wine
+          python vsdownload.py --accept-license --dest $(pwd)/my_msvc
+          ./install.sh $(pwd)/my_msvc
+          export PATH=$(pwd)/my_msvc/bin/x64:$PATH
+          export WINDOWS_SDK_PATH=$(pwd)/my_msvc
+          echo "WINDOWS_SDK_PATH=$WINDOWS_SDK_PATH" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV >> $GITHUB_PATH
+
+      # rm: via act theres an error where CMake was unable to find a build program corresponding to "Ninja"
+      - name: Setup Build Directory
+        run: |
           mkdir build
           cd build
-          export WINDOWS_SDK_PATH="$PWD/my_msvc"
-          export WINE=$(command -v wine64 || command -v wine || false)
-          $WINE wineboot
-          git clone https://github.com/mstorsjo/msvc-wine
-          ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc
-          ./msvc-wine/install.sh $(pwd)/my_msvc
-          export PATH=$(pwd)/my_msvc/bin/x64:$PATH
-          cmake .. -B . -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DWINDOWS_SDK_PATH=$(pwd)/my_msvc -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
+          cmake .. -B . -GNinja \
+            -DCMAKE_MAKE_PROGRAM=$(which ninja) \
+            -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} \
+            -DWINDOWS_SDK_PATH=$WINDOWS_SDK_PATH \
+            -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
+
+      - name: Build Minecraft Legacy Console Edition
+        run: |
+          cd build
           ninja
-          EOF
 
       - name: Upload Release + Debug Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: MinecraftClient-${{ matrix.configuration }}
           path: build
+
+    # container:
+    #   image: archlinux:latest
+
+    # strategy:
+    #   matrix:
+    #     configuration: [Release, Debug]
+
+    # steps:
+    #   - name: Install base dependencies
+    #     run: |
+    #       pacman -Syu --noconfirm archlinux-keyring
+    #       pacman -Syu --noconfirm base-devel sudo git clang lld ninja cmake extra-cmake-modules python wine msitools ca-certificates libwbclient
+
+    #   - name: Create build user
+    #     run: |
+    #       useradd -m builder
+    #       echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+    #   - name: Checkout repository
+    #     uses: actions/checkout@v4
+
+    #   - name: Fix permissions
+    #     run: chown -R builder:builder .
+
+    #   - name: Build
+    #     run: |
+    #       sudo -u builder sh <<'EOF'
+    #       set -e
+    #       mkdir build
+    #       cd build
+    #       export WINDOWS_SDK_PATH="$PWD/my_msvc"
+    #       export WINE=$(command -v wine64 || command -v wine || false)
+    #       $WINE wineboot
+    #       git clone https://github.com/mstorsjo/msvc-wine
+    #       ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc
+    #       ./msvc-wine/install.sh $(pwd)/my_msvc
+    #       export PATH=$(pwd)/my_msvc/bin/x64:$PATH
+    #       cmake .. -B . -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DWINDOWS_SDK_PATH=$(pwd)/my_msvc -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
+    #       ninja
+    #       EOF
+
+    #   - name: Upload Release + Debug Artifacts
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: MinecraftClient-${{ matrix.configuration }}
+    #       path: build
