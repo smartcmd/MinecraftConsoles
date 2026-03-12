@@ -89,7 +89,7 @@ add_dependencies(Minecraft.Client CopyRedist)
 set_property(TARGET CopyRedist PROPERTY FOLDER "Build")
 
 # Make sure GameHDD exists on Windows
-if(CMAKE_CONFIGURE_PRESET STREQUAL "windows64")
+if(PLATFORM_NAME STREQUAL "Windows64")
   add_custom_target(EnsureGameHDD ALL
     COMMAND ${CMAKE_COMMAND}
       -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Windows64/GameHDD"
