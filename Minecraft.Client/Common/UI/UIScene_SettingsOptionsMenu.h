@@ -11,6 +11,7 @@ private:
 		eControl_ShowHints,
 		eControl_ShowTooltips,
 		eControl_InGameGamertags,
+		eControl_JavaFlightControls,
 		eControl_ShowMashUpWorlds,
 		eControl_Autosave,
 		eControl_Languages,
@@ -21,7 +22,7 @@ protected:
 	static int m_iDifficultyTitleSettingA[4];
 
 private:
-	UIControl_CheckBox m_checkboxViewBob, m_checkboxShowHints, m_checkboxShowTooltips, m_checkboxInGameGamertags, m_checkboxMashupWorlds; // Checkboxes
+	UIControl_CheckBox m_checkboxViewBob, m_checkboxShowHints, m_checkboxShowTooltips, m_checkboxInGameGamertags, m_checkboxJavaFlightControls, m_checkboxMashupWorlds; // Checkboxes
 	UIControl_Slider m_sliderAutosave, m_sliderDifficulty; // Sliders
 	UIControl_Label m_labelDifficultyText; //Text
 	UIControl_Button m_buttonLanguageSelect;
@@ -31,6 +32,7 @@ private:
 		UI_MAP_ELEMENT( m_checkboxShowHints, "ShowHints")
 		UI_MAP_ELEMENT( m_checkboxShowTooltips, "ShowTooltips")
 		UI_MAP_ELEMENT( m_checkboxInGameGamertags, "InGameGamertags")
+		UI_MAP_ELEMENT( m_checkboxJavaFlightControls, "JavaFlightControls")
 		UI_MAP_ELEMENT( m_checkboxMashupWorlds, "ShowMashUpWorlds")
 		UI_MAP_ELEMENT( m_sliderAutosave, "Autosave")
 		UI_MAP_ELEMENT( m_sliderDifficulty, "Difficulty")

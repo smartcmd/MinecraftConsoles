@@ -35,6 +35,7 @@ UIScene_SettingsOptionsMenu::UIScene_SettingsOptionsMenu(int iPad, void *initDat
 	m_checkboxShowHints.init(IDS_HINTS,eControl_ShowHints,(app.GetGameSettings(m_iPad,eGameSetting_Hints)!=0));
 	m_checkboxShowTooltips.init(IDS_IN_GAME_TOOLTIPS,eControl_ShowTooltips,(app.GetGameSettings(m_iPad,eGameSetting_Tooltips)!=0));
 	m_checkboxInGameGamertags.init(IDS_IN_GAME_GAMERTAGS,eControl_InGameGamertags,(app.GetGameSettings(m_iPad,eGameSetting_GamertagsVisible)!=0));
+	m_checkboxJavaFlightControls.init(L"Java Flight Controls",eControl_JavaFlightControls,(app.GetGameSettings(m_iPad,eGameSetting_JavaFlightControls)!=0));
 
 	// check if we should display the mash-up option
 	if(m_bNotInGame && app.GetMashupPackWorlds(m_iPad)!=0xFFFFFFFF)
@@ -259,6 +260,7 @@ void UIScene_SettingsOptionsMenu::handleReload()
 	m_checkboxShowHints.init(IDS_HINTS,eControl_ShowHints,(app.GetGameSettings(m_iPad,eGameSetting_Hints)!=0));
 	m_checkboxShowTooltips.init(IDS_IN_GAME_TOOLTIPS,eControl_ShowTooltips,(app.GetGameSettings(m_iPad,eGameSetting_Tooltips)!=0));
 	m_checkboxInGameGamertags.init(IDS_IN_GAME_GAMERTAGS,eControl_InGameGamertags,(app.GetGameSettings(m_iPad,eGameSetting_GamertagsVisible)!=0));
+	m_checkboxJavaFlightControls.init(L"Java Flight Controls",eControl_JavaFlightControls,(app.GetGameSettings(m_iPad,eGameSetting_JavaFlightControls)!=0));
 
 	// check if we should display the mash-up option
 	if(m_bNotInGame && app.GetMashupPackWorlds(m_iPad)!=0xFFFFFFFF)
@@ -415,6 +417,7 @@ void UIScene_SettingsOptionsMenu::setGameSettings()
 	app.SetGameSettings(m_iPad,eGameSetting_GamertagsVisible,m_checkboxInGameGamertags.IsChecked()?1:0);
 	app.SetGameSettings(m_iPad,eGameSetting_Hints,m_checkboxShowHints.IsChecked()?1:0);
 	app.SetGameSettings(m_iPad,eGameSetting_Tooltips,m_checkboxShowTooltips.IsChecked()?1:0);
+	app.SetGameSettings(m_iPad,eGameSetting_JavaFlightControls,m_checkboxJavaFlightControls.IsChecked()?1:0);
 
 	// the mashup option will only be shown if some worlds have been previously hidden
 	if(m_bMashUpWorldsUnhideOption && m_checkboxMashupWorlds.IsChecked())

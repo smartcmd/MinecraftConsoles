@@ -2277,7 +2277,7 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 		}
 		break;
 	case eGameSetting_PS3_EULA_Read:
-		if((GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PS3EULAREAD)!=(ucVal&0x01)<<16)
+		if((GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PS3EULAREAD)!=(ucVal&0x01)<<24)
 		{
 			if(ucVal==1)
 			{
@@ -2292,7 +2292,7 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 		}
 		break;
 	case eGameSetting_PSVita_NetworkModeAdhoc:
-		if((GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)!=(ucVal&0x01)<<17)
+		if((GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)!=(ucVal&0x01)<<25)
 		{
 			if(ucVal==1)
 			{
@@ -2305,6 +2305,13 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 			ActionGameSettings(iPad,eVal);
 			GameSettingsA[iPad]->bSettingsChanged=true;
 		}
+		break;
+	case eGameSetting_JavaFlightControls:
+		if(ucVal==1)
+			GameSettingsA[iPad]->uiBitmaskValues|=GAMESETTING_JAVAFLIGHTCONTROLS;
+		else
+			GameSettingsA[iPad]->uiBitmaskValues&=~GAMESETTING_JAVAFLIGHTCONTROLS;
+		GameSettingsA[iPad]->bSettingsChanged=true;
 		break;
 
 	}
@@ -2437,10 +2444,13 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_ANIMATEDCHARACTER)>>15;
 
 	case eGameSetting_PS3_EULA_Read:
-		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PS3EULAREAD)>>16;
+		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PS3EULAREAD)>>24;
 
 	case eGameSetting_PSVita_NetworkModeAdhoc:
-		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)>>17;
+		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)>>25;
+
+	case eGameSetting_JavaFlightControls:
+		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_JAVAFLIGHTCONTROLS)?1:0;
 
 	}
 	return 0;
