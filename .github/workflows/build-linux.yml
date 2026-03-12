@@ -6,18 +6,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     container:
       image: archlinux:latest
 
     strategy:
       matrix:
-        configuration: [Debug]
+        configuration: [Release, Debug]
 
     steps:
       - name: Install base dependencies
         run: |
           pacman -Syu --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel sudo git clang lld ninja cmake extra-cmake-modules python wine msitools ca-certificates libwbclient
+          pacman -Syu --noconfirm base-devel sudo git clang lld ninja cmake extra-cmake-modules python wine msitools ca-certificates libwbclient xorg-server-xvfb
 
       - name: Create build user
         run: |
@@ -30,35 +31,30 @@ jobs:
       - name: Fix permissions
         run: chown -R builder:builder .
 
-      - name: Setup MSVC
-        run: |
-          git clone https://github.com/mstorsjo/msvc-wine /home/builder/msvc-wine
-          cd /home/builder/msvc-wine
-          python vsdownload.py --accept-license --dest /home/builder/msvc
-          ./install.sh /home/builder/msvc
-          chown -R builder:builder /home/builder/msvc
-          echo "WINDOWS_SDK_PATH=/home/builder/msvc" >> $GITHUB_ENV
-
-      - name: Wine init
-        run: sudo -u builder HOME=/home/builder wine wineboot
-
-      # rm: via act theres an error where CMake was unable to find a build program corresponding to "Ninja"
       - name: Build
         run: |
-          sudo -E -u builder sh -ec '
-            HOME=/home/builder
-            export PATH=$WINDOWS_SDK_PATH/bin/x64:$PATH
-            cd $GITHUB_WORKSPACE
-            mkdir build && cd build
-            cmake .. -B . -GNinja \
-              -DCMAKE_MAKE_PROGRAM=$(which ninja) \
-              -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} \
-              -DWINDOWS_SDK_PATH=$WINDOWS_SDK_PATH \
-              -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
-            ninja
-          '
+          sudo -u builder sh <<'EOF'
+          set -e
+          mkdir build
+          cd build
+          export WINDOWS_SDK_PATH="$PWD/my_msvc"
+          export WINE=$(command -v wine64 || command -v wine || false)
+          export WINEDEBUG=-all
+          export WINEDLLOVERRIDES="mscoree,mshtml="
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          $WINE wineboot --init
+          wineserver --wait
+          git clone https://github.com/mstorsjo/msvc-wine
+          ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc
+          ./msvc-wine/install.sh $(pwd)/my_msvc
+          export PATH=$(pwd)/my_msvc/bin/x64:$PATH
+          cmake .. -B . -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DWINDOWS_SDK_PATH=$(pwd)/my_msvc -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
+          ninja -j$(nproc)
+          EOF
 
-      - name: Upload artifacts
+      - name: Upload Release + Debug Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: MinecraftClient-${{ matrix.configuration }}
