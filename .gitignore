@@ -438,5 +438,7 @@ Minecraft.Client/Saves/
 *.user
 /out
 
-# CLion
+# IDE files
 .idea/
+.kate-swp
+.vscode/
