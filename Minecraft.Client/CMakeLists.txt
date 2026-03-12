@@ -52,9 +52,6 @@ target_link_libraries(Minecraft.Client PRIVATE
   XInput9_1_0
   wsock32
   legacy_stdio_definitions
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggy_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggyperfmon_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggyexpruntime_w64.lib"
   $<$<CONFIG:Debug>: # Debug 4J libraries
     "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Input_d.lib"
     "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Storage_d.lib"
@@ -66,6 +63,11 @@ target_link_libraries(Minecraft.Client PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Render_PC.lib"
   >
 )
+
+# Iggy libs
+foreach(lib IN LISTS IGGY_LIBS)
+  target_link_libraries(Minecraft.Client PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/libs/${lib}")
+endforeach()
 
 # ---
 # Asset / redist copy
