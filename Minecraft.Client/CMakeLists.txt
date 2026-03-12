@@ -71,7 +71,7 @@ target_link_libraries(Minecraft.Client PRIVATE
 
 # Iggy libs
 foreach(lib IN LISTS IGGY_LIBS)
-  target_link_libraries(Minecraft.Client PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/libs/${lib}")
+  target_link_libraries(Minecraft.Client PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/${lib}")
 endforeach()
 
 # ---
