@@ -25,7 +25,7 @@ target_compile_definitions(Minecraft.World PRIVATE
   ${MINECRAFT_SHARED_DEFINES}
   _LIB
 )
-target_precompile_headers(Minecraft.World PRIVATE stdafx.h)
+target_precompile_headers(Minecraft.World PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:stdafx.h>")
 if(MSVC)
   configure_msvc_target(Minecraft.World)
 endif()

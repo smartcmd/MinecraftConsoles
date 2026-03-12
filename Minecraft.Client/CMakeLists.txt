@@ -32,7 +32,7 @@ target_include_directories(Minecraft.Client PRIVATE
 target_compile_definitions(Minecraft.Client PRIVATE
   ${MINECRAFT_SHARED_DEFINES}
 )
-target_precompile_headers(Minecraft.Client PRIVATE stdafx.h)
+target_precompile_headers(Minecraft.Client PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:stdafx.h>")
 if(MSVC)
   configure_msvc_target(Minecraft.Client)
   target_link_options(Minecraft.Client PRIVATE
