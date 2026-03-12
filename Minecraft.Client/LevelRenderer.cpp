@@ -35,7 +35,7 @@
 #include "TerrainParticle.h"
 #include "SpellParticle.h"
 #include "DripParticle.h"
-#include "EchantmentTableParticle.h"
+#include "EnchantmentTableParticle.h"
 #include "DragonBreathParticle.h"
 #include "FireworksParticles.h"
 #include "Lighting.h"
