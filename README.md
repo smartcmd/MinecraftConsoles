@@ -52,6 +52,12 @@ Example:
 Minecraft.Client.exe -name Steve -fullscreen
 ```
 
+## FourKit
+
+New to FourKit? Read the [original pull request](https://github.com/kuwacom/Minecraft-LegacyConsoleEdition/pull/2) to get started.
+
+A more in depth documentation for FourKit will be made eventually.
+
 ## Dedicated Server in Docker (Wine)
 
 This repository includes a lightweight Docker setup for running the Windows dedicated server under Wine.
