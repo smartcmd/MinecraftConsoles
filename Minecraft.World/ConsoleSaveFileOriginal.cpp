@@ -200,11 +200,17 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 
 		header.ReadHeader( pvSaveMem, plat );
 
+		if (bLevelGenBaseSave)
+		{
+			header.AddFile(L"region_format_16");
+		}
 	}
 	else
 	{
 		// Clear the first 8 bytes that reference the header
 		header.WriteHeader( pvSaveMem );
+
+		header.AddFile(L"region_format_16");
 	}
 }
 

@@ -35,7 +35,12 @@ RegionFile *RegionFileCache::_getRegionFile(ConsoleSaveFile *saveFile, const wst
 	File file;
 	if(useSplitSaves(saveFile->getSavePlatform()))
 	{
-		file = File( prefix + wstring(L"r.") + std::to_wstring(chunkX>>4) + L"." + std::to_wstring(chunkZ>>4) + L".mcr" );
+		bool isNew = saveFile->doesFileExist(ConsoleSavePath(L"region_format_16"));
+
+		if (isNew)
+			file = File(prefix + wstring(L"r.") + std::to_wstring(chunkX >> 4) + L"." + std::to_wstring(chunkZ >> 4) + L".mcr");
+		else
+			file = File(prefix + wstring(L"r.") + std::to_wstring(chunkX >> 5) + L"." + std::to_wstring(chunkZ >> 5) + L".mcr");
 	}
 	else
 	{
@@ -95,7 +100,8 @@ int RegionFileCache::_getSizeDelta(ConsoleSaveFile *saveFile, const wstring &pre
 DataInputStream *RegionFileCache::_getChunkDataInputStream(ConsoleSaveFile *saveFile, const wstring &prefix, int chunkX, int chunkZ)
 {
 	RegionFile* r = _getRegionFile(saveFile, prefix, chunkX, chunkZ);
-	if(useSplitSaves(saveFile->getSavePlatform()))
+	bool isNew = saveFile->doesFileExist(ConsoleSavePath(L"region_format_16"));
+	if (useSplitSaves(saveFile->getSavePlatform()) && isNew)
 	{
 		return r->getChunkDataInputStream(chunkX & 15, chunkZ & 15);
 	}
@@ -109,7 +115,8 @@ DataInputStream *RegionFileCache::_getChunkDataInputStream(ConsoleSaveFile *save
 DataOutputStream *RegionFileCache::_getChunkDataOutputStream(ConsoleSaveFile *saveFile, const wstring &prefix, int chunkX, int chunkZ)
 {
 	RegionFile* r = _getRegionFile(saveFile, prefix, chunkX, chunkZ);
-	if(useSplitSaves(saveFile->getSavePlatform()))
+	bool isNew = saveFile->doesFileExist(ConsoleSavePath(L"region_format_16"));
+	if (useSplitSaves(saveFile->getSavePlatform()) && isNew)
 	{
 		return r->getChunkDataOutputStream(chunkX & 15, chunkZ & 15);
 	}
