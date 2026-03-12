@@ -554,7 +554,7 @@ void ItemInHandRenderer::render(float a)
         float d = 0.8f;
 
 #if defined __ORBIS__ || defined __PS3__ || defined _WINDOWS64
-		static const float swingPowFactor = 1.0f;
+		float swingPowFactor = app.GetGameSettings(0, eGameSetting_OldSwingAnimation)? 4.0f : 1.0f;
 #else
 		static const float swingPowFactor = 4.0f;		// 4J added, to slow the swing down when nearest the player for avoiding luminance flash issues
 #endif

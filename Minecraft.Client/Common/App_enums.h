@@ -145,6 +145,9 @@ enum eGameSetting
 	eGameSetting_ControlSouthPaw,
 	eGameSetting_SplitScreenVertical,
 	eGameSetting_GamertagsVisible,
+	eGameSetting_FancyGraphics,
+	eGameSetting_AmbientOcclusion,
+	eGameSetting_OldSwingAnimation,
 	// Interim TU 1.6.6
 	eGameSetting_Autosave,
 	eGameSetting_DisplaySplitscreenGamertags,

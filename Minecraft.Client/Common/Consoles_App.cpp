@@ -853,6 +853,11 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_SplitScreenVertical,0);
 	SetGameSettings(iPad,eGameSetting_GamertagsVisible,1);
 
+	SetGameSettings(iPad,eGameSetting_FancyGraphics,1);
+	SetGameSettings(iPad,eGameSetting_AmbientOcclusion,1);
+
+	SetGameSettings(iPad,eGameSetting_OldSwingAnimation,0);
+
 	// Interim TU 1.6.6
 	SetGameSettings(iPad,eGameSetting_Sensitivity_InMenu,100);
 	SetGameSettings(iPad,eGameSetting_DisplaySplitscreenGamertags,1);
@@ -1291,7 +1296,9 @@ int CMinecraftApp::OldProfileVersionCallback(LPVOID pParam,unsigned char *pucDat
 			pGameSettings->usBitmaskValues|=0x8000; //eGameSetting_Tooltips - on
 
 			pGameSettings->uiBitmaskValues=0L; // reset
+			pGameSettings->uiBitmaskValues|=GAMESETTING_FANCYGRAPHICS;				//eGameSetting_FancyGraphics - on
 			pGameSettings->uiBitmaskValues|=GAMESETTING_CLOUDS;					//eGameSetting_Clouds - on
+			pGameSettings->uiBitmaskValues|=GAMESETTING_AMBIENTOCCLUSION;				//eGameSetting_AmbientOcclusion - on
 			pGameSettings->uiBitmaskValues|=GAMESETTING_ONLINE;					//eGameSetting_GameSetting_Online - on
 			//eGameSetting_GameSetting_Invite - off
 			pGameSettings->uiBitmaskValues|=GAMESETTING_FRIENDSOFFRIENDS;		//eGameSetting_GameSetting_FriendsOfFriends - on
@@ -1304,6 +1311,7 @@ int CMinecraftApp::OldProfileVersionCallback(LPVOID pParam,unsigned char *pucDat
 			pGameSettings->uiBitmaskValues|=(GAMESETTING_UISIZE&0x00000800);				// uisize 2
 			pGameSettings->uiBitmaskValues|=(GAMESETTING_UISIZE_SPLITSCREEN&0x00004000);	// splitscreen ui size 3
 			pGameSettings->uiBitmaskValues|=GAMESETTING_ANIMATEDCHARACTER;		//eGameSetting_AnimatedCharacter - on
+			pGameSettings->uiBitmaskValues|=GAMESETTING_OLDSWINGANIMATION;				//eGameSetting_OldSwingAnimation - off
 			// TU12
 			// favorite skins added, but only set in TU12 - set to FFs
 			for(int i=0;i<MAX_FAVORITE_SKINS;i++)
@@ -1342,6 +1350,10 @@ void CMinecraftApp::ApplyGameSettingsChanged(int iPad)
 	ActionGameSettings(iPad,eGameSetting_ControlSouthPaw);
 	ActionGameSettings(iPad,eGameSetting_SplitScreenVertical);
 	ActionGameSettings(iPad,eGameSetting_GamertagsVisible);
+
+	ActionGameSettings(iPad,eGameSetting_FancyGraphics);
+	ActionGameSettings(iPad,eGameSetting_AmbientOcclusion);
+	ActionGameSettings(iPad,eGameSetting_OldSwingAnimation);
 
 	// Interim TU 1.6.6
 	ActionGameSettings(iPad,eGameSetting_Sensitivity_InMenu	);
@@ -1549,6 +1561,24 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_Clouds:
 		//nothing to do here
 		break;
+	case eGameSetting_FancyGraphics:
+		{
+			if (pMinecraft && pMinecraft->options)
+				pMinecraft->options->fancyGraphics = GetGameSettings(iPad, eGameSetting_FancyGraphics) != 0;
+
+			if (pMinecraft && pMinecraft->levelRenderer && pMinecraft->level)
+				pMinecraft->levelRenderer->allChanged();
+		}
+		break;
+	case eGameSetting_AmbientOcclusion:
+		{
+			if (pMinecraft && pMinecraft->options)
+				pMinecraft->options->ambientOcclusion = GetGameSettings(iPad, eGameSetting_AmbientOcclusion) != 0;
+
+			if (pMinecraft && pMinecraft->levelRenderer && pMinecraft->level)
+				pMinecraft->levelRenderer->allChanged();
+		}
+		break;
 	case eGameSetting_Online:
 		//nothing to do here
 		break;
@@ -1588,6 +1618,9 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 		//nothing to do here
 		break;
 	case eGameSetting_AnimatedCharacter:
+		//nothing to do here
+		break;
+	case eGameSetting_OldSwingAnimation:
 		//nothing to do here
 		break;
 	case eGameSetting_PS3_EULA_Read:
@@ -2093,6 +2126,57 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 
 		break;
 
+	case eGameSetting_FancyGraphics:
+		if(((GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_FANCYGRAPHICS) != 0) != ((ucVal & 0x01) != 0))
+		{
+			if(ucVal==1)
+			{
+				GameSettingsA[iPad]->uiBitmaskValues|=GAMESETTING_FANCYGRAPHICS;
+			}
+			else
+			{
+				GameSettingsA[iPad]->uiBitmaskValues&=~GAMESETTING_FANCYGRAPHICS;
+			}
+			ActionGameSettings(iPad,eVal);
+			GameSettingsA[iPad]->bSettingsChanged=true;
+		}
+
+		break;
+
+	case eGameSetting_AmbientOcclusion:
+		if(((GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_AMBIENTOCCLUSION) != 0) != ((ucVal & 0x01) != 0))
+		{
+			if(ucVal==1)
+			{
+				GameSettingsA[iPad]->uiBitmaskValues|=GAMESETTING_AMBIENTOCCLUSION;
+			}
+			else
+			{
+				GameSettingsA[iPad]->uiBitmaskValues&=~GAMESETTING_AMBIENTOCCLUSION;
+			}
+			ActionGameSettings(iPad,eVal);
+			GameSettingsA[iPad]->bSettingsChanged=true;
+		}
+
+		break;
+
+	case eGameSetting_OldSwingAnimation:
+		if(((GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_OLDSWINGANIMATION) != 0) != ((ucVal & 0x01) != 0))
+		{
+			if(ucVal==1)
+			{
+				GameSettingsA[iPad]->uiBitmaskValues|=GAMESETTING_OLDSWINGANIMATION;
+			}
+			else
+			{
+				GameSettingsA[iPad]->uiBitmaskValues&=~GAMESETTING_OLDSWINGANIMATION;
+			}
+			ActionGameSettings(iPad,eVal);
+			GameSettingsA[iPad]->bSettingsChanged=true;
+		}
+
+		break;
+
 	case eGameSetting_Online:
 		if((GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_ONLINE)!=(ucVal&0x01)<<1)
 		{
@@ -2392,6 +2476,15 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 
 	case eGameSetting_Clouds:
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_CLOUDS);
+		break;
+	case eGameSetting_FancyGraphics:
+		return (GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_FANCYGRAPHICS) >> 24;
+		break;
+	case eGameSetting_AmbientOcclusion:
+		return (GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_AMBIENTOCCLUSION) >> 25;
+		break;
+	case eGameSetting_OldSwingAnimation:
+		return (GameSettingsA[iPad]->uiBitmaskValues & GAMESETTING_OLDSWINGANIMATION) >> 26;
 		break;
 	case eGameSetting_Online:
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_ONLINE)>>1;

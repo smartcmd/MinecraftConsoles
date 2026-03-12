@@ -9,7 +9,9 @@ class UIScene_SettingsGraphicsMenu : public UIScene
 private:
 	enum EControls
 	{
+		eControl_FancyGraphics,
 		eControl_Clouds,
+		eControl_AmbientOcclusion,
 		eControl_BedrockFog,
 		eControl_CustomSkinAnim,
 		eControl_RenderDistance,
@@ -18,10 +20,12 @@ private:
 		eControl_InterfaceOpacity
 	};
 
-	UIControl_CheckBox m_checkboxClouds, m_checkboxBedrockFog, m_checkboxCustomSkinAnim; // Checkboxes
+	UIControl_CheckBox m_checkboxFancyGraphics, m_checkboxClouds, m_checkboxAmbientOcclusion, m_checkboxBedrockFog, m_checkboxCustomSkinAnim; // Checkboxes
 	UIControl_Slider m_sliderRenderDistance, m_sliderGamma, m_sliderFOV, m_sliderInterfaceOpacity; // Sliders
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)
+		UI_MAP_ELEMENT( m_checkboxFancyGraphics, "FancyGraphics")
 		UI_MAP_ELEMENT( m_checkboxClouds, "Clouds")
+		UI_MAP_ELEMENT( m_checkboxAmbientOcclusion, "AmbientOcclusion")
 		UI_MAP_ELEMENT( m_checkboxBedrockFog, "BedrockFog")
 		UI_MAP_ELEMENT( m_checkboxCustomSkinAnim, "CustomSkinAnim")
 		UI_MAP_ELEMENT( m_sliderRenderDistance, "RenderDistance")

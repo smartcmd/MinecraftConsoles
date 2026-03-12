@@ -1524,7 +1524,7 @@ void GameRenderer::renderLevel(float a, int64_t until)
 		// 4J - have changed this fancy rendering option to work with our command buffers. The original used to use frame buffer flags to disable
 		// writing to colour when doing the z-only pass, but that value gets obliterated by our command buffers. Using alpha blend function instead
 		// to achieve the same effect.
-		if (true)	// (mc->options->fancyGraphics)
+		if (mc->options->fancyGraphics)
 		{
 			if (mc->options->ambientOcclusion)
 			{
