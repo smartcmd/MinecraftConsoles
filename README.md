@@ -61,33 +61,37 @@ A more in depth documentation for FourKit will be made eventually.
 ## Dedicated Server in Docker (Wine)
 
 This repository includes a lightweight Docker setup for running the Windows dedicated server under Wine.
-**To build the image, a release build of `Minecraft.Server` is required.**
+### Quick Start (No Build, Recommended)
 
-1. Build the dedicated server (`Minecraft.Server`) first.
-2. Start with Docker Compose (server runtime files are copied into the image at build time):
-
-```bash
-docker compose -f docker-compose.dedicated-server.yml up -d
-```
-
-or use the helper script:
+No local build is required. The container image is pulled from GHCR.
 
 ```bash
 ./start-dedicated-server.sh
 ```
 
-You can explicitly choose runtime:
-**However, debug builds often fail to run because some debug-related libraries are missing.**
+`start-dedicated-server.sh` does the following:
+- uses `docker-compose.dedicated-server.ghcr.yml`
+- pulls latest image, then starts the container
+
+If you want to skip pulling and just start:
 
 ```bash
-./start-dedicated-server.sh release
-./start-dedicated-server.sh debug
+./start-dedicated-server.sh --no-pull
 ```
 
-By default, build input is `x64/Minecraft.Server/Release`. Override it when needed (path must be inside this repository):
+Equivalent manual command:
 
 ```bash
-MC_RUNTIME_DIR=x64/Minecraft.Server/Debug docker compose -f docker-compose.dedicated-server.yml up -d --build
+docker compose -f docker-compose.dedicated-server.ghcr.yml up -d
+```
+
+### Local Build Mode (Optional)
+
+Use this only when you want to run your own locally built `Minecraft.Server` binary in Docker.
+**A local build of `Minecraft.Server` is required for this mode.**
+
+```bash
+docker compose -f docker-compose.dedicated-server.yml up -d --build
 ```
 
 Useful environment variables:

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
 	/**
-	 * Applies a dedicated-server IP ban using Java Edition style syntax and Access-backed persistence
+	 * Applies a dedicated-server player ban using Java Edition style syntax and Access-backed persistence
+	 * Java Edition 風の ban コマンドで永続プレイヤーBANを行う
 	 */
-	class CliCommandBanIp : public IServerCliCommand
+	class CliCommandBan : public IServerCliCommand
 	{
 	public:
 		virtual const char *Name() const;

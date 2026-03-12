@@ -2,11 +2,11 @@
 
 #include "CliCommandWhitelist.h"
 
-#include "..\ServerCliEngine.h"
-#include "..\ServerCliParser.h"
-#include "..\..\Access\Access.h"
-#include "..\..\Common\StringUtils.h"
-#include "..\..\ServerProperties.h"
+#include "..\..\ServerCliEngine.h"
+#include "..\..\ServerCliParser.h"
+#include "..\..\..\Access\Access.h"
+#include "..\..\..\Common\StringUtils.h"
+#include "..\..\..\ServerProperties.h"
 
 #include <algorithm>
 #include <array>
@@ -282,3 +282,4 @@ namespace ServerRuntime
 		}
 	}
 }
+

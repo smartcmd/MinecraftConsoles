@@ -23,6 +23,7 @@ public:
 	static World^ getWorld(int dimension);
 	static World^ getWorld(String^ name);
 	static PluginCommand^ getCommand(String^ name);
+	static void broadcastMessage(String^ message);
 private:
 	static List<ServerPlugin^>^ pluginList;
 	static Dictionary<String^, PluginCommand^>^ commandMap;

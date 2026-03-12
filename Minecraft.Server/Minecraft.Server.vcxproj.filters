@@ -564,37 +564,37 @@
     <ClCompile Include="..\Minecraft.Client\glWrapper.cpp" />
     <ClCompile Include="..\Minecraft.Client\stdafx.cpp" />
     <ClCompile Include="..\Minecraft.Client\stubs.cpp" />
-    <ClCompile Include="Console\commands\CliCommandBan.cpp">
+    <ClCompile Include="Console\commands\ban\CliCommandBan.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandBanIp.cpp">
+    <ClCompile Include="Console\commands\ban-ip\CliCommandBanIp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandBanList.cpp">
+    <ClCompile Include="Console\commands\ban-list\CliCommandBanList.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandGamemode.cpp">
+    <ClCompile Include="Console\commands\gamemode\CliCommandGamemode.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandHelp.cpp">
+    <ClCompile Include="Console\commands\help\CliCommandHelp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandList.cpp">
+    <ClCompile Include="Console\commands\list\CliCommandList.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandPardon.cpp">
+    <ClCompile Include="Console\commands\pardon\CliCommandPardon.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandPardonIp.cpp">
+    <ClCompile Include="Console\commands\pardon-ip\CliCommandPardonIp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandStop.cpp">
+    <ClCompile Include="Console\commands\stop\CliCommandStop.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandTp.cpp">
+    <ClCompile Include="Console\commands\tp\CliCommandTp.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Console\commands\CliCommandWhitelist.cpp">
+    <ClCompile Include="Console\commands\whitelist\CliCommandWhitelist.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
     <ClCompile Include="FourKitNativeWorldCallbacks.cpp">
@@ -657,37 +657,37 @@
       <Filter>Server</Filter>
     </ClInclude>
     <ClInclude Include="Console\ServerCliInput.h" />
-    <ClInclude Include="Console\commands\CliCommandBan.h">
+    <ClInclude Include="Console\commands\ban\CliCommandBan.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandBanIp.h">
+    <ClInclude Include="Console\commands\ban-ip\CliCommandBanIp.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandBanList.h">
+    <ClInclude Include="Console\commands\ban-list\CliCommandBanList.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandGamemode.h">
+    <ClInclude Include="Console\commands\gamemode\CliCommandGamemode.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandHelp.h">
+    <ClInclude Include="Console\commands\help\CliCommandHelp.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandList.h">
+    <ClInclude Include="Console\commands\list\CliCommandList.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandPardon.h">
+    <ClInclude Include="Console\commands\pardon\CliCommandPardon.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandPardonIp.h">
+    <ClInclude Include="Console\commands\pardon-ip\CliCommandPardonIp.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandStop.h">
+    <ClInclude Include="Console\commands\stop\CliCommandStop.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandTp.h">
+    <ClInclude Include="Console\commands\tp\CliCommandTp.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Console\commands\CliCommandWhitelist.h">
+    <ClInclude Include="Console\commands\whitelist\CliCommandWhitelist.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Console\commands\IServerCliCommand.h">
@@ -713,3 +713,4 @@
     <MASM Include="..\Minecraft.Client\iob_shim.asm" />
   </ItemGroup>
 </Project>
+

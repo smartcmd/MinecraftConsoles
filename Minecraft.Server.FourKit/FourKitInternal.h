@@ -5,6 +5,7 @@
 #include "FourKitStructs.h"
 #include "PluginLogger.h"
 #include "NativeBlockCallbacks.h"
+#include "NativePlayerCallbacks.h"
 #include "PluginCommand.h"
 #include "World.h"
 

@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - 'main'
+    - 'feature/dedicated-server'
     paths-ignore:
       - '.gitignore'
       - '*.md'
@@ -32,7 +33,7 @@ jobs:
       run: 7z a -r LCEWindows64.zip ./x64/Release/*
 
     - name: Zip Dedicated Server Build
-      run: 7z a -r LCEServerWindows64.zip ./x64/Minecraft.Server/Release/* -x!obj -x!*.pch
+      run: 7z a -r LCEServerWindows64.zip ./x64/Minecraft.Server/Release/*
 
     - name: Update Client release
       uses: andelf/nightly-release@main

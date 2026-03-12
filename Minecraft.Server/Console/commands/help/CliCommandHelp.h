@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
@@ -14,3 +14,4 @@ namespace ServerRuntime
 		virtual bool Execute(const ServerCliParsedLine &line, ServerCliEngine *engine);
 	};
 }
+

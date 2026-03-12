@@ -2,12 +2,12 @@
 
 #include "CliCommandTp.h"
 
-#include "..\ServerCliEngine.h"
-#include "..\ServerCliParser.h"
-#include "..\..\..\Minecraft.Client\PlayerConnection.h"
-#include "..\..\..\Minecraft.Client\ServerPlayer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.dimension.h"
+#include "..\..\ServerCliEngine.h"
+#include "..\..\ServerCliParser.h"
+#include "..\..\..\..\Minecraft.Client\PlayerConnection.h"
+#include "..\..\..\..\Minecraft.Client\ServerPlayer.h"
+#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.dimension.h"
 
 namespace ServerRuntime
 {
@@ -76,3 +76,4 @@ namespace ServerRuntime
 		}
 	}
 }
+

@@ -195,6 +195,14 @@ PluginCommand^ FourKit::getCommand(String^ name)
 	return command;
 }
 
+void FourKit::broadcastMessage(String^ message)
+{
+    for each (String^ name in onlinePlayerNames)
+    {
+        NativePlayerCallbacks::SendMessage(name, message);
+    }
+}
+
 bool FourKit::DispatchPlayerCommand(String^ playerName, String^ commandLine)
 {
 	String^ label = String::Empty;

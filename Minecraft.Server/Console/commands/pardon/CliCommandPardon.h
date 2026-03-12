@@ -1,16 +1,13 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
 	/**
-	 * **Ban List Command**
-	 *
-	 * Lists dedicated-server player bans and IP bans in a single command output
-	 * 専用サーバーのプレイヤーBANとIP BANをまとめて表示する
+	 * Removes dedicated-server player bans using Java Edition style syntax and Access-backed persistence
 	 */
-	class CliCommandBanList : public IServerCliCommand
+	class CliCommandPardon : public IServerCliCommand
 	{
 	public:
 		virtual const char *Name() const;

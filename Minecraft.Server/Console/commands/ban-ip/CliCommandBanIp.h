@@ -1,14 +1,16 @@
 #pragma once
 
-#include "IServerCliCommand.h"
+#include "..\IServerCliCommand.h"
 
 namespace ServerRuntime
 {
-	class CliCommandTp : public IServerCliCommand
+	/**
+	 * Applies a dedicated-server IP ban using Java Edition style syntax and Access-backed persistence
+	 */
+	class CliCommandBanIp : public IServerCliCommand
 	{
 	public:
 		virtual const char *Name() const;
-		virtual std::vector<std::string> Aliases() const;
 		virtual const char *Usage() const;
 		virtual const char *Description() const;
 		virtual bool Execute(const ServerCliParsedLine &line, ServerCliEngine *engine);
