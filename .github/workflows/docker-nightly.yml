@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - "main"
+    - 'feature/dedicated-server'
     paths-ignore:
       - ".gitignore"
       - "*.md"
@@ -30,8 +31,51 @@ jobs:
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Build Dedicated Server
-      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64" /t:"Minecraft.World;Minecraft.Server" /m
+    - name: Build Dedicated Server Runtime Only
+      shell: pwsh
+      run: |
+        MSBuild.exe Minecraft.World\Minecraft.World.vcxproj /p:Configuration=Release /p:Platform=x64 /m
+        MSBuild.exe Minecraft.Server\Minecraft.Server.vcxproj /p:Configuration=Release /p:Platform=x64 /m
+
+    - name: Stage dedicated server runtime
+      shell: pwsh
+      run: |
+        $serverOut = "Minecraft.Server/x64/Minecraft.Server/Release"
+        $stage = ".artifacts/dedicated-server-runtime"
+
+        if (Test-Path $stage) {
+          Remove-Item -Path $stage -Recurse -Force
+        }
+
+        New-Item -ItemType Directory -Path (Join-Path $stage "Windows64") -Force | Out-Null
+
+        # Minimum required runtime files
+        $required = @(
+          "Minecraft.Server.exe",
+          "iggy_w64.dll",
+          "Common"
+        )
+
+        foreach ($entry in $required) {
+          $src = Join-Path $serverOut $entry
+          if (-not (Test-Path $src)) {
+            throw "Missing required runtime path: $src"
+          }
+        }
+
+        # Copy required files
+        Copy-Item -Path (Join-Path $serverOut "Minecraft.Server.exe") -Destination (Join-Path $stage "Minecraft.Server.exe") -Force
+        Copy-Item -Path (Join-Path $serverOut "iggy_w64.dll") -Destination (Join-Path $stage "iggy_w64.dll") -Force
+        Copy-Item -Path (Join-Path $serverOut "Common") -Destination (Join-Path $stage "Common") -Recurse -Force
+        if (Test-Path (Join-Path $serverOut "Windows64")) {
+          Copy-Item -Path (Join-Path $serverOut "Windows64/*") -Destination (Join-Path $stage "Windows64") -Recurse -Force
+        } else {
+          Write-Host "Windows64 directory is not present in build output; staging without it."
+        }
+
+        Get-ChildItem -Path $stage -Recurse -File | Select-Object -First 20 | ForEach-Object {
+          Write-Host "Staged: $($_.FullName)"
+        }
 
     - name: Upload dedicated server runtime to artifacts
       uses: actions/upload-artifact@v4
@@ -39,10 +83,7 @@ jobs:
         name: dedicated-server-runtime
         if-no-files-found: error
         path: |
-          x64/Minecraft.Server/Release/Minecraft.Server.exe
-          x64/Minecraft.Server/Release/iggy_w64.dll
-          x64/Minecraft.Server/Release/Common/**
-          x64/Minecraft.Server/Release/Windows64/**
+          .artifacts/dedicated-server-runtime/**
 
   docker-publish:
     name: Build and Push Docker Image
@@ -64,25 +105,15 @@ jobs:
       run: |
         set -euo pipefail
 
-        root=".artifacts/runtime"
-        src=""
-
-        if [[ -f "$root/Minecraft.Server.exe" ]]; then
-          src="$root"
-        elif [[ -f "$root/x64/Minecraft.Server/Release/Minecraft.Server.exe" ]]; then
-          src="$root/x64/Minecraft.Server/Release"
-        else
-          echo "Could not find Minecraft.Server.exe in downloaded artifact"
-          find "$root" -maxdepth 6 -type f || true
-          exit 1
-        fi
-
         rm -rf runtime
         mkdir -p runtime
-        cp "$src/Minecraft.Server.exe" runtime/Minecraft.Server.exe
-        cp "$src/iggy_w64.dll" runtime/iggy_w64.dll
-        cp -R "$src/Common" runtime/Common
-        cp -R "$src/Windows64" runtime/Windows64
+        cp .artifacts/runtime/Minecraft.Server.exe runtime/Minecraft.Server.exe
+        cp .artifacts/runtime/iggy_w64.dll runtime/iggy_w64.dll
+        cp -R .artifacts/runtime/Common runtime/Common
+        mkdir -p runtime/Windows64
+        if [[ -d ".artifacts/runtime/Windows64" ]]; then
+          cp -R .artifacts/runtime/Windows64/. runtime/Windows64/
+        fi
 
         test -f runtime/Minecraft.Server.exe
         test -f runtime/iggy_w64.dll
@@ -94,8 +125,13 @@ jobs:
       shell: bash
       run: |
         owner="$(echo "${{ vars.CONTAINER_REGISTRY_OWNER || github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+        image_tag="nightly"
+        # if [[ "${{ github.ref }}" != "refs/heads/main" ]]; then
+        #   image_tag="nightly-test"
+        # fi
         echo "owner=$owner" >> "$GITHUB_OUTPUT"
         echo "image=ghcr.io/$owner/minecraft-lce-dedicated-server" >> "$GITHUB_OUTPUT"
+        echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
 
     - name: Extract Docker metadata
       id: meta
@@ -103,7 +139,7 @@ jobs:
       with:
         images: ${{ steps.image.outputs.image }}
         tags: |
-          type=raw,value=nightly
+          type=raw,value=${{ steps.image.outputs.image_tag }}
 
     - name: Login to GHCR
       uses: docker/login-action@v3
