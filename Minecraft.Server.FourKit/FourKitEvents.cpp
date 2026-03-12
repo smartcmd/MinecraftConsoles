@@ -538,6 +538,7 @@ void FourKit::FireEventOnPlayerDropItem(PlayerDropItemData* dropData, bool* canc
 
 		ItemStack^ itemStack = gcnew ItemStack(dropData->itemId, dropData->itemCount, dropData->itemData);
 		Item^ itemDrop = gcnew Item(gcnew Location(player->getX(), player->getY(), player->getZ()), itemStack);
+		itemDrop->setPickupDelay(dropData->pickupDelay);
 
 		PlayerDropItemEvent^ event = gcnew PlayerDropItemEvent();
 		event->PlayerObject = player;
@@ -546,12 +547,16 @@ void FourKit::FireEventOnPlayerDropItem(PlayerDropItemData* dropData, bool* canc
 
 		EventManager::FireEvent(event);
 
-		if (event->ItemDrop != nullptr && event->ItemDrop->getItemStack() != nullptr)
+		if (event->ItemDrop != nullptr)
 		{
-			ItemStack^ modifiedStack = event->ItemDrop->getItemStack();
-			dropData->itemId = modifiedStack->getTypeId();
-			dropData->itemCount = modifiedStack->getAmount();
-			dropData->itemData = modifiedStack->getData();
+			if (event->ItemDrop->getItemStack() != nullptr)
+			{
+				ItemStack^ modifiedStack = event->ItemDrop->getItemStack();
+				dropData->itemId = modifiedStack->getTypeId();
+				dropData->itemCount = modifiedStack->getAmount();
+				dropData->itemData = modifiedStack->getData();
+			}
+			dropData->pickupDelay = event->ItemDrop->getPickupDelay();
 		}
 
 		if (cancelled != nullptr)

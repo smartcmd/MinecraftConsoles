@@ -459,18 +459,25 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 			int outItemId = selectedItem->id;
 			int outItemCount = 1;
 			int outItemData = selectedItem->getAuxValue();
+			int outPickupDelay = 40;
 			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, 1, selectedItem->getAuxValue(),
-				outItemId, outItemCount, outItemData))
+				outItemId, outItemCount, outItemData, outPickupDelay))
 			{
 				return;
 			}
 			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
 			{
 				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
-				player->drop(replacedItem);
+				shared_ptr<ItemEntity> droppedEntity = player->drop(replacedItem);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
 				player->inventory->removeResource(selectedItem->id, selectedItem->getAuxValue());
 				return;
 			}
+			{
+				shared_ptr<ItemEntity> droppedEntity = player->drop(false);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+			}
+			return;
 		}
 #endif
 		player->drop(false);
@@ -485,18 +492,25 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 			int outItemId = selectedItem->id;
 			int outItemCount = selectedItem->count;
 			int outItemData = selectedItem->getAuxValue();
+			int outPickupDelay = 40;
 			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, selectedItem->count, selectedItem->getAuxValue(),
-				outItemId, outItemCount, outItemData))
+				outItemId, outItemCount, outItemData, outPickupDelay))
 			{
 				return;
 			}
 			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
 			{
 				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
-				player->drop(replacedItem);
+				shared_ptr<ItemEntity> droppedEntity = player->drop(replacedItem);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
 				player->inventory->removeItem(player->inventory->selected, selectedItem->count);
 				return;
 			}
+			{
+				shared_ptr<ItemEntity> droppedEntity = player->drop(true);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+			}
+			return;
 		}
 #endif
 		player->drop(true);

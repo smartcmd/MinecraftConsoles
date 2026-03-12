@@ -29,11 +29,8 @@
 #include "../../Minecraft.World/compression.h"
 #include "../../Minecraft.World/OldChunkStorage.h"
 #include "../../Minecraft.World/net.minecraft.world.level.tile.h"
-<<<<<<< HEAD
 #include "../FourKitImports.h"
-=======
 #include "../../Minecraft.World/Random.h"
->>>>>>> kuwacom/feature/dedicated-server
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -43,7 +43,7 @@ namespace FourKit
 	bool DispatchPlayerCommand(ServerPlayer* nativePlayer, const std::wstring& commandLine);
 	void EmitPlayerDeathEvent(ServerPlayer* nativePlayer, PlayerDeathData* deathData);
 	bool EmitPlayerDropItemEvent(ServerPlayer* nativePlayer, int itemId, int itemCount, int itemData,
-		int& outItemId, int& outItemCount, int& outItemData);
+		int& outItemId, int& outItemCount, int& outItemData, int& outPickupDelay);
 }
 
 #endif

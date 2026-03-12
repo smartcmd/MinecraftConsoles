@@ -217,7 +217,7 @@ namespace FourKit
 	}
 
 	bool EmitPlayerDropItemEvent(ServerPlayer* nativePlayer, int itemId, int itemCount, int itemData,
-		int& outItemId, int& outItemCount, int& outItemData)
+		int& outItemId, int& outItemCount, int& outItemData, int& outPickupDelay)
 	{
 		if (nativePlayer == nullptr)
 		{
@@ -237,6 +237,7 @@ namespace FourKit
 		outItemId = dropData.itemId;
 		outItemCount = dropData.itemCount;
 		outItemData = dropData.itemData;
+		outPickupDelay = dropData.pickupDelay;
 
 		return cancelled;
 	}

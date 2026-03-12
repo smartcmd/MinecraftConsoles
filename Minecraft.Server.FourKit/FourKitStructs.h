@@ -288,12 +288,14 @@ struct PlayerDropItemData
 	int itemId;
 	int itemCount;
 	int itemData;
+	int pickupDelay;
 
 	PlayerDropItemData()
 		: playerName(nullptr)
 		, itemId(0)
 		, itemCount(0)
 		, itemData(0)
+		, pickupDelay(40)
 	{
 	}
 };
