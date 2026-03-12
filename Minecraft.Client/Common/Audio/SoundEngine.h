@@ -6,6 +6,12 @@ using namespace std;
 
 #include "miniaudio.h"
 
+constexpr float SFX_3D_MIN_DISTANCE = 1.0f;
+constexpr float SFX_3D_MAX_DISTANCE = 16.0f;
+constexpr float SFX_3D_ROLLOFF = 0.5f;
+constexpr float SFX_VOLUME_MULTIPLIER = 1.5f;
+constexpr float SFX_MAX_GAIN = 1.5f;
+
 enum eMUSICFILES
 {
 	eStream_Overworld_Calm1 = 0,
