@@ -115,6 +115,8 @@ void StructureRecipies::addRecipes(Recipes *r)
 
 		L'#', Tile::glass,
 		L'D');
+	
+
 
 	r->addShapedRecipy(new ItemInstance(Tile::netherBrick, 1), //
 		L"sscig",

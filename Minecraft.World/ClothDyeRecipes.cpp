@@ -21,7 +21,7 @@ void ClothDyeRecipes::addRecipes(Recipes *r)
 			L'#', new ItemInstance(Tile::clayHardened),
 			L'X', new ItemInstance(Item::dye_powder, 1, i),L'D');
 
-#if 0
+#if 1
 		r->addShapedRecipy(new ItemInstance(Tile::stained_glass, 8, ColoredTile::getItemAuxValueForTileData(i)), //
 			L"sssczczg",
 			L"###",
