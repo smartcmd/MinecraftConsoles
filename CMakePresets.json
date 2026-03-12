@@ -12,7 +12,8 @@
       "displayName": "Windows64",
       "inherits": "base",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "_WINDOWS64"
+        "PLATFORM_DEFINES": "_WINDOWS64",
+        "PLATFORM_FOLDER": "Windows64"
       }
     },
     {
@@ -21,7 +22,8 @@
       "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "_DURANGO;_XBOX_ONE"
+        "PLATFORM_DEFINES": "_DURANGO;_XBOX_ONE",
+        "PLATFORM_FOLDER": "Durango"
       }
     },
     {
@@ -30,7 +32,8 @@
       "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "__ORBIS__"
+        "PLATFORM_DEFINES": "__ORBIS__",
+        "PLATFORM_FOLDER": "Orbis"
       }
     },
     {
@@ -39,7 +42,8 @@
       "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "__PS3__"
+        "PLATFORM_DEFINES": "__PS3__",
+        "PLATFORM_FOLDER": "PS3"
       }
     },
     {
@@ -48,7 +52,8 @@
       "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "__PSVITA__"
+        "PLATFORM_DEFINES": "__PSVITA__",
+        "PLATFORM_FOLDER": "PSVita"
       }
     },
     {
@@ -57,7 +62,8 @@
       "inherits": "base",
       "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake",
       "cacheVariables": {
-        "PLATFORM_DEFINES": "_XBOX"
+        "PLATFORM_DEFINES": "_XBOX",
+        "PLATFORM_FOLDER": "Xbox"
       }
     }
   ],
