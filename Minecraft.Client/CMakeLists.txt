@@ -12,12 +12,12 @@ include("${CMAKE_SOURCE_DIR}/cmake/CommonSources.cmake")
 # We cant use CMAKE_CONFIGURE_PRESET here as VS doesn't set it, so just rely on the folder
 set(MINECRAFT_CLIENT_SOURCES
   ${MINECRAFT_CLIENT_COMMON}
-  $<$<STREQUAL:${PLATFORM_FOLDER},Durango>:${MINECRAFT_CLIENT_DURANGO}>
-  $<$<STREQUAL:${PLATFORM_FOLDER},Orbis>:${MINECRAFT_CLIENT_ORBIS}>
-  $<$<STREQUAL:${PLATFORM_FOLDER},PS3>:${MINECRAFT_CLIENT_PS3}>
-  $<$<STREQUAL:${PLATFORM_FOLDER},PSVita>:${MINECRAFT_CLIENT_PSVITA}>
-  $<$<STREQUAL:${PLATFORM_FOLDER},Windows64>:${MINECRAFT_CLIENT_WINDOWS}>
-  $<$<STREQUAL:${PLATFORM_FOLDER},Xbox360>:${MINECRAFT_CLIENT_XBOX360}>
+  $<$<STREQUAL:${PLATFORM_NAME},Durango>:${MINECRAFT_CLIENT_DURANGO}>
+  $<$<STREQUAL:${PLATFORM_NAME},Orbis>:${MINECRAFT_CLIENT_ORBIS}>
+  $<$<STREQUAL:${PLATFORM_NAME},PS3>:${MINECRAFT_CLIENT_PS3}>
+  $<$<STREQUAL:${PLATFORM_NAME},PSVita>:${MINECRAFT_CLIENT_PSVITA}>
+  $<$<STREQUAL:${PLATFORM_NAME},Windows64>:${MINECRAFT_CLIENT_WINDOWS}>
+  $<$<STREQUAL:${PLATFORM_NAME},Xbox360>:${MINECRAFT_CLIENT_XBOX360}>
   ${SOURCES_COMMON}
 )
 
@@ -26,7 +26,7 @@ add_executable(Minecraft.Client WIN32 ${MINECRAFT_CLIENT_SOURCES})
 target_include_directories(Minecraft.Client PRIVATE
   "${CMAKE_BINARY_DIR}/generated/" # This is for the generated BuildVer.h
   "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/Iggy/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/include"
   "${CMAKE_SOURCE_DIR}/include/"
 )
 target_compile_definitions(Minecraft.Client PRIVATE
@@ -52,18 +52,18 @@ target_link_libraries(Minecraft.Client PRIVATE
   XInput9_1_0
   wsock32
   legacy_stdio_definitions
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/Iggy/lib/iggy_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/Iggy/lib/iggyperfmon_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/Iggy/lib/iggyexpruntime_w64.lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggy_w64.lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggyperfmon_w64.lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/Iggy/lib/iggyexpruntime_w64.lib"
   $<$<CONFIG:Debug>: # Debug 4J libraries
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Input_d.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Storage_d.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Render_PC_d.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Input_d.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Storage_d.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Render_PC_d.lib"
   >
   $<$<NOT:$<CONFIG:Debug>>: # Release 4J libraries
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Input.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Storage.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_FOLDER}/4JLibs/libs/4J_Render_PC.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Input.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Storage.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}/4JLibs/libs/4J_Render_PC.lib"
   >
 )
 

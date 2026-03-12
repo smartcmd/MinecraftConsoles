@@ -7,7 +7,7 @@ include("${CMAKE_SOURCE_DIR}/cmake/CommonSources.cmake")
 # We cant use CMAKE_CONFIGURE_PRESET here as VS doesn't set it, so just rely on the folder
 set(MINECRAFT_WORLD_SOURCES
   ${MINECRAFT_WORLD_COMMON}
-  $<$<STREQUAL:${PLATFORM_FOLDER},Durango>:${MINECRAFT_WORLD_DURANGO}>
+  $<$<STREQUAL:${PLATFORM_NAME},Durango>:${MINECRAFT_WORLD_DURANGO}>
   ${SOURCES_COMMON}
 )
 

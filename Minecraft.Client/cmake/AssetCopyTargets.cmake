@@ -10,7 +10,7 @@ set(ASSET_FOLDER_PAIRS
   "Common/res"         "Common/res"
   "Common/Trial"       "Common/Trial"
   "Common/Tutorial"    "Common/Tutorial"
-  "Windows64Media"     "Windows64Media"
+  "${PLATFORM_NAME}Media"     "${PLATFORM_NAME}Media"
 )
 
 # Global exclusions applied to every folder copy
@@ -23,13 +23,31 @@ set(ASSET_EXCLUDE_FILES
   "*.resx" "*.loc"
   "*.wav" # Unsupported audio format
   "*.xui"
-  "MediaPS*.arc" "MediaOrbis.arc" "MediaDurango.arc" # Console media
 )
 
 # Global folder exclusions applied to every folder copy
 set(ASSET_EXCLUDE_FOLDERS
   "Graphics"
 )
+
+
+# Exclude platform-specific arc media files
+set(PLATFORM_MEDIA_FILES
+  "MediaWindows64.arc"
+  "MediaDurango.arc"
+  "MediaOrbis.arc"
+  "MediaPS3.arc"
+  "MediaPSVita.arc"
+  "MediaXbox.arc" # Seems to be missing?
+)
+
+# Exclude all platform media files except the one for the current platform
+foreach(media_file IN LISTS PLATFORM_MEDIA_FILES)
+  if(NOT media_file MATCHES "Media${PLATFORM_NAME}\\.arc")
+    list(APPEND ASSET_EXCLUDE_FILES "${media_file}")
+  endif()
+endforeach()
+
 
 # Join the exclusion patterns into a single string for passing to the copy script
 list(JOIN ASSET_EXCLUDE_FILES "|" ASSET_EXCLUDE_FILES_STR)
