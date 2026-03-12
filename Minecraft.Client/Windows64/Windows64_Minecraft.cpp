@@ -30,10 +30,6 @@
 #include "..\..\Minecraft.World\ThreadName.h"
 #include "..\..\Minecraft.Client\StatsCounter.h"
 #include "..\ConnectScreen.h"
-//#include "Social\SocialManager.h"
-//#include "Leaderboards\LeaderboardManager.h"
-//#include "XUI\XUI_Scene_Container.h"
-//#include "NetworkManager.h"
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\..\Minecraft.Client\Options.h"
 #include "Sentient\SentientManager.h"
@@ -68,12 +64,8 @@ uint16_t ui16GlobalText[256];
 #define THEME_NAME		"584111F70AAAAAAA"
 #define THEME_FILESIZE	2797568
 
-//#define THREE_MB 3145728 // minimum save size (checking for this on a selected device)
-//#define FIVE_MB 5242880 // minimum save size (checking for this on a selected device)
-//#define FIFTY_TWO_MB (1024*1024*52) // Maximum TCR space required for a save (checking for this on a selected device)
 #define FIFTY_ONE_MB (1000000*51) // Maximum TCR space required for a save is 52MB (checking for this on a selected device)
 
-//#define PROFILE_VERSION 3 // new version for the interim bug fix 166 TU
 #define NUM_PROFILE_VALUES	5
 #define NUM_PROFILE_SETTINGS 4
 DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
@@ -88,11 +80,6 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 	0,0,0,0,0
 #endif
 };
-//-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time
-//                  as a LARGE_INTEGER so that we don't lose precision after running
-//                  for a long time.
-//-------------------------------------------------------------------------------------
 
 BOOL g_bWidescreen = TRUE;
 
@@ -461,51 +448,6 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
 }
 
-#if 0
-HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
-				D3DPRESENT_PARAMETERS *pd3dPP )
-{
-	IDirect3D9 *pD3D;
-
-	pD3D = Direct3DCreate9( D3D_SDK_VERSION );
-
-	// Set up the structure used to create the D3DDevice
-	// Using a permanent 1280x720 backbuffer now no matter what the actual video resolution.right Have also disabled letterboxing,
-	// which would letterbox a 1280x720 output if it detected a 4:3 video source - we're doing an anamorphic squash in this
-	// mode so don't need this functionality.
-
-	ZeroMemory( pd3dPP, sizeof(D3DPRESENT_PARAMETERS) );
-	XVIDEO_MODE VideoMode;
-	XGetVideoMode( &VideoMode );
-	g_bWidescreen = VideoMode.fIsWideScreen;
-	pd3dPP->BackBufferWidth        = 1280;
-	pd3dPP->BackBufferHeight       = 720;
-	pd3dPP->BackBufferFormat       = D3DFMT_A8R8G8B8;
-	pd3dPP->BackBufferCount        = 1;
-	pd3dPP->EnableAutoDepthStencil = TRUE;
-	pd3dPP->AutoDepthStencilFormat = D3DFMT_D24S8;
-	pd3dPP->SwapEffect             = D3DSWAPEFFECT_DISCARD;
-	pd3dPP->PresentationInterval   = D3DPRESENT_INTERVAL_IMMEDIATE;
-	//pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
-	//ERR[D3D]: Can't set D3DPRESENTFLAG_NO_LETTERBOX when wide-screen is enabled
-	//	in the launcher/dashboard.
-	if(g_bWidescreen)
-		pd3dPP->Flags=0;
-	else
-		pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
-
-	// Create the device.
-	return pD3D->CreateDevice(
-		0,
-		D3DDEVTYPE_HAL,
-		nullptr,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
-		pd3dPP,
-		ppDevice );
-}
-#endif
-//#define MEMORY_TRACKING
-
 #ifdef MEMORY_TRACKING
 void ResetMem();
 void DumpMem();
@@ -567,7 +509,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -806,12 +747,12 @@ uint16_t *GetGlobalText()
 		}
 	return ui16GlobalText;
 }
+
 void SeedEditBox()
 {
 	DialogBox(hMyInst, MAKEINTRESOURCE(IDD_SEED),
 		g_hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 }
-
 
 //---------------------------------------------------------------------------
 LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -845,12 +786,8 @@ HRESULT InitDevice()
 
 	RECT rc;
 	GetClientRect( g_hWnd, &rc );
-	UINT width = rc.right - rc.left;
-	UINT height = rc.bottom - rc.top;
-//app.DebugPrintf("width: %d, height: %d\n", width, height);
-	width = g_rScreenWidth;
-	height = g_rScreenHeight;
-//app.DebugPrintf("width: %d, height: %d\n", width, height);
+	UINT width  = g_rScreenWidth;
+	UINT height = g_rScreenHeight;
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
@@ -1677,26 +1614,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		return serverResult;
 	}
 
-#if 0
-	// Main message loop
-	MSG msg = {0};
-	while( WM_QUIT != msg.message )
-	{
-		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
-		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-		{
-			Render();
-		}
-	}
-
-	return (int) msg.wParam;
-#endif
-
-	static bool bTrialTimerDisplayed=true;
+	static bool bTrialTimerDisplayed = true;
 
 #ifdef MEMORY_TRACKING
 	ResetMem();
@@ -1705,30 +1623,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	printf("RESETMEM start: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
 #endif
 
-#if 0
-	// Initialize D3D
-	hr = InitD3D( &pDevice, &d3dpp );
-	g_pD3DDevice = pDevice;
-	if( FAILED(hr) )
-	{
-		app.DebugPrintf
-			( "Failed initializing D3D.\n" );
-		return -1;
-	}
-
-	// Initialize the application, assuming sharing of the d3d interface.
-	hr = app.InitShared( pDevice, &d3dpp,
-		XuiPNGTextureLoader );
-
-	if ( FAILED(hr) )
-	{
-		app.DebugPrintf
-			( "Failed initializing application.\n" );
-
-		return -1;
-	}
-
-#endif
 	Minecraft *pMinecraft = InitialiseMinecraftRuntime();
 	if (pMinecraft == nullptr)
 	{
@@ -1737,31 +1631,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 	g_bResizeReady = true;
 
-	//app.TemporaryCreateGameStart();
-
-	//Sleep(10000);
-#if 0
-	// Intro loop ?
-	while(app.IntroRunning())
-	{
-		ProfileManager.Tick();
-		// Tick XUI
-		app.RunFrame();
-
-		// 4J : WESTY : Added to ensure we always have clear background for intro.
-		RenderManager.SetClearColour(D3DCOLOR_RGBA(0,0,0,255));
-		RenderManager.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Render XUI
-		hr = app.Render();
-
-		// Present the frame.
-		RenderManager.Present();
-
-		// Update XUI Timers
-		hr = XuiTimersRun();
-	}
-#endif
 	MSG msg = {0};
 	while( WM_QUIT != msg.message && !app.m_bShutdown)
 	{
@@ -1784,22 +1653,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		RenderManager.StartFrame();
-#if 0
-		if(pMinecraft->soundEngine->isStreamingWavebankReady() &&
-			!pMinecraft->soundEngine->isPlayingStreamingGameMusic() &&
-			!pMinecraft->soundEngine->isPlayingStreamingCDMusic() )
-		{
-			// play some music in the menus
-			pMinecraft->soundEngine->playStreaming(L"", 0, 0, 0, 0, 0, false);
-		}
-#endif
-
-		// 		static bool bPlay=false;
-		// 		if(bPlay)
-		// 		{
-		// 			bPlay=false;
-		// 			app.audio.PlaySound();
-		// 		}
 
 		app.UpdateTime();
 		PIXBeginNamedEvent(0,"Input manager tick");
@@ -1834,7 +1687,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		PIXEndNamedEvent();
 		PIXBeginNamedEvent(0,"Profile manager tick");
-		//		ProfileManager.Tick();
 		PIXEndNamedEvent();
 		PIXBeginNamedEvent(0,"Storage manager tick");
 		StorageManager.Tick();
@@ -1843,15 +1695,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		RenderManager.Tick();
 		PIXEndNamedEvent();
 
-		// Tick the social networking manager.
 		PIXBeginNamedEvent(0,"Social network manager tick");
-		//		CSocialManager::Instance()->Tick();
 		PIXEndNamedEvent();
 
-		// Tick sentient.
 		PIXBeginNamedEvent(0,"Sentient tick");
 		MemSect(37);
-		//		SentientManager.Tick();
 		MemSect(0);
 		PIXEndNamedEvent();
 
@@ -1859,7 +1707,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		g_NetworkManager.DoWork();
 		PIXEndNamedEvent();
 
-		//		LeaderboardManager::Instance()->Tick();
 		// Render game graphics.
 		if(app.GetGameStarted())
 		{
@@ -1907,58 +1754,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			printf("Renderer used: %d\n",RenderManager.CBuffSize(-1));
 		}
 #endif
-#if 0
-		static bool bDumpTextureUsage = false;
-		if( bDumpTextureUsage )
-		{
-			RenderManager.TextureGetStats();
-			bDumpTextureUsage = false;
-		}
-#endif
+
 		ui.tick();
 		ui.render();
 
 		pMinecraft->gameRenderer->ApplyGammaPostProcess();
 
-#if 0
-		app.HandleButtonPresses();
-
-		// store the minecraft renderstates, and re-set them after the xui render
-		GetRenderAndSamplerStates(pDevice,RenderStateA,SamplerStateA);
-
-		// Tick XUI
-		PIXBeginNamedEvent(0,"Xui running");
-		app.RunFrame();
-		PIXEndNamedEvent();
-
-		// Render XUI
-
-		PIXBeginNamedEvent(0,"XUI render");
-		MemSect(7);
-		hr = app.Render();
-		MemSect(0);
-		GetRenderAndSamplerStates(pDevice,RenderStateA2,SamplerStateA2);
-		PIXEndNamedEvent();
-
-		for(int i=0;i<8;i++)
-		{
-			if(RenderStateA2[i]!=RenderStateA[i])
-			{
-				//printf("Reseting RenderStateA[%d] after a XUI render\n",i);
-				pDevice->SetRenderState(RenderStateModes[i],RenderStateA[i]);
-			}
-		}
-		for(int i=0;i<5;i++)
-		{
-			if(SamplerStateA2[i]!=SamplerStateA[i])
-			{
-				//printf("Reseting SamplerStateA[%d] after a XUI render\n",i);
-				pDevice->SetSamplerState(0,SamplerStateModes[i],SamplerStateA[i]);
-			}
-		}
-
-		RenderManager.Set_matrixDirty();
-#endif
 		// Present the frame.
 		RenderManager.Present();
 
@@ -2027,10 +1828,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
-				{
-					ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
-
-				}
+				ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
 			}
 		}
 
@@ -2042,68 +1840,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			SetFocus(g_hWnd);
 		}
 
-#if 0
-		// has the game defined profile data been changed (by a profile load)
-		if(app.uiGameDefinedDataChangedBitmask!=0)
-		{
-			void *pData;
-			for(int i=0;i<XUSER_MAX_COUNT;i++)
-			{
-				if(app.uiGameDefinedDataChangedBitmask&(1<<i))
-				{\
-				// It has - game needs to update its values with the data from the profile
-				pData=ProfileManager.GetGameDefinedProfileData(i);
-				// reset the changed flag
-				app.ClearGameSettingsChangedFlag(i);
-				app.DebugPrintf("***  - APPLYING GAME SETTINGS CHANGE for pad %d\n",i);
-				app.ApplyGameSettingsChanged(i);
-
-#ifdef _DEBUG_MENUS_ENABLED
-				if(app.DebugSettingsOn())
-				{
-					app.ActionDebugMask(i);
-				}
-				else
-				{
-					// force debug mask off
-					app.ActionDebugMask(i,true);
-				}
-#endif
-				// clear the stats first - there could have beena signout and sign back in in the menus
-				// need to clear the player stats - can't assume it'll be done in setlevel - we may not be in the game
-				pMinecraft->stats[ i ]->clear();
-				pMinecraft->stats[i]->parse(pData);
-				}
-			}
-
-			// Check to see if we can post to social networks.
-			CSocialManager::Instance()->RefreshPostingCapability();
-
-			// clear the flag
-			app.uiGameDefinedDataChangedBitmask=0;
-
-			// Check if any profile write are needed
-			app.CheckGameSettingsChanged();
-		}
-		PIXEndNamedEvent();
-		app.TickDLCOffersRetrieved();
-		app.TickTMSPPFilesRetrieved();
-
-		PIXBeginNamedEvent(0,"Network manager do work #2");
-		g_NetworkManager.DoWork();
-		PIXEndNamedEvent();
-
-		PIXBeginNamedEvent(0,"Misc extra xui");
-		// Update XUI Timers
-		hr = XuiTimersRun();
-
-#endif
 		// Any threading type things to deal with from the xui side?
 		app.HandleXuiActions();
-
-#if 0
-		PIXEndNamedEvent();
-#endif
 
 		// 4J-PB - Update the trial timer display if we are in the trial version
 		if(!ProfileManager.IsFullVersion())
@@ -2135,7 +1873,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Free resources, unregister custom classes, and exit.
-	//	app.Uninit();
 	g_pd3dDevice->Release();
 }
 
