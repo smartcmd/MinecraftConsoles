@@ -257,7 +257,12 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-	HumanoidModel *model = static_cast<HumanoidModel *>(renderer->getModel());
+	HumanoidModel *model;
+
+	if (m_backupTexture == TN_MOB_CHAR8)
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+	else
+		model = static_cast<HumanoidModel *>(renderer->getModel());
 
 	//getAttackAnim(mob, a);
 	//if (armor != nullptr) armor->attackTime = model->attackTime;
@@ -353,6 +358,7 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 
 	MemSect(31);
 	bindTexture(m_customTextureUrl, m_backupTexture);
+
 	MemSect(0);
 	glEnable(GL_ALPHA_TEST);
 

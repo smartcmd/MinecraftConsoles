@@ -24,6 +24,7 @@ const WCHAR *UIScene_SkinSelectMenu::wchDefaultNamesA[]=
 	L"Prisoner Steve",
 	L"Cyclist Steve",
 	L"Boxer Steve",
+	L"Alex",
 };
 
 UIScene_SkinSelectMenu::UIScene_SkinSelectMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
@@ -992,6 +993,9 @@ TEXTURE_NAME UIScene_SkinSelectMenu::getTextureId(int skinIndex)
 		break;
 	case eDefaultSkins_Skin7:
 		texture = TN_MOB_CHAR7;
+		break;
+	case eDefaultSkins_Skin8:
+		texture = TN_MOB_CHAR8;
 		break;
 	};
 

@@ -72,6 +72,7 @@ const wchar_t *Textures::preLoaded[TN_COUNT] =
 	L"mob/char5",
 	L"mob/char6",
 	L"mob/char7",
+	L"mob/char8",
 	L"terrain/moon",
 	L"terrain/sun",
 	L"armor/power",

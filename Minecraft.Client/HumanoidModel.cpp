@@ -58,7 +58,7 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 	return pNewBox;
 }
 
-void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
+void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, bool slimHands)
 {
 	this->texWidth = texWidth;
 	this->texHeight = texHeight;
@@ -83,13 +83,22 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
     body->setPos(0, 0 + yOffset, 0);
 
     arm0 = new ModelPart(this, 24 + 16, 16);
-    arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g); // Arm0
     arm0->setPos(-5, 2 + yOffset, 0);
 
     arm1 = new ModelPart(this, 24 + 16, 16);
     arm1->bMirror = true;
-    arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g); // Arm1
     arm1->setPos(5, 2 + yOffset, 0);
+
+	if (slimHands == false)
+	{
+		arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g);
+		arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g);
+	}
+	else if (slimHands == true)
+	{
+		arm0->addHumanoidBox(-2, -2, -2, 3, 12, 4, 0);
+		arm1->addHumanoidBox(-1, -2, -2, 3, 12, 4, 0);
+	}
 
     leg0 = new ModelPart(this, 0, 16);
     leg0->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg0
@@ -125,19 +134,25 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
 	m_uiAnimOverrideBitmask = 0L;
 }
 
+
 HumanoidModel::HumanoidModel() : Model()
 {
-	_init(0, 0, 64, 32);
+	_init(0, 0, 64, 32, false);
 }
 
 HumanoidModel::HumanoidModel(float g) : Model()
 {
-	_init(g, 0, 64, 32);
+	_init(g, 0, 64, 32, false);
 }
 
 HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight) : Model()
 {
-	_init(g,yOffset,texWidth,texHeight);
+	_init(g,yOffset,texWidth,texHeight, false);
+}
+
+HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands) : Model()
+{
+	_init(g,yOffset,texWidth,texHeight, slimHands);
 }
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)

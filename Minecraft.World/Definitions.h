@@ -35,6 +35,7 @@ enum EDefaultSkins
 	eDefaultSkins_Skin5,
 	eDefaultSkins_Skin6,
 	eDefaultSkins_Skin7,
+	eDefaultSkins_Skin8,
 
 	eDefaultSkins_Count,
 };

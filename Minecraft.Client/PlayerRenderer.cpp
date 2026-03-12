@@ -55,9 +55,10 @@ static unsigned int nametagColorForIndex(int index)
 
 ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR);
 
-PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0.5f )
+PlayerRenderer::PlayerRenderer(bool slimHands) : LivingEntityRenderer( new HumanoidModel(0), 0.5f, slimHands )
 {
-    humanoidModel = static_cast<HumanoidModel *>(model);
+	humanoidModel = static_cast<HumanoidModel *>(model);
+	humanoidModelSlim = static_cast<HumanoidModel *>(modelSlim);
 
     armorParts1 = new HumanoidModel(1.0f);
     armorParts2 = new HumanoidModel(0.5f);
@@ -160,12 +161,18 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
+	HumanoidModel *resModel;
 
 	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
+	if (mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	else resModel = humanoidModel;
+
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
-    armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = item != nullptr ? 1 : 0;
+
+	armorParts1->holdingRightHand = armorParts2->holdingRightHand = resModel->holdingRightHand = item != nullptr ? 1 : 0;
+
 	if (item != nullptr)
 	{
 		if (mob->getUseItemDuration() > 0)
@@ -173,11 +180,11 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 			UseAnim anim = item->getUseAnimation();
 			if (anim == UseAnim_block)
 			{
-				armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = 3;
+				armorParts1->holdingRightHand = armorParts2->holdingRightHand = resModel->holdingRightHand = 3;
 			}
 			else if (anim == UseAnim_bow)
 			{
-				armorParts1->bowAndArrow = armorParts2->bowAndArrow = humanoidModel->bowAndArrow = true;
+				armorParts1->bowAndArrow = armorParts2->bowAndArrow = resModel->bowAndArrow = true;
 			}
 		}
 	}
@@ -187,17 +194,17 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 		// These factors are largely lifted from ItemInHandRenderer to try and keep the 3rd person eating animation as similar as possible
         float t = (mob->getUseItemDuration() - a + 1);
         float swing = 1 - (t / item->getUseDuration());
-		armorParts1->eating = armorParts2->eating = humanoidModel->eating = true;
-		armorParts1->eating_t = armorParts2->eating_t = humanoidModel->eating_t = t;
-		armorParts1->eating_swing = armorParts2->eating_swing = humanoidModel->eating_swing = swing;
+
+		armorParts1->eating = armorParts2->eating = resModel->eating = true;
+		armorParts1->eating_t = armorParts2->eating_t = resModel->eating_t = t;
+		armorParts1->eating_swing = armorParts2->eating_swing = resModel->eating_swing = swing;
 	}
 	else
 	{
-		armorParts1->eating = armorParts2->eating = humanoidModel->eating = false;
+		armorParts1->eating = armorParts2->eating = resModel->eating = false;
 	}
 
-    armorParts1->sneaking = armorParts2->sneaking = humanoidModel->sneaking = mob->isSneaking();
-
+	armorParts1->sneaking = armorParts2->sneaking = resModel->sneaking = mob->isSneaking();
     double yp = y - mob->heightOffset;
     if (mob->isSneaking() && !mob->instanceof(eTYPE_LOCALPLAYER))
 	{
@@ -209,20 +216,20 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	{
 		if(mob->isIdle())
 		{
-			humanoidModel->idle=true;
+			resModel->idle=true;
 			armorParts1->idle=true;
 			armorParts2->idle=true;
 		}
 		else
 		{
-			humanoidModel->idle=false;
+			resModel->idle=false;
 			armorParts1->idle=false;
 			armorParts2->idle=false;
 		}
 	}
 	else
 	{
-		humanoidModel->idle=false;
+		resModel->idle=false;
 		armorParts1->idle=false;
 		armorParts2->idle=false;
 	}
@@ -248,10 +255,9 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 			pModelPart->visible=false;
 		}
 	}
-	armorParts1->bowAndArrow = armorParts2->bowAndArrow = humanoidModel->bowAndArrow = false;
-    armorParts1->sneaking = armorParts2->sneaking = humanoidModel->sneaking = false;
-    armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = 0;
-
+	armorParts1->bowAndArrow = armorParts2->bowAndArrow = resModel->bowAndArrow = false;
+	armorParts1->sneaking = armorParts2->sneaking = resModel->sneaking = false;
+	armorParts1->holdingRightHand = armorParts2->holdingRightHand = resModel->holdingRightHand = 0;
 }
 
 void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
@@ -264,6 +270,10 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
+	HumanoidModel *resModel;
+
+	if (mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	else resModel = humanoidModel;
 
     shared_ptr<ItemInstance> headGear = mob->inventory->getArmor(3);
     if (headGear != nullptr)
@@ -274,7 +284,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 		if((uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DontRenderArmour))==0)
 		{
 			glPushMatrix();
-			humanoidModel->head->translateTo(1 / 16.0f);
+			resModel->head->translateTo(1 / 16.0f);
 
 			if(headGear->getItem()->id < 256)
 			{
@@ -322,7 +332,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 
             float s = 8 / 6.0f;
             glScalef(s, s, s);
-            humanoidModel->renderEars(1 / 16.0f,true);
+			resModel->renderEars(1 / 16.0f,true);
             glPopMatrix();
         }
     }
@@ -368,7 +378,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
         glRotatef(lean2 / 2, 0, 0, 1);
         glRotatef(-lean2 / 2, 0, 1, 0);
         glRotatef(180, 0, 1, 0);
-        humanoidModel->renderCloak(1 / 16.0f,true);
+		resModel->renderCloak(1 / 16.0f,true);
         glPopMatrix();
     }
 
@@ -377,7 +387,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
     if (item != nullptr)
 	{
         glPushMatrix();
-        humanoidModel->arm0->translateTo(1 / 16.0f);
+		resModel->arm0->translateTo(1 / 16.0f);
         glTranslatef(-1 / 16.0f, 7 / 16.0f, 1 / 16.0f);
 
         if (mob->fishing != nullptr)
@@ -507,18 +517,22 @@ void PlayerRenderer::scale(shared_ptr<LivingEntity> player, float a)
 
 void PlayerRenderer::renderHand()
 {
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player);
+	HumanoidModel *resModel;
+
+	if (player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	else resModel = humanoidModel;
+
 	float brightness = 1;
     glColor3f(brightness, brightness, brightness);
 
-	humanoidModel->m_uiAnimOverrideBitmask = Minecraft::GetInstance()->player->getAnimOverrideBitmask();
-	armorParts1->eating = armorParts2->eating = humanoidModel->eating = humanoidModel->idle = false;
-    humanoidModel->attackTime = 0;
-    humanoidModel->setupAnim(0, 0, 0, 0, 0, 1 / 16.0f, Minecraft::GetInstance()->player);
+	resModel->m_uiAnimOverrideBitmask = player->getAnimOverrideBitmask();
+	armorParts1->eating = armorParts2->eating = resModel->eating = resModel->idle = false;
+	resModel->attackTime = 0;
+	resModel->setupAnim(0, 0, 0, 0, 0, 1 / 16.0f, Minecraft::GetInstance()->player);
 	// 4J-PB - does this skin have its arm0 disabled? (Dalek, etc)
-	if((humanoidModel->m_uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DisableRenderArm0))==0)
-	{
-		humanoidModel->arm0->render(1 / 16.0f,true);
-	}
+	if((resModel->m_uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DisableRenderArm0))==0)
+		resModel->arm0->render(1 / 16.0f,true);
 }
 
 void PlayerRenderer::setupPosition(shared_ptr<LivingEntity> _mob, double x, double y, double z)
