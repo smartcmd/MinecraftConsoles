@@ -295,14 +295,18 @@ static BOOL WINAPI HeadlessServerCtrlHandler(DWORD ctrlType)
 
 static void SetupHeadlessServerConsole()
 {
-	if (AllocConsole())
+	//use existing console if possible
+	if (!AttachConsole(ATTACH_PARENT_PROCESS))
 	{
-		FILE* stream = nullptr;
-		freopen_s(&stream, "CONIN$", "r", stdin);
-		freopen_s(&stream, "CONOUT$", "w", stdout);
-		freopen_s(&stream, "CONOUT$", "w", stderr);
-		SetConsoleTitleA("Minecraft Server");
+		//https://giphy.com/gifs/17tvv5lv6KqX51mbfA
+		AllocConsole();
 	}
+
+	FILE* stream = NULL;
+	freopen_s(&stream, "CONIN$", "r", stdin);
+	freopen_s(&stream, "CONOUT$", "w", stdout);
+	freopen_s(&stream, "CONOUT$", "w", stderr);
+	SetConsoleTitleA("Minecraft Server");
 
 	SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
 }

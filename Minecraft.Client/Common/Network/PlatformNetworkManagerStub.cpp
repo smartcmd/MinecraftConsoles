@@ -853,7 +853,11 @@ void CPlatformNetworkManagerStub::SearchForGames()
 					info->data.isJoinable = true;
 					strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ipBuf, _TRUNCATE);
 					info->data.hostPort = port;
-					info->sessionId = static_cast<uint64_t>(inet_addr(ipBuf)) | static_cast<uint64_t>(port) << 32;
+
+					//Hash IP so IPv4 and 6 both are a valid sess id
+					uint64_t ipHash = (uint64_t)std::hash<std::string>{}(ipBuf);
+					info->sessionId = (SessionID)(ipHash ^ (static_cast<uint64_t>(port << 32)));
+
 					friendsSessions[0].push_back(info);
 				}
 			}
