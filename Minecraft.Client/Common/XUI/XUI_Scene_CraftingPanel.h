@@ -3,12 +3,12 @@ using namespace std;
 
 #include "../media/xuiscene_craftingpanel_2x2.h"
 #include "XUI_Ctrl_MinecraftSlot.h"
-#include "..\..\..\Minecraft.World\Recipy.h" 
+#include "../../../Minecraft.World/Recipy.h" 
 #include "XUI_Ctrl_CraftIngredientSlot.h"
-#include "..\..\..\Minecraft.World\Item.h"
+#include "../../../Minecraft.World/Item.h"
 #include "XUI_CustomMessages.h"
-#include "..\..\Common\Tutorial\TutorialEnum.h"
-#include "..\UI\IUIScene_CraftingMenu.h"
+#include "../../Common/Tutorial/TutorialEnum.h"
+#include "../UI/IUIScene_CraftingMenu.h"
 
 class CXuiCtrlSlotList;
 

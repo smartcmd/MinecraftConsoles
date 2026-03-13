@@ -2,18 +2,18 @@
 
 #include <assert.h>
 #include "XUI_InGameInfo.h"
-#include "..\..\ServerPlayer.h"
-#include "..\..\PlayerConnection.h"
-#include "..\..\PlayerList.h"
-#include "..\..\MinecraftServer.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\PlayerRenderer.h"
+#include "../../ServerPlayer.h"
+#include "../../PlayerConnection.h"
+#include "../../PlayerList.h"
+#include "../../MinecraftServer.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../PlayerRenderer.h"
 #include "XUI_InGamePlayerOptions.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\..\Xbox\Network\NetworkPlayerXbox.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../ClientConnection.h"
+#include "../../../Minecraft.World/net.minecraft.network.packet.h"
+#include "../../Xbox/Network/NetworkPlayerXbox.h"
 
 #define IGNORE_KEYPRESS_TIMERID 0
 #define TOOLTIP_TIMERID 1

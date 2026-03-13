@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_Reinstall.h"
+#include "../media/xuiscene_reinstall.h"
 
 #define BUTTON_REINSTALL_THEME		0
 #define BUTTON_REINSTALL_GAMERPIC1	1

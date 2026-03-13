@@ -2,14 +2,14 @@
 //
 
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\ByteArrayInputStream.h"
-#include "..\..\..\Minecraft.World\BufferedReader.h"
-#include "..\..\..\Minecraft.World\InputStreamReader.h"
-#include "..\..\..\Minecraft.World\ArrayWithLength.h"
+#include "../../../Minecraft.World/ByteArrayInputStream.h"
+#include "../../../Minecraft.World/BufferedReader.h"
+#include "../../../Minecraft.World/InputStreamReader.h"
+#include "../../../Minecraft.World/ArrayWithLength.h"
 #include <assert.h>
 #include "XUI_Ctrl_4JIcon.h"
 #include "XUI_DLCOffers.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #ifdef _XBOX
 #include <xavatar.h>
 #endif

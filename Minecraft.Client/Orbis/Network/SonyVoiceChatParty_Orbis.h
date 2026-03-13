@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <np\np_party.h>
+#include <np/np_party.h>
 
 class SonyVoiceChatParty_Orbis
 {

@@ -1,22 +1,22 @@
 ﻿
 #include "stdafx.h"
-#include "..\Common\Consoles_App.h"
-#include "..\User.h"
-#include "..\..\Minecraft.Client\Minecraft.h"
-#include "..\..\Minecraft.Client\MinecraftServer.h"
-#include "..\..\Minecraft.Client\PlayerList.h"
-#include "..\..\Minecraft.Client\ServerPlayer.h"
-#include "..\..\Minecraft.World\Level.h"
-#include "..\..\Minecraft.World\LevelSettings.h"
-#include "..\..\Minecraft.World\BiomeSource.h"
-#include "..\..\Minecraft.World\LevelType.h"
-#include "..\..\Orbis\Network\SonyCommerce_Orbis.h"
-#include "..\..\Minecraft.World\StringHelpers.h"
+#include "../Common/Consoles_App.h"
+#include "../User.h"
+#include "../../Minecraft.Client/Minecraft.h"
+#include "../../Minecraft.Client/MinecraftServer.h"
+#include "../../Minecraft.Client/PlayerList.h"
+#include "../../Minecraft.Client/ServerPlayer.h"
+#include "../../Minecraft.World/Level.h"
+#include "../../Minecraft.World/LevelSettings.h"
+#include "../../Minecraft.World/BiomeSource.h"
+#include "../../Minecraft.World/LevelType.h"
+#include "../../Orbis/Network/SonyCommerce_Orbis.h"
+#include "../../Minecraft.World/StringHelpers.h"
 #include "Network/Orbis_NPToolkit.h"
-#include "Orbis\Network\SonyRemoteStorage_Orbis.h"
+#include "Orbis/Network/SonyRemoteStorage_Orbis.h"
 
 #include <system_service.h>
-#include "..\..\Common\Network\Sony\SonyRemoteStorage.h"
+#include "../../Common/Network/Sony/SonyRemoteStorage.h"
 #include <save_data_dialog.h>
 #include <error_dialog.h>
 

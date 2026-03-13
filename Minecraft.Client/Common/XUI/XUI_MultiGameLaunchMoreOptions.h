@@ -1,6 +1,6 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_multi_launch_more_options.h"
+#include "../Media/xuiscene_multi_launch_more_options.h"
 
 class CScene_MultiGameLaunchMoreOptions : public CXuiSceneImpl
 {

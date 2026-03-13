@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DragonModel.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.boss.enderdragon.h"
+#include "../Minecraft.World/net.minecraft.world.entity.boss.enderdragon.h"
 #include "Tesselator.h"
 #include "Lighting.h"
 #include "EnderDragonRenderer.h"

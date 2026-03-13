@@ -2,7 +2,7 @@
 class Mob;
 class Options;
 using namespace std;
-#include "..\..\Minecraft.World\SoundTypes.h"
+#include "../../Minecraft.World/SoundTypes.h"
 
 #include "miniaudio.h"
 

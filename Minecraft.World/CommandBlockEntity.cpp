@@ -2,7 +2,7 @@
 #include "net.minecraft.network.packet.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.commands.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
+#include "../Minecraft.Client/MinecraftServer.h"
 #include "CommandBlockEntity.h"
 
 CommandBlockEntity::CommandBlockEntity()

@@ -5,7 +5,7 @@
 #include "Minecraft.h"
 #include "Tutorial.h"
 
-#include "..\Minecraft.World\EntityHorse.h"
+#include "../Minecraft.World/EntityHorse.h"
 
 #include "RideEntityTask.h"
 

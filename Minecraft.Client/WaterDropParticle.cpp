@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "WaterDropParticle.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.material.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/JavaMath.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.material.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
 
 WaterDropParticle::WaterDropParticle(Level *level, double x, double y, double z) : Particle(level, x, y, z, 0, 0, 0)
 {

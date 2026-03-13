@@ -1,6 +1,6 @@
 #pragma once
 #include "Textures.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/JavaIntHash.h"
 class Mob;
 class Level;
 class TileEntityRenderer;

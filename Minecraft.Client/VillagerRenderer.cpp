@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.npc.h"
+#include "../Minecraft.World/net.minecraft.world.entity.npc.h"
 #include "VillagerModel.h"
 #include "VillagerRenderer.h"
 

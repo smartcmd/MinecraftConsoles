@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ModelPart.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/Mth.h"
 #include "OcelotModel.h"
 
 const float OcelotModel::xo = 0;

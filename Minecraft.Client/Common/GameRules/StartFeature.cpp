@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "StartFeature.h"
 
 StartFeature::StartFeature()

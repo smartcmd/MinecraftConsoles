@@ -11,7 +11,7 @@
 #include "RandomLevelSource.h"
 
 #ifdef __PS3__
-#include "..\Minecraft.Client\PS3\SPU_Tasks\PerlinNoise\PerlinNoiseJob.h"
+#include "../Minecraft.Client/PS3/SPU_Tasks/PerlinNoise/PerlinNoiseJob.h"
 #include "C4JSpursJob.h"
 static PerlinNoise_DataIn g_lperlinNoise1_SPU __attribute__((__aligned__(16)));
 static PerlinNoise_DataIn g_lperlinNoise2_SPU __attribute__((__aligned__(16)));

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "BreakingItemParticle.h"
 #include "Tesselator.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.h"
 
 void BreakingItemParticle::_init(Item *item, Textures *textures, int data)
 {	

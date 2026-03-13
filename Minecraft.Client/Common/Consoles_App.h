@@ -5,23 +5,23 @@ using namespace std;
 #include "Audio/Consoles_SoundEngine.h"
 
 #include <xuiapp.h>
-#include ".\Tutorial\TutorialEnum.h"
+#include "./Tutorial/TutorialEnum.h"
 
 #ifdef _XBOX
-#include ".\XUI\XUI_Helper.h"
-#include ".\XUI\XUI_HelpCredits.h"
+#include "./XUI/XUI_Helper.h"
+#include "./XUI/XUI_HelpCredits.h"
 #endif
-#include "UI\UIStructs.h"
+#include "UI/UIStructs.h"
 
-#include "..\..\Minecraft.World\DisconnectPacket.h"
+#include "../../Minecraft.World/DisconnectPacket.h"
 #include <xsocialpost.h>
 
-#include "..\StringTable.h"
-#include ".\DLC\DLCManager.h"
-#include ".\GameRules\ConsoleGameRulesConstants.h"
-#include ".\GameRules\GameRuleManager.h"
-#include "..\SkinBox.h"
-#include "..\ArchiveFile.h"
+#include "../StringTable.h"
+#include "./DLC/DLCManager.h"
+#include "./GameRules/ConsoleGameRulesConstants.h"
+#include "./GameRules/GameRuleManager.h"
+#include "../SkinBox.h"
+#include "../ArchiveFile.h"
 
 typedef struct _JoinFromInviteData
 {

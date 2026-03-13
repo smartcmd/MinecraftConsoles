@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EditBox.h"
-#include "..\Minecraft.World\SharedConstants.h"
+#include "../Minecraft.World/SharedConstants.h"
 
 EditBox::EditBox(Screen *screen, Font *font, int x, int y, int width, int height, const wstring& value)
 {

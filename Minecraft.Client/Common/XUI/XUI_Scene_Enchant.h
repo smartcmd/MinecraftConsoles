@@ -1,20 +1,20 @@
 #pragma once
 using namespace std;
 
-#include "..\Media\xuiscene_enchant.h"
+#include "../Media/xuiscene_enchant.h"
 
-#include "..\..\BookModel.h"
+#include "../../BookModel.h"
 
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Ctrl_EnchantmentBook.h"
 #include "XUI_Scene_AbstractContainer.h"
-#include "..\UI\IUIScene_EnchantingMenu.h"
+#include "../UI/IUIScene_EnchantingMenu.h"
 #include "XUI_CustomMessages.h"
 
 #include "XUI_Scene_Enchant.h"
 
-#include "..\..\..\Minecraft.World\AbstractContainerMenu.h"
-#include "..\..\..\Minecraft.World\SimpleContainer.h"
+#include "../../../Minecraft.World/AbstractContainerMenu.h"
+#include "../../../Minecraft.World/SimpleContainer.h"
 
 class Level;
 class CXuiCtrlEnchantmentButton;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SheepRenderer.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 ResourceLocation SheepRenderer::SHEEP_LOCATION = ResourceLocation(TN_MOB_SHEEP);
 ResourceLocation SheepRenderer::SHEEP_FUR_LOCATION = ResourceLocation(TN_MOB_SHEEP_FUR);

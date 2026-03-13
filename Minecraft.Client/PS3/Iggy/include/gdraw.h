@@ -6,7 +6,7 @@
 #ifndef __RAD_INCLUDE_GDRAW_H__
 #define __RAD_INCLUDE_GDRAW_H__
 
-#include "rrcore.h"
+#include "rrCore.h"
 
 #define IDOC
 

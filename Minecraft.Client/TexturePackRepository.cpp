@@ -5,8 +5,8 @@
 #include "FolderTexturePack.h"
 #include "DLCTexturePack.h"
 #include "Options.h"
-#include "..\Minecraft.World\File.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/File.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include "Minimap.h"
 #include "Common/UI/UI.h"
 

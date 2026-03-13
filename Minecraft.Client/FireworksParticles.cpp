@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 #include "FireworksParticles.h"
 #include "Tesselator.h"
 #include "../Minecraft.World/Level.h"

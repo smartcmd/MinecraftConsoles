@@ -2,7 +2,7 @@
 #include "HorseRenderer.h"
 #include "MobRenderer.h"
 #include "EntityRenderDispatcher.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 ResourceLocation HorseRenderer::HORSE_LOCATION = ResourceLocation(TN_MOB_HORSE_WHITE);
 ResourceLocation HorseRenderer::HORSE_MULE_LOCATION = ResourceLocation(TN_MOB_MULE);

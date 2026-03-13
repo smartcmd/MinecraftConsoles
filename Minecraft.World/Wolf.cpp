@@ -18,7 +18,7 @@
 #include "net.minecraft.stats.h"
 #include "Sheep.h"
 #include "Wolf.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "SoundTypes.h"
 
 

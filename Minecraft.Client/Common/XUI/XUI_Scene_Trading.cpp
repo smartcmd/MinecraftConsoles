@@ -1,16 +1,16 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.trading.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\Common\Tutorial\Tutorial.h"
-#include "..\..\Common\Tutorial\TutorialMode.h"
-#include "..\..\Common\Tutorial\TutorialEnum.h"
-#include "..\..\Minecraft.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.trading.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../Common/Tutorial/Tutorial.h"
+#include "../../Common/Tutorial/TutorialMode.h"
+#include "../../Common/Tutorial/TutorialEnum.h"
+#include "../../Minecraft.h"
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Trading.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\JavaMath.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/JavaMath.h"
 
 //--------------------------------------------------------------------------------------
 // Name: CXuiSceneTrading::OnInit

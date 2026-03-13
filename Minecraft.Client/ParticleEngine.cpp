@@ -7,11 +7,11 @@
 #include "TerrainParticle.h"
 #include "ResourceLocation.h"
 #include "Camera.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\StringHelpers.h"
-#include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
+#include "../Minecraft.World/net.minecraft.world.entity.player.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/StringHelpers.h"
+#include "../Minecraft.World/net.minecraft.world.level.dimension.h"
 
 ResourceLocation ParticleEngine::PARTICLES_LOCATION = ResourceLocation(TN_PARTICLES);
 

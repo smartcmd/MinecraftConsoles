@@ -4,7 +4,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "ItemInstance.h"
 #include "GenericStats.h"
-#include "RedstoneItem.h"
+#include "RedStoneItem.h"
 
 RedStoneItem::RedStoneItem(int id) : Item(id)
 {

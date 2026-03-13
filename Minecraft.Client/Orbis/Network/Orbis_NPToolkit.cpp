@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "Orbis_NPToolkit.h"
-#include "Orbis\ps4__np_conf.h"
+#include "Orbis/ps4__np_conf.h"
 #include "Orbis/Network/SonyCommerce_Orbis.h"
 
 // #define NP_TITLE_ID "CUSA00265_00"

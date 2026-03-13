@@ -3,7 +3,7 @@
 #include "stdafx.h"
  // #include "XUI_Ctrl_4JIcon.h"
 #include "XUI_NewUpdateMessage.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 
 HRESULT CScene_NewUpdateMessage::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )

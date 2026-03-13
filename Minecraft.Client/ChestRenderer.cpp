@@ -3,9 +3,9 @@
 #include "ChestModel.h"
 #include "LargeChestModel.h"
 #include "ModelPart.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\Calendar.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/Calendar.h"
 
 ResourceLocation ChestRenderer::CHEST_LARGE_TRAP_LOCATION = ResourceLocation(TN_TILE_LARGE_TRAP_CHEST);
 //ResourceLocation ChestRenderer::CHEST_LARGE_XMAS_LOCATION = ResourceLocation(TN_TILE_LARGE_XMAS_CHEST);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "XUI_Ctrl_CraftIngredientSlot.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
 
 //-----------------------------------------------------------------------------
 //  CXuiCtrlMinecraftSlot class

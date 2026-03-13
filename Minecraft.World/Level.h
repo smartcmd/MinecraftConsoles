@@ -7,11 +7,11 @@ using namespace std;
 #include "SavedData.h"
 #include "Definitions.h"
 #include "ParticleTypes.h"
-#include "biome.h"
+#include "Biome.h"
 #include "C4JThread.h"
 
 #ifdef __PSVITA__
-#include "..\Minecraft.Client\PSVita\PSVitaExtras\CustomSet.h"
+#include "../Minecraft.Client/PSVita/PSVitaExtras/CustomSet.h"
 #endif
 
 // 4J Stu - This value should be big enough that we don't get any crashes causes by memory overwrites,

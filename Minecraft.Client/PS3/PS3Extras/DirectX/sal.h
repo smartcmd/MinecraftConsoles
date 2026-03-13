@@ -157,7 +157,7 @@
 #endif
 
 #if defined(_MSC_EXTENSIONS) && !defined( MIDL_PASS ) && !defined(__midl) && !defined(RC_INVOKED)
-#include "codeanalysis\sourceannotations.h"
+#include "codeanalysis/sourceannotations.h"
 #endif
 
 //============================================================================

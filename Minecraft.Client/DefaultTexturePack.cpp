@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DefaultTexturePack.h"
 #include "Textures.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 
 DefaultTexturePack::DefaultTexturePack() : AbstractTexturePack(0, nullptr, L"Minecraft", nullptr)

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Lighting.h"
-#include "..\Minecraft.World\FloatBuffer.h"
-#include "..\Minecraft.World\Vec3.h"
+#include "../Minecraft.World/FloatBuffer.h"
+#include "../Minecraft.World/Vec3.h"
 
 FloatBuffer *Lighting::lb = new FloatBuffer(16);
 

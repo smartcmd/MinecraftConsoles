@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Common\Leaderboards\SonyLeaderboardManager.h"
-#include "Common\Leaderboards\LeaderboardManager.h"
+#include "Common/Leaderboards/SonyLeaderboardManager.h"
+#include "Common/Leaderboards/LeaderboardManager.h"
 
 #include "Conf.h"
 

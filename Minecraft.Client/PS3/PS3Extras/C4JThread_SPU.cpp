@@ -3,9 +3,9 @@
 #include "stdafx.h"
 
 #include "C4JThread_SPU.h"
-#include "PS3\SPU_Tasks\ChunkUpdate\ChunkRebuildData.h"
-#include "PS3\SPU_Tasks\CompressedTile\CompressedTileStorage_SPU.h"
-#include "PS3\SPU_Tasks\LevelRenderChunks\LevelRenderChunks.h"
+#include "PS3/SPU_Tasks/ChunkUpdate/ChunkRebuildData.h"
+#include "PS3/SPU_Tasks/CompressedTile/CompressedTileStorage_SPU.h"
+#include "PS3/SPU_Tasks/LevelRenderChunks/LevelRenderChunks.h"
 
 #define SPURS_MAX_SPU					6
 #define SPURS_PPU_THREAD_PRIORITY		2

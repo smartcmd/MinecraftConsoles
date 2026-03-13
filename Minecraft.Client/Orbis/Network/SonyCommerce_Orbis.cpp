@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SonyCommerce_Orbis.h"
-#include "PS3\PS3Extras\ShutdownManager.h"
+#include "PS3/PS3Extras/ShutdownManager.h"
 #include <sys/event.h>
 
 
@@ -600,7 +600,7 @@ int SonyCommerce_Orbis::createSession()
 	//
 	// sce::Toolkit::NP::Commerce::Interface::CreateSession
 	// 
-	// 	This function is provided to maintain compatibility with the PlayStation®Vita and PlayStation®3 platforms. Because commerce on the PlayStation®4 is not session based, SCE_TOOLKIT_NP_SUCCESS is always returned.
+	// 	This function is provided to maintain compatibility with the PlayStationVita and PlayStation3 platforms. Because commerce on the PlayStation4 is not session based, SCE_TOOLKIT_NP_SUCCESS is always returned.
 
 	int ret = sce::Toolkit::NP::Commerce::Interface::createSession();
 
@@ -1145,8 +1145,8 @@ void SonyCommerce_Orbis::CreateSession( CallbackFunc cb, LPVOID lpParam )
 	setCallback(cb,lpParam);
 
 	// We don't need to create a session on PS4, from the Sony docs - 
-//	This function is provided to maintain compatibility with the PlayStation®Vita and PlayStation®3 
-//	platforms. Because commerce on the PlayStation®4 is not session based, SCE_TOOLKIT_NP_SUCCESS is always returned.
+//	This function is provided to maintain compatibility with the PlayStationVita and PlayStation3 
+//	platforms. Because commerce on the PlayStation4 is not session based, SCE_TOOLKIT_NP_SUCCESS is always returned.
 
 
 

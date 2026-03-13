@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\FurnaceMenu.h"
-#include "..\..\..\Minecraft.World\FurnaceTileEntity.h"
+#include "../../../Minecraft.World/FurnaceMenu.h"
+#include "../../../Minecraft.World/FurnaceTileEntity.h"
 #include "XUI_Scene_Furnace.h"
 #include "XUI_Ctrl_BurnProgress.h"
 

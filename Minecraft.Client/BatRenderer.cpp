@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.ambient.h"
+#include "../Minecraft.World/net.minecraft.world.entity.ambient.h"
 #include "BatRenderer.h"
 #include "BatModel.h"
 

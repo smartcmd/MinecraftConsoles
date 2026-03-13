@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_trading.h"
-#include "..\UI\IUIScene_TradingMenu.h"
+#include "../Media/xuiscene_trading.h"
+#include "../UI/IUIScene_TradingMenu.h"
 
 #define TRADING_UPDATE_TIMER_ID (10)
 #define TRADING_UPDATE_TIMER_TIME (50)

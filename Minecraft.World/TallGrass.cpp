@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Minecraft.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.biome.h"

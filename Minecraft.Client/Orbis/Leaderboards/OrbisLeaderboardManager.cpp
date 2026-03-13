@@ -4,19 +4,19 @@
 
 #include "base64.h"
 
-#include "..\Orbis_App.h"
-#include "..\..\Common\Consoles_App.h"
+#include "../Orbis_App.h"
+#include "../../Common/Consoles_App.h"
 
-#include "Common\Network\Sony\SQRNetworkManager.h"
+#include "Common/Network/Sony/SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 #include <cstdlib>
 
 #include <np.h>
 //#include <sys/ppu_thread.h>
 
-#include "Orbis\OrbisExtras\ShutdownManager.h"
+#include "Orbis/OrbisExtras/ShutdownManager.h"
 
 
 LeaderboardManager *LeaderboardManager::m_instance = new OrbisLeaderboardManager(); //Singleton instance of the LeaderboardManager
@@ -133,7 +133,7 @@ void OrbisLeaderboardManager::scoreboardThreadInternal()
 		// The following NP call should be reserved for asynchronous multiplayer modes that require PS Plus to be accessed. 
 		//
 		//	Note 2: 
-		// The message is not displayed with a user without PlayStation®Plus subscription and they are able to access the Leaderboards.
+		// The message is not displayed with a user without PlayStationPlus subscription and they are able to access the Leaderboards.
 
 		// NotifyAsyncPlusFeature();
 

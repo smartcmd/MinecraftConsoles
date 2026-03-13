@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Orbis_PlayerUID.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 #include <libnetctl.h>
 

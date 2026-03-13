@@ -13,7 +13,7 @@ PlayStation(R)3 Programmer Tool Runtime Library 430.001
 
 #include "ChunkRebuildData.h"
 #include "TileRenderer_SPU.h"
-#include "..\Common\DmaData.h"
+#include "../Common/DmaData.h"
 
 // #define SPU_HEAPSIZE (0*1024)
 // #define SPU_STACKSIZE (64*1024)

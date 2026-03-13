@@ -4,7 +4,7 @@ using namespace std;
 
 #include "XUI_Ctrl_CraftIngredientSlot.h"
 #include "XUI_Ctrl_4JEdit.h"
-#include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "../../../Minecraft.World/ItemInstance.h"
 
 class CScene_DebugItemEditor : public CXuiSceneImpl
 {

@@ -9,7 +9,7 @@
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.damagesource.h"
 #include "BasicTypeContainers.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "net.minecraft.world.entity.boss.enderdragon.h"
 #include "net.minecraft.world.level.pathfinder.h"
 #include "SharedConstants.h"

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "DLCManager.h"
 #include "DLCColourTableFile.h"
-#include "..\..\Minecraft.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\TexturePack.h"
+#include "../../Minecraft.h"
+#include "../../TexturePackRepository.h"
+#include "../../TexturePack.h"
 
 DLCColourTableFile::DLCColourTableFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_ColourTable,path)
 {	

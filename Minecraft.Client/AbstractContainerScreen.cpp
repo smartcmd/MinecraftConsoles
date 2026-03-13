@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "AbstractContainerScreen.h"
 #include "ItemRenderer.h"
-#include "MultiplayerLocalPlayer.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "Lighting.h"
 #include "GameMode.h"
 #include "KeyMapping.h"
 #include "Options.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 
 ItemRenderer *AbstractContainerScreen::itemRenderer = new ItemRenderer();
 

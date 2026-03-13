@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_HowToPlay.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 static UIScene_HowToPlay::SHowToPlayPageDef gs_aPageDefs[ eHowToPlay_NumPages ] =
 {

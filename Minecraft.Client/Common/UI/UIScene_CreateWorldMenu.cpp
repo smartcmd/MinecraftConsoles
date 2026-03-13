@@ -1,26 +1,26 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_CreateWorldMenu.h"
-#include "..\..\MinecraftServer.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Options.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\TexturePack.h"
-#include "..\..\..\Minecraft.World\LevelSettings.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\BiomeSource.h"
-#include "..\..\..\Minecraft.World\IntCache.h"
-#include "..\..\..\Minecraft.World\LevelType.h"
-#include "..\..\DLCTexturePack.h"
+#include "../../MinecraftServer.h"
+#include "../../Minecraft.h"
+#include "../../Options.h"
+#include "../../TexturePackRepository.h"
+#include "../../TexturePack.h"
+#include "../../../Minecraft.World/LevelSettings.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/BiomeSource.h"
+#include "../../../Minecraft.World/IntCache.h"
+#include "../../../Minecraft.World/LevelType.h"
+#include "../../DLCTexturePack.h"
 
 #ifdef __PSVITA__
-#include "PSVita\Network\SQRNetworkManager_AdHoc_Vita.h"
+#include "PSVita/Network/SQRNetworkManager_AdHoc_Vita.h"
 #endif
 
 #ifdef  _WINDOWS64
 
 #include <windows.h>
-#include "Xbox\Resource.h"
+#include "Xbox/Resource.h"
 #endif
 
 #define GAME_CREATE_ONLINE_TIMER_ID 0

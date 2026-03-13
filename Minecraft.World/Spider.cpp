@@ -11,7 +11,7 @@
 #include "com.mojang.nbt.h"
 #include "BasicTypeContainers.h"
 #include "Spider.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "SoundTypes.h"
 
 

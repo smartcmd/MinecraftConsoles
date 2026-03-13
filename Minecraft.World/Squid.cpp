@@ -9,7 +9,7 @@
 #include "net.minecraft.world.entity.monster.h"
 #include "SharedConstants.h"
 #include "Squid.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 
 void Squid::_init()
 {

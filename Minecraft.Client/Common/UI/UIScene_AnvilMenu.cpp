@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
+#include "../../Minecraft.h"
 #include "UIScene_AnvilMenu.h"
 
 UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene_AbstractContainerMenu(iPad, parentLayer)

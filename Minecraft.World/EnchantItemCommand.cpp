@@ -2,7 +2,7 @@
 #include "net.minecraft.network.packet.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.item.enchantment.h"
-#include "..\Minecraft.Client\ServerPlayer.h"
+#include "../Minecraft.Client/ServerPlayer.h"
 #include "EnchantItemCommand.h"
 
 EGameCommand EnchantItemCommand::getId()

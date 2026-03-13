@@ -9,7 +9,7 @@
 #include "net.minecraft.world.damagesource.h"
 #include "net.minecraft.world.phys.h"
 #include "com.mojang.nbt.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "EnderMan.h"
 
 AttributeModifier *EnderMan::SPEED_MODIFIER_ATTACKING = (new AttributeModifier(eModifierId_MOB_ENDERMAN_ATTACKSPEED, 6.2f, AttributeModifier::OPERATION_ADDITION))->setSerialize(false);

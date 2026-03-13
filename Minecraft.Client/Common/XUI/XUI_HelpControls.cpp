@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_HelpControls.h"
+#include "../XUI/XUI_HelpControls.h"
 #include "XUI_Ctrl_4JList.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\LevelData.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.h"
+#include "../../../Minecraft.World/LevelData.h"
+#include "../../MultiPlayerLocalPlayer.h"
 
 #define ALIGN_START		0
 #define ALIGN_END		1

@@ -25,7 +25,7 @@
 #include <assert.h>
 
 #ifdef SN_TARGET_PS3_SPU
-#include "..\Common\spu_assert.h"
+#include "../Common/spu_assert.h"
 #endif 
 
 static const float MATH_PI = 3.141592654f;
@@ -43,7 +43,7 @@ static const float MATH_PI = 3.141592654f;
 #include "Tesselator_SPU.h"
 
 #ifdef SN_TARGET_PS3_SPU
-#include "Stubs_SPU.h"
+#include "stubs_SPU.h"
 #endif // SN_TARGET_PS3_SPU
 
 // #include "..\..\Minecraft.World\SharedConstants.h"

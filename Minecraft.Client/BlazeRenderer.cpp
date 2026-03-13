@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BlazeModel.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
 #include "BlazeRenderer.h"
 
 ResourceLocation BlazeRenderer::BLAZE_LOCATION = ResourceLocation(TN_MOB_BLAZE);

@@ -14,7 +14,7 @@
 #include "net.minecraft.world.entity.player.h"
 #include "Zombie.h"
 #include "GenericStats.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "net.minecraft.world.entity.h"
 #include "JavaMath.h"
 #include "SoundTypes.h"

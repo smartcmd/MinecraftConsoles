@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CraftTask.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
 
 CraftTask::CraftTask( int itemId, int auxValue, int  quantity,
 	Tutorial *tutorial, int descriptionId, bool enablePreCompletion /*= true*/, vector<TutorialConstraint *> *inConstraints /*= nullptr*/,

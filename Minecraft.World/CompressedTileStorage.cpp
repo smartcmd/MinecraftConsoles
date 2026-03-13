@@ -6,7 +6,7 @@
 #endif
 
 #ifdef __PS3__
-#include "..\SPU_Tasks\CompressedTileStorage_compress\CompressedTileStorage_compress.h"
+#include "../SPU_Tasks/CompressedTileStorage_compress/CompressedTileStorage_compress.h"
 #include "C4JSpursJob.h"
 static const int sc_maxCompressTiles = 64;
 static CompressedTileStorage_compress_dataIn g_compressTileDataIn[sc_maxCompressTiles] __attribute__((__aligned__(16)));

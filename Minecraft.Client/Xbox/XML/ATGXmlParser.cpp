@@ -15,7 +15,7 @@
 //-------------------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "AtgXmlParser.h"
+#include "ATGXmlParser.h"
 
 namespace ATG
 {

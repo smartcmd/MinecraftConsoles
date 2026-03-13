@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "BubbleParticle.h"
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.World\Mth.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.material.h"
+#include "../Minecraft.World/Random.h"
+#include "../Minecraft.World/Mth.h"
+#include "../Minecraft.World/JavaMath.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.material.h"
 
 BubbleParticle::BubbleParticle(Level *level, double x, double y, double z, double xa, double ya, double za) : Particle(level, x, y, z, xa, ya, za)
 	{

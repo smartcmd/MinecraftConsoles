@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "SnowmanModel.h"
-#include "..\Minecraft.World\Mth.h"
+#include "SnowManModel.h"
+#include "../Minecraft.World/Mth.h"
 #include "ModelPart.h"
 
 SnowManModel::SnowManModel() : Model()

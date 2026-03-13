@@ -2,12 +2,12 @@
 #include "MobRenderer.h"
 #include "LivingEntityRenderer.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
-#include "..\Minecraft.World\StringHelpers.h"
-#include "..\Minecraft.World\Mth.h"
-#include "entityRenderDispatcher.h"
+#include "../Minecraft.World/net.minecraft.world.entity.h"
+#include "../Minecraft.World/net.minecraft.world.entity.player.h"
+#include "../Minecraft.World/net.minecraft.world.entity.projectile.h"
+#include "../Minecraft.World/StringHelpers.h"
+#include "../Minecraft.World/Mth.h"
+#include "EntityRenderDispatcher.h"
 
 MobRenderer::MobRenderer(Model *model, float shadow) : LivingEntityRenderer(model, shadow)
 {

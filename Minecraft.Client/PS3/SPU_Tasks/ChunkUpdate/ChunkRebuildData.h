@@ -1,13 +1,13 @@
 
 #pragma once
 #ifndef SN_TARGET_PS3_SPU
-#include "..\..\..\stdafx.h"
-#include "..\..\..\..\Minecraft.World\Region.h"
-#include "..\..\..\Tesselator.h"
-#include "..\..\..\..\Minecraft.World\LightLayer.h"
+#include "../../../stdafx.h"
+#include "../../../../Minecraft.World/Region.h"
+#include "../../../Tesselator.h"
+#include "../../../../Minecraft.World/LightLayer.h"
 #endif // SN_TARGET_PS3_SPU
 
-#include "..\..\..\..\Minecraft.World\LightLayer.h"
+#include "../../../../Minecraft.World/LightLayer.h"
 #include "Tile_SPU.h"
 #include "Tesselator_SPU.h"
 

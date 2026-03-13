@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ArrowRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/net.minecraft.world.entity.projectile.h"
+#include "../Minecraft.World/Mth.h"
 
 ResourceLocation ArrowRenderer::ARROW_LOCATION = ResourceLocation(TN_ITEM_ARROWS);
 

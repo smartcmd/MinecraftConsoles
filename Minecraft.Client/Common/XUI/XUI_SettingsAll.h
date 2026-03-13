@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_settings_all.h"
+#include "../media/xuiscene_settings_All.h"
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_CustomMessages.h"
 

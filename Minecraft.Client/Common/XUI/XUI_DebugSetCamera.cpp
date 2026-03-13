@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "XUI_DebugSetCamera.h"
-#include "..\..\..\Minecraft.World\ChunkSource.h"
+#include "../../../Minecraft.World/ChunkSource.h"
 
 // #include "..\..\Xbox\4JLibs\inc\4J_Input.h"
 
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
 
 #ifndef _CONTENT_PACKAGE
 HRESULT CScene_DebugSetCamera::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
