@@ -12,6 +12,28 @@
 
 const int MapItemSavedData::END_PORTAL_DECORATION_KEY = -1;
 
+namespace
+{
+	// Valid player icon slots in mapicons.png/additionalmapicons.png.
+
+	// Keep to these slots so we never sample placeholder entries.
+	static const char PLAYER_MAP_ICON_SLOTS[] = { 0, 1, 2, 3, 8, 9, 10, 11 };
+
+	static char getRandomPlayerMapIcon(const shared_ptr<Player>& player)
+	{
+		// use seed bit shift random
+		unsigned int seed = static_cast<unsigned int>(player->entityId);
+		seed ^= static_cast<unsigned int>(player->getPlayerIndex() * 0x9E3779B9u);
+		seed ^= (seed >> 16);
+		seed *= 0x7FEB352Du;
+		seed ^= (seed >> 15);
+		seed *= 0x846CA68Bu;
+		seed ^= (seed >> 16);
+
+		return PLAYER_MAP_ICON_SLOTS[seed % (sizeof(PLAYER_MAP_ICON_SLOTS) / sizeof(PLAYER_MAP_ICON_SLOTS[0]))];
+	}
+}
+
 // 4J added entityId param
 MapItemSavedData::MapDecoration::MapDecoration(char img, char x, char y, char rot, int entityId, bool visible)
 {
@@ -423,16 +445,14 @@ void MapItemSavedData::tickCarriedBy(shared_ptr<Player> player, shared_ptr<ItemI
 
 							// 4J Stu - As we have added new icons for players on a new row below
 							// other icons used in Java we need to move our index to the next row
-							imgIndex = static_cast<int>(decorationPlayer->getPlayerIndex());
-							if(imgIndex>3) imgIndex += 4;
+							imgIndex = getRandomPlayerMapIcon(decorationPlayer);
 						}
 #ifdef _LARGE_WORLDS
 						else //if (abs(xd) < MAP_SIZE * 5 && abs(yd) < MAP_SIZE * 5)
 						{
 							// 4J Stu - As we have added new icons for players on a new row below
 							// other icons used in Java we need to move our index to the next row
-							imgIndex = static_cast<int>(decorationPlayer->getPlayerIndex());
-							if(imgIndex>3) imgIndex += 4;
+							imgIndex = getRandomPlayerMapIcon(decorationPlayer);
 							imgIndex += 16; // Add 16 to indicate that it's on the next texture
 
 							rot = 0;
