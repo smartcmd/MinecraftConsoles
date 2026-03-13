@@ -14,7 +14,7 @@ AchievementPopup::AchievementPopup(Minecraft *mc)
 	// 4J - added initialisers
 	width = 0;
 	height = 0;
-	ach = NULL;
+	ach = nullptr;
 	startTime = 0;
 	isHelper = false;
 
@@ -59,7 +59,7 @@ void AchievementPopup::prepareWindow()
     glClear(GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, (float)width, (float)height, 0, 1000, 3000);
+    glOrtho(0, static_cast<float>(width), static_cast<float>(height), 0, 1000, 3000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0, 0, -2000);
@@ -88,7 +88,7 @@ void AchievementPopup::render()
         glDepthMask(true);
         glEnable(GL_DEPTH_TEST);
     }
-    if (ach == NULL || startTime == 0) return;
+    if (ach == nullptr || startTime == 0) return;
 
     double time = (System::currentTimeMillis() - startTime) / 3000.0;
     if (isHelper)

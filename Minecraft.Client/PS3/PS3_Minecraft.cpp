@@ -356,9 +356,9 @@ void MemSect(int sect)
 #endif
 
 
-ID3D11Device*           g_pd3dDevice = NULL;
-ID3D11DeviceContext*    g_pImmediateContext = NULL;
-IDXGISwapChain*         g_pSwapChain = NULL;
+ID3D11Device*           g_pd3dDevice = nullptr;
+ID3D11DeviceContext*    g_pImmediateContext = nullptr;
+IDXGISwapChain*         g_pSwapChain = nullptr;
 bool					g_bBootedFromInvite = false;
 
 //--------------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ static void * load_file( char const * name )
 void debugSaveGameDirect()
 {
 
-	C4JThread* thread = new C4JThread(&IUIScene_PauseMenu::SaveWorldThreadProc, NULL, "debugSaveGameDirect");
+	C4JThread* thread = new C4JThread(&IUIScene_PauseMenu::SaveWorldThreadProc, nullptr, "debugSaveGameDirect");
 	thread->Run();
 	thread->WaitForCompletion(1000);
 }
@@ -447,7 +447,7 @@ int simpleMessageBoxCallback(	UINT uiTitle, UINT uiText,
 	ui.RequestMessageBox(	uiTitle, uiText,
 							uiOptionA, uiOptionC, dwPad,
 							Func, lpParam, app.GetStringTable(),
-							NULL, 0
+							nullptr, 0
 						);
 
 	return 0;
@@ -633,7 +633,7 @@ int LoadSysModules()
 	DEBUG_PRINTF("contentInfoPath - %s\n",contentInfoPath);
 	DEBUG_PRINTF("usrdirPath - %s\n",usrdirPath);
 
-	ret=cellGamePatchCheck(&sizeBD,NULL);
+	ret=cellGamePatchCheck(&sizeBD,nullptr);
 	if(ret < 0)
 	{
 		DEBUG_PRINTF("cellGamePatchCheck() Error: 0x%x\n", ret);
@@ -839,7 +839,7 @@ int main()
 	else
 		ui.init(1280,480);
 
-	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
+	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't nullptr
 	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
@@ -862,7 +862,7 @@ int main()
     }
 
     // Create an XAudio2 mastering voice (utilized by XHV2 when voice data is mixed to main speakers)
-    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, NULL);
+    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, nullptr);
     if ( FAILED( hr ) )
     {
         app.DebugPrintf( "Creating XAudio2 mastering voice failed (err = 0x%08x)!\n", hr );
@@ -977,24 +977,24 @@ int main()
 	free(szTemp);
 	StorageManager.SetDefaultImages((PBYTE)baOptionsIcon.data, baOptionsIcon.length,(PBYTE)baSaveImage.data, baSaveImage.length,(PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
 
-	if(baOptionsIcon.data!=NULL)
+	if(baOptionsIcon.data!=nullptr)
 	{
 		delete [] baOptionsIcon.data;
 	}
 
-	if(baSaveThumbnail.data!=NULL)
+	if(baSaveThumbnail.data!=nullptr)
 	{
 		delete [] baSaveThumbnail.data;
 	}
 
-	if(baSaveImage.data!=NULL)
+	if(baSaveImage.data!=nullptr)
 	{
 		delete [] baSaveImage.data;
 	}
 
 	wstring wsName=L"Graphics\\SaveChest.png";
 	byteArray baSaveLoadIcon = app.getArchiveFile(wsName);
-	if(baSaveLoadIcon.data!=NULL)
+	if(baSaveLoadIcon.data!=nullptr)
 	{
 		StorageManager.SetSaveLoadIcon((PBYTE)baSaveLoadIcon.data, baSaveLoadIcon.length);
 		delete [] baSaveLoadIcon.data;
@@ -1039,7 +1039,7 @@ int main()
 	}*/
 
 	// set the achievement text for a trial achievement, now we have the string table loaded
-	ProfileManager.SetTrialTextStringTable(NULL, IDS_CONFIRM_OK, IDS_CONFIRM_CANCEL);
+	ProfileManager.SetTrialTextStringTable(nullptr, IDS_CONFIRM_OK, IDS_CONFIRM_CANCEL);
 	ProfileManager.SetTrialAwardText(eAwardType_Achievement,IDS_UNLOCK_TITLE,IDS_UNLOCK_ACHIEVEMENT_TEXT);
 #ifndef __PS3__
 	ProfileManager.SetTrialAwardText(eAwardType_GamerPic,IDS_UNLOCK_TITLE,IDS_UNLOCK_GAMERPIC_TEXT);
@@ -1109,7 +1109,7 @@ int main()
 	// It's ok to do this for the primary PSN player here - it has this data locally. All other players need to do it on PSN sign in.
 
 // 	bool bChatRestricted=false;
-// 	ProfileManager.GetChatAndContentRestrictions(0,&bChatRestricted,NULL,NULL);
+// 	ProfileManager.GetChatAndContentRestrictions(0,&bChatRestricted,nullptr,nullptr);
 
 	// 4J-PB - really want to wait until we've read the options, so we can set the right language if they've chosen one other than the default
 // 	bool bOptionsRead=false;
@@ -1198,7 +1198,7 @@ int main()
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();
@@ -1369,7 +1369,7 @@ vector<uint8_t *> vRichPresenceStrings;
 uint8_t * AddRichPresenceString(int iID)
 {
 	uint8_t *strUtf8 = mallocAndCreateUTF8ArrayFromString(iID);
-	if( strUtf8 != NULL )
+	if( strUtf8 != nullptr )
 	{
 		vRichPresenceStrings.push_back(strUtf8);
 	}
@@ -1379,7 +1379,7 @@ uint8_t * AddRichPresenceString(int iID)
 void FreeRichPresenceStrings()
 {
 	uint8_t *strUtf8;
-	for(int i=0;i<vRichPresenceStrings.size();i++)
+	for(size_t i=0;i<vRichPresenceStrings.size();i++)
 	{
 		strUtf8=vRichPresenceStrings.at(i);
 		free(strUtf8);

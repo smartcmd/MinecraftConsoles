@@ -42,7 +42,7 @@ void MushroomCowRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, flo
 	glPopMatrix();
 
 	glPushMatrix();
-	((QuadrupedModel *) model)->head->translateTo(1 / 16.0f);
+	static_cast<QuadrupedModel *>(model)->head->translateTo(1 / 16.0f);
 	glScalef(1, -1, 1);
 	glTranslatef(0, 0.75f, -0.2f);
 	glRotatef(12, 0, 1, 0);

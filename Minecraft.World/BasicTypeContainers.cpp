@@ -18,5 +18,5 @@ const double Double::MIN_NORMAL = DBL_MIN;
 
 int Integer::parseInt(wstring &str, int radix /* = 10*/)
 {
-	return wcstol( str.c_str(), NULL, radix );
+	return wcstol( str.c_str(), nullptr, radix );
 }

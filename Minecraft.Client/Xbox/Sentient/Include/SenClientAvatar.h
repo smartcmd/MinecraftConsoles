@@ -108,7 +108,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                  E_POINTER: out_avatarInfoList is NULL.
+	///                  E_POINTER: out_avatarInfoList is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -149,7 +149,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  SENTIENT_E_GUEST_ACCESS_VIOLATION: A guest may not spawn this call.
-	///                  E_POINTER: out_avatarInfo is NULL.
+	///                  E_POINTER: out_avatarInfo is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -192,7 +192,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: avatarInfo.resourceID or avatarInfo.[fe]male.metadata is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -235,7 +235,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: avatarInfo.resourceID or avatarInfo.[fe]male.assets is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -278,7 +278,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: avatarInfo.resourceID or avatarInfo.[fe]male.icon is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -316,7 +316,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: avatarInfo.resourceID or avatarInfo.xml is invalid.
-	///                  E_POINTER: out_avatarExtraInfo is NULL.
+	///                  E_POINTER: out_avatarExtraInfo is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -352,14 +352,14 @@ namespace Sentient
 	//  First method, filling a fixed-size buffer:
 	//
 	//   wchar_t buffer[1234];
-	//   SenAvatarXMLGetTitle( xml, loc, _countof(buffer), NULL, buffer );
+	//   SenAvatarXMLGetTitle( xml, loc, _countof(buffer), nullptr, buffer );
 	//
 	// Second method, filling a dynamically-allocated buffer:
 	//
 	//   size_t bufferLength;
-	//   SenAvatarXMLGetTitle( xml, loc, 0, &bufferLength, NULL );
+	//   SenAvatarXMLGetTitle( xml, loc, 0, &bufferLength, nullptr );
 	//   wchar_t buffer = new wchar_t[bufferLength];
-	//   SenAvatarXMLGetTitle( xml, loc, bufferLength, NULL, buffer );
+	//   SenAvatarXMLGetTitle( xml, loc, bufferLength, nullptr, buffer );
 	//
 	// Note that bufferLength is in wchars, and includes the terminating nul.
 	// The actual length of the _string_ is (*out_bufferLength - 1).

@@ -17,10 +17,10 @@ public:
 
     BedTile_SPU(int id) : Tile_SPU(id) {}
 
-    virtual Icon_SPU *getTexture(int face, int data) { return NULL; }
+    virtual Icon_SPU *getTexture(int face, int data) { return nullptr; }
 	virtual int getRenderShape() { return Tile_SPU::SHAPE_BED; }
 	virtual bool isSolidRender(bool isServerLevel = false) { return false; }
-    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		setShape();
 	}

@@ -33,9 +33,9 @@ LPCWSTR CScene_Leaderboards::m_TextColumnNameA[7]=
 // if the value is greater than 511, it's an xzp icon that needs displayed, rather than the game icon
 const int CScene_Leaderboards::TitleIcons[CScene_Leaderboards::NUM_LEADERBOARDS][7] = 
 {
-	{ XZP_ICON_WALKED,		XZP_ICON_FALLEN,		Item::minecart_Id,		Item::boat_Id,					NULL },
+	{ XZP_ICON_WALKED,		XZP_ICON_FALLEN,		Item::minecart_Id,		Item::boat_Id,					nullptr },
 	{ Tile::dirt_Id,		Tile::stoneBrick_Id,	Tile::sand_Id,			Tile::rock_Id,			Tile::gravel_Id,		Tile::clay_Id,			Tile::obsidian_Id },
-	{ Item::egg_Id,			Item::wheat_Id,			Tile::mushroom1_Id,		Tile::reeds_Id,			Item::milk_Id,	Tile::pumpkin_Id,		NULL },
+	{ Item::egg_Id,			Item::wheat_Id,			Tile::mushroom1_Id,		Tile::reeds_Id,			Item::milk_Id,	Tile::pumpkin_Id,		nullptr },
 	{ XZP_ICON_ZOMBIE,		XZP_ICON_SKELETON,		XZP_ICON_CREEPER,		XZP_ICON_SPIDER,		XZP_ICON_SPIDERJOCKEY,	XZP_ICON_ZOMBIEPIGMAN,	XZP_ICON_SLIME },
 };
 
@@ -43,44 +43,44 @@ const int CScene_Leaderboards::LEADERBOARD_HEADERS[CScene_Leaderboards::NUM_LEAD
 	{ SPASTRING_LB_TRAVELLING_PEACEFUL_NAME,		SPASTRING_LB_TRAVELLING_EASY_NAME,		SPASTRING_LB_TRAVELLING_NORMAL_NAME,		SPASTRING_LB_TRAVELLING_HARD_NAME },
 	{ SPASTRING_LB_MINING_BLOCKS_PEACEFUL_NAME,		SPASTRING_LB_MINING_BLOCKS_EASY_NAME,	SPASTRING_LB_MINING_BLOCKS_NORMAL_NAME,		SPASTRING_LB_MINING_BLOCKS_HARD_NAME },
 	{ SPASTRING_LB_FARMING_PEACEFUL_NAME,			SPASTRING_LB_FARMING_EASY_NAME,			SPASTRING_LB_FARMING_NORMAL_NAME,			SPASTRING_LB_FARMING_HARD_NAME },
-	{ NULL,											SPASTRING_LB_KILLS_EASY_NAME,			SPASTRING_LB_KILLS_NORMAL_NAME,				SPASTRING_LB_KILLS_HARD_NAME },
+	{ nullptr,											SPASTRING_LB_KILLS_EASY_NAME,			SPASTRING_LB_KILLS_NORMAL_NAME,				SPASTRING_LB_KILLS_HARD_NAME },
 };
 
 const CScene_Leaderboards::LeaderboardDescriptor CScene_Leaderboards::LEADERBOARD_DESCRIPTORS[CScene_Leaderboards::NUM_LEADERBOARDS][4] = {
 	{
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_PEACEFUL, 4,	STATS_COLUMN_TRAVELLING_PEACEFUL_WALKED,	STATS_COLUMN_TRAVELLING_PEACEFUL_FALLEN,	STATS_COLUMN_TRAVELLING_PEACEFUL_MINECART,	STATS_COLUMN_TRAVELLING_PEACEFUL_BOAT,	NULL, NULL, NULL,NULL),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_EASY,		4,	STATS_COLUMN_TRAVELLING_EASY_WALKED,		STATS_COLUMN_TRAVELLING_EASY_FALLEN,		STATS_COLUMN_TRAVELLING_EASY_MINECART,		STATS_COLUMN_TRAVELLING_EASY_BOAT,		NULL, NULL, NULL,NULL),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_NORMAL,	4,	STATS_COLUMN_TRAVELLING_NORMAL_WALKED,		STATS_COLUMN_TRAVELLING_NORMAL_FALLEN,		STATS_COLUMN_TRAVELLING_NORMAL_MINECART,	STATS_COLUMN_TRAVELLING_NORMAL_BOAT,	NULL, NULL, NULL,NULL),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_HARD,		4,	STATS_COLUMN_TRAVELLING_HARD_WALKED,		STATS_COLUMN_TRAVELLING_HARD_FALLEN,		STATS_COLUMN_TRAVELLING_HARD_MINECART,		STATS_COLUMN_TRAVELLING_HARD_BOAT,		NULL, NULL, NULL,NULL),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_PEACEFUL, 4,	STATS_COLUMN_TRAVELLING_PEACEFUL_WALKED,	STATS_COLUMN_TRAVELLING_PEACEFUL_FALLEN,	STATS_COLUMN_TRAVELLING_PEACEFUL_MINECART,	STATS_COLUMN_TRAVELLING_PEACEFUL_BOAT,	nullptr, nullptr, nullptr,nullptr),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_EASY,		4,	STATS_COLUMN_TRAVELLING_EASY_WALKED,		STATS_COLUMN_TRAVELLING_EASY_FALLEN,		STATS_COLUMN_TRAVELLING_EASY_MINECART,		STATS_COLUMN_TRAVELLING_EASY_BOAT,		nullptr, nullptr, nullptr,nullptr),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_NORMAL,	4,	STATS_COLUMN_TRAVELLING_NORMAL_WALKED,		STATS_COLUMN_TRAVELLING_NORMAL_FALLEN,		STATS_COLUMN_TRAVELLING_NORMAL_MINECART,	STATS_COLUMN_TRAVELLING_NORMAL_BOAT,	nullptr, nullptr, nullptr,nullptr),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_TRAVELLING_HARD,		4,	STATS_COLUMN_TRAVELLING_HARD_WALKED,		STATS_COLUMN_TRAVELLING_HARD_FALLEN,		STATS_COLUMN_TRAVELLING_HARD_MINECART,		STATS_COLUMN_TRAVELLING_HARD_BOAT,		nullptr, nullptr, nullptr,nullptr),
 	},
 	{
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_PEACEFUL,	7,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_DIRT,  STATS_COLUMN_MINING_BLOCKS_PEACEFUL_STONE, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_SAND, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_GRAVEL, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_CLAY, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_OBSIDIAN,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_EASY,		7,	STATS_COLUMN_MINING_BLOCKS_EASY_DIRT,  STATS_COLUMN_MINING_BLOCKS_EASY_STONE, STATS_COLUMN_MINING_BLOCKS_EASY_SAND, STATS_COLUMN_MINING_BLOCKS_EASY_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_EASY_GRAVEL, STATS_COLUMN_MINING_BLOCKS_EASY_CLAY, STATS_COLUMN_MINING_BLOCKS_EASY_OBSIDIAN,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_NORMAL,	7,	STATS_COLUMN_MINING_BLOCKS_NORMAL_DIRT,  STATS_COLUMN_MINING_BLOCKS_NORMAL_STONE, STATS_COLUMN_MINING_BLOCKS_NORMAL_SAND, STATS_COLUMN_MINING_BLOCKS_NORMAL_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_NORMAL_GRAVEL, STATS_COLUMN_MINING_BLOCKS_NORMAL_CLAY, STATS_COLUMN_MINING_BLOCKS_NORMAL_OBSIDIAN,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_HARD,		7,	STATS_COLUMN_MINING_BLOCKS_HARD_DIRT,  STATS_COLUMN_MINING_BLOCKS_HARD_STONE, STATS_COLUMN_MINING_BLOCKS_HARD_SAND, STATS_COLUMN_MINING_BLOCKS_HARD_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_HARD_GRAVEL, STATS_COLUMN_MINING_BLOCKS_HARD_CLAY, STATS_COLUMN_MINING_BLOCKS_HARD_OBSIDIAN,NULL ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_PEACEFUL,	7,	STATS_COLUMN_MINING_BLOCKS_PEACEFUL_DIRT,  STATS_COLUMN_MINING_BLOCKS_PEACEFUL_STONE, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_SAND, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_GRAVEL, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_CLAY, STATS_COLUMN_MINING_BLOCKS_PEACEFUL_OBSIDIAN,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_EASY,		7,	STATS_COLUMN_MINING_BLOCKS_EASY_DIRT,  STATS_COLUMN_MINING_BLOCKS_EASY_STONE, STATS_COLUMN_MINING_BLOCKS_EASY_SAND, STATS_COLUMN_MINING_BLOCKS_EASY_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_EASY_GRAVEL, STATS_COLUMN_MINING_BLOCKS_EASY_CLAY, STATS_COLUMN_MINING_BLOCKS_EASY_OBSIDIAN,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_NORMAL,	7,	STATS_COLUMN_MINING_BLOCKS_NORMAL_DIRT,  STATS_COLUMN_MINING_BLOCKS_NORMAL_STONE, STATS_COLUMN_MINING_BLOCKS_NORMAL_SAND, STATS_COLUMN_MINING_BLOCKS_NORMAL_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_NORMAL_GRAVEL, STATS_COLUMN_MINING_BLOCKS_NORMAL_CLAY, STATS_COLUMN_MINING_BLOCKS_NORMAL_OBSIDIAN,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_MINING_BLOCKS_HARD,		7,	STATS_COLUMN_MINING_BLOCKS_HARD_DIRT,  STATS_COLUMN_MINING_BLOCKS_HARD_STONE, STATS_COLUMN_MINING_BLOCKS_HARD_SAND, STATS_COLUMN_MINING_BLOCKS_HARD_COBBLESTONE, STATS_COLUMN_MINING_BLOCKS_HARD_GRAVEL, STATS_COLUMN_MINING_BLOCKS_HARD_CLAY, STATS_COLUMN_MINING_BLOCKS_HARD_OBSIDIAN,nullptr ),
 	},
 	{
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_PEACEFUL,	6, STATS_COLUMN_FARMING_PEACEFUL_EGGS, STATS_COLUMN_FARMING_PEACEFUL_WHEAT, STATS_COLUMN_FARMING_PEACEFUL_MUSHROOMS, STATS_COLUMN_FARMING_PEACEFUL_SUGARCANE, STATS_COLUMN_FARMING_PEACEFUL_MILK, STATS_COLUMN_FARMING_PEACEFUL_PUMPKINS, NULL,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_EASY,		6, STATS_COLUMN_FARMING_EASY_EGGS, STATS_COLUMN_FARMING_PEACEFUL_WHEAT, STATS_COLUMN_FARMING_EASY_MUSHROOMS, STATS_COLUMN_FARMING_EASY_SUGARCANE, STATS_COLUMN_FARMING_EASY_MILK, STATS_COLUMN_FARMING_EASY_PUMPKINS, NULL,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_NORMAL,		6, STATS_COLUMN_FARMING_NORMAL_EGGS, STATS_COLUMN_FARMING_NORMAL_WHEAT, STATS_COLUMN_FARMING_NORMAL_MUSHROOMS, STATS_COLUMN_FARMING_NORMAL_SUGARCANE, STATS_COLUMN_FARMING_NORMAL_MILK, STATS_COLUMN_FARMING_NORMAL_PUMPKINS, NULL,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_HARD,		6, STATS_COLUMN_FARMING_HARD_EGGS, STATS_COLUMN_FARMING_HARD_WHEAT, STATS_COLUMN_FARMING_HARD_MUSHROOMS, STATS_COLUMN_FARMING_HARD_SUGARCANE, STATS_COLUMN_FARMING_HARD_MILK, STATS_COLUMN_FARMING_HARD_PUMPKINS, NULL,NULL ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_PEACEFUL,	6, STATS_COLUMN_FARMING_PEACEFUL_EGGS, STATS_COLUMN_FARMING_PEACEFUL_WHEAT, STATS_COLUMN_FARMING_PEACEFUL_MUSHROOMS, STATS_COLUMN_FARMING_PEACEFUL_SUGARCANE, STATS_COLUMN_FARMING_PEACEFUL_MILK, STATS_COLUMN_FARMING_PEACEFUL_PUMPKINS, nullptr,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_EASY,		6, STATS_COLUMN_FARMING_EASY_EGGS, STATS_COLUMN_FARMING_PEACEFUL_WHEAT, STATS_COLUMN_FARMING_EASY_MUSHROOMS, STATS_COLUMN_FARMING_EASY_SUGARCANE, STATS_COLUMN_FARMING_EASY_MILK, STATS_COLUMN_FARMING_EASY_PUMPKINS, nullptr,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_NORMAL,		6, STATS_COLUMN_FARMING_NORMAL_EGGS, STATS_COLUMN_FARMING_NORMAL_WHEAT, STATS_COLUMN_FARMING_NORMAL_MUSHROOMS, STATS_COLUMN_FARMING_NORMAL_SUGARCANE, STATS_COLUMN_FARMING_NORMAL_MILK, STATS_COLUMN_FARMING_NORMAL_PUMPKINS, nullptr,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_FARMING_HARD,		6, STATS_COLUMN_FARMING_HARD_EGGS, STATS_COLUMN_FARMING_HARD_WHEAT, STATS_COLUMN_FARMING_HARD_MUSHROOMS, STATS_COLUMN_FARMING_HARD_SUGARCANE, STATS_COLUMN_FARMING_HARD_MILK, STATS_COLUMN_FARMING_HARD_PUMPKINS, nullptr,nullptr ),
 	},
 	{
-		CScene_Leaderboards::LeaderboardDescriptor( NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_EASY,		7, STATS_COLUMN_KILLS_EASY_ZOMBIES, STATS_COLUMN_KILLS_EASY_SKELETONS, STATS_COLUMN_KILLS_EASY_CREEPERS, STATS_COLUMN_KILLS_EASY_SPIDERS, STATS_COLUMN_KILLS_EASY_SPIDERJOCKEYS, STATS_COLUMN_KILLS_EASY_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_EASY_SLIME,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_NORMAL,	7, STATS_COLUMN_KILLS_NORMAL_ZOMBIES, STATS_COLUMN_KILLS_NORMAL_SKELETONS, STATS_COLUMN_KILLS_NORMAL_CREEPERS, STATS_COLUMN_KILLS_NORMAL_SPIDERS, STATS_COLUMN_KILLS_NORMAL_SPIDERJOCKEYS, STATS_COLUMN_KILLS_NORMAL_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_NORMAL_SLIME,NULL ),
-		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_HARD,		7, STATS_COLUMN_KILLS_HARD_ZOMBIES, STATS_COLUMN_KILLS_HARD_SKELETONS, STATS_COLUMN_KILLS_HARD_CREEPERS, STATS_COLUMN_KILLS_HARD_SPIDERS, STATS_COLUMN_KILLS_HARD_SPIDERJOCKEYS, STATS_COLUMN_KILLS_HARD_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_HARD_SLIME,NULL ),
+		CScene_Leaderboards::LeaderboardDescriptor( nullptr, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_EASY,		7, STATS_COLUMN_KILLS_EASY_ZOMBIES, STATS_COLUMN_KILLS_EASY_SKELETONS, STATS_COLUMN_KILLS_EASY_CREEPERS, STATS_COLUMN_KILLS_EASY_SPIDERS, STATS_COLUMN_KILLS_EASY_SPIDERJOCKEYS, STATS_COLUMN_KILLS_EASY_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_EASY_SLIME,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_NORMAL,	7, STATS_COLUMN_KILLS_NORMAL_ZOMBIES, STATS_COLUMN_KILLS_NORMAL_SKELETONS, STATS_COLUMN_KILLS_NORMAL_CREEPERS, STATS_COLUMN_KILLS_NORMAL_SPIDERS, STATS_COLUMN_KILLS_NORMAL_SPIDERJOCKEYS, STATS_COLUMN_KILLS_NORMAL_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_NORMAL_SLIME,nullptr ),
+		CScene_Leaderboards::LeaderboardDescriptor( STATS_VIEW_KILLS_HARD,		7, STATS_COLUMN_KILLS_HARD_ZOMBIES, STATS_COLUMN_KILLS_HARD_SKELETONS, STATS_COLUMN_KILLS_HARD_CREEPERS, STATS_COLUMN_KILLS_HARD_SPIDERS, STATS_COLUMN_KILLS_HARD_SPIDERJOCKEYS, STATS_COLUMN_KILLS_HARD_ZOMBIEPIGMEN, STATS_COLUMN_KILLS_HARD_SLIME,nullptr ),
 	},
 };
 
 HRESULT CScene_Leaderboards::OnInit(XUIMessageInit *pInitData, BOOL &bHandled)
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 	MapChildControls();
 	m_bReady=false;
 
 	// if we're not in the game, we need to use basescene 0 
-	if(Minecraft::GetInstance()->level==NULL)
+	if(Minecraft::GetInstance()->level==nullptr)
 	{
 		m_iPad=DEFAULT_XUI_MENU_USER;
 	}
@@ -90,9 +90,9 @@ HRESULT CScene_Leaderboards::OnInit(XUIMessageInit *pInitData, BOOL &bHandled)
 	ui.SetTooltips(m_iPad,-1, IDS_TOOLTIPS_BACK, IDS_TOOLTIPS_CHANGE_FILTER, -1);
 	CXuiSceneBase::ShowLogo( m_iPad, FALSE );
 
-	m_friends = NULL;
+	m_friends = nullptr;
 	m_numFriends = 0;
-	m_filteredFriends = NULL;
+	m_filteredFriends = nullptr;
 	m_numFilteredFriends = 0;
 
 	m_newTop = m_newSel = -1;
@@ -124,10 +124,10 @@ HRESULT CScene_Leaderboards::OnInit(XUIMessageInit *pInitData, BOOL &bHandled)
 	// title icons
 	for(int i=0;i<7;i++)
 	{
-		m_pHTitleIconSlots[i]=NULL;
+		m_pHTitleIconSlots[i]=nullptr;
 		m_fTitleIconXPositions[i]=0.0f;
 		m_fTextXPositions[i]=0.0f;
-		m_hTextEntryA[i]=NULL;
+		m_hTextEntryA[i]=nullptr;
 	}
 
 
@@ -143,13 +143,13 @@ void CScene_Leaderboards::Reposition(int iNumber)
 	D3DXVECTOR3 vPos;
 
 	fIconSize=(m_fTitleIconXPositions[6]-m_fTitleIconXPositions[0])/6.0f;
-	fNewIconIncrement=(fIconSize*7.0f)/(float)iNumber;
+	fNewIconIncrement=(fIconSize*7.0f)/static_cast<float>(iNumber);
 
 	// reposition the title icons based on the number there are
 	for(int i=0;i<iNumber;i++)
 	{
 		m_pHTitleIconSlots[i]->GetPosition(&vPos);
-		vPos.x=m_fTitleIconXPositions[0]+(((float)i)*fNewIconIncrement)+(fNewIconIncrement-fIconSize)/2.0f;
+		vPos.x=m_fTitleIconXPositions[0]+(static_cast<float>(i)*fNewIconIncrement)+(fNewIconIncrement-fIconSize)/2.0f;
 		m_pHTitleIconSlots[i]->SetPosition(&vPos);
 	}
 }
@@ -161,14 +161,14 @@ void CScene_Leaderboards::RepositionText(int iNumber)
 	D3DXVECTOR3 vPos;
 
 	fTextSize=(m_fTextXPositions[6]-m_fTextXPositions[0])/6.0f;
-	fNewTextIncrement=(fTextSize*7.0f)/(float)iNumber;
+	fNewTextIncrement=(fTextSize*7.0f)/static_cast<float>(iNumber);
 
 	// reposition the title icons based on the number there are
 	for(int i=0;i<iNumber;i++)
 	{
 		// and reposition the text
 		XuiElementGetPosition(m_hTextEntryA[i],&vPos);
-		vPos.x=m_fTextXPositions[0]+(((float)i)*fNewTextIncrement);
+		vPos.x=m_fTextXPositions[0]+(static_cast<float>(i)*fNewTextIncrement);
 		XuiElementSetPosition(m_hTextEntryA[i],&vPos);
 		// and change the size
 		float fWidth,fHeight;
@@ -190,10 +190,10 @@ HRESULT CScene_Leaderboards::OnDestroy()
 		Sleep( 10 );
 	}
 
-	if( m_friends != NULL )
+	if( m_friends != nullptr )
 		delete [] m_friends;
 
-	if( m_filteredFriends != NULL )
+	if( m_filteredFriends != nullptr )
 		delete [] m_filteredFriends;
 
 	return S_OK;
@@ -222,7 +222,7 @@ void CScene_Leaderboards::UpdateTooltips()
 	int iTooltipGamerCardOrProfile=-1;
 	if( m_leaderboard.m_currentEntryCount > 0 )
 	{
-		unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+		unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 
 		// if the selected user is me, don't show Send Friend Request, and show the gamer profile, not the gamer card
 
@@ -368,7 +368,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 				else
 				{
 					m_newTop = m_listGamers.GetTopItem() + 10;
-					if( m_newTop+10 > (int)m_leaderboard.m_totalEntryCount )
+					if( m_newTop+10 > static_cast<int>(m_leaderboard.m_totalEntryCount) )
 					{
 						m_newTop = m_leaderboard.m_totalEntryCount - 10;
 						if( m_newTop < 0 )
@@ -426,7 +426,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 			//Show gamercard
 			if( m_leaderboard.m_currentEntryCount > 0 )
 			{
-				unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+				unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 				if( selection >= m_leaderboard.m_entryStartIndex-1 &&
 					selection < (m_leaderboard.m_entryStartIndex+m_leaderboard.m_currentEntryCount-1) )
 				{
@@ -448,7 +448,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 			{
 				if( m_leaderboard.m_currentEntryCount > 0 )
 				{
-					unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+					unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 					if( selection >= m_leaderboard.m_entryStartIndex-1 &&
 						selection < (m_leaderboard.m_entryStartIndex+m_leaderboard.m_currentEntryCount-1) )
 					{
@@ -511,7 +511,7 @@ void CScene_Leaderboards::GetFriends()
 		m_friends,
 		resultsSize,
 		&numFriends,
-		NULL );
+		nullptr );
 
 	if( ret != ERROR_SUCCESS )
 		numFriends = 0;
@@ -547,7 +547,7 @@ void CScene_Leaderboards::ReadStats(int startIndex)
 	}
 	else
 	{
-		m_newEntryIndex = (unsigned int)startIndex;
+		m_newEntryIndex = static_cast<unsigned int>(startIndex);
 		m_newReadSize	= min((int)READ_SIZE, (int)m_leaderboard.m_totalEntryCount-(startIndex-1));
 	}
 
@@ -574,20 +574,20 @@ void CScene_Leaderboards::ReadStats(int startIndex)
 	{
 	case LeaderboardManager::eFM_TopRank:
 		LeaderboardManager::Instance()->ReadStats_TopRank(	this, 
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard, 
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard), 
 															m_newEntryIndex, m_newReadSize
 														 );
 		break;
 	case LeaderboardManager::eFM_MyScore:
 		LeaderboardManager::Instance()->ReadStats_MyScore(	this,
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 															INVALID_XUID/*ignored*/, 
 															m_newReadSize
 														 );
 		break;
 	case LeaderboardManager::eFM_Friends:
 		LeaderboardManager::Instance()->ReadStats_Friends(	this,
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 															INVALID_XUID /*ignored*/,
 															0 /*ignored*/, 0 /*ignored*/
 														 );
@@ -660,7 +660,7 @@ bool CScene_Leaderboards::RetrieveStats()
 				else
 				{
 					m_leaderboard.m_entries[entryIndex].m_columns[i] = UINT_MAX;
-					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", ((float)m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
+					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
 				}
 			}
 
@@ -675,7 +675,7 @@ bool CScene_Leaderboards::RetrieveStats()
 		return true;
 	}
 
-	//assert( LeaderboardManager::Instance()->GetStats() != NULL );
+	//assert( LeaderboardManager::Instance()->GetStats() != nullptr );
 	//PXUSER_STATS_READ_RESULTS stats = LeaderboardManager::Instance()->GetStats();
 	//if( m_currentFilter == LeaderboardManager::eFM_Friends  )	LeaderboardManager::Instance()->SortFriendStats();
 
@@ -822,7 +822,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 				int readIndex = m_leaderboard.m_entryStartIndex - READ_SIZE;
 				if( readIndex <= 0 )
 					readIndex = 1;
-				assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+                assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 				ReadStats(readIndex);
 			}
 		}
@@ -831,7 +831,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 			if( LeaderboardManager::Instance()->isIdle() )
 			{
 				int readIndex = m_leaderboard.m_entryStartIndex + m_leaderboard.m_currentEntryCount;
-				assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+                assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 				ReadStats(readIndex);
 			}
 		}
@@ -850,7 +850,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 			}
 			else if( pGetSourceTextData->iData >= 3 && pGetSourceTextData->iData <= 9 )
 			{
-				if( m_leaderboard.m_numColumns <= (unsigned int)(pGetSourceTextData->iData-3) )
+				if( m_leaderboard.m_numColumns <= static_cast<unsigned int>(pGetSourceTextData->iData - 3) )
 					pGetSourceTextData->szText = L"";
 				else
 					pGetSourceTextData->szText = m_leaderboard.m_entries[index].m_wcColumns[pGetSourceTextData->iData-3];
@@ -898,11 +898,11 @@ HRESULT CScene_Leaderboards::OnGetSourceDataImage(XUIMessageGetSourceImage* pGet
 void CScene_Leaderboards::PopulateLeaderboard(bool noResults)
 {
 	HRESULT hr;
-	HXUIOBJ visual=NULL;
-	HXUIOBJ hTemp=NULL;
+	HXUIOBJ visual=nullptr;
+	HXUIOBJ hTemp=nullptr;
 	hr=XuiControlGetVisual(m_listGamers.m_hObj,&visual);
 
-	if(m_pHTitleIconSlots[0]==NULL)
+	if(m_pHTitleIconSlots[0]==nullptr)
 	{	
 		VOID *pObj;
 		HXUIOBJ button;
@@ -914,7 +914,7 @@ void CScene_Leaderboards::PopulateLeaderboard(bool noResults)
 			hr=XuiElementGetChildById(visual,m_TitleIconNameA[i],&button);
 
 			XuiObjectFromHandle( button, &pObj );
-			m_pHTitleIconSlots[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pHTitleIconSlots[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 
 			// store the default position, since we'll be repositioning these depending on how many are valid for each board
 			m_pHTitleIconSlots[i]->GetPosition(&vPos);
@@ -964,7 +964,7 @@ void CScene_Leaderboards::PopulateLeaderboard(bool noResults)
 		// Really only the newly updated rows need changed, but this shouldn't cause any performance issues
 		for(DWORD i = m_leaderboard.m_entryStartIndex - 1; i < (m_leaderboard.m_entryStartIndex - 1) + m_leaderboard.m_currentEntryCount; ++i)
 		{	
-			HXUIOBJ visual=NULL;
+			HXUIOBJ visual=nullptr;
 			HXUIOBJ button;
 			D3DXVECTOR3 vPos;
 			// 4J-PB - fix for #13768 - Leaderboards: Player scores appear misaligned when viewed under the "My Score" leaderboard filter
@@ -1088,24 +1088,24 @@ void CScene_Leaderboards::CopyLeaderboardEntry(PXUSER_STATS_ROW statsRow, Leader
 			else if(iDigitC<8)
 			{
 				// km with a .X
-				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
-				app.DebugPrintf("Display - %.1fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				app.DebugPrintf("Display - %.1fkm\n", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #endif
 			}
 			else
 			{
 				// bigger than that, so no decimal point
-				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
-				app.DebugPrintf("Display - %.0fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				app.DebugPrintf("Display - %.0fkm\n", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #endif
 			}
 		}
 	}
 
 	//Is the player
-	if( statsRow->xuid == ((XboxLeaderboardManager*)LeaderboardManager::Instance())->GetMyXUID() )
+	if( statsRow->xuid == static_cast<XboxLeaderboardManager *>(LeaderboardManager::Instance())->GetMyXUID() )
 	{
 		leaderboardEntry->m_bPlayer = true;
 		leaderboardEntry->m_bOnline = false;
@@ -1150,7 +1150,7 @@ void CScene_Leaderboards::SetLeaderboardHeader()
 	WCHAR buffer[40];
 	DWORD bufferLength = 40;
 
-	DWORD ret = XResourceGetString(LEADERBOARD_HEADERS[m_currentLeaderboard][m_currentDifficulty], buffer, &bufferLength, NULL);
+	DWORD ret = XResourceGetString(LEADERBOARD_HEADERS[m_currentLeaderboard][m_currentDifficulty], buffer, &bufferLength, nullptr);
 
 	if( ret == ERROR_SUCCESS )
 		m_textLeaderboard.SetText(buffer);
@@ -1184,8 +1184,8 @@ void CScene_Leaderboards::ClearLeaderboardTitlebar()
 		m_pHTitleIconSlots[i]->SetShow(FALSE);
 	}
 
-	HXUIOBJ visual=NULL;
-	HXUIOBJ hTemp=NULL;
+	HXUIOBJ visual=nullptr;
+	HXUIOBJ hTemp=nullptr;
 	HRESULT hr;
 	hr=XuiControlGetVisual(m_listGamers.m_hObj,&visual);
 

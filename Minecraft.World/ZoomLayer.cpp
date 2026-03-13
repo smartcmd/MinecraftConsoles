@@ -86,7 +86,7 @@ shared_ptr<Layer>ZoomLayer::zoom(int64_t seed, shared_ptr<Layer> sup, int count)
 	shared_ptr<Layer>result = sup;
 	for (int i = 0; i < count; i++)
 	{
-		result = shared_ptr<Layer>(new ZoomLayer(seed + i, result));
+		result = std::make_shared<ZoomLayer>(seed + i, result);
 	}
 	return result;
 }

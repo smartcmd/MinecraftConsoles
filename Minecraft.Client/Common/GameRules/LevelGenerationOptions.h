@@ -167,7 +167,7 @@ private:
 	bool m_bLoadingData;
 
 public:
-	LevelGenerationOptions(DLCPack *parentPack = NULL);
+	LevelGenerationOptions(DLCPack *parentPack = nullptr);
 	~LevelGenerationOptions();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType();
@@ -202,7 +202,7 @@ public:
 	LevelRuleset *getRequiredGameRules();
 
 	void getBiomeOverride(int biomeId, BYTE &tile, BYTE &topTile);
-	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation = NULL);
+	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation = nullptr);
 
 	void loadStringTable(StringTable *table);
 	LPCWSTR getString(const wstring &key);

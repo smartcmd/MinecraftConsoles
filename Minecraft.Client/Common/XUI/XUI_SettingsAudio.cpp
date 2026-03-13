@@ -7,9 +7,9 @@
 HRESULT CScene_SettingsAudio::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	MapChildControls();
 
@@ -86,13 +86,13 @@ HRESULT CScene_SettingsAudio::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotif
 	if(hObjSource==m_SliderA[SLIDER_SETTINGS_MUSIC].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_MusicVolume,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_MUSIC ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_MUSIC ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_MUSIC].SetText(TempString);
 	}
 	else if(hObjSource==m_SliderA[SLIDER_SETTINGS_SOUND].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_SoundFXVolume,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SOUND ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SOUND ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_SOUND].SetText(TempString);
 	}
 	
@@ -141,7 +141,7 @@ HRESULT CScene_SettingsAudio::OnControlNavigate(XUIMessageControlNavigate *pCont
 	// added so we can skip greyed out items
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -240,7 +240,7 @@ HRESULT CScene_SettingsAudio::OnTransitionStart( XUIMessageTransition *pTransiti
 
 HRESULT CScene_SettingsAudio::OnNavReturn(HXUIOBJ hObj,BOOL& rfHandled)
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	// if we're not in the game, we need to use basescene 0 
 	if(bNotInGame)

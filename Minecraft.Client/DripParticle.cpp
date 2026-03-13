@@ -30,7 +30,7 @@ DripParticle::DripParticle(Level *level, double x, double y, double z, Material 
 	this->material = material;
 	stuckTime = 40;
 
-	lifetime = (int) (64 / (Math::random() * 0.8 + 0.2));
+	lifetime = static_cast<int>(64 / (Math::random() * 0.8 + 0.2));
 	xd = yd = zd = 0;
 }
 

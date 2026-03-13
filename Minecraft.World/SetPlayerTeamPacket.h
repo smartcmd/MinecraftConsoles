@@ -30,6 +30,6 @@ public:
 	int getEstimatedSize();
 	
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetPlayerTeamPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetPlayerTeamPacket>(); }
 	virtual int getId() { return 209; }
 };

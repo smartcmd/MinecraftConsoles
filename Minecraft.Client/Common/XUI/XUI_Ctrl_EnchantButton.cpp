@@ -15,10 +15,10 @@ HRESULT CXuiCtrlEnchantmentButton::OnInit(XUIMessageInit* pInitData, BOOL& rfHan
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
 	HXUIOBJ parent = m_hObj;
 	HXUICLASS hcInventoryClass = XuiFindClass( L"CXuiSceneEnchant" );
@@ -28,13 +28,13 @@ HRESULT CXuiCtrlEnchantmentButton::OnInit(XUIMessageInit* pInitData, BOOL& rfHan
 	{
 		XuiElementGetParent(parent,&parent);
 		currentClass = XuiGetObjectClass( parent );
-	} while (parent != NULL && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
+	} while (parent != nullptr && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
 
-	assert( parent != NULL );
+	assert( parent != nullptr );
 
 	VOID *pObj;
 	XuiObjectFromHandle( parent, &pObj );
-	m_containerScene = (CXuiSceneEnchant *)pObj;
+	m_containerScene = static_cast<CXuiSceneEnchant *>(pObj);
 
 	m_index = 0;
 	m_lastCost = 0;

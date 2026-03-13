@@ -139,7 +139,7 @@ UIString::~UIString()
 
 bool UIString::empty()
 {
-	return m_core.get() == NULL;
+	return m_core.get() == nullptr;
 }
 
 bool UIString::compare(const UIString &uiString)
@@ -149,19 +149,19 @@ bool UIString::compare(const UIString &uiString)
 
 bool UIString::needsUpdating()
 {
-	if (m_core != NULL)	return m_core->needsUpdating();
+	if (m_core != nullptr)	return m_core->needsUpdating();
 	else				return false;
 }
 
 void UIString::setUpdated()
 {
-	if (m_core != NULL)	m_core->setUpdated();
+	if (m_core != nullptr)	m_core->setUpdated();
 }
 
 wstring &UIString::getString()
 {
 	static wstring blank(L"");
-	if (m_core != NULL) return m_core->getString();
+	if (m_core != nullptr) return m_core->getString();
 	else				return blank;
 }
 

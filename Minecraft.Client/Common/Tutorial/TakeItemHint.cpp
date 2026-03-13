@@ -19,7 +19,7 @@ TakeItemHint::TakeItemHint(eTutorial_Hint id, Tutorial *tutorial, int items[], u
 
 bool TakeItemHint::onTake(shared_ptr<ItemInstance> item)
 {
-	if(item != NULL)
+	if(item != nullptr)
 	{
 		bool itemFound = false;
 		for(unsigned int i=0;i<m_iItemsCount;i++)

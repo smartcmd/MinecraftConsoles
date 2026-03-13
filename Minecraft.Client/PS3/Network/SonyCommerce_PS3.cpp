@@ -9,22 +9,22 @@ bool									SonyCommerce_PS3::m_bCommerceInitialised = false;
 SceNpCommerce2SessionInfo				SonyCommerce_PS3::m_sessionInfo;
 SonyCommerce_PS3::State						SonyCommerce_PS3::m_state = e_state_noSession;
 int										SonyCommerce_PS3::m_errorCode = 0;
-LPVOID									SonyCommerce_PS3::m_callbackParam = NULL;
+LPVOID									SonyCommerce_PS3::m_callbackParam = nullptr;
 
-void*									SonyCommerce_PS3::m_receiveBuffer = NULL;
+void*									SonyCommerce_PS3::m_receiveBuffer = nullptr;
 SonyCommerce_PS3::Event						SonyCommerce_PS3::m_event;
 std::queue<SonyCommerce_PS3::Message>		SonyCommerce_PS3::m_messageQueue;
-std::vector<SonyCommerce_PS3::ProductInfo>*	SonyCommerce_PS3::m_pProductInfoList = NULL;
-SonyCommerce_PS3::ProductInfoDetailed*		SonyCommerce_PS3::m_pProductInfoDetailed = NULL;
-SonyCommerce_PS3::ProductInfo*				SonyCommerce_PS3::m_pProductInfo = NULL;
+std::vector<SonyCommerce_PS3::ProductInfo>*	SonyCommerce_PS3::m_pProductInfoList = nullptr;
+SonyCommerce_PS3::ProductInfoDetailed*		SonyCommerce_PS3::m_pProductInfoDetailed = nullptr;
+SonyCommerce_PS3::ProductInfo*				SonyCommerce_PS3::m_pProductInfo = nullptr;
 
-SonyCommerce_PS3::CategoryInfo*				SonyCommerce_PS3::m_pCategoryInfo = NULL;
-const char*								SonyCommerce_PS3::m_pProductID = NULL;
-char*									SonyCommerce_PS3::m_pCategoryID = NULL;
+SonyCommerce_PS3::CategoryInfo*				SonyCommerce_PS3::m_pCategoryInfo = nullptr;
+const char*								SonyCommerce_PS3::m_pProductID = nullptr;
+char*									SonyCommerce_PS3::m_pCategoryID = nullptr;
 SonyCommerce_PS3::CheckoutInputParams		SonyCommerce_PS3::m_checkoutInputParams;
 SonyCommerce_PS3::DownloadListInputParams	SonyCommerce_PS3::m_downloadInputParams;
 
-SonyCommerce_PS3::CallbackFunc				SonyCommerce_PS3::m_callbackFunc = NULL;
+SonyCommerce_PS3::CallbackFunc				SonyCommerce_PS3::m_callbackFunc = nullptr;
 sys_memory_container_t					SonyCommerce_PS3::m_memContainer = SYS_MEMORY_CONTAINER_ID_INVALID;
 bool									SonyCommerce_PS3::m_bUpgradingTrial = false;
 
@@ -40,19 +40,19 @@ bool					SonyCommerce_PS3::m_contextCreated=false;	///< npcommerce2 context ID c
 SonyCommerce_PS3::Phase		SonyCommerce_PS3::m_currentPhase = e_phase_stopped;		///< Current commerce2 util
 char					SonyCommerce_PS3::m_commercebuffer[SCE_NP_COMMERCE2_RECV_BUF_SIZE];
 
-C4JThread*				SonyCommerce_PS3::m_tickThread = NULL;
+C4JThread*				SonyCommerce_PS3::m_tickThread = nullptr;
 bool					SonyCommerce_PS3::m_bLicenseChecked=false;	 // Check the trial/full license for the game
 
 
 SonyCommerce_PS3::ProductInfoDetailed s_trialUpgradeProductInfoDetailed;
 void SonyCommerce_PS3::Delete()
 {
-	m_pProductInfoList=NULL;
-	m_pProductInfoDetailed=NULL;
-	m_pProductInfo=NULL;
-	m_pCategoryInfo = NULL;
-	m_pProductID = NULL;
-	m_pCategoryID = NULL;
+	m_pProductInfoList=nullptr;
+	m_pProductInfoDetailed=nullptr;
+	m_pProductInfo=nullptr;
+	m_pCategoryInfo = nullptr;
+	m_pProductID = nullptr;
+	m_pCategoryID = nullptr;
 }
 void SonyCommerce_PS3::Init()
 {
@@ -106,11 +106,11 @@ void SonyCommerce_PS3::CheckForTrialUpgradeKey()
 	// 4J-PB - If we are the blu ray disc then we are the full version
 	if(StorageManager.GetBootTypeDisc())
 	{
-		CheckForTrialUpgradeKey_Callback(NULL,true);
+		CheckForTrialUpgradeKey_Callback(nullptr,true);
 	}
 	else
 	{
-		StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, NULL);
+		StorageManager.CheckForTrialUpgradeKey(CheckForTrialUpgradeKey_Callback, nullptr);
 	}
 }
 
@@ -498,7 +498,7 @@ int SonyCommerce_PS3::getDetailedProductInfo(ProductInfoDetailed *pInfo, const c
 	if (categoryId && categoryId[0] != 0) {
 		ret = sceNpCommerce2GetProductInfoStart(requestId, categoryId, productId);
 	} else {
-		ret = sceNpCommerce2GetProductInfoStart(requestId, NULL, productId);		
+		ret = sceNpCommerce2GetProductInfoStart(requestId, nullptr, productId);		
 	}
 	if (ret < 0) {
 		sceNpCommerce2DestroyReq(requestId);
@@ -766,7 +766,7 @@ int SonyCommerce_PS3::checkout(CheckoutInputParams &params)
 		}
 	}
 
-	for (int i = 0; i < params.skuIds.size(); i++) {
+	for (size_t i = 0; i < params.skuIds.size(); i++) {
 		skuIdsTemp[i] = (const char *)(*iter);
 		iter++;
 	}
@@ -794,7 +794,7 @@ int SonyCommerce_PS3::downloadList(DownloadListInputParams &params)
 		}
 	}
 
-	for (int i = 0; i < params.skuIds.size(); i++) {
+	for (size_t i = 0; i < params.skuIds.size(); i++) {
 		skuIdsTemp[i] = (const char *)(*iter);
 		iter++;
 	}
@@ -887,7 +887,7 @@ int SonyCommerce_PS3::createContext()
 	}
 
 	// Create commerce2 context
-	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, NULL, &m_contextId);
+	ret = sceNpCommerce2CreateCtx(SCE_NP_COMMERCE2_VERSION, &npId, commerce2Handler, nullptr, &m_contextId);
 	if (ret < 0) 
 	{
 		app.DebugPrintf(4,"createContext sceNpCommerce2CreateCtx problem\n");
@@ -1325,7 +1325,7 @@ void SonyCommerce_PS3::processEvent()
 
 		m_memContainer = SYS_MEMORY_CONTAINER_ID_INVALID;
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1349,7 +1349,7 @@ void SonyCommerce_PS3::processEvent()
 
 		m_memContainer = SYS_MEMORY_CONTAINER_ID_INVALID;
 		// 4J-PB - if there's been an error - like dlc already purchased, the runcallback has already happened, and will crash this time
-		if(m_callbackFunc!=NULL)
+		if(m_callbackFunc!=nullptr)
 		{
 			runCallback();
 		}
@@ -1410,8 +1410,8 @@ void SonyCommerce_PS3::CreateSession( CallbackFunc cb, LPVOID lpParam )
 	EnterCriticalSection(&m_queueLock);
 	setCallback(cb,lpParam);
 	m_messageQueue.push(e_message_commerceCreateSession);
-	if(m_tickThread == NULL)
-		m_tickThread = new C4JThread(TickLoop, NULL, "SonyCommerce_PS3 tick");
+	if(m_tickThread == nullptr)
+		m_tickThread = new C4JThread(TickLoop, nullptr, "SonyCommerce_PS3 tick");
 	if(m_tickThread->isRunning() == false)
 	{
 		m_currentPhase = e_phase_idle;

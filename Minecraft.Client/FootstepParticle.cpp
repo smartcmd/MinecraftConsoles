@@ -31,9 +31,9 @@ void FootstepParticle::render(Tesselator *t, float a, float xa, float ya, float 
     glDisable(GL_LIGHTING);
     float r = 2 / 16.0f;
 
-    float xx = (float) (x - xOff);
-    float yy = (float) (y - yOff);
-    float zz = (float) (z - zOff);
+    float xx = static_cast<float>(x - xOff);
+    float yy = static_cast<float>(y - yOff);
+    float zz = static_cast<float>(z - zOff);
 
     float br = level->getBrightness(Mth::floor(x), Mth::floor(y), Mth::floor(z));
 
@@ -43,10 +43,10 @@ void FootstepParticle::render(Tesselator *t, float a, float xa, float ya, float 
 
     t->begin();
     t->color(br, br, br, alpha);
-    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz + r), (float)( 0), (float)( 1));
-    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz + r), (float)( 1), (float)( 1));
-    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz - r), (float)( 1), (float)( 0));
-    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz - r), (float)( 0), (float)( 0));
+    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz + r), static_cast<float>(0), static_cast<float>(1));
+    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz + r), static_cast<float>(1), static_cast<float>(1));
+    t->vertexUV((float)(xx + r), (float)( yy), (float)( zz - r), static_cast<float>(1), static_cast<float>(0));
+    t->vertexUV((float)(xx - r), (float)( yy), (float)( zz - r), static_cast<float>(0), static_cast<float>(0));
     t->end();
 
     glDisable(GL_BLEND);

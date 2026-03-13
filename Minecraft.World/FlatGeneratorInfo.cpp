@@ -66,7 +66,7 @@ wstring FlatGeneratorInfo::toString()
 	builder.append(SERIALIZATION_VERSION);
 	builder.append(";");
 
-	for (int i = 0; i < layers.size(); i++)
+	for (size_t i = 0; i < layers.size(); i++)
 	{
 		if (i > 0) builder.append(",");
 		builder.append(layers.get(i).toString());
@@ -114,7 +114,7 @@ wstring FlatGeneratorInfo::toString()
 
 FlatLayerInfo *FlatGeneratorInfo::getLayerFromString(const wstring &input, int yOffset)
 {
-	return NULL;
+	return nullptr;
 #if 0
 	std::vector<std::wstring> parts = stringSplit(input, L'x');
 
@@ -135,7 +135,7 @@ FlatLayerInfo *FlatGeneratorInfo::getLayerFromString(const wstring &input, int y
 	id = _fromString<int>(parts[0]);
 	if (parts.size() > 1) data = _from_String<int>(parts[1]);
 
-	if (Tile::tiles[id] == NULL)
+	if (Tile::tiles[id] == nullptr)
 	{
 		id = 0;
 		data = 0;
@@ -151,7 +151,7 @@ FlatLayerInfo *FlatGeneratorInfo::getLayerFromString(const wstring &input, int y
 
 vector<FlatLayerInfo *> *FlatGeneratorInfo::getLayersFromString(const wstring &input)
 {
-	if (input.empty()) return NULL;
+	if (input.empty()) return nullptr;
 
 	vector<FlatLayerInfo *> *result = new vector<FlatLayerInfo *>();
 	std::vector<std::wstring> depths = stringSplit(input, L',');
@@ -161,7 +161,7 @@ vector<FlatLayerInfo *> *FlatGeneratorInfo::getLayersFromString(const wstring &i
 	for(auto& depth : depths)
 	{
 		FlatLayerInfo *layer = getLayerFromString(depth, yOffset);
-		if (layer == NULL) return NULL;
+		if (layer == nullptr) return nullptr;
 		result->push_back(layer);
 		yOffset += layer->getHeight();
 	}
@@ -184,7 +184,7 @@ FlatGeneratorInfo *FlatGeneratorInfo::fromValue(const wstring &input)
 	int index = parts.size() == 1 ? 0 : 1;
 	vector<FlatLayerInfo *> *layers = getLayersFromString(parts[index++]);
 
-	if (layers == NULL || layers->isEmpty())
+	if (layers == nullptr || layers->isEmpty())
 	{
 		delete layers;
 		return getDefault();

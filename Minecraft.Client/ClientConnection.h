@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_set>
 #include "..\Minecraft.World\net.minecraft.network.h"
 class Minecraft;
 class MultiPlayerLevel;
@@ -43,6 +44,21 @@ public:
 
 private:
 	DWORD m_userIndex; // 4J Added
+	bool isPrimaryConnection() const;
+
+	std::unordered_set<int> m_trackedEntityIds;
+	std::unordered_set<int64_t> m_visibleChunks;
+
+	static int64_t chunkKey(int x, int z) { return ((int64_t)x << 32) | ((int64_t)z & 0xFFFFFFFF); }
+
+	ClientConnection* findPrimaryConnection() const;
+	bool shouldProcessForEntity(int entityId) const;
+	bool shouldProcessForPosition(int blockX, int blockZ) const;
+	bool anyOtherConnectionHasChunk(int x, int z) const;
+
+public:
+	bool isTrackingEntity(int entityId) const { return m_trackedEntityIds.count(entityId) > 0; }
+
 public:
 	SavedDataStorage *savedDataStorage;
     ClientConnection(Minecraft *minecraft, const wstring& ip, int port);

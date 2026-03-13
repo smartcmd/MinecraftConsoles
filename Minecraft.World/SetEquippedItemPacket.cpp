@@ -20,7 +20,7 @@ SetEquippedItemPacket::SetEquippedItemPacket(int entity, int slot, shared_ptr<It
 	this->slot = slot;
 
 	// 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
-	this->item = item == NULL ? nullptr : item->copy();
+	this->item = item == nullptr ? nullptr : item->copy();
 }
 
 void SetEquippedItemPacket::read(DataInputStream *dis) //throws IOException 

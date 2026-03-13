@@ -7,7 +7,7 @@ class MobEffectInstance;
 class PotionItem : public Item
 {
 private:
-	static const int DRINK_DURATION = (int) (20 * 1.6);
+	static const int DRINK_DURATION = static_cast<int>(20 * 1.6);
 
 public:
 	static const wstring DEFAULT_ICON;

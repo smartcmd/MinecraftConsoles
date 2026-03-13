@@ -58,7 +58,7 @@ bool Achievement::isAchievement()
 
 wstring Achievement::getDescription() 
 {
-	if (descFormatter != NULL) 
+	if (descFormatter != nullptr) 
 	{
 		return descFormatter->format(desc);
 	}

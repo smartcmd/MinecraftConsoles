@@ -19,7 +19,7 @@ WCHAR *CScene_TrialExitUpsell::wchImages[]=
 //----------------------------------------------------------------------------------
 HRESULT CScene_TrialExitUpsell::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 

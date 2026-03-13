@@ -28,7 +28,7 @@ HRESULT CXuiSceneAnvil::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	AnvilScreenInput* initData = (AnvilScreenInput*)pInitData->pvInitData;
+	AnvilScreenInput* initData = static_cast<AnvilScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 	m_inventory = initData->inventory;
@@ -40,9 +40,9 @@ HRESULT CXuiSceneAnvil::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 	}
 
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
@@ -67,15 +67,15 @@ HRESULT CXuiSceneAnvil::OnDestroy()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
-		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
+		if(gameMode != nullptr) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
 	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
-	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
+	if(Minecraft::GetInstance()->localplayers[m_iPad] != nullptr) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
 
@@ -89,8 +89,8 @@ HRESULT CXuiSceneAnvil::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyValue
 
 		// strip leading spaces
 		wstring b;
-		int start = (int)newValue.find_first_not_of(L" ");
-		int end = (int)newValue.find_last_not_of(L" ");
+		size_t start = newValue.find_first_not_of(L" ");
+		size_t end = newValue.find_last_not_of(L" ");
 
 		if( start == wstring::npos )
 		{
@@ -99,7 +99,7 @@ HRESULT CXuiSceneAnvil::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyValue
 		}
 		else
 		{
-			if( end == wstring::npos ) end = (int)newValue.size()-1;
+			if( end == wstring::npos ) end = newValue.size() - 1;
 			b = newValue.substr(start,(end-start)+1);
 			newValue=b;
 		}
@@ -158,7 +158,7 @@ CXuiControl* CXuiSceneAnvil::GetSectionControl( ESceneSection eSection )
 			assert( false );
 			break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 CXuiCtrlSlotList* CXuiSceneAnvil::GetSectionSlotList( ESceneSection eSection )
@@ -184,7 +184,7 @@ CXuiCtrlSlotList* CXuiSceneAnvil::GetSectionSlotList( ESceneSection eSection )
 			assert( false );
 			break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 // 4J Stu - Added to support auto-save. Need to re-associate on a navigate back

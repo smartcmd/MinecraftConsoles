@@ -62,8 +62,8 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
 
 		if ( !file.exists() )
 		{
-            if (!create) return NULL;
-			HANDLE ch = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+            if (!create) return nullptr;
+			HANDLE ch = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 			CloseHandle(ch);
         }
 
@@ -76,7 +76,7 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
     zoneFile->lastUse = tickCount;
     if (!zoneFile->containsSlot(slot))
 	{
-        if (!create) return NULL;
+        if (!create) return nullptr;
     }
     return zoneFile;
 
@@ -85,14 +85,14 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
 ZoneIo *ZonedChunkStorage::getBuffer(int x, int z, bool create)
 {
     ZoneFile *zoneFile = getZoneFile(x, z, create);
-    if (zoneFile == NULL) return NULL;
+    if (zoneFile == nullptr) return nullptr;
     return zoneFile->getZoneIo(getSlot(x, z));
 }
 
 LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
 {
     ZoneIo *zoneIo = getBuffer(x, z, false);
-    if (zoneIo == NULL) return NULL;
+    if (zoneIo == nullptr) return nullptr;
 
     LevelChunk *lc = new LevelChunk(level, x, z);
     lc->unsaved = false;
@@ -194,7 +194,11 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
         if (type == 0)
 		{
             shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
-            if (e != nullptr) lc->addEntity(e);
+            if (e != nullptr)
+            {
+                lc->addEntity(e);
+                lc->addRidingEntities(e, tag);
+            }
         }
 		else if (type == 1)
 		{

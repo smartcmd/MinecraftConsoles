@@ -14,7 +14,7 @@ DurangoLeaderboardManager::DurangoLeaderboardManager()
 
 	m_openSessions = 0;
 	m_xboxLiveContext = nullptr;
-	m_scores = NULL;
+	m_scores = nullptr;
 	m_readCount = 0;
 	m_maxRank = 0;
 	m_waitingForProfiles = false;
@@ -160,7 +160,7 @@ void DurangoLeaderboardManager::Tick()
 				m_displayNames.clear();
 			}
 
-			//assert(m_scores != NULL || m_readCount == 0);
+			//assert(m_scores != nullptr || m_readCount == 0);
 
 			view.m_numQueries = m_readCount;
 			view.m_queries = m_scores;
@@ -170,7 +170,7 @@ void DurangoLeaderboardManager::Tick()
 
 			eStatsReturn ret = view.m_numQueries > 0 ? eStatsReturn_Success : eStatsReturn_NoResults;
 
-			if (m_readListener != NULL)
+			if (m_readListener != nullptr)
 			{
 				app.DebugPrintf("[LeaderboardManager] OnStatsReadComplete(%i, %i, _)\n", ret, m_readCount);
 				m_readListener->OnStatsReadComplete(ret, m_maxRank, view);
@@ -178,7 +178,7 @@ void DurangoLeaderboardManager::Tick()
 
 			app.DebugPrintf("[LeaderboardManager] Deleting scores\n");
 			delete [] m_scores;
-			m_scores = NULL;
+			m_scores = nullptr;
 
 			setState(eStatsState_Idle);
 		}
@@ -186,9 +186,9 @@ void DurangoLeaderboardManager::Tick()
 
 	case eStatsState_Failed:
 		view.m_numQueries = 0;
-		view.m_queries = NULL;
+		view.m_queries = nullptr;
 
-		if ( m_readListener != NULL )
+		if ( m_readListener != nullptr )
 		{
 			m_readListener->OnStatsReadComplete(eStatsReturn_NetworkError, 0, view);
 		}
@@ -371,7 +371,7 @@ void DurangoLeaderboardManager::FlushStats()
 //Cancel the current operation
 void DurangoLeaderboardManager::CancelOperation()
 {
-	m_readListener = NULL;
+	m_readListener = nullptr;
 	setState(eStatsState_Canceled);
 
 	if(m_leaderboardAsyncOp) m_leaderboardAsyncOp->Cancel();
@@ -428,7 +428,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 			app.DebugPrintf(
 				"Name: %ls - Filter: %ls - Rows: Retrieved=%d Total=%d Requested=%d.\n",
 				lastResult->DisplayName->Data(),
-				LeaderboardManager::filterNames[ (int) filter ].c_str(),
+				LeaderboardManager::filterNames[ static_cast<int>(filter) ].c_str(),
 				lastResult->Rows->Size, lastResult->TotalRowCount, readCount
 				);
 
@@ -458,7 +458,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 			m_maxRank = lastResult->TotalRowCount;
 			m_readCount = lastResult->Rows->Size;
 
-			if (m_scores != NULL) delete [] m_scores;
+			if (m_scores != nullptr) delete [] m_scores;
 			m_scores = new ReadScore[m_readCount];
 			ZeroMemory(m_scores, sizeof(ReadScore) * m_readCount);
 
@@ -480,10 +480,10 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 
 				m_scores[index].m_name = row->Gamertag->Data();
 				m_scores[index].m_rank = row->Rank;
-				m_scores[index].m_uid  = PlayerUID(row->XboxUserId->Data());
+				m_scores[index].m_uid  = static_cast<PlayerUID>(row->XboxUserId->Data());
 
 				// 4J-JEV: Added to help determine if this player's score is hidden due to their privacy settings.
-				m_scores[index].m_totalScore = (unsigned long) _fromString<long long>(row->Values->GetAt(0)->Data());
+				m_scores[index].m_totalScore = static_cast<unsigned long>(_fromString<long long>(row->Values->GetAt(0)->Data()));
 
 				m_xboxUserIds->Append(row->XboxUserId);
 			}
@@ -493,7 +493,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 				vector<PlayerUID> xuids = vector<PlayerUID>();
 				for(int i = 0; i < lastResult->Rows->Size; i++)
 				{
-					xuids.push_back(PlayerUID(lastResult->Rows->GetAt(i)->XboxUserId->Data()));
+					xuids.push_back(static_cast<PlayerUID>(lastResult->Rows->GetAt(i)->XboxUserId->Data()));
 				}
 				m_waitingForProfiles = true;
 				ProfileManager.GetProfiles(xuids, &GetProfilesCallback, this);
@@ -579,7 +579,7 @@ void DurangoLeaderboardManager::updateStatsInfo(int userIndex, int difficulty, E
 
 void DurangoLeaderboardManager::GetProfilesCallback(LPVOID param, std::vector<Microsoft::Xbox::Services::Social::XboxUserProfile^> profiles)
 {
-	DurangoLeaderboardManager *dlm = (DurangoLeaderboardManager *)param;
+	DurangoLeaderboardManager *dlm = static_cast<DurangoLeaderboardManager *>(param);
 
 	app.DebugPrintf("[LeaderboardManager] GetProfilesCallback, profiles.size() == %d.\n", profiles.size());
 

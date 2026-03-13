@@ -17,10 +17,10 @@ MoveTowardsTargetGoal::MoveTowardsTargetGoal(PathfinderMob *mob, double speedMod
 bool MoveTowardsTargetGoal::canUse()
 {
 	target = weak_ptr<LivingEntity>(mob->getTarget());
-	if (target.lock() == NULL) return false;
+	if (target.lock() == nullptr) return false;
 	if (target.lock()->distanceToSqr(mob->shared_from_this()) > within * within) return false;
 	Vec3 *pos = RandomPos::getPosTowards(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 7, Vec3::newTemp(target.lock()->x, target.lock()->y, target.lock()->z));
-	if (pos == NULL) return false;
+	if (pos == nullptr) return false;
 	wantedX = pos->x;
 	wantedY = pos->y;
 	wantedZ = pos->z;
@@ -29,7 +29,7 @@ bool MoveTowardsTargetGoal::canUse()
 
 bool MoveTowardsTargetGoal::canContinueToUse()
 {
-	return target.lock() != NULL && !mob->getNavigation()->isDone() && target.lock()->isAlive() && target.lock()->distanceToSqr(mob->shared_from_this()) < within * within;
+	return target.lock() != nullptr && !mob->getNavigation()->isDone() && target.lock()->isAlive() && target.lock()->distanceToSqr(mob->shared_from_this()) < within * within;
 }
 
 void MoveTowardsTargetGoal::stop()

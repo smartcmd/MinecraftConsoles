@@ -37,7 +37,7 @@ void GameModeCommand::execute(shared_ptr<CommandSender> source, byteArray comman
 
 GameType *GameModeCommand::getModeForString(shared_ptr<CommandSender> source, const wstring &name)
 {
-	return NULL;
+	return nullptr;
 	//if (name.equalsIgnoreCase(GameType.SURVIVAL.getName()) || name.equalsIgnoreCase("s")) {
 	//	return GameType.SURVIVAL;
 	//} else if (name.equalsIgnoreCase(GameType.CREATIVE.getName()) || name.equalsIgnoreCase("c")) {

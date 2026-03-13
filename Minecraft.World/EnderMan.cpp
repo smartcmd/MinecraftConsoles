@@ -67,16 +67,16 @@ void EnderMan::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_CARRY_ITEM_ID, (byte) 0);
-	entityData->define(DATA_CARRY_ITEM_DATA, (byte) 0);
-	entityData->define(DATA_CREEPY, (byte) 0);
+	entityData->define(DATA_CARRY_ITEM_ID, static_cast<byte>(0));
+	entityData->define(DATA_CARRY_ITEM_DATA, static_cast<byte>(0));
+	entityData->define(DATA_CREEPY, static_cast<byte>(0));
 }
 
 void EnderMan::addAdditonalSaveData(CompoundTag *tag)
 {
 	Monster::addAdditonalSaveData(tag);
-	tag->putShort(L"carried", (short) getCarryingTile());
-	tag->putShort(L"carriedData", (short) getCarryingData());
+	tag->putShort(L"carried", static_cast<short>(getCarryingTile()));
+	tag->putShort(L"carriedData", static_cast<short>(getCarryingData()));
 }
 
 void EnderMan::readAdditionalSaveData(CompoundTag *tag)
@@ -96,7 +96,7 @@ shared_ptr<Entity> EnderMan::findAttackTarget()
 #endif
 
 	shared_ptr<Player> player = level->getNearestAttackablePlayer(shared_from_this(), 64);
-	if (player != NULL)
+	if (player != nullptr)
 	{
 		if (isLookingAtMe(player))
 		{
@@ -120,7 +120,7 @@ shared_ptr<Entity> EnderMan::findAttackTarget()
 bool EnderMan::isLookingAtMe(shared_ptr<Player> player)
 {
 	shared_ptr<ItemInstance> helmet = player->inventory->armor[3];
-	if (helmet != NULL && helmet->id == Tile::pumpkin_Id) return false;
+	if (helmet != nullptr && helmet->id == Tile::pumpkin_Id) return false;
 
 	Vec3 *look = player->getViewVector(1)->normalize();
 	Vec3 *dir = Vec3::newTemp(x - player->x, (bb->y0 + bbHeight / 2) - (player->y + player->getHeadHeight()), z - player->z);
@@ -143,7 +143,7 @@ void EnderMan::aiStep()
 		AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
 		speed->removeModifier(SPEED_MODIFIER_ATTACKING);
 
-		if (attackTarget != NULL)
+		if (attackTarget != nullptr)
 		{
 			speed->addModifier(new AttributeModifier(*SPEED_MODIFIER_ATTACKING));
 		}
@@ -202,7 +202,7 @@ void EnderMan::aiStep()
 		float br = getBrightness(1);
 		if (br > 0.5f)
 		{
-			if (level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
+			if (level->canSeeSky(Mth::floor(x), static_cast<int>(floor(y + 0.5)), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
 			{
 				attackTarget = nullptr;
 				setCreepy(false);
@@ -226,14 +226,14 @@ void EnderMan::aiStep()
 	}
 
 	jumping = false;
-	if (attackTarget != NULL)
+	if (attackTarget != nullptr)
 	{
 		lookAt(attackTarget, 100, 100);
 	}
 
 	if (!level->isClientSide && isAlive())
 	{
-		if (attackTarget != NULL)
+		if (attackTarget != nullptr)
 		{
 			if ( attackTarget->instanceof(eTYPE_PLAYER) && isLookingAtMe(dynamic_pointer_cast<Player>(attackTarget)))
 			{
@@ -385,7 +385,7 @@ void EnderMan::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 // 4J Brought forward from 1.2.3 to help fix Enderman behaviour
 void EnderMan::setCarryingTile(int carryingTile)
 {
-	entityData->set(DATA_CARRY_ITEM_ID, (byte) (carryingTile & 0xff));
+	entityData->set(DATA_CARRY_ITEM_ID, static_cast<byte>(carryingTile & 0xff));
 }
 
 int EnderMan::getCarryingTile()
@@ -395,7 +395,7 @@ int EnderMan::getCarryingTile()
 
 void EnderMan::setCarryingData(int carryingData)
 {
-	entityData->set(DATA_CARRY_ITEM_DATA, (byte) (carryingData & 0xff));
+	entityData->set(DATA_CARRY_ITEM_DATA, static_cast<byte>(carryingData & 0xff));
 }
 
 int EnderMan::getCarryingData()
@@ -408,12 +408,17 @@ bool EnderMan::hurt(DamageSource *source, float damage)
 	if (isInvulnerable()) return false;
 	setCreepy(true);
 
-	if ( dynamic_cast<EntityDamageSource *>(source) != NULL && source->getEntity()->instanceof(eTYPE_PLAYER))
+	if ( dynamic_cast<EntityDamageSource *>(source) != nullptr && source->getEntity()->instanceof(eTYPE_PLAYER))
 	{
-		aggroedByPlayer = true;
+		if (!dynamic_pointer_cast<Player>(source->getEntity())->abilities.invulnerable)
+		{
+			aggroedByPlayer = true;
+		}
+		else setCreepy(false);
 	}
 
-	if (dynamic_cast<IndirectEntityDamageSource *>(source) != NULL)
+
+	if (dynamic_cast<IndirectEntityDamageSource *>(source) != nullptr)
 	{
 		aggroedByPlayer = false;
 		for (int i = 0; i < 64; i++)
@@ -435,5 +440,5 @@ bool EnderMan::isCreepy()
 
 void EnderMan::setCreepy(bool creepy)
 {
-	entityData->set(DATA_CREEPY, (byte)(creepy ? 1 : 0));
+	entityData->set(DATA_CREEPY, static_cast<byte>(creepy ? 1 : 0));
 }

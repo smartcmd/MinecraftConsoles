@@ -16,15 +16,15 @@ public:
 	virtual CustomDrawData *calculateCustomDraw(IggyCustomDrawCallbackRegion *region);
 	virtual void endCustomDraw(IggyCustomDrawCallbackRegion *region);
 
+	void updateRenderTargets(ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsv);
+
 protected:
 	virtual void setTileOrigin(S32 xPos, S32 yPos);
 
-public:	
+public:
 	GDrawTexture *getSubstitutionTexture(int textureId);
 	void destroySubstitutionTexture(void *destroyCallBackData, GDrawTexture *handle);
 
 public:
 	void shutdown();
 };
-
-extern ConsoleUIController ui;

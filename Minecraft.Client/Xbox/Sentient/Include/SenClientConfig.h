@@ -55,7 +55,7 @@ namespace Sentient
 	///
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
-	///                  E_POINTER: out_configInfo is NULL.
+	///                  E_POINTER: out_configInfo is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///
@@ -95,7 +95,7 @@ namespace Sentient
 	/// @return          Check SUCCEEDED( hresult ) or FAILED( hresult ) to determine success.  Specific values include:
 	///                  SENTIENT_E_NOT_INITIALIZED: You did not call SentientInitialize() first.
 	///                  E_INVALIDARG: configInfo.resourceID or configInfo.config is invalid.
-	///                  E_POINTER: out_data is NULL.
+	///                  E_POINTER: out_data is nullptr.
 	///                  E_FAIL: Failed to spawn server call.
 	///                  S_OK: Server call spawned successfully.
 	///

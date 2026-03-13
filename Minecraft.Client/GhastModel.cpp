@@ -23,7 +23,7 @@ GhastModel::GhastModel() : Model()
 
         tentacles[i]->x = xo;
         tentacles[i]->z = yo;
-        tentacles[i]->y = (float)(31 + yoffs);
+        tentacles[i]->y = static_cast<float>(31 + yoffs);
     }
 
 	// 4J added - compile now to avoid random performance hit first time cubes are rendered

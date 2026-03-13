@@ -61,7 +61,7 @@ AttributeModifier *AttributeModifier::setSerialize(bool serialize)
 bool AttributeModifier::equals(AttributeModifier *modifier)
 {
 	if (this == modifier) return true;
-	if (modifier == NULL) return false; //|| getClass() != o.getClass()) return false;
+	if (modifier == nullptr) return false; //|| getClass() != o.getClass()) return false;
 
 	if (id != modifier->id) return false;
 
@@ -123,7 +123,7 @@ HtmlString AttributeModifier::getHoverText(eATTRIBUTE_ID attribute)
 	}
 
 	wchar_t formatted[256];
-	swprintf(formatted, 256, L"%ls%d%ls %ls", (amount > 0 ? L"+" : L"-"), (int) displayAmount, (percentage ? L"%" : L""), app.GetString(Attribute::getName(attribute)));
+	swprintf(formatted, 256, L"%ls%d%ls %ls", (amount > 0 ? L"+" : L"-"), static_cast<int>(displayAmount), (percentage ? L"%" : L""), app.GetString(Attribute::getName(attribute)));
 
 	return HtmlString(formatted, color);
 }

@@ -34,7 +34,7 @@ Font::Font(Options *options, const wstring& name, Textures* textures, bool enfor
 	m_textureLocation = textureLocation;
 
 	// Build character map
-	if (charMap != NULL)
+	if (charMap != nullptr)
 	{
 		for(int i = 0; i < charC; i++)
 		{
@@ -149,7 +149,7 @@ void Font::renderStyleLine(float x0, float y0, float x1, float y1)
 void Font::addCharacterQuad(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
-	float yOff = c / m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charHeight; // was m_charWidth — wrong when glyphs aren't square
 	float width = charWidths[c] - .01f;
 	float height = m_charHeight - .01f;
 	float fontWidth = m_cols * m_charWidth;
@@ -187,7 +187,7 @@ void Font::addCharacterQuad(wchar_t c)
 void Font::renderCharacter(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
-	float yOff = c / m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charHeight; // was m_charWidth — wrong when glyphs aren't square
 
 	float width = charWidths[c] - .01f;
 	float height = m_charHeight - .01f;
@@ -383,7 +383,7 @@ int Font::width(const wstring& str)
 {
 	wstring cleanStr = sanitize(str);
 
-	if (cleanStr == L"") return 0;	// 4J - was NULL comparison
+	if (cleanStr == L"") return 0;	// 4J - was nullptr comparison
 	int len = 0;
 
 	for (int i = 0; i < cleanStr.length(); ++i)
@@ -602,7 +602,7 @@ bool Font::AllCharactersValid(const wstring &str)
 			continue;
 		}
 
-		int index = SharedConstants::acceptableLetters.find(c);
+		size_t index = SharedConstants::acceptableLetters.find(c);
 
 		if ((c != ' ') && !(index > 0 && !enforceUnicodeSheet))
 		{

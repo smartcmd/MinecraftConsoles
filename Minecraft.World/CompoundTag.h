@@ -42,10 +42,16 @@ public:
 		}
 		tags.clear();
 		Tag *tag;
-		while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
-		{
-			tags[tag->getName()] = tag;
-		}
+        int tagCount = 0;
+        const int MAX_COMPOUND_TAGS = 10000;
+        while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
+        {
+            tags[tag->getName()] = tag;
+            if (++tagCount >= MAX_COMPOUND_TAGS)
+            {
+                break;
+            }
+        }
 		delete tag;
 	}
 
@@ -123,14 +129,14 @@ public:
 
 	void putBoolean(const wstring &name, bool val)
 	{
-		putByte(name, val?(byte)1:0);
+		putByte(name, val?static_cast<byte>(1):0);
 	}
 
 	Tag *get(const wstring &name)
 	{
 		auto it = tags.find(name);
 		if(it != tags.end()) return it->second;
-		return NULL;
+		return nullptr;
 	}
 
 	bool contains(const wstring &name)
@@ -141,19 +147,19 @@ public:
 	byte getByte(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (byte)0;
-		return ((ByteTag *) tags[name])->data;
+		return static_cast<ByteTag *>(tags[name])->data;
 	}
 
 	short getShort(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (short)0;
-		return ((ShortTag *) tags[name])->data;
+		return static_cast<ShortTag *>(tags[name])->data;
 	}
 
 	int getInt(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (int)0;
-		return ((IntTag *) tags[name])->data;
+		return static_cast<IntTag *>(tags[name])->data;
 	}
 
 	int64_t getLong(const wstring &name)
@@ -164,44 +170,44 @@ public:
 
 	float getFloat(const wstring &name)
 	{
-		if (tags.find(name) == tags.end()) return (float)0;
-		return ((FloatTag *) tags[name])->data;
+		if (tags.find(name) == tags.end()) return static_cast<float>(0);
+		return static_cast<FloatTag *>(tags[name])->data;
 	}
 
 	double getDouble(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (double)0;
-		return ((DoubleTag *) tags[name])->data;
+		return static_cast<DoubleTag *>(tags[name])->data;
 	}
 
 	wstring getString(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return wstring( L"" );
-		return ((StringTag *) tags[name])->data;
+		return static_cast<StringTag *>(tags[name])->data;
 	}
 
 	byteArray getByteArray(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return byteArray();
-		return ((ByteArrayTag *) tags[name])->data;
+		return static_cast<ByteArrayTag *>(tags[name])->data;
 	}
 
 	intArray getIntArray(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return intArray();
-		return ((IntArrayTag *) tags[name])->data;
+		return static_cast<IntArrayTag *>(tags[name])->data;
 	}
 
 	CompoundTag *getCompound(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return new CompoundTag(name);
-		return (CompoundTag *) tags[name];
+		return static_cast<CompoundTag *>(tags[name]);
 	}
 
 	ListTag<Tag> *getList(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return new ListTag<Tag>(name);
-		return (ListTag<Tag> *) tags[name];
+		return static_cast<ListTag<Tag> *>(tags[name]);
 	}
 
 	bool getBoolean(const wstring &string)
@@ -271,7 +277,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			CompoundTag *o = (CompoundTag *) obj;
+			CompoundTag *o = static_cast<CompoundTag *>(obj);
 
 			if(tags.size() == o->tags.size())
 			{

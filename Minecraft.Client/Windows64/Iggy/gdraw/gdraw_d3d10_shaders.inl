@@ -1364,7 +1364,7 @@ static DWORD pshader_exceptional_blend_12[276] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_exceptional_blend_arr[13] = {
-   { NULL, 0, },
+   { nullptr, 0, },
    { pshader_exceptional_blend_1, 1340, },
    { pshader_exceptional_blend_2, 1444, },
    { pshader_exceptional_blend_3, 1424, },
@@ -2672,10 +2672,10 @@ static ProgramWithCachedVariableLocations pshader_filter_arr[32] = {
    { pshader_filter_9, 708, },
    { pshader_filter_10, 1644, },
    { pshader_filter_11, 1372, },
-   { NULL, 0, },
-   { NULL, 0, },
-   { NULL, 0, },
-   { NULL, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
    { pshader_filter_16, 1740, },
    { pshader_filter_17, 1732, },
    { pshader_filter_18, 1820, },
@@ -2688,10 +2688,10 @@ static ProgramWithCachedVariableLocations pshader_filter_arr[32] = {
    { pshader_filter_25, 1468, },
    { pshader_filter_26, 1820, },
    { pshader_filter_27, 1548, },
-   { NULL, 0, },
-   { NULL, 0, },
-   { NULL, 0, },
-   { NULL, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
 };
 
 static DWORD pshader_blur_2[320] = {
@@ -3193,8 +3193,8 @@ static DWORD pshader_blur_9[621] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_blur_arr[10] = {
-   { NULL, 0, },
-   { NULL, 0, },
+   { nullptr, 0, },
+   { nullptr, 0, },
    { pshader_blur_2, 1280, },
    { pshader_blur_3, 1452, },
    { pshader_blur_4, 1624, },

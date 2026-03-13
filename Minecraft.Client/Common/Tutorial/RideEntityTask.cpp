@@ -23,7 +23,7 @@ bool RideEntityTask::isCompleted()
 
 void RideEntityTask::onRideEntity(shared_ptr<Entity> entity)
 {
-	if (entity->instanceof((eINSTANCEOF) m_eType))
+	if (entity->instanceof(static_cast<eINSTANCEOF>(m_eType)))
 	{
 		bIsCompleted = true;
 	}

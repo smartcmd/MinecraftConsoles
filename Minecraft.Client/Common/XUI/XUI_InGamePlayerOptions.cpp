@@ -16,9 +16,9 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_InGamePlayerOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
-	InGamePlayerOptionsInitData *initData = (InGamePlayerOptionsInitData *)pInitData->pvInitData;
+	InGamePlayerOptionsInitData *initData = static_cast<InGamePlayerOptionsInitData *>(pInitData->pvInitData);
 	m_iPad = initData->iPad;
 	m_networkSmallId = initData->networkSmallId;
 	m_playerPrivileges = initData->playerPrivileges;
@@ -32,14 +32,14 @@ HRESULT CScene_InGamePlayerOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHa
 	INetworkPlayer *localPlayer = g_NetworkManager.GetLocalPlayerByUserIndex( m_iPad );
 	INetworkPlayer *editingPlayer = g_NetworkManager.GetPlayerBySmallId(m_networkSmallId);
 
-	if(editingPlayer != NULL)
+	if(editingPlayer != nullptr)
 	{
 		m_Gamertag.SetText(editingPlayer->GetOnlineName());
 	}
 
 	bool trustPlayers = app.GetGameHostOption(eGameHostOption_TrustPlayers) != 0;
 	bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
-	m_editingSelf = (localPlayer != NULL && localPlayer == editingPlayer);
+	m_editingSelf = (localPlayer != nullptr && localPlayer == editingPlayer);
 
 	if( m_editingSelf || trustPlayers || editingPlayer->IsHost())
 	{
@@ -247,7 +247,7 @@ HRESULT CScene_InGamePlayerOptions::OnKeyDown(XUIMessageInput* pInputData, BOOL&
 			else
 			{
 				INetworkPlayer *editingPlayer = g_NetworkManager.GetPlayerBySmallId(m_networkSmallId);
-				if(!trustPlayers && (editingPlayer != NULL && !editingPlayer->IsHost() ) )
+				if(!trustPlayers && (editingPlayer != nullptr && !editingPlayer->IsHost() ) )
 				{
 					Player::setPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CannotMine,!m_checkboxes[eControl_BuildAndMine].IsChecked());
 					Player::setPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CannotBuild,!m_checkboxes[eControl_BuildAndMine].IsChecked());
@@ -278,9 +278,9 @@ HRESULT CScene_InGamePlayerOptions::OnKeyDown(XUIMessageInput* pInputData, BOOL&
 				// Send update settings packet to server
 				Minecraft *pMinecraft = Minecraft::GetInstance();				
 				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
-				if(player != NULL && player->connection)
+				if(player != nullptr && player->connection)
 				{
-					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( m_networkSmallId, -1, m_playerPrivileges) ) );
+					player->connection->send(std::make_shared<PlayerInfoPacket>(m_networkSmallId, -1, m_playerPrivileges));
 				}
 			}
 
@@ -320,7 +320,7 @@ HRESULT CScene_InGamePlayerOptions::OnControlNavigate(XUIMessageControlNavigate 
 {
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -330,16 +330,16 @@ HRESULT CScene_InGamePlayerOptions::OnControlNavigate(XUIMessageControlNavigate 
 
 int CScene_InGamePlayerOptions::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
-		if(localPlayer != NULL && localPlayer->connection)
+		if(localPlayer != nullptr && localPlayer->connection)
 		{
-			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send(std::make_shared<KickPlayerPacket>(smallId));
 		}
 
 		// Fix for #61494 - [CRASH]: TU7: Code: Multiplayer: Title may crash while kicking a player from an online game.
@@ -353,16 +353,16 @@ int CScene_InGamePlayerOptions::KickPlayerReturned(void *pParam,int iPad,C4JStor
 
 void CScene_InGamePlayerOptions::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	CScene_InGamePlayerOptions *scene = (CScene_InGamePlayerOptions *)callbackParam;
+	CScene_InGamePlayerOptions *scene = static_cast<CScene_InGamePlayerOptions *>(callbackParam);
 
 	HXUIOBJ hBackScene = scene->GetBackScene();
 	CScene_InGameInfo* infoScene;
 	VOID *pObj;
 	XuiObjectFromHandle( hBackScene, &pObj );
-	infoScene = (CScene_InGameInfo *)pObj;
-	if(infoScene != NULL) CScene_InGameInfo::OnPlayerChanged(infoScene,pPlayer,leaving);
+	infoScene = static_cast<CScene_InGameInfo *>(pObj);
+	if(infoScene != nullptr) CScene_InGameInfo::OnPlayerChanged(infoScene,pPlayer,leaving);
 
-	if(leaving && pPlayer != NULL && pPlayer->GetSmallId() == scene->m_networkSmallId)
+	if(leaving && pPlayer != nullptr && pPlayer->GetSmallId() == scene->m_networkSmallId)
 	{
 		app.NavigateBack(scene->m_iPad);
 	}
@@ -373,59 +373,59 @@ HRESULT CScene_InGamePlayerOptions::OnTransitionStart( XUIMessageTransition *pTr
 	if(pTransition->dwTransType == XUI_TRANSITION_TO || pTransition->dwTransType == XUI_TRANSITION_BACKTO)
 	{
 		INetworkPlayer *editingPlayer = g_NetworkManager.GetPlayerBySmallId(m_networkSmallId);
-		if(editingPlayer != NULL)
+		if(editingPlayer != nullptr)
 		{
 			short colourIndex = app.GetPlayerColour( m_networkSmallId );
 			switch(colourIndex)
 			{
 			case 1:
-				m_Icon.PlayVisualRange(L"P1",NULL,L"P1");
+				m_Icon.PlayVisualRange(L"P1",nullptr,L"P1");
 				break;
 			case 2:
-				m_Icon.PlayVisualRange(L"P2",NULL,L"P2");
+				m_Icon.PlayVisualRange(L"P2",nullptr,L"P2");
 				break;
 			case 3:
-				m_Icon.PlayVisualRange(L"P3",NULL,L"P3");
+				m_Icon.PlayVisualRange(L"P3",nullptr,L"P3");
 				break;
 			case 4:
-				m_Icon.PlayVisualRange(L"P4",NULL,L"P4");
+				m_Icon.PlayVisualRange(L"P4",nullptr,L"P4");
 				break;
 			case 5:
-				m_Icon.PlayVisualRange(L"P5",NULL,L"P5");
+				m_Icon.PlayVisualRange(L"P5",nullptr,L"P5");
 				break;
 			case 6:
-				m_Icon.PlayVisualRange(L"P6",NULL,L"P6");
+				m_Icon.PlayVisualRange(L"P6",nullptr,L"P6");
 				break;
 			case 7:
-				m_Icon.PlayVisualRange(L"P7",NULL,L"P7");
+				m_Icon.PlayVisualRange(L"P7",nullptr,L"P7");
 				break;
 			case 8:
-				m_Icon.PlayVisualRange(L"P8",NULL,L"P8");
+				m_Icon.PlayVisualRange(L"P8",nullptr,L"P8");
 				break;
 			case 9:
-				m_Icon.PlayVisualRange(L"P9",NULL,L"P9");
+				m_Icon.PlayVisualRange(L"P9",nullptr,L"P9");
 				break;
 			case 10:
-				m_Icon.PlayVisualRange(L"P10",NULL,L"P10");
+				m_Icon.PlayVisualRange(L"P10",nullptr,L"P10");
 				break;
 			case 11:
-				m_Icon.PlayVisualRange(L"P11",NULL,L"P11");
+				m_Icon.PlayVisualRange(L"P11",nullptr,L"P11");
 				break;
 			case 12:
-				m_Icon.PlayVisualRange(L"P12",NULL,L"P12");
+				m_Icon.PlayVisualRange(L"P12",nullptr,L"P12");
 				break;
 			case 13:
-				m_Icon.PlayVisualRange(L"P13",NULL,L"P13");
+				m_Icon.PlayVisualRange(L"P13",nullptr,L"P13");
 				break;
 			case 14:
-				m_Icon.PlayVisualRange(L"P14",NULL,L"P14");
+				m_Icon.PlayVisualRange(L"P14",nullptr,L"P14");
 				break;
 			case 15:
-				m_Icon.PlayVisualRange(L"P15",NULL,L"P15");
+				m_Icon.PlayVisualRange(L"P15",nullptr,L"P15");
 				break;
 			case 0:
 			default:
-				m_Icon.PlayVisualRange(L"P0",NULL,L"P0");
+				m_Icon.PlayVisualRange(L"P0",nullptr,L"P0");
 				break;
 			};
 		}

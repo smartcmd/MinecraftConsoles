@@ -12,7 +12,7 @@ UIScene_TeleportMenu::UIScene_TeleportMenu(int iPad, void *initData, UILayer *pa
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 	
-	TeleportMenuInitData *initParam = (TeleportMenuInitData *)initData;
+	TeleportMenuInitData *initParam = static_cast<TeleportMenuInitData *>(initData);
 
 	m_teleportToPlayer = initParam->teleportToPlayer;
 
@@ -41,7 +41,7 @@ UIScene_TeleportMenu::UIScene_TeleportMenu(int iPad, void *initData, UILayer *pa
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL && !(player->IsLocal() && player->GetUserIndex() == m_iPad) )
+		if( player != nullptr && !(player->IsLocal() && player->GetUserIndex() == m_iPad) )
 		{
 			m_players[m_playersCount] = player->GetSmallId();
 			++m_playersCount;
@@ -59,7 +59,7 @@ UIScene_TeleportMenu::UIScene_TeleportMenu(int iPad, void *initData, UILayer *pa
 			}
 
 			int voiceStatus = 0;
-			if(player != NULL && player->HasVoice() )
+			if(player != nullptr && player->HasVoice() )
 			{
 				if( player->IsMutedByLocalUser(m_iPad) )
 				{
@@ -131,7 +131,7 @@ void UIScene_TeleportMenu::handleReload()
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL && !(player->IsLocal() && player->GetUserIndex() == m_iPad)  )
+		if( player != nullptr && !(player->IsLocal() && player->GetUserIndex() == m_iPad)  )
 		{
 			m_players[m_playersCount] = player->GetSmallId();
 			++m_playersCount;
@@ -149,7 +149,7 @@ void UIScene_TeleportMenu::handleReload()
 			}
 
 			int voiceStatus = 0;
-			if(player != NULL && player->HasVoice() )
+			if(player != nullptr && player->HasVoice() )
 			{
 				if( player->IsMutedByLocalUser(m_iPad) )
 				{
@@ -189,7 +189,7 @@ void UIScene_TeleportMenu::tick()
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId( m_players[i] );
 
-		if( player != NULL )
+		if( player != nullptr )
 		{
 			m_players[i] = player->GetSmallId();
 
@@ -250,11 +250,11 @@ void UIScene_TeleportMenu::handleInput(int iPad, int key, bool repeat, bool pres
 
 void UIScene_TeleportMenu::handlePress(F64 controlId, F64 childId)
 {
-	app.DebugPrintf("Pressed = %d, %d\n", (int)controlId, (int)childId);
-	switch((int)controlId)
+	app.DebugPrintf("Pressed = %d, %d\n", static_cast<int>(controlId), static_cast<int>(childId));
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GamePlayers:
-		int currentSelection = (int)childId;
+		int currentSelection = static_cast<int>(childId);
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ currentSelection ] );
 		INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(m_iPad);
 		
@@ -275,7 +275,7 @@ void UIScene_TeleportMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_TeleportMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	UIScene_TeleportMenu *scene = (UIScene_TeleportMenu *)callbackParam;
+	UIScene_TeleportMenu *scene = static_cast<UIScene_TeleportMenu *>(callbackParam);
 	bool playerFound = false;
 	int foundIndex = 0;
 	for(int i = 0; i < scene->m_playersCount; ++i)
@@ -320,7 +320,7 @@ void UIScene_TeleportMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer *
 		}
 
 		int voiceStatus = 0;
-		if(pPlayer != NULL && pPlayer->HasVoice() )
+		if(pPlayer != nullptr && pPlayer->HasVoice() )
 		{
 			if( pPlayer->IsMutedByLocalUser(scene->m_iPad) )
 			{

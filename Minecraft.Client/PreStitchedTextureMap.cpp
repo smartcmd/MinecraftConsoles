@@ -26,11 +26,11 @@ PreStitchedTextureMap::PreStitchedTextureMap(int type, const wstring &name, cons
 	this->missingTexture = missingTexture;
 
 	// 4J Initialisers
-	missingPosition = NULL;
-	stitchResult = NULL;
+	missingPosition = nullptr;
+	stitchResult = nullptr;
 
 	m_mipMap = mipmap;
-	missingPosition = (StitchedTexture *)(new SimpleIcon(NAME_MISSING_TEXTURE,NAME_MISSING_TEXTURE,0,0,1,1));
+	missingPosition = static_cast<StitchedTexture *>(new SimpleIcon(NAME_MISSING_TEXTURE, NAME_MISSING_TEXTURE, 0, 0, 1, 1));
 }
 
 void PreStitchedTextureMap::stitch()
@@ -48,7 +48,7 @@ void PreStitchedTextureMap::stitch()
 		//for (Tile tile : Tile.tiles)
 		for(unsigned int i = 0; i < Tile::TILE_NUM_COUNT; ++i)
 		{
-			if (Tile::tiles[i] != NULL)
+			if (Tile::tiles[i] != nullptr)
 			{
 				Tile::tiles[i]->registerIcons(this);
 			}
@@ -62,7 +62,7 @@ void PreStitchedTextureMap::stitch()
 	for(unsigned int i = 0; i < Item::ITEM_NUM_COUNT; ++i)
 	{
 		Item *item = Item::items[i];
-		if (item != NULL && item->getIconType() == iconType)
+		if (item != nullptr && item->getIconType() == iconType)
 		{
 			item->registerIcons(this);
 		}
@@ -121,7 +121,7 @@ void PreStitchedTextureMap::stitch()
 	int height = image->getHeight();
 	int width = image->getWidth();
 
-	if(stitchResult != NULL)
+	if(stitchResult != nullptr)
 	{
 		TextureManager::getInstance()->unregisterTexture(name, stitchResult);
 		delete stitchResult;
@@ -216,7 +216,7 @@ void PreStitchedTextureMap::makeTextureAnimated(TexturePack *texturePack, Stitch
 
 		// TODO: [EB] Put the frames into a proper object, not this inside out hack
 		vector<Texture *> *frames = TextureManager::getInstance()->createTextures(filename, m_mipMap);
-		if (frames == NULL || frames->empty())
+		if (frames == nullptr || frames->empty())
 		{
 			return; // Couldn't load a texture, skip it
 		}
@@ -248,10 +248,10 @@ StitchedTexture *PreStitchedTextureMap::getTexture(const wstring &name)
 	app.DebugPrintf("Not implemented!\n");
 	__debugbreak();
 #endif
-	return NULL;
+	return nullptr;
 #if 0
 	StitchedTexture *result = texturesByName.find(name)->second;
-	if (result == NULL) result = missingPosition;
+	if (result == nullptr) result = missingPosition;
 	return result;
 #endif
 }
@@ -272,10 +272,10 @@ Texture *PreStitchedTextureMap::getStitchedTexture()
 // 4J Stu - register is a reserved keyword in C++
 Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 {
-	Icon *result = NULL;
+	Icon *result = nullptr;
 	if (name.empty())
 	{
-		app.DebugPrintf("Don't register NULL\n");
+		app.DebugPrintf("Don't register nullptr\n");
 #ifndef _CONTENT_PACKAGE
 		__debugbreak();
 #endif

@@ -267,11 +267,11 @@ byteArray DsMobKilled::createParamBlob(shared_ptr<Player> player, shared_ptr<Mob
 	// 4J-JEV: Get the id we use for Durango Server Stats.
 	int mob_networking_id;
 	eINSTANCEOF mobEType = mob->GetType();
-	if ( (mobEType == eTYPE_SPIDER) && (mob->rider.lock() != NULL) && (mob->rider.lock()->GetType() == eTYPE_SKELETON) && mob->rider.lock()->isAlive() )
+	if ( (mobEType == eTYPE_SPIDER) && (mob->rider.lock() != nullptr) && (mob->rider.lock()->GetType() == eTYPE_SKELETON) && mob->rider.lock()->isAlive() )
 	{
 		mob_networking_id = SPIDER_JOCKEY_ID; // Spider jockey only a concept for leaderboards.
 	}
-	else if ( (mobEType == eTYPE_SKELETON) && (mob->riding != NULL) && (mob->riding->GetType() == eTYPE_SPIDER) && mob->riding->isAlive() )
+	else if ( (mobEType == eTYPE_SKELETON) && (mob->riding != nullptr) && (mob->riding->GetType() == eTYPE_SPIDER) && mob->riding->isAlive() )
 	{
 		mob_networking_id = SPIDER_JOCKEY_ID; // Spider jockey only a concept for leaderboards.
 	}
@@ -303,7 +303,7 @@ byteArray DsMobKilled::createParamBlob(shared_ptr<Player> player, shared_ptr<Mob
 	Param param = {
 		DsMobKilled::MELEE, 
 		mob_networking_id, 
-		(item != NULL ? item->getItem()->id : 0),
+		(item != nullptr ? item->getItem()->id : 0),
 		mob->distanceTo(player->x, player->y, player->z), 
 		0/*not needed*/
 	};
@@ -345,7 +345,7 @@ void DsMobInteract::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray pa
 byteArray DsMobInteract::createParamBlob(eInteract interactionId, int entityId)
 {
 	byteArray output;
-	Param param = { interactionId, EntityIO::eTypeToIoid((eINSTANCEOF)entityId) };
+	Param param = { interactionId, EntityIO::eTypeToIoid(static_cast<eINSTANCEOF>(entityId)) };
 	output.data = (byte*) new Param(param);
 	output.length = sizeof(Param);
 	return output;
@@ -423,7 +423,7 @@ void DsTravel::flush(shared_ptr<LocalPlayer> player)
 	{
 		if (param_cache[iPad][i] > 0)
 		{
-			write( player, (eMethod) i, param_cache[iPad][i] );
+			write( player, static_cast<eMethod>(i), param_cache[iPad][i] );
 			param_cache[iPad][i] = 0;
 		}
 	}
@@ -729,7 +729,7 @@ Stat *DurangoStats::get_stat(int i)
 	default: assert(false); break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Stat* DurangoStats::get_walkOneM()
@@ -833,7 +833,7 @@ Stat* DurangoStats::get_itemsCrafted(int itemId)
 	case Item::diamond_Id:
 	case Item::redStone_Id:
 	case Item::emerald_Id:
-		return NULL;
+		return nullptr;
 
 	case Item::dye_powder_Id:
 	default:
@@ -890,7 +890,7 @@ Stat* DurangoStats::get_achievement(eAward achievementId)
 	}
 	
 	// Other achievements awarded through more detailed generic events.
-	return NULL;
+	return nullptr;
 }
 
 byteArray DurangoStats::getParam_walkOneM(int distance)
@@ -1093,25 +1093,25 @@ bool DurangoStats::enhancedAchievement(eAward achievementId)
 
 void DurangoStats::generatePlayerSession()
 {
-	DurangoStats *dsInstance = (DurangoStats *) GenericStats::getInstance();
+	DurangoStats *dsInstance = static_cast<DurangoStats *>(GenericStats::getInstance());
 	CoCreateGuid( &dsInstance->playerSessionId );
 }
 
 LPCGUID DurangoStats::getPlayerSession()
 {
-	DurangoStats *dsInstance = (DurangoStats *) GenericStats::getInstance();
+	DurangoStats *dsInstance = static_cast<DurangoStats *>(GenericStats::getInstance());
 	LPCGUID lpcguid = &dsInstance->playerSessionId;
 	return lpcguid;
 }
 
 void DurangoStats::setMultiplayerCorrelationId(Platform::String^ mcpId)
 {
-	((DurangoStats*)GenericStats::getInstance())->multiplayerCorrelationId = mcpId;
+	static_cast<DurangoStats *>(GenericStats::getInstance())->multiplayerCorrelationId = mcpId;
 }
 
 LPCWSTR DurangoStats::getMultiplayerCorrelationId()
 {
-	return ((DurangoStats*)GenericStats::getInstance())->multiplayerCorrelationId->Data();
+	return static_cast<DurangoStats *>(GenericStats::getInstance())->multiplayerCorrelationId->Data();
 }
 
 LPCWSTR DurangoStats::getUserId(shared_ptr<LocalPlayer> player)
@@ -1130,7 +1130,7 @@ LPCWSTR DurangoStats::getUserId(int iPad)
 
 void DurangoStats::playerSessionStart(PlayerUID uid, shared_ptr<Player> plr)
 {
-	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
+	if (plr != nullptr && plr->level != nullptr && plr->level->getLevelData() != nullptr)
 	{
 		//wprintf(uid.toString().c_str());
 		
@@ -1164,7 +1164,7 @@ void DurangoStats::playerSessionStart(int iPad)
 void DurangoStats::playerSessionPause(int iPad)
 {
 	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
-	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
+	if (plr != nullptr && plr->level != nullptr && plr->level->getLevelData() != nullptr)
 	{
 		PlayerUID puid;
 		ProfileManager.GetXUID(iPad, &puid, true);
@@ -1187,7 +1187,7 @@ void DurangoStats::playerSessionPause(int iPad)
 void DurangoStats::playerSessionResume(int iPad)
 {
 	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
-	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
+	if (plr != nullptr && plr->level != nullptr && plr->level->getLevelData() != nullptr)
 	{
 		PlayerUID puid;
 		ProfileManager.GetXUID(iPad, &puid, true);
@@ -1214,7 +1214,7 @@ void DurangoStats::playerSessionResume(int iPad)
 void DurangoStats::playerSessionEnd(int iPad)
 {
 	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
-	if (plr != NULL)
+	if (plr != nullptr)
 	{
 		DurangoStats::getInstance()->travel->flush(plr);
 	}

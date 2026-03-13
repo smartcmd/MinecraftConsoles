@@ -30,12 +30,12 @@ CXuiCtrlEnchantmentBook::CXuiCtrlEnchantmentBook() :
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
-	model = NULL;
+	model = nullptr;
 
 	time = 0;
 	flip = oFlip = flipT = flipA = 0.0f;
@@ -44,7 +44,7 @@ CXuiCtrlEnchantmentBook::CXuiCtrlEnchantmentBook() :
 
 CXuiCtrlEnchantmentBook::~CXuiCtrlEnchantmentBook()
 {
-	//if(model != NULL) delete model;
+	//if(model != nullptr) delete model;
 }
 
 //-----------------------------------------------------------------------------
@@ -60,13 +60,13 @@ HRESULT CXuiCtrlEnchantmentBook::OnInit(XUIMessageInit* pInitData, BOOL& rfHandl
 	{
 		XuiElementGetParent(parent,&parent);
 		currentClass = XuiGetObjectClass( parent );
-	} while (parent != NULL && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
+	} while (parent != nullptr && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
 
-	assert( parent != NULL );
+	assert( parent != nullptr );
 
 	VOID *pObj;
 	XuiObjectFromHandle( parent, &pObj );
-	m_containerScene = (CXuiSceneEnchant *)pObj;
+	m_containerScene = static_cast<CXuiSceneEnchant *>(pObj);
 
 	last = nullptr;
 
@@ -166,12 +166,12 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 
 	glEnable(GL_CULL_FACE);
 
-	if(model == NULL)
+	if(model == nullptr)
 	{
 		// Share the model the the EnchantTableRenderer
 
 		EnchantTableRenderer *etr = (EnchantTableRenderer*)TileEntityRenderDispatcher::instance->getRenderer(eTYPE_ENCHANTMENTTABLEENTITY);
-		if(etr != NULL)
+		if(etr != nullptr)
 		{
 			model = etr->bookModel;
 		}
@@ -181,7 +181,7 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 		}
 	}
 
-    model->render(NULL, 0, ff1, ff2, o, 0, 1 / 16.0f,true);
+    model->render(nullptr, 0, ff1, ff2, o, 0, 1 / 16.0f,true);
 	glDisable(GL_CULL_FACE);
 
     glPopMatrix();
@@ -281,7 +281,7 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 //
 //    glEnable(GL_RESCALE_NORMAL);
 //
-//    model.render(NULL, 0, ff1, ff2, o, 0, 1 / 16.0f,true);
+//    model.render(nullptr, 0, ff1, ff2, o, 0, 1 / 16.0f,true);
 //
 //    glDisable(GL_RESCALE_NORMAL);
 //    Lighting::turnOff();

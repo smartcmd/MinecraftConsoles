@@ -10,14 +10,14 @@ UIScene_DispenserMenu::UIScene_DispenserMenu(int iPad, void *_initData, UILayer 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	TrapScreenInput *initData = (TrapScreenInput *)_initData;
+	TrapScreenInput *initData = static_cast<TrapScreenInput *>(_initData);
 
 	m_labelDispenser.init(initData->trap->getName());
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[initData->iPad] != NULL )
+	if( pMinecraft->localgameModes[initData->iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Trap_Menu, this);
 	}
@@ -156,7 +156,7 @@ void UIScene_DispenserMenu::setSectionSelectedSlot(ESceneSection eSection, int x
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionTrapTrap:
@@ -177,7 +177,7 @@ void UIScene_DispenserMenu::setSectionSelectedSlot(ESceneSection eSection, int x
 
 UIControl *UIScene_DispenserMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionTrapTrap:

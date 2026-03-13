@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_InGameHostOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -76,9 +76,9 @@ HRESULT CScene_InGameHostOptions::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 			{
 				Minecraft *pMinecraft = Minecraft::GetInstance();				
 				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
-				if(player != NULL && player->connection)
+				if(player != nullptr && player->connection)
 				{
-					player->connection->send( shared_ptr<ServerSettingsChangedPacket>( new ServerSettingsChangedPacket( ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions) ) );
+					player->connection->send(std::make_shared<ServerSettingsChangedPacket>(ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions));
 				}
 			}
 

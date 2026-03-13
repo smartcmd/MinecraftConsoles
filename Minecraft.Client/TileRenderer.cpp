@@ -19,7 +19,7 @@ const float smallUV = ( 1.0f / 16.0f );
 
 void TileRenderer::_init()
 {
-	fixedTexture = NULL;
+	fixedTexture = nullptr;
 	xFlipTexture = false;
 	noCulling = false;
 	applyAmbienceOcclusion = false;
@@ -44,7 +44,7 @@ void TileRenderer::_init()
 	xMin = 0;
 	yMin = 0;
 	zMin = 0;
-	cache = NULL;
+	cache = nullptr;
 }
 
 bool TileRenderer::isTranslucentAt(LevelSource *level, int x, int y, int z)
@@ -131,7 +131,7 @@ int TileRenderer::getLightColor( Tile *tt, LevelSource *level, int x, int y, int
 				// Tiles that were determined to be invisible (by being surrounded by solid stuff) will be set to 255 rather than their actual ID
 				if( ucTileId != 255 )
 				{
-					tileId = (int)ucTileId;
+					tileId = static_cast<int>(ucTileId);
 				}
 			}
 			int ret = tt->getLightColor(level, x, y, z, tileId);
@@ -170,7 +170,7 @@ TileRenderer::TileRenderer( LevelSource* level )
 
 TileRenderer::TileRenderer()
 {
-	this->level = NULL;
+	this->level = nullptr;
 	_init();
 }
 
@@ -181,7 +181,7 @@ void TileRenderer::setFixedTexture( Icon *fixedTexture )
 
 void TileRenderer::clearFixedTexture()
 {
-	this->fixedTexture = NULL;
+	this->fixedTexture = nullptr;
 }
 
 bool TileRenderer::hasFixedTexture()
@@ -195,7 +195,7 @@ bool TileRenderer::hasFixedTexture()
 	}
 #endif
 
-	return fixedTexture != NULL;
+	return fixedTexture != nullptr;
 }
 
 void TileRenderer::setShape(float x0, float y0, float z0, float x1, float y1, float z1)
@@ -347,7 +347,7 @@ bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceDat
 		retVal = tesselateTorchInWorld( tt, x, y, z );
 		break;
 	case Tile::SHAPE_FIRE:
-		retVal = tesselateFireInWorld( (FireTile *)tt, x, y, z );
+		retVal = tesselateFireInWorld( static_cast<FireTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_RED_DUST:
 		retVal = tesselateDustInWorld( tt, x, y, z );
@@ -359,19 +359,19 @@ bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceDat
 		retVal = tesselateDoorInWorld( tt, x, y, z );
 		break;
 	case Tile::SHAPE_RAIL:
-		retVal = tesselateRailInWorld( ( RailTile* )tt, x, y, z );
+		retVal = tesselateRailInWorld( static_cast<RailTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_STAIRS:
-		retVal = tesselateStairsInWorld( (StairTile *)tt, x, y, z );
+		retVal = tesselateStairsInWorld( static_cast<StairTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_EGG:
-		retVal = tesselateEggInWorld((EggTile*) tt, x, y, z);
+		retVal = tesselateEggInWorld(static_cast<EggTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_FENCE:
-		retVal = tesselateFenceInWorld( ( FenceTile* )tt, x, y, z );
+		retVal = tesselateFenceInWorld( static_cast<FenceTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_WALL:
-		retVal = tesselateWallInWorld( (WallTile *) tt, x, y, z);
+		retVal = tesselateWallInWorld( static_cast<WallTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_LEVER:
 		retVal = tesselateLeverInWorld( tt, x, y, z );
@@ -386,13 +386,13 @@ bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceDat
 		retVal = tesselateBedInWorld( tt, x, y, z );
 		break;
 	case Tile::SHAPE_REPEATER:
-		retVal = tesselateRepeaterInWorld((RepeaterTile *)tt, x, y, z);
+		retVal = tesselateRepeaterInWorld(static_cast<RepeaterTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_DIODE:
-		retVal = tesselateDiodeInWorld( (DiodeTile *)tt, x, y, z );
+		retVal = tesselateDiodeInWorld( static_cast<DiodeTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_COMPARATOR:
-		retVal = tesselateComparatorInWorld((ComparatorTile *)tt, x, y, z);
+		retVal = tesselateComparatorInWorld(static_cast<ComparatorTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_PISTON_BASE:
 		retVal = tesselatePistonBaseInWorld( tt, x, y, z, false, forceData );
@@ -401,7 +401,7 @@ bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceDat
 		retVal = tesselatePistonExtensionInWorld( tt, x, y, z, true, forceData );
 		break;
 	case Tile::SHAPE_IRON_FENCE:
-		retVal = tesselateThinFenceInWorld( ( ThinFenceTile* )tt, x, y, z );
+		retVal = tesselateThinFenceInWorld( static_cast<ThinFenceTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_THIN_PANE:
 		retVal = tesselateThinPaneInWorld(tt, x, y, z);
@@ -410,25 +410,25 @@ bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceDat
 		retVal = tesselateVineInWorld( tt, x, y, z );
 		break;
 	case Tile::SHAPE_FENCE_GATE:
-		retVal = tesselateFenceGateInWorld( ( FenceGateTile* )tt, x, y, z );
+		retVal = tesselateFenceGateInWorld( static_cast<FenceGateTile *>(tt), x, y, z );
 		break;
 	case Tile::SHAPE_CAULDRON:
-		retVal = tesselateCauldronInWorld((CauldronTile* ) tt, x, y, z);
+		retVal = tesselateCauldronInWorld(static_cast<CauldronTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_FLOWER_POT:
-		retVal = tesselateFlowerPotInWorld((FlowerPotTile *) tt, x, y, z);
+		retVal = tesselateFlowerPotInWorld(static_cast<FlowerPotTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_ANVIL:
-		retVal = tesselateAnvilInWorld((AnvilTile *) tt, x, y, z);
+		retVal = tesselateAnvilInWorld(static_cast<AnvilTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_BREWING_STAND:
-		retVal = tesselateBrewingStandInWorld((BrewingStandTile* ) tt, x, y, z);
+		retVal = tesselateBrewingStandInWorld(static_cast<BrewingStandTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_PORTAL_FRAME:
-		retVal = tesselateAirPortalFrameInWorld((TheEndPortalFrameTile *)tt, x, y, z);
+		retVal = tesselateAirPortalFrameInWorld(static_cast<TheEndPortalFrameTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_COCOA:
-		retVal = tesselateCocoaInWorld((CocoaTile *)tt, x, y, z);
+		retVal = tesselateCocoaInWorld(static_cast<CocoaTile *>(tt), x, y, z);
 		break;
 	case Tile::SHAPE_BEACON:
 		retVal = tesselateBeaconInWorld(tt, x, y, z);
@@ -907,7 +907,7 @@ bool TileRenderer::tesselateFlowerPotInWorld(FlowerPotTile *tt, int x, int y, in
 		float xOff = 0;
 		float yOff = 4;
 		float zOff = 0;
-		Tile *plant = NULL;
+		Tile *plant = nullptr;
 
 		switch (type)
 		{
@@ -927,7 +927,7 @@ bool TileRenderer::tesselateFlowerPotInWorld(FlowerPotTile *tt, int x, int y, in
 
 		t->addOffset(xOff / 16.0f, yOff / 16.0f, zOff / 16.0f);
 
-		if (plant != NULL)
+		if (plant != nullptr)
 		{
 			tesselateInWorld(plant, x, y, z);
 		}
@@ -1160,23 +1160,23 @@ bool TileRenderer::tesselateTorchInWorld( Tile* tt, int x, int y, int z )
 	float		h = 0.20f;
 	if ( dir == 1 )
 	{
-		tesselateTorch( tt, (float)x - r2, (float)y + h, (float)z, -r, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x) - r2, static_cast<float>(y) + h, static_cast<float>(z), -r, 0.0f, 0 );
 	}
 	else if ( dir == 2 )
 	{
-		tesselateTorch( tt, (float)x + r2, (float)y + h, (float)z, +r, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x) + r2, static_cast<float>(y) + h, static_cast<float>(z), +r, 0.0f, 0 );
 	}
 	else if ( dir == 3 )
 	{
-		tesselateTorch( tt, (float)x, (float)y + h, z - r2, 0.0f, -r, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y) + h, z - r2, 0.0f, -r, 0 );
 	}
 	else if ( dir == 4 )
 	{
-		tesselateTorch( tt, (float)x, (float)y + h, (float)z + r2, 0.0f, +r, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y) + h, static_cast<float>(z) + r2, 0.0f, +r, 0 );
 	}
 	else
 	{
-		tesselateTorch( tt, (float)x, (float)y, (float)z, 0.0f, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f, 0.0f, 0 );
 	}
 	return true;
 
@@ -1257,7 +1257,7 @@ bool TileRenderer::tesselateRepeaterInWorld(RepeaterTile *tt, int x, int y, int 
 			south = 14.f;
 			break;
 		}
-		setShape(west / 16.0f + (float) transmitterX, 2.f / 16.0f, north / 16.0f + (float) transmitterZ, east / 16.0f + (float) transmitterX, 4.f / 16.0f, south / 16.0f + (float) transmitterZ);
+		setShape(west / 16.0f + static_cast<float>(transmitterX), 2.f / 16.0f, north / 16.0f + static_cast<float>(transmitterZ), east / 16.0f + static_cast<float>(transmitterX), 4.f / 16.0f, south / 16.0f + static_cast<float>(transmitterZ));
 		double u0 = lockTex->getU(west);
 		double v0 = lockTex->getV(north);
 		double u1 = lockTex->getU(east);
@@ -1503,7 +1503,7 @@ bool TileRenderer::tesselatePistonBaseInWorld( Tile* tt, int x, int y, int z, bo
 		}
 		// weird way of telling the piston to use the
 		// "inside" texture for the forward-facing edge
-		((PistonBaseTile *) tt)->updateShape((float) tileShapeX0, (float) tileShapeY0, (float) tileShapeZ0, (float) tileShapeX1, (float) tileShapeY1, (float) tileShapeZ1);
+		static_cast<PistonBaseTile *>(tt)->updateShape((float) tileShapeX0, (float) tileShapeY0, (float) tileShapeZ0, (float) tileShapeX1, (float) tileShapeY1, (float) tileShapeZ1);
 		tesselateBlockInWorld( tt, x, y, z );
 		northFlip = FLIP_NONE;
 		southFlip = FLIP_NONE;
@@ -1511,7 +1511,7 @@ bool TileRenderer::tesselatePistonBaseInWorld( Tile* tt, int x, int y, int z, bo
 		westFlip = FLIP_NONE;
 		upFlip = FLIP_NONE;
 		downFlip = FLIP_NONE;
-		((PistonBaseTile *) tt)->updateShape((float) tileShapeX0, (float) tileShapeY0, (float) tileShapeZ0, (float) tileShapeX1, (float) tileShapeY1, (float) tileShapeZ1);
+		static_cast<PistonBaseTile *>(tt)->updateShape((float) tileShapeX0, (float) tileShapeY0, (float) tileShapeZ0, (float) tileShapeX1, (float) tileShapeY1, (float) tileShapeZ1);
 	}
 	else
 	{
@@ -1902,7 +1902,7 @@ bool TileRenderer::tesselateLeverInWorld( Tile* tt, int x, int y, int z )
 		}
 	}
 
-	Vec3*		c0 = NULL, *c1 = NULL, *c2 = NULL, *c3 = NULL;
+	Vec3*		c0 = nullptr, *c1 = nullptr, *c2 = nullptr, *c3 = nullptr;
 	for ( int i = 0; i < 6; i++ )
 	{
 		if ( i == 0 )
@@ -1961,10 +1961,10 @@ bool TileRenderer::tesselateLeverInWorld( Tile* tt, int x, int y, int z )
 			c2 = corners[7];
 			c3 = corners[4];
 		}
-		t->vertexUV( ( float )( c0->x ), ( float )( c0->y ), ( float )( c0->z ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( c1->x ), ( float )( c1->y ), ( float )( c1->z ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( c2->x ), ( float )( c2->y ), ( float )( c2->z ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( c3->x ), ( float )( c3->y ), ( float )( c3->z ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(c0->x), static_cast<float>(c0->y), static_cast<float>(c0->z), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(c1->x), static_cast<float>(c1->y), static_cast<float>(c1->z), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(c2->x), static_cast<float>(c2->y), static_cast<float>(c2->z), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(c3->x), static_cast<float>(c3->y), static_cast<float>(c3->z), ( float )( u0 ), ( float )( v0 ) );
 	}
 	return true;
 
@@ -2073,7 +2073,7 @@ bool TileRenderer::tesselateTripwireSourceInWorld(Tile *tt, int x, int y, int z)
 		corners[i]->z += z + 0.5;
 	}
 
-	Vec3 *c0 = NULL, *c1 = NULL, *c2 = NULL, *c3 = NULL;
+	Vec3 *c0 = nullptr, *c1 = nullptr, *c2 = nullptr, *c3 = nullptr;
 	int stickX0 = 7;
 	int stickX1 = 9;
 	int stickY0 = 9;
@@ -2491,15 +2491,15 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 		float	z0_ = z + 0.5f - 0.3f;
 		float	z1_ = z + 0.5f + 0.3f;
 
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v0 ) );
 
 		tex = secondTex;
 		u0 = tex->getU0(true);
@@ -2507,15 +2507,15 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 		u1 = tex->getU1(true);
 		v1 = tex->getV1(true);
 
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
 
 		x0 = x + 0.5f - 0.5f;
 		x1 = x + 0.5f + 0.5f;
@@ -2527,15 +2527,15 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 		z0_ = z + 0.5f - 0.4f;
 		z1_ = z + 0.5f + 0.4f;
 
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v0 ) );
 
 		tex = firstTex;
 		u0 = tex->getU0(true);
@@ -2543,15 +2543,15 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 		u1 = tex->getU1(true);
 		v1 = tex->getV1(true);
 
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
 	}
 	else
 	{
@@ -2595,10 +2595,10 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 		{
 			t->vertexUV( ( float )( x + 1 - r ), ( float )( y + h + yo ), ( float )( z +
 				0.0f ), ( float )( u0 ), ( float )( v0 ) );
-			t->vertexUV( ( float )( x + 1 - 0 ), ( float )( y + 0 + yo ), ( float )( z +
-				0.0f ), ( float )( u0 ), ( float )( v1 ) );
-			t->vertexUV( ( float )( x + 1 - 0 ), ( float )( y + 0 + yo ), ( float )( z +
-				1.0f ), ( float )( u1 ), ( float )( v1 ) );
+			t->vertexUV( static_cast<float>(x + 1 - 0), ( float )( y + 0 + yo ), ( float )( z +
+                                                                                            0.0f ), ( float )( u0 ), ( float )( v1 ) );
+			t->vertexUV( static_cast<float>(x + 1 - 0), ( float )( y + 0 + yo ), ( float )( z +
+                                                                                            1.0f ), ( float )( u1 ), ( float )( v1 ) );
 			t->vertexUV( ( float )( x + 1 - r ), ( float )( y + h + yo ), ( float )( z +
 				1.0f ), ( float )( u1 ), ( float )( v0 ) );
 
@@ -2674,14 +2674,14 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 
 			if ( ( ( x + y + z ) & 1 ) == 0 )
 			{
-				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z +
-					0 ), ( float )( u1 ), ( float )( v0 ) );
-				t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z +
-					0 ), ( float )( u1 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z +
-					1 ), ( float )( u0 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z +
-					1 ), ( float )( u0 ), ( float )( v0 ) );
+				t->vertexUV( static_cast<float>(x0_), ( float )( y + h ), static_cast<float>(z +
+                                                                                             0), ( float )( u1 ), ( float )( v0 ) );
+				t->vertexUV( static_cast<float>(x0), static_cast<float>(y + 0), static_cast<float>(z +
+                                                                                                   0), ( float )( u1 ), ( float )( v1 ) );
+				t->vertexUV( static_cast<float>(x0), static_cast<float>(y + 0), static_cast<float>(z +
+                                                                                                   1), ( float )( u0 ), ( float )( v1 ) );
+				t->vertexUV( static_cast<float>(x0_), ( float )( y + h ), static_cast<float>(z +
+                                                                                             1), ( float )( u0 ), ( float )( v0 ) );
 
 				tex = secondTex;
 				u0 = tex->getU0(true);
@@ -2689,25 +2689,25 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 				u1 = tex->getU1(true);
 				v1 = tex->getV1(true);
 
-				t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z +
-					1.0f ), ( float )( u1 ), ( float )( v0 ) );
-				t->vertexUV( ( float )( x1 ), ( float )( y + 0.0f ), ( float )( z +
-					1.0f ), ( float )( u1 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x1 ), ( float )( y + 0.0f ), ( float )( z +
-					0 ), ( float )( u0 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z +
-					0 ), ( float )( u0 ), ( float )( v0 ) );
+				t->vertexUV( static_cast<float>(x1_), ( float )( y + h ), ( float )( z +
+                                                                                     1.0f ), ( float )( u1 ), ( float )( v0 ) );
+				t->vertexUV( static_cast<float>(x1), ( float )( y + 0.0f ), ( float )( z +
+                                                                                       1.0f ), ( float )( u1 ), ( float )( v1 ) );
+				t->vertexUV( static_cast<float>(x1), ( float )( y + 0.0f ), static_cast<float>(z +
+                                                                                               0), ( float )( u0 ), ( float )( v1 ) );
+				t->vertexUV( static_cast<float>(x1_), ( float )( y + h ), static_cast<float>(z +
+                                                                                             0), ( float )( u0 ), ( float )( v0 ) );
 			}
 			else
 			{
 				t->vertexUV( ( float )( x + 0.0f ), ( float )( y +
-					h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
+					h ), static_cast<float>(z1_), ( float )( u1 ), ( float )( v0 ) );
 				t->vertexUV( ( float )( x + 0.0f ), ( float )( y +
-					0.0f ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+					0.0f ), static_cast<float>(z1), ( float )( u1 ), ( float )( v1 ) );
 				t->vertexUV( ( float )( x + 1.0f ), ( float )( y +
-					0.0f ), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
+					0.0f ), static_cast<float>(z1), ( float )( u0 ), ( float )( v1 ) );
 				t->vertexUV( ( float )( x + 1.0f ), ( float )( y +
-					h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
+					h ), static_cast<float>(z1_), ( float )( u0 ), ( float )( v0 ) );
 
 				tex = secondTex;
 				u0 = tex->getU0(true);
@@ -2716,13 +2716,13 @@ bool TileRenderer::tesselateFireInWorld( FireTile* tt, int x, int y, int z )
 				v1 = tex->getV1(true);
 
 				t->vertexUV( ( float )( x + 1.0f ), ( float )( y +
-					h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
+					h ), static_cast<float>(z0_), ( float )( u1 ), ( float )( v0 ) );
 				t->vertexUV( ( float )( x + 1.0f ), ( float )( y +
-					0.0f ), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
+					0.0f ), static_cast<float>(z0), ( float )( u1 ), ( float )( v1 ) );
 				t->vertexUV( ( float )( x + 0.0f ), ( float )( y +
-					0.0f ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+					0.0f ), static_cast<float>(z0), ( float )( u0 ), ( float )( v1 ) );
 				t->vertexUV( ( float )( x + 0.0f ), ( float )( y +
-					h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
+					h ), static_cast<float>(z0_), ( float )( u0 ), ( float )( v0 ) );
 			}
 		}
 	}
@@ -2838,13 +2838,13 @@ bool TileRenderer::tesselateDustInWorld( Tile* tt, int x, int y, int z )
 		int v1 = SharedConstants::WORLD_RESOLUTION;
 
 		int cutDistance = 5;
-		if (!w) x0 += cutDistance / (float) SharedConstants::WORLD_RESOLUTION;
+		if (!w) x0 += cutDistance / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
 		if (!w) u0 += cutDistance;
-		if (!e) x1 -= cutDistance / (float) SharedConstants::WORLD_RESOLUTION;
+		if (!e) x1 -= cutDistance / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
 		if (!e) u1 -= cutDistance;
-		if (!n) z0 += cutDistance / (float) SharedConstants::WORLD_RESOLUTION;
+		if (!n) z0 += cutDistance / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
 		if (!n) v0 += cutDistance;
-		if (!s) z1 -= cutDistance / (float) SharedConstants::WORLD_RESOLUTION;
+		if (!s) z1 -= cutDistance / static_cast<float>(SharedConstants::WORLD_RESOLUTION);
 		if (!s) v1 -= cutDistance;
 		t->vertexUV( ( float )( x1 ), ( float )( y + dustOffset ), ( float )( z1 ), crossTexture->getU(u1, true), crossTexture->getV(v1) );
 		t->vertexUV( ( float )( x1 ), ( float )( y + dustOffset ), ( float )( z0 ), crossTexture->getU(u1, true), crossTexture->getV(v0) );
@@ -2891,58 +2891,58 @@ bool TileRenderer::tesselateDustInWorld( Tile* tt, int x, int y, int z )
 		if ( level->isSolidBlockingTile( x - 1, y, z ) && level->getTile( x - 1, y + 1, z ) == Tile::redStoneDust_Id )
 		{
 			t->color( br * red, br * green, br * blue );
-			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 1 ), lineTexture->getU1(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 0 ), ( float )( z + 1 ), lineTexture->getU0(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 0 ), ( float )( z + 0 ), lineTexture->getU0(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 1 + yStretch ), ( float )( z +	 0 ), lineTexture->getU1(true), lineTexture->getV1(true) );
+			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 1), lineTexture->getU1(true), lineTexture->getV0(true) );
+			t->vertexUV( ( float )( x + dustOffset ), static_cast<float>(y + 0), static_cast<float>(z + 1), lineTexture->getU0(true), lineTexture->getV0(true) );
+			t->vertexUV( ( float )( x + dustOffset ), static_cast<float>(y + 0), static_cast<float>(z + 0), lineTexture->getU0(true), lineTexture->getV1(true) );
+			t->vertexUV( ( float )( x + dustOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 0), lineTexture->getU1(true), lineTexture->getV1(true) );
 
 			t->color( br, br, br );
-			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 1 ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 0 ), ( float )( z + 1 ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 0 ), ( float )( z +	 0 ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 0 ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 1), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( ( float )( x + overlayOffset ), static_cast<float>(y + 0), static_cast<float>(z + 1), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( ( float )( x + overlayOffset ), static_cast<float>(y + 0), static_cast<float>(z + 0), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( ( float )( x + overlayOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 0), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
 		}
 		if ( level->isSolidBlockingTile( x + 1, y, z ) && level->getTile( x + 1, y + 1, z ) == Tile::redStoneDust_Id )
 		{
 			t->color( br * red, br * green, br * blue );
-			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 0 ), ( float )( z + 1 ), lineTexture->getU0(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 1 ), lineTexture->getU1(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 0 ), lineTexture->getU1(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 0 ), ( float )( z + 0 ), lineTexture->getU0(true), lineTexture->getV0(true) );
+			t->vertexUV( ( float )( x + 1 - dustOffset ), static_cast<float>(y + 0), static_cast<float>(z + 1), lineTexture->getU0(true), lineTexture->getV1(true) );
+			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 1), lineTexture->getU1(true), lineTexture->getV1(true) );
+			t->vertexUV( ( float )( x + 1 - dustOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 0), lineTexture->getU1(true), lineTexture->getV0(true) );
+			t->vertexUV( ( float )( x + 1 - dustOffset ), static_cast<float>(y + 0), static_cast<float>(z + 0), lineTexture->getU0(true), lineTexture->getV0(true) );
 
 			t->color( br, br, br );
-			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 0 ), ( float )( z + 1 ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 1 ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 1 + yStretch ), ( float )( z + 0 ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 0 ), ( float )( z + 0 ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( ( float )( x + 1 - overlayOffset ), static_cast<float>(y + 0), static_cast<float>(z + 1), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 1), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( ( float )( x + 1 - overlayOffset ), ( float )( y + 1 + yStretch ), static_cast<float>(z + 0), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( ( float )( x + 1 - overlayOffset ), static_cast<float>(y + 0), static_cast<float>(z + 0), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
 		}
 		if ( level->isSolidBlockingTile( x, y, z - 1 ) && level->getTile( x, y + 1, z - 1 ) == Tile::redStoneDust_Id )
 		{
 			t->color( br * red, br * green, br * blue );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z + dustOffset ), lineTexture->getU0(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 1 + yStretch ), ( float )( z + dustOffset ), lineTexture->getU1(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 1 + yStretch ), ( float )( z + dustOffset ), lineTexture->getU1(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z + dustOffset ), lineTexture->getU0(true), lineTexture->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z + dustOffset ), lineTexture->getU0(true), lineTexture->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 1), ( float )( y + 1 + yStretch ), ( float )( z + dustOffset ), lineTexture->getU1(true), lineTexture->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 0), ( float )( y + 1 + yStretch ), ( float )( z + dustOffset ), lineTexture->getU1(true), lineTexture->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z + dustOffset ), lineTexture->getU0(true), lineTexture->getV0(true) );
 
 			t->color( br, br, br );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z + overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 1 + yStretch ), ( float )( z + overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 1 + yStretch ), ( float )( z + overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z + overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z + overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 1), ( float )( y + 1 + yStretch ), ( float )( z + overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 0), ( float )( y + 1 + yStretch ), ( float )( z + overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z + overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
 		}
 		if ( level->isSolidBlockingTile( x, y, z + 1 ) && level->getTile( x, y + 1, z + 1 ) == Tile::redStoneDust_Id )
 		{
 			t->color( br * red, br * green, br * blue );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 1 + yStretch ), ( float )( z + 1 - dustOffset ), lineTexture->getU1(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z + 1 -	dustOffset ), lineTexture->getU0(true), lineTexture->getV0(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z + 1 -	dustOffset ), lineTexture->getU0(true), lineTexture->getV1(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 1 + yStretch ), ( float )( z + 1 - dustOffset ), lineTexture->getU1(true), lineTexture->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 1), ( float )( y + 1 + yStretch ), ( float )( z + 1 - dustOffset ), lineTexture->getU1(true), lineTexture->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z + 1 -	dustOffset ), lineTexture->getU0(true), lineTexture->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z + 1 -	dustOffset ), lineTexture->getU0(true), lineTexture->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 0), ( float )( y + 1 + yStretch ), ( float )( z + 1 - dustOffset ), lineTexture->getU1(true), lineTexture->getV1(true) );
 
 			t->color( br, br, br );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 1 + yStretch ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
-			t->vertexUV( ( float )( x + 0 ), ( float )( y + 1 + yStretch ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 1), ( float )( y + 1 + yStretch ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV0(true) );
+			t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU0(true), lineTextureOverlay->getV1(true) );
+			t->vertexUV( static_cast<float>(x + 0), ( float )( y + 1 + yStretch ), ( float )( z + 1 - overlayOffset ), lineTextureOverlay->getU1(true), lineTextureOverlay->getV1(true) );
 		}
 	}
 
@@ -2982,15 +2982,15 @@ bool TileRenderer::tesselateRailInWorld( RailTile* tt, int x, int y, int z )
 
 	float		r = 1 / 16.0f;
 
-	float		x0 = ( float )( x + 1 );
-	float		x1 = ( float )( x + 1 );
-	float		x2 = ( float )( x + 0 );
-	float		x3 = ( float )( x + 0 );
+	float		x0 = static_cast<float>(x + 1);
+	float		x1 = static_cast<float>(x + 1);
+	float		x2 = static_cast<float>(x + 0);
+	float		x3 = static_cast<float>(x + 0);
 
-	float		z0 = ( float )( z + 0 );
-	float		z1 = ( float )( z + 1 );
-	float		z2 = ( float )( z + 1 );
-	float		z3 = ( float )( z + 0 );
+	float		z0 = static_cast<float>(z + 0);
+	float		z1 = static_cast<float>(z + 1);
+	float		z2 = static_cast<float>(z + 1);
+	float		z3 = static_cast<float>(z + 0);
 
 	float		y0 = ( float )( y + r );
 	float		y1 = ( float )( y + r );
@@ -2999,24 +2999,24 @@ bool TileRenderer::tesselateRailInWorld( RailTile* tt, int x, int y, int z )
 
 	if ( data == 1 || data == 2 || data == 3 || data == 7 )
 	{
-		x0 = x3 = ( float )( x + 1 );
-		x1 = x2 = ( float )( x + 0 );
-		z0 = z1 = ( float )( z + 1 );
-		z2 = z3 = ( float )( z + 0 );
+		x0 = x3 = static_cast<float>(x + 1);
+		x1 = x2 = static_cast<float>(x + 0);
+		z0 = z1 = static_cast<float>(z + 1);
+		z2 = z3 = static_cast<float>(z + 0);
 	}
 	else if ( data == 8 )
 	{
-		x0 = x1 = ( float )( x + 0 );
-		x2 = x3 = ( float )( x + 1 );
-		z0 = z3 = ( float )( z + 1 );
-		z1 = z2 = ( float )( z + 0 );
+		x0 = x1 = static_cast<float>(x + 0);
+		x2 = x3 = static_cast<float>(x + 1);
+		z0 = z3 = static_cast<float>(z + 1);
+		z1 = z2 = static_cast<float>(z + 0);
 	}
 	else if ( data == 9 )
 	{
-		x0 = x3 = ( float )( x + 0 );
-		x1 = x2 = ( float )( x + 1 );
-		z0 = z1 = ( float )( z + 0 );
-		z2 = z3 = ( float )( z + 1 );
+		x0 = x3 = static_cast<float>(x + 0);
+		x1 = x2 = static_cast<float>(x + 1);
+		z0 = z1 = static_cast<float>(z + 0);
+		z2 = z3 = static_cast<float>(z + 1);
 	}
 
 	if ( data == 2 || data == 4 )
@@ -3241,7 +3241,7 @@ bool TileRenderer::tesselateThinPaneInWorld(Tile *tt, int x, int y, int z)
 	Icon *tex;
 	Icon *edgeTex;
 
-	bool stained = dynamic_cast<StainedGlassPaneBlock *>(tt) != NULL;
+	bool stained = dynamic_cast<StainedGlassPaneBlock *>(tt) != nullptr;
 	if (hasFixedTexture())
 	{
 		tex = fixedTexture;
@@ -3251,7 +3251,7 @@ bool TileRenderer::tesselateThinPaneInWorld(Tile *tt, int x, int y, int z)
 	{
 		int data = level->getData(x, y, z);
 		tex = getTexture(tt, 0, data);
-		edgeTex = (stained) ? ((StainedGlassPaneBlock *) tt)->getEdgeTexture(data) : ((ThinFenceTile *) tt)->getEdgeTexture();
+		edgeTex = (stained) ? static_cast<StainedGlassPaneBlock *>(tt)->getEdgeTexture(data) : static_cast<ThinFenceTile *>(tt)->getEdgeTexture();
 	}
 
 	double u0 = tex->getU0();
@@ -3277,10 +3277,10 @@ bool TileRenderer::tesselateThinPaneInWorld(Tile *tt, int x, int y, int z)
 	double iz0 = z + .5 - 1.0 / 16.0;
 	double iz1 = z + .5 + 1.0 / 16.0;
 
-	bool n = (stained) ? ((StainedGlassPaneBlock *)tt)->attachsTo(level->getTile(x, y, z - 1)) : ((ThinFenceTile *)tt)->attachsTo(level->getTile(x, y, z - 1));
-	bool s = (stained) ? ((StainedGlassPaneBlock *)tt)->attachsTo(level->getTile(x, y, z + 1)) : ((ThinFenceTile *)tt)->attachsTo(level->getTile(x, y, z + 1));
-	bool w = (stained) ? ((StainedGlassPaneBlock *)tt)->attachsTo(level->getTile(x - 1, y, z)) : ((ThinFenceTile *)tt)->attachsTo(level->getTile(x - 1, y, z));
-	bool e = (stained) ? ((StainedGlassPaneBlock *)tt)->attachsTo(level->getTile(x + 1, y, z)) : ((ThinFenceTile *)tt)->attachsTo(level->getTile(x + 1, y, z));
+	bool n = (stained) ? static_cast<StainedGlassPaneBlock *>(tt)->attachsTo(level->getTile(x, y, z - 1)) : static_cast<ThinFenceTile *>(tt)->attachsTo(level->getTile(x, y, z - 1));
+	bool s = (stained) ? static_cast<StainedGlassPaneBlock *>(tt)->attachsTo(level->getTile(x, y, z + 1)) : static_cast<ThinFenceTile *>(tt)->attachsTo(level->getTile(x, y, z + 1));
+	bool w = (stained) ? static_cast<StainedGlassPaneBlock *>(tt)->attachsTo(level->getTile(x - 1, y, z)) : static_cast<ThinFenceTile *>(tt)->attachsTo(level->getTile(x - 1, y, z));
+	bool e = (stained) ? static_cast<StainedGlassPaneBlock *>(tt)->attachsTo(level->getTile(x + 1, y, z)) : static_cast<ThinFenceTile *>(tt)->attachsTo(level->getTile(x + 1, y, z));
 
 	double noZFightingOffset = 0.001;
 	double yt = 1.0 - noZFightingOffset;
@@ -3691,10 +3691,10 @@ bool TileRenderer::tesselateThinFenceInWorld( ThinFenceTile* tt, int x, int y, i
 	float iv1 = edgeTex->getV(8, true);
 	float iv2 = edgeTex->getV1(true);
 
-	float			x0 = (float)x;
+	float			x0 = static_cast<float>(x);
 	float			x1 = x + 0.5f;
 	float			x2 = x + 1.0f;
-	float			z0 = (float)z;
+	float			z0 = static_cast<float>(z);
 	float			z1 = z + 0.5f;
 	float			z2 = z + 1.0f;
 	float			ix0 = x + 0.5f - 1.0f / 16.0f;
@@ -4161,9 +4161,9 @@ bool TileRenderer::tesselateCrossInWorld( Tile* tt, int x, int y, int z )
 	}
 	t->color( br * r, br * g, br * b );
 
-	float		xt = (float)x;
-	float		yt = (float)y;
-	float		zt = (float)z;
+	float		xt = static_cast<float>(x);
+	float		yt = static_cast<float>(y);
+	float		zt = static_cast<float>(z);
 
 	if (tt == Tile::tallgrass)
 	{
@@ -4181,7 +4181,7 @@ bool TileRenderer::tesselateCrossInWorld( Tile* tt, int x, int y, int z )
 
 bool TileRenderer::tesselateStemInWorld( Tile* _tt, int x, int y, int z )
 {
-	StemTile*	tt = ( StemTile* )_tt;
+	StemTile*	tt = static_cast<StemTile *>(_tt);
 	Tesselator* t = Tesselator::getInstance();
 
 	float		br;
@@ -4409,7 +4409,7 @@ bool TileRenderer::tesselateLilypadInWorld(Tile *tt, int x, int y, int z)
 	int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
 	seed = seed * seed * 42317861 + seed * 11;
 
-	int dir = (int) ((seed >> 16) & 0x3);
+	int dir = static_cast<int>((seed >> 16) & 0x3);
 
 
 
@@ -4622,7 +4622,7 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 	{
 		changed = true;
 		Icon *tex = getTexture( tt, 1, data );
-		float	angle = ( float )LiquidTile::getSlopeAngle( level, x, y, z, m );
+		float	angle = static_cast<float>(LiquidTile::getSlopeAngle(level, x, y, z, m));
 		if ( angle > -999 )
 		{
 			tex = getTexture( tt, 2, data );
@@ -4717,8 +4717,8 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 			{
 				hh0 = ( float )( h0 );
 				hh1 = ( float )( h3 );
-				x0 = ( float )( x );
-				x1 = ( float )( x + 1 );
+				x0 = static_cast<float>(x);
+				x1 = static_cast<float>(x + 1);
 				z0 = ( float )( z + offs);
 				z1 = ( float )( z + offs);
 			}
@@ -4726,8 +4726,8 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 			{
 				hh0 = ( float )( h2 );
 				hh1 = ( float )( h1 );
-				x0 = ( float )( x + 1 );
-				x1 = ( float )( x );
+				x0 = static_cast<float>(x + 1);
+				x1 = static_cast<float>(x);
 				z0 = ( float )( z + 1 - offs);
 				z1 = ( float )( z + 1 - offs);
 			}
@@ -4737,8 +4737,8 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 				hh1 = ( float )( h0 );
 				x0 = ( float )( x + offs);
 				x1 = ( float )( x + offs);
-				z0 = ( float )( z + 1 );
-				z1 = ( float )( z );
+				z0 = static_cast<float>(z + 1);
+				z1 = static_cast<float>(z);
 			}
 			else
 			{
@@ -4746,8 +4746,8 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 				hh1 = ( float )( h2 );
 				x0 = ( float )( x + 1 - offs);
 				x1 = ( float )( x + 1 - offs);
-				z0 = ( float )( z );
-				z1 = ( float )( z + 1 );
+				z0 = static_cast<float>(z);
+				z1 = static_cast<float>(z + 1);
 			}
 
 
@@ -4777,8 +4777,8 @@ bool TileRenderer::tesselateWaterInWorld( Tile* tt, int x, int y, int z )
 			t->color( c11 * br * r, c11 * br * g, c11 * br * b );
 			t->vertexUV( ( float )( x0 ), ( float )( y + hh0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v01 ) );
 			t->vertexUV( ( float )( x1 ), ( float )( y + hh1 ), ( float )( z1 ), ( float )( u1 ), ( float )( v02 ) );
-			t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-			t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+			t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+			t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
 
 		}
 
@@ -5207,7 +5207,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 	// but they also happen to draw a lot of faces, and the code for determining which texture to use is more complex than in most
 	// cases. Optimisation here then to store a uniform texture where appropriate (could be extended beyond leaves) that will stop
 	// any other faces being evaluated.
-	Icon *uniformTex = NULL;
+	Icon *uniformTex = nullptr;
 	int id = tt->id;
 	if( id == Tile::leaves_Id )
 	{
@@ -5257,7 +5257,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 	Tesselator* t = Tesselator::getInstance();
 	t->tex2( 0xf000f );
 
-	if( uniformTex == NULL )
+	if( uniformTex == nullptr )
 	{
 		if ( getTexture(tt)->getFlags() == Icon::IS_GRASS_TOP ) tintSides = false;
 	}
@@ -5534,14 +5534,14 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 				float _ll2 = (ll00z + ll0Yz + llX0z + llXYz) / 4.0f;
 				float _ll3 = (ll0yz + ll00z + llXyz + llX0z) / 4.0f;
 				float _ll4 = (llxyz + llx0z + ll0yz + ll00z) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll4 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX0));
-				ll2 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll2 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll4 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX1));
-				ll3 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll2 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll4 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX1));
-				ll4 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll4 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX0));
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll4 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX0));
+				ll2 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll2 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll4 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX1));
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll2 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll4 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX1));
+				ll4 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll4 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX0));
 
 				int _tc1 = blend(ccx0z, ccxYz, cc0Yz, cc00z);
 				int _tc2 = blend(cc0Yz, ccX0z, ccXYz, cc00z);
@@ -5689,14 +5689,14 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 				float _ll4 = (ll00Z + ll0YZ + llX0Z + llXYZ) / 4.0f;
 				float _ll3 = (ll0yZ + ll00Z + llXyZ + llX0Z) / 4.0f;
 				float _ll2 = (llxyZ + llx0Z + ll0yZ + ll00Z) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll4 * tileShapeY1 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll2 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX0));
-				ll2 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll4 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll2 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX0));
-				ll3 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll4 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll2 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX1));
-				ll4 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll4 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll2 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX1));
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll4 * tileShapeY1 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll2 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX0));
+				ll2 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll4 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll2 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX0));
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll4 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll2 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX1));
+				ll4 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll4 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll2 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX1));
 
 				int _tc1 = blend(ccx0Z, ccxYZ, cc0YZ, cc00Z);
 				int _tc4 = blend(cc0YZ, ccX0Z, ccXYZ, cc00Z);
@@ -5840,14 +5840,14 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 				float _ll1 = (llx00 + llx0Z + llxY0 + llxYZ) / 4.0f;
 				float _ll2 = (llx0z + llx00 + llxYz + llxY0) / 4.0f;
 				float _ll3 = (llxyz + llxy0 + llx0z + llx00) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * tileShapeZ1 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY1)
-					* tileShapeZ1);
-				ll2 = (float) (_ll1 * tileShapeY1 * tileShapeZ0 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY1)
-					* tileShapeZ0);
-				ll3 = (float) (_ll1 * tileShapeY0 * tileShapeZ0 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY0)
-					* tileShapeZ0);
-				ll4 = (float) (_ll1 * tileShapeY0 * tileShapeZ1 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY0)
-					* tileShapeZ1);
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * tileShapeZ1 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY1)
+                                         * tileShapeZ1);
+				ll2 = static_cast<float>(_ll1 * tileShapeY1 * tileShapeZ0 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY1)
+                                         * tileShapeZ0);
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * tileShapeZ0 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY0)
+                                         * tileShapeZ0);
+				ll4 = static_cast<float>(_ll1 * tileShapeY0 * tileShapeZ1 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY0)
+                                         * tileShapeZ1);
 
 				int _tc4 = blend(ccxy0, ccxyZ, ccx0Z, ccx00);
 				int _tc1 = blend(ccx0Z, ccxY0, ccxYZ, ccx00);
@@ -5991,14 +5991,14 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 				float _ll2 = (llXyz + llXy0 + llX0z + llX00) / 4.0f;
 				float _ll3 = (llX0z + llX00 + llXYz + llXY0) / 4.0f;
 				float _ll4 = (llX00 + llX0Z + llXY0 + llXYZ) / 4.0f;
-				ll1 = (float) (_ll1 * (1.0 - tileShapeY0) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY0
-					* tileShapeZ1);
-				ll2 = (float) (_ll1 * (1.0 - tileShapeY0) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY0
-					* tileShapeZ0);
-				ll3 = (float) (_ll1 * (1.0 - tileShapeY1) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY1
-					* tileShapeZ0);
-				ll4 = (float) (_ll1 * (1.0 - tileShapeY1) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY1
-					* tileShapeZ1);
+				ll1 = static_cast<float>(_ll1 * (1.0 - tileShapeY0) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY0
+                                         * tileShapeZ1);
+				ll2 = static_cast<float>(_ll1 * (1.0 - tileShapeY0) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY0
+                                         * tileShapeZ0);
+				ll3 = static_cast<float>(_ll1 * (1.0 - tileShapeY1) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY1
+                                         * tileShapeZ0);
+				ll4 = static_cast<float>(_ll1 * (1.0 - tileShapeY1) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY1
+                                         * tileShapeZ1);
 
 				int _tc1 = blend(ccXy0, ccXyZ, ccX0Z, ccX00);
 				int _tc4 = blend(ccX0Z, ccXY0, ccXYZ, ccX00);
@@ -6085,8 +6085,8 @@ int TileRenderer::blend( int a, int b, int c, int def )
 int TileRenderer::blend(int a, int b, int c, int d, double fa, double fb, double fc, double fd)
 {
 
-	int top = (int) ((double) ((a >> 16) & 0xff) * fa + (double) ((b >> 16) & 0xff) * fb + (double) ((c >> 16) & 0xff) * fc + (double) ((d >> 16) & 0xff) * fd) & 0xff;
-	int bottom = (int) ((double) (a & 0xff) * fa + (double) (b & 0xff) * fb + (double) (c & 0xff) * fc + (double) (d & 0xff) * fd) & 0xff;
+	int top = static_cast<int>((double)((a >> 16) & 0xff) * fa + (double)((b >> 16) & 0xff) * fb + (double)((c >> 16) & 0xff) * fc + (double)((d >> 16) & 0xff) * fd) & 0xff;
+	int bottom = static_cast<int>((double)(a & 0xff) * fa + (double)(b & 0xff) * fb + (double)(c & 0xff) * fc + (double)(d & 0xff) * fd) & 0xff;
 	return (top << 16) | bottom;
 }
 
@@ -7282,23 +7282,23 @@ void TileRenderer::renderFaceDown( Tile* tt, double x, double y, double z, Icon 
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), ( float )( u00 ), ( float )( v00 ) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), ( float )( u11 ), ( float )( v11 ) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), ( float )( u11 ), ( float )( v11 ) );
 	}
 }
 
@@ -7394,23 +7394,23 @@ void TileRenderer::renderFaceUp( Tile* tt, double x, double y, double z, Icon *t
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), ( float )( u11 ), ( float )( v11 ) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), ( float )( u01 ), ( float )( v01 ) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), ( float )( u00 ), ( float )( v00 ) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), ( float )( u10 ), ( float )( v10 ) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), ( float )( u10 ), ( float )( v10 ) );
 	}
 
 }
@@ -7513,23 +7513,23 @@ void TileRenderer::renderNorth( Tile* tt, double x, double y, double z, Icon *te
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u00), static_cast<float>(v00) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u10), static_cast<float>(v10) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u11), static_cast<float>(v11) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u10 ), ( float )( v10 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u00), static_cast<float>(v00) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u10), static_cast<float>(v10) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u11), static_cast<float>(v11) );
 	}
 
 }
@@ -7632,23 +7632,23 @@ void TileRenderer::renderSouth( Tile* tt, double x, double y, double z, Icon *te
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u00), static_cast<float>(v00) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u11), static_cast<float>(v11) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u01), static_cast<float>(v01) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u00 ), ( float )( v00 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u00), static_cast<float>(v00) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u11), static_cast<float>(v11) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u01), static_cast<float>(v01) );
 	}
 
 }
@@ -7750,23 +7750,23 @@ void TileRenderer::renderWest( Tile* tt, double x, double y, double z, Icon *tex
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u01), static_cast<float>(v01) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u00), static_cast<float>(v00) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u10), static_cast<float>(v10) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u11), static_cast<float>(v11) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z1 ), ( float )( u01 ), ( float )( v01 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y1 ), ( float )( z0 ), ( float )( u00 ), ( float )( v00 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z0 ), ( float )( u10 ), ( float )( v10 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y0 ), ( float )( z1 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u01), static_cast<float>(v01) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u00), static_cast<float>(v00) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u10), static_cast<float>(v10) );
+		t->vertexUV( static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u11), static_cast<float>(v11) );
 	}
 
 }
@@ -7868,23 +7868,23 @@ void TileRenderer::renderEast( Tile* tt, double x, double y, double z, Icon *tex
 
 		t->color( c1r, c1g, c1b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc1 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
 		t->color( c2r, c2g, c2b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc2 );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u11 ), ( float )( v11 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u11), static_cast<float>(v11) );
 		t->color( c3r, c3g, c3b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc3 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
 		t->color( c4r, c4g, c4b );
 		if ( SharedConstants::TEXTURE_LIGHTING ) t->tex2( tc4 );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u00), static_cast<float>(v00) );
 	}
 	else
 	{
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z1 ), ( float )( u10 ), ( float )( v10 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y0 ), ( float )( z0 ), ( float )( u11 ), ( float )( v11 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z0 ), ( float )( u01 ), ( float )( v01 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y1 ), ( float )( z1 ), ( float )( u00 ), ( float )( v00 ) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z1), static_cast<float>(u10), static_cast<float>(v10) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(z0), static_cast<float>(u11), static_cast<float>(v11) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z0), static_cast<float>(u01), static_cast<float>(v01) );
+		t->vertexUV( static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(z1), static_cast<float>(u00), static_cast<float>(v00) );
 	}
 
 }
@@ -8399,7 +8399,7 @@ void TileRenderer::renderTile( Tile* tile, int data, float brightness, float fAl
 	else if (shape == Tile::SHAPE_ANVIL)
 	{
 		glTranslatef(-0.5f, -0.5f, -0.5f);
-		tesselateAnvilInWorld((AnvilTile *) tile, 0, 0, 0, data << 2, true);
+		tesselateAnvilInWorld(static_cast<AnvilTile *>(tile), 0, 0, 0, data << 2, true);
 		glTranslatef(0.5f, 0.5f, 0.5f);
 	}
 	else if ( shape == Tile::SHAPE_PORTAL_FRAME )
@@ -8550,7 +8550,7 @@ Icon *TileRenderer::getTexture(Tile *tile)
 
 Icon *TileRenderer::getTextureOrMissing(Icon *icon)
 {
-	if (icon == NULL) return minecraft->textures->getMissingIcon(Icon::TYPE_TERRAIN);
+	if (icon == nullptr) return minecraft->textures->getMissingIcon(Icon::TYPE_TERRAIN);
 
 #ifdef __PSVITA__
 	// AP - alpha cut out is expensive on vita. Pass on the Alpha Cut out flag to the tesselator

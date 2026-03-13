@@ -12,7 +12,7 @@ FlowerFeature::FlowerFeature(int tile)
 bool FlowerFeature::place(Level *level, Random *random, int x, int y, int z)
 {
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 		bool intersects = levelGenOptions->checkIntersects(x - 8, y - 4, z - 8, x + 8, y + 4, z + 8);

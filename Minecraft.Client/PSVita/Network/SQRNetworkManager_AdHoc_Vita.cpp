@@ -45,8 +45,8 @@ int										SQRNetworkManager_AdHoc_Vita::m_adhocStatus = false;
 
 static unsigned char	s_Matching2Pool[SCE_NET_ADHOC_MATCHING_POOLSIZE_DEFAULT];
 
-int (* SQRNetworkManager_AdHoc_Vita::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;
-void * SQRNetworkManager_AdHoc_Vita::s_SignInCompleteParam = NULL;
+int (* SQRNetworkManager_AdHoc_Vita::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = nullptr;
+void * SQRNetworkManager_AdHoc_Vita::s_SignInCompleteParam = nullptr;
 sce::Toolkit::NP::PresenceDetails SQRNetworkManager_AdHoc_Vita::s_lastPresenceInfo;
 int SQRNetworkManager_AdHoc_Vita::s_resendPresenceCountdown = 0;
 bool SQRNetworkManager_AdHoc_Vita::s_presenceStatusDirty = false;
@@ -127,8 +127,8 @@ SQRNetworkManager_AdHoc_Vita::SQRNetworkManager_AdHoc_Vita(ISQRNetworkManagerLis
 	m_isInSession = false;
 	m_offlineGame = false;
 	m_offlineSQR = false;
-	m_aServerId = NULL;
-// 	m_gameBootInvite = NULL;
+	m_aServerId = nullptr;
+// 	m_gameBootInvite = nullptr;
 	m_adhocStatus = false;
 	m_bLinkDisconnected = false;
 	m_bIsInitialised=false;
@@ -166,7 +166,7 @@ void SQRNetworkManager_AdHoc_Vita::Initialise()
 
 	int32_t ret = 0;
 // 	int32_t libCtxId = 0;
-// 	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, NULL);
+// 	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, nullptr);
 // 	assert (ret >= 0);
 // 	libCtxId = ret;
 
@@ -203,7 +203,7 @@ void SQRNetworkManager_AdHoc_Vita::Initialise()
 // 	npConf.commId			= &s_npCommunicationId;
 // 	npConf.commPassphrase	= &s_npCommunicationPassphrase;
 // 	npConf.commSignature	= &s_npCommunicationSignature;
-// 	ret = sceNpInit(&npConf, NULL);
+// 	ret = sceNpInit(&npConf, nullptr);
 // 	if (ret < 0 && ret != SCE_NP_ERROR_ALREADY_INITIALIZED)
 // 	{
 // 		app.DebugPrintf("sceNpInit failed, ret=%x\n", ret);
@@ -388,14 +388,14 @@ bool SQRNetworkManager_AdHoc_Vita::CreateMatchingContext(bool bServer /*= false*
 
 
 	// Free up any external data that we received from the previous search
-	for( int i = 0; i < m_aFriendSearchResults.size(); i++ )
+	for( size_t i = 0; i < m_aFriendSearchResults.size(); i++ )
 	{
 		if(m_aFriendSearchResults[i].m_RoomExtDataReceived)
 			free(m_aFriendSearchResults[i].m_RoomExtDataReceived);
-		m_aFriendSearchResults[i].m_RoomExtDataReceived = NULL;
+		m_aFriendSearchResults[i].m_RoomExtDataReceived = nullptr;
 		if(m_aFriendSearchResults[i].m_gameSessionData)
 			free(m_aFriendSearchResults[i].m_gameSessionData);
-		m_aFriendSearchResults[i].m_gameSessionData = NULL;
+		m_aFriendSearchResults[i].m_gameSessionData = nullptr;
 	}
 	m_friendCount = 0;
 	m_aFriendSearchResults.clear();
@@ -406,7 +406,7 @@ bool SQRNetworkManager_AdHoc_Vita::CreateMatchingContext(bool bServer /*= false*
 	ret = sceNetAdhocMatchingStart(m_matchingContext,
 		SCE_KERNEL_DEFAULT_PRIORITY_USER, MATCHING_EVENT_HANDLER_STACK_SIZE,
 		SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT,
-		0, NULL);//sizeof(g_myInfo.name), &g_myInfo.name);
+		0, nullptr);//sizeof(g_myInfo.name), &g_myInfo.name);
 
 	if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_CONTEXT_START_ASYNC ) )
 	{
@@ -448,7 +448,7 @@ void SQRNetworkManager_AdHoc_Vita::InitialiseAfterOnline()
 		if( s_SignInCompleteCallbackFn )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,0);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		return;
 	}
@@ -512,7 +512,7 @@ void SQRNetworkManager_AdHoc_Vita::Tick()
 // 	if( ( m_gameBootInvite m) && ( s_safeToRespondToGameBootInvite ) )
 // 	{
 // 		m_listener->HandleInviteReceived( ProfileManager.GetPrimaryPad(), m_gameBootInvite );
-// 		m_gameBootInvite = NULL;
+// 		m_gameBootInvite = nullptr;
 // 	}
 
 	ErrorHandlingTick();
@@ -585,7 +585,7 @@ void SQRNetworkManager_AdHoc_Vita::ErrorHandlingTick()
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 		app.DebugPrintf("Network error: SNM_INT_STATE_INITIALISE_FAILED\n");
 		if( m_isInSession && m_offlineSQR )
@@ -777,7 +777,7 @@ void SQRNetworkManager_AdHoc_Vita::FriendSearchTick()
 // 		{
 // 			m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_INFO;
 // 			delete m_getFriendCountThread;
-// 			m_getFriendCountThread = NULL;
+// 			m_getFriendCountThread = nullptr;
 			FriendRoomManagerSearch2();
 // 		}
 	}
@@ -797,7 +797,7 @@ int SQRNetworkManager_AdHoc_Vita::BasicEventThreadProc( void *lpParameter )
 //
 // 	do
 // 	{
-// 		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, NULL);
+// 		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, nullptr);
 //
 // 		// If the sys_event_t we've sent here from the handler has a non-zero data1 element, this is to signify that we should terminate the thread
 // 		if( event.udata == 0 )
@@ -855,7 +855,7 @@ int SQRNetworkManager_AdHoc_Vita::BasicEventThreadProc( void *lpParameter )
 // 	// There shouldn't ever be more than 100 friends returned but limit here just in case
 // 	if( manager->m_friendCount > 100 ) manager->m_friendCount = 100;
 //
-// 	SceNpId* friendIDs = NULL;
+// 	SceNpId* friendIDs = nullptr;
 // 	if(manager->m_friendCount > 0)
 // 	{
 // 		// grab all the friend IDs first
@@ -995,7 +995,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerByIndex(int idx)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -1012,7 +1012,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerBySmallId(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetLocalPlayerByUserIndex(int idx)
@@ -1028,7 +1028,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetLocalPlayerByUserIndex(int id
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetHostPlayer()
@@ -1041,11 +1041,11 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetHostPlayer()
 
 SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerIfReady(SQRNetworkPlayer *player)
 {
-	if( player == NULL ) return NULL;
+	if( player == nullptr ) return nullptr;
 
 	if( player->IsReady() ) return player;
 
-	return NULL;
+	return nullptr;
 }
 
 // Update state internally
@@ -1086,7 +1086,7 @@ void SQRNetworkManager_AdHoc_Vita::ResetToIdle()
 		{
 			memberIDs.push_back(m_aRoomSlotPlayers[i]->m_roomMemberId);
 		}
-		for(int i=0;i<memberIDs.size();i++)
+		for(size_t i=0;i<memberIDs.size();i++)
 		{
 			if(memberIDs[i] != m_hostMemberId)
 				RemoveRemotePlayersAndSync(memberIDs[i], 15);
@@ -1117,7 +1117,7 @@ bool SQRNetworkManager_AdHoc_Vita::JoinRoom(SQRNetworkManager_AdHoc_Vita::Sessio
 {
 	// Set up the presence info we would like to synchronise out when we have fully joined the game
 	// 	CPlatformNetworkManagerSony::SetSQRPresenceInfoFromExtData(&s_lastPresenceSyncInfo, searchResult->m_extData, searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId);
-	return JoinRoom(searchResult->m_netAddr, localPlayerMask, NULL);
+	return JoinRoom(searchResult->m_netAddr, localPlayerMask, nullptr);
 }
 
 bool SQRNetworkManager_AdHoc_Vita::JoinRoom(SceNpMatching2RoomId roomId, SceNpMatching2ServerId serverId, int localPlayerMask, const PresenceSyncInfo *presence)
@@ -1137,7 +1137,7 @@ bool SQRNetworkManager_AdHoc_Vita::JoinRoom(SceNetInAddr netAddr, int localPlaye
 	}
 	else
 	{
-		for(int i=0;i<m_aFriendSearchResults.size();i++)
+		for(size_t i=0;i<m_aFriendSearchResults.size();i++)
 		{
 			if(m_aFriendSearchResults[i].m_netAddr.s_addr == netAddr.s_addr)
 			{
@@ -1162,7 +1162,7 @@ bool SQRNetworkManager_AdHoc_Vita::JoinRoom(SceNetInAddr netAddr, int localPlaye
 	if(!CreateMatchingContext())
 		return false;
 
-	int err = sceNetAdhocMatchingSelectTarget(m_matchingContext, &netAddr, 0, NULL);
+	int err = sceNetAdhocMatchingSelectTarget(m_matchingContext, &netAddr, 0, nullptr);
 	m_hostMemberId = getRoomMemberID(&netAddr);
 	m_hostIPAddr = netAddr;
 
@@ -1323,7 +1323,7 @@ void SQRNetworkManager_AdHoc_Vita::FindOrCreateNonNetworkPlayer(int slot, int pl
 		}
 	}
 	// Create the player - non-network players can be considered complete as soon as we create them as we aren't waiting on their network connections becoming complete, so can flag them as such and notify via callback
-	PlayerUID *pUID = NULL;
+	PlayerUID *pUID = nullptr;
 	PlayerUID localUID;
 	if( ( playerType == SQRNetworkPlayer::SNP_TYPE_LOCAL ) ||
 		m_isHosting && ( playerType == SQRNetworkPlayer::SNP_TYPE_HOST ) )
@@ -1390,7 +1390,7 @@ void SQRNetworkManager_AdHoc_Vita::MapRoomSlotPlayers(int roomSlotPlayerCount/*=
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_REMOTE )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1446,7 +1446,7 @@ void SQRNetworkManager_AdHoc_Vita::MapRoomSlotPlayers(int roomSlotPlayerCount/*=
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_LOCAL )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1538,7 +1538,7 @@ void SQRNetworkManager_AdHoc_Vita::UpdatePlayersFromRoomSyncUIDs()
 }
 
 // Host only - add remote players to our internal storage of player slots, and synchronise this with other room members.
-bool SQRNetworkManager_AdHoc_Vita::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==NULL*/ )
+bool SQRNetworkManager_AdHoc_Vita::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==nullptr*/ )
 {
 	assert( m_isHosting );
 
@@ -1658,7 +1658,7 @@ void SQRNetworkManager_AdHoc_Vita::RemoveRemotePlayersAndSync( SceNpMatching2Roo
 			}
 			// Zero last element, that isn't part of the currently sized array anymore
 			memset(&m_roomSyncData.players[m_roomSyncData.getPlayerCount()],0,sizeof(PlayerSyncData));
-			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 		}
 		else
 		{
@@ -1701,7 +1701,7 @@ void SQRNetworkManager_AdHoc_Vita::RemoveNetworkPlayers( int mask )
 			{
 				if( m_aRoomSlotPlayers[i] == player )
 				{
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 			// And delete the reference from the ctx->player map
@@ -1807,7 +1807,7 @@ void SQRNetworkManager_AdHoc_Vita::MatchingEventHandler(int id, int event, SceNe
 						// check we don't have this already
 						int currIndex = -1;
 						bool bChanged = false;
-						for(int i=0; i<manager->m_aFriendSearchResults.size(); i++)
+						for(size_t i=0; i<manager->m_aFriendSearchResults.size(); i++)
 						{
 							if(manager->m_aFriendSearchResults[i].m_netAddr.s_addr == peer->s_addr)
 							{
@@ -1843,7 +1843,7 @@ void SQRNetworkManager_AdHoc_Vita::MatchingEventHandler(int id, int event, SceNe
 
 	case SCE_NET_ADHOC_MATCHING_EVENT_REQUEST:		// A join request was received
 		app.DebugPrintf("P2P SCE_NET_ADHOC_MATCHING_EVENT_REQUEST Received!!\n");
-		if (optlen > 0 && opt != NULL)
+		if (optlen > 0 && opt != nullptr)
 		{
 			ret = SCE_OK;// parentRequestAdd(opt);
 			if (ret != SCE_OK)
@@ -1987,7 +1987,7 @@ void SQRNetworkManager_AdHoc_Vita::MatchingEventHandler(int id, int event, SceNe
 		{
 			app.DebugPrintf("P2P SCE_NET_ADHOC_MATCHING_EVENT_DATA Received!!\n");
 
-			if (optlen <= 0 || opt == NULL)
+			if (optlen <= 0 || opt == nullptr)
 			{
 				assert(0);
 				break;
@@ -2270,7 +2270,7 @@ bool SQRNetworkManager_AdHoc_Vita::CreateRudpConnections(SceNetInAddr peer)
 	if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_RUDP_CONTEXT) ) return false;
 	if( m_isHosting )
 	{
-		m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, getRoomMemberID((&peer)), 0, rudpCtx, NULL );
+		m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, getRoomMemberID((&peer)), 0, rudpCtx, nullptr );
 		m_RudpCtxToIPAddrMap[ rudpCtx ] = peer;
 	}
 	else
@@ -2311,7 +2311,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerFromRudpCtx(int rudpCtx
 	{
 		return it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2322,7 +2322,7 @@ SceNetInAddr* SQRNetworkManager_AdHoc_Vita::GetIPAddrFromRudpCtx(int rudpCtx)
 	{
 		return &it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2336,7 +2336,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerFromRoomMemberAndLocalI
 			return it->second;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2406,7 +2406,7 @@ void SQRNetworkManager_AdHoc_Vita::HandleMatchingContextStart()
 	if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 	{
 		SetState( SNM_INT_STATE_IDLE );
-		GetExtDataForRoom(0, NULL, NULL, NULL);
+		GetExtDataForRoom(0, nullptr, nullptr, nullptr);
 	}
 	else if( m_state == SNM_INT_STATE_HOSTING_STARTING_MATCHING_CONTEXT )
 	{
@@ -2431,7 +2431,7 @@ void SQRNetworkManager_AdHoc_Vita::HandleMatchingContextStart()
 		if(s_SignInCompleteCallbackFn)
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-			s_SignInCompleteCallbackFn = NULL;
+			s_SignInCompleteCallbackFn = nullptr;
 		}
 	}
 }
@@ -2446,7 +2446,7 @@ int SQRNetworkManager_AdHoc_Vita::BasicEventCallback(int event, int retCode, uin
 	PSVITA_STUBBED;
 	// 	SQRNetworkManager_AdHoc_Vita *manager = (SQRNetworkManager_AdHoc_Vita *)arg;
 	// 	// We aren't allowed to actually get the event directly from this callback, so send our own internal event to a thread dedicated to doing this
-	// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, NULL);
+	// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, nullptr);
 
 	return 0;
 }
@@ -2490,7 +2490,7 @@ void SQRNetworkManager_AdHoc_Vita::SysUtilCallback(uint64_t status, uint64_t par
 	// 					{
 	// 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 	// 					}
-	// 					s_SignInCompleteCallbackFn  = NULL;
+	// 					s_SignInCompleteCallbackFn  = nullptr;
 	// 				}
 	// 				return;
 	// 			}
@@ -2505,7 +2505,7 @@ void SQRNetworkManager_AdHoc_Vita::SysUtilCallback(uint64_t status, uint64_t par
 	// 					{
 	// 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 	// 					}
-	// 					s_SignInCompleteCallbackFn  = NULL;
+	// 					s_SignInCompleteCallbackFn  = nullptr;
 	// 				}
 	// 			}
 	//
@@ -2542,7 +2542,7 @@ void SQRNetworkManager_AdHoc_Vita::updateNetCheckDialog()
 				if( s_SignInCompleteCallbackFn )
 				{
 					s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,0);
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 			}
 			else
@@ -2561,7 +2561,7 @@ void SQRNetworkManager_AdHoc_Vita::updateNetCheckDialog()
 					{
 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 					}
-					s_SignInCompleteCallbackFn  = NULL;
+					s_SignInCompleteCallbackFn  = nullptr;
 				}
 			}
 		}
@@ -2577,7 +2577,7 @@ void SQRNetworkManager_AdHoc_Vita::RudpContextCallback(int ctx_id, int event_id,
 	{
 	case SCE_RUDP_CONTEXT_EVENT_CLOSED:
 		{
-			SQRVoiceConnection* pVoice = NULL;
+			SQRVoiceConnection* pVoice = nullptr;
 			if(sc_voiceChatEnabled)
 				SonyVoiceChat_Vita::GetVoiceConnectionFromRudpCtx(ctx_id);
 
@@ -2638,7 +2638,7 @@ void SQRNetworkManager_AdHoc_Vita::RudpContextCallback(int ctx_id, int event_id,
 	case SCE_RUDP_CONTEXT_EVENT_READABLE:
 		if( manager->m_listener )
 		{
-			SQRVoiceConnection* pVoice = NULL;
+			SQRVoiceConnection* pVoice = nullptr;
 			if(sc_voiceChatEnabled)
 			{
 				SonyVoiceChat_Vita::GetVoiceConnectionFromRudpCtx(ctx_id);
@@ -2698,7 +2698,7 @@ void SQRNetworkManager_AdHoc_Vita::RudpContextCallback(int ctx_id, int event_id,
 							playerFrom = manager->m_aRoomSlotPlayers[0];
 							playerTo = manager->GetPlayerFromRudpCtx( ctx_id );
 						}
-						if( ( playerFrom != NULL ) && ( playerTo != NULL ) )
+						if( ( playerFrom != nullptr ) && ( playerTo != nullptr ) )
 						{
 							manager->m_listener->HandleDataReceived( playerFrom, playerTo, data, bytesRead );
 						}
@@ -2761,7 +2761,7 @@ void SQRNetworkManager_AdHoc_Vita::ServerContextValid_CreateRoom()
 	int ret = -1;
 	if( !ForceErrorPoint(SNM_FORCE_ERROR_GET_WORLD_INFO_LIST) )
 	{
-		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, NULL, &m_getWorldRequestId);
+		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, nullptr, &m_getWorldRequestId);
 	}
 	if (ret < 0)
 	{
@@ -2790,7 +2790,7 @@ void SQRNetworkManager_AdHoc_Vita::ServerContextValid_JoinRoom()
 	reqParam.roomMemberBinAttrInternalNum = 1;
 	reqParam.roomMemberBinAttrInternal = &binAttr;
 
-	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, NULL, &m_joinRoomRequestId );
+	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, nullptr, &m_joinRoomRequestId );
 	if ( (ret < 0) || ForceErrorPoint(SNM_FORCE_ERROR_JOIN_ROOM) )
 	{
 		if( ret == SCE_NP_MATCHING2_SERVER_ERROR_NAT_TYPE_MISMATCH)
@@ -2814,14 +2814,14 @@ const SceNpCommunicationSignature* SQRNetworkManager_AdHoc_Vita::GetSceNpCommsSi
 const SceNpTitleId* SQRNetworkManager_AdHoc_Vita::GetSceNpTitleId()
 {
 	PSVITA_STUBBED;
-	return NULL;
+	return nullptr;
 // 	return &s_npTitleId;
 }
 
 const SceNpTitleSecret* SQRNetworkManager_AdHoc_Vita::GetSceNpTitleSecret()
 {
 	PSVITA_STUBBED;
-	return NULL;
+	return nullptr;
 //	return &s_npTitleSecret;
 }
 
@@ -2852,7 +2852,7 @@ int	SQRNetworkManager_AdHoc_Vita::GetRemovedMask(int newMask, int oldMask)
 void SQRNetworkManager_AdHoc_Vita::GetExtDataForRoom( SceNpMatching2RoomId roomId, void *extData, void (* FriendSessionUpdatedFn)(bool success, void *pParam), void *pParam )
 {
 
-	for(int i=0;i<m_aFriendSearchResults.size();i++)
+	for(size_t i=0;i<m_aFriendSearchResults.size();i++)
 	{
 		if(m_aFriendSearchResults[i].m_netAddr.s_addr == roomId)
 		{
@@ -2964,7 +2964,7 @@ void SQRNetworkManager_AdHoc_Vita::AttemptAdhocSignIn(int (*SignInCompleteCallba
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 	}
 }
@@ -3039,7 +3039,7 @@ void SQRNetworkManager_AdHoc_Vita::AttemptPSNSignIn(int (*SignInCompleteCallback
 			{
 				s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 			}
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 		}
 	}
 }
@@ -3234,7 +3234,7 @@ SQRNetworkPlayer *SQRNetworkManager_AdHoc_Vita::GetPlayerByXuid(PlayerUID xuid)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 void SQRNetworkManager_AdHoc_Vita::UpdateLocalIPAddress()

@@ -75,7 +75,7 @@ void ConsoleUIController::render()
 	example, no resolve targets are required. */
 	gdraw_D3D11_SetTileOrigin( m_pRenderTargetView.Get(),
 		m_pDepthStencilView.Get(),
-		NULL,
+		nullptr,
 		0,
 		0 );
 
@@ -153,7 +153,7 @@ void ConsoleUIController::setTileOrigin(S32 xPos, S32 yPos)
 {
 	gdraw_D3D11_SetTileOrigin( m_pRenderTargetView.Get(),
 		m_pDepthStencilView.Get(),
-		NULL,
+		nullptr,
 		xPos,
 		yPos );
 }
@@ -169,7 +169,7 @@ GDrawTexture *ConsoleUIController::getSubstitutionTexture(int textureId)
 	ID3D11ShaderResourceView *tex = RenderManager.TextureGetTexture(textureId);
 	ID3D11Resource *resource;
 	tex->GetResource(&resource);
-	ID3D11Texture2D  *tex2d = (ID3D11Texture2D *)resource;
+	ID3D11Texture2D  *tex2d = static_cast<ID3D11Texture2D *>(resource);
 	D3D11_TEXTURE2D_DESC desc;
 	tex2d->GetDesc(&desc);
 	GDrawTexture *gdrawTex = gdraw_D3D11_WrappedTextureCreate(tex);

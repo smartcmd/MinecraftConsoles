@@ -513,7 +513,7 @@ void PortalForcer::tick(int64_t time)
 			int64_t key = *it;
 			PortalPosition *pos = cachedPortals[key];
 
-			if (pos == NULL || pos->lastUsed < cutoff)
+			if (pos == nullptr || pos->lastUsed < cutoff)
 			{
 				delete pos;
 				it = cachedPortalKeys.erase(it);

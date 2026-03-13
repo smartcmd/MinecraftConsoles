@@ -37,8 +37,8 @@ BOOL	SenStatPlayerSessionStart              	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 10;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -67,8 +67,8 @@ BOOL	SenStatPlayerSessionExit               	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 5;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -93,8 +93,8 @@ BOOL	SenStatHeartBeat                       	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 1;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -136,8 +136,8 @@ BOOL	SenStatLevelStart                      	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 18;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -172,8 +172,8 @@ BOOL	SenStatLevelExit                       	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 11;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -209,8 +209,8 @@ BOOL	SenStatLevelSaveOrCheckpoint           	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 12;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -253,8 +253,8 @@ BOOL	SenStatLevelResume                     	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 19;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -285,8 +285,8 @@ BOOL	SenStatPauseOrInactive                 	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 7;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -317,8 +317,8 @@ BOOL	SenStatUnpauseOrActive                 	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 7;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -351,8 +351,8 @@ BOOL	SenStatMenuShown                       	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 9;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -385,8 +385,8 @@ BOOL	SenStatAchievementUnlocked             	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 9;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -419,8 +419,8 @@ BOOL	SenStatMediaShareUpload                	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 9;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -453,8 +453,8 @@ BOOL	SenStatUpsellPresented                 	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 9;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -488,8 +488,8 @@ BOOL	SenStatUpsellResponded                 	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 10;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -607,8 +607,8 @@ BOOL	SenStatSkinChanged                     	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 8;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -639,8 +639,8 @@ BOOL	SenStatBanLevel                        	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 7;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -671,8 +671,8 @@ BOOL	SenStatUnBanLevel                      	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 7;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing
@@ -705,8 +705,8 @@ BOOL	SenStatTexturePackChanged              	( DWORD dwUserID, INT SecondsSinceI
 	st.dwNumProperties = 9;
 	st.arrProperties   = (CHAR*)&LocalStruct;
 	st.dwNumValues     = 0;
-	st.arrValues       = NULL;
-	st.arrValueFlags   = NULL;
+	st.arrValues       = nullptr;
+	st.arrValueFlags   = nullptr;
 
 #ifdef SEN_LOGTELEMETRY
 	// if we're in debug build with logging then log the stat to a file for testing

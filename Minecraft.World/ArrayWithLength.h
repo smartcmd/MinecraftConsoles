@@ -10,7 +10,7 @@ template <class T> class arrayWithLength
 public:
 	T *data;
 	unsigned int length;
-	arrayWithLength() { data = NULL; length = 0; }
+	arrayWithLength() { data = nullptr; length = 0; }
 	arrayWithLength(unsigned int elements, bool bClearArray=true) { assert(elements!=0); data = new T[elements];  if(bClearArray){ memset( data,0,sizeof(T)*elements); }  this->length = elements; }
 
 	// 4J Stu Added this ctor so I static init arrays in the Item derivation tree
@@ -24,7 +24,7 @@ public:
 		T *temp = new T[elements];
 		memset( temp,0,sizeof(T)*elements);
 
-		if( data != NULL )
+		if( data != nullptr )
 		{
 			std::copy( data, data+length, temp );
 
@@ -45,7 +45,7 @@ template <class T> class array2DWithLength
 public:
 	_parrayWithLength *data;
 	unsigned int length;
-	array2DWithLength() { data = NULL; length = 0; }
+	array2DWithLength() { data = nullptr; length = 0; }
 	array2DWithLength(unsigned int dimA, unsigned int dimB)
 	{
 		data = new _parrayWithLength[dimA];
