@@ -455,6 +455,74 @@ unordered_map<wstring, ConsoleSchematicFile *> *LevelGenerationOptions::getUnfin
 
 void LevelGenerationOptions::loadBaseSaveData()
 {
+#ifdef _WINDOWS64
+	
+	int gameRulesCount = m_parentDLCPack ? m_parentDLCPack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader) : 0;
+
+	wstring baseSave = getBaseSavePath();
+	wstring packName = baseSave.substr(0, baseSave.find(L'.'));
+
+	for (int i = 0; i < gameRulesCount; ++i)
+	{
+		DLCGameRulesHeader* dlcFile = static_cast<DLCGameRulesHeader*>(m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
+
+		if (!dlcFile->getGrfPath().empty())
+		{
+			File grf(L"Windows64Media\\DLC\\" + packName + L"\\Data\\" + dlcFile->getGrfPath());
+
+			if (grf.exists())
+			{
+				wstring path = grf.getPath();
+				HANDLE fileHandle = CreateFileW(path.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+
+				if (fileHandle != INVALID_HANDLE_VALUE)
+				{
+					DWORD dwFileSize = grf.length();
+					DWORD bytesRead;
+					PBYTE pbData = new BYTE[dwFileSize];
+					BOOL bSuccess = ReadFile(fileHandle, pbData, dwFileSize, &bytesRead, nullptr);
+					CloseHandle(fileHandle);
+
+					if (bSuccess)
+					{
+						dlcFile->setGrfData(pbData, dwFileSize, m_stringTable);
+						app.m_gameRules.setLevelGenerationOptions(dlcFile->lgo);
+					}
+					delete[] pbData;
+				}
+			}
+		}
+	}
+
+	if (requiresBaseSave() && !getBaseSavePath().empty())
+	{
+		File save(L"Windows64Media\\DLC\\" + packName + L"\\Data\\" + baseSave);
+
+		if (save.exists())
+		{
+			wstring path = save.getPath();
+			HANDLE fileHandle = CreateFileW(path.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+
+			if (fileHandle != INVALID_HANDLE_VALUE)
+			{
+				DWORD dwFileSize = GetFileSize(fileHandle, nullptr);
+				DWORD bytesRead;
+				PBYTE pbData = new BYTE[dwFileSize];
+				BOOL bSuccess = ReadFile(fileHandle, pbData, dwFileSize, &bytesRead, nullptr);
+				CloseHandle(fileHandle);
+
+				if (bSuccess)
+					setBaseSaveData(pbData, dwFileSize);
+				else
+					delete[] pbData;
+			}
+		}
+	}
+
+	setLoadedData();
+	app.SetAction(ProfileManager.GetPrimaryPad(), eAppAction_ReloadTexturePack);
+
+#else
 	int mountIndex = -1;
 	if(m_parentDLCPack != nullptr) mountIndex = m_parentDLCPack->GetDLCMountIndex();
 
@@ -481,6 +549,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 		setLoadedData();
 		app.SetAction(ProfileManager.GetPrimaryPad(), eAppAction_ReloadTexturePack);
 	}
+#endif
 }
 
 int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask)

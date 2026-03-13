@@ -228,7 +228,7 @@ void ItemInHandRenderer::renderItem(shared_ptr<LivingEntity> mob, shared_ptr<Ite
 	// by texture lighting. This is for colourising things held in 3rd person view.
     if ( (setColor) && (item != nullptr) )
 	{
-        int col = Item::items[item->id]->getColor(item,0);
+        int col = Item::items[item->id]->getColor(item, layer);
         float red = ((col >> 16) & 0xff) / 255.0f;
         float g = ((col >> 8) & 0xff) / 255.0f;
         float b = ((col) & 0xff) / 255.0f;

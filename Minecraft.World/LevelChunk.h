@@ -192,6 +192,7 @@ public:
 	virtual void setBrightness(LightLayer::variety layer, int x, int y, int z, int brightness);
 	virtual int getRawBrightness(int x, int y, int z, int skyDampen);
 	virtual void addEntity(shared_ptr<Entity> e);
+    virtual void addRidingEntities(shared_ptr<Entity> rider, CompoundTag *riderTag);
 	virtual void removeEntity(shared_ptr<Entity> e);
 	virtual void removeEntity(shared_ptr<Entity> e, int yc);
 	virtual bool isSkyLit(int x, int y, int z);

@@ -1629,7 +1629,7 @@ void Minecraft::run_middle()
 						s_prevXButtons[i] = xCurButtons;
 					}
 					bool startJustPressed = s_startPressLatch[i] > 0;
-					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && xCurButtons != 0;
+					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && xCurButtons != 0 && g_KBMInput.IsWindowFocused();
 #else
 					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && RenderManager.IsHiDef() && InputManager.ButtonPressed(i);
 #endif
@@ -3706,7 +3706,9 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					app.EnableDebugOverlay(options->renderDebug,iPad);
 #else
 					// 4J Stu - The xbox uses a completely different way of navigating to this scene
-					ui.NavigateToScene(0, eUIScene_DebugOverlay, nullptr, eUILayer_Debug);
+					// Always open in the fullscreen group so the overlay spans the full window
+					// regardless of split-screen viewport configuration.
+					ui.NavigateToScene(0, eUIScene_DebugOverlay, nullptr, eUILayer_Debug, eUIGroup_Fullscreen);
 #endif
 #endif
 				}
