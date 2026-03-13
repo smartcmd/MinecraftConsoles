@@ -30,6 +30,7 @@ private:
 
 protected:
 	Model *model;			// TODO 4J: Check why exactly this is here, it seems to get shadowed by classes inheriting from this by their own
+	Model *modelCustom;
 	Model *modelSlim;
 
 protected:
@@ -69,6 +70,7 @@ public:
 public:
 	// 4J Added
 	virtual Model *getModel() { return model; }
+	virtual Model *getModelCustom() { return modelCustom; }
 	virtual Model *getModelSlim() { return modelSlim; }
 	virtual void SetItemFrame(bool bSet) {}
 };

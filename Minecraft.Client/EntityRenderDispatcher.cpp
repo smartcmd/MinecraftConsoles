@@ -117,7 +117,7 @@ EntityRenderDispatcher::EntityRenderDispatcher()
 	renderers[eTYPE_PIGZOMBIE] = new ZombieRenderer();
 	renderers[eTYPE_SLIME] = new SlimeRenderer(new SlimeModel(16), new SlimeModel(0), 0.25f);
 	renderers[eTYPE_LAVASLIME] = new LavaSlimeRenderer();
-	renderers[eTYPE_PLAYER] = new PlayerRenderer(true);
+	renderers[eTYPE_PLAYER] = new PlayerRenderer();
 	renderers[eTYPE_GIANT] = new GiantMobRenderer(new ZombieModel(), 0.5f, 6);
 	renderers[eTYPE_GHAST] = new GhastRenderer();
 	renderers[eTYPE_SQUID] = new SquidRenderer(new SquidModel(), 0.7f);
@@ -180,7 +180,6 @@ EntityRenderDispatcher::EntityRenderDispatcher()
 EntityRenderer *EntityRenderDispatcher::getRenderer(eINSTANCEOF e)
 {
 	if( (e & eTYPE_PLAYER) == eTYPE_PLAYER) e = eTYPE_PLAYER;
-	else if( (e & eTYPE_PLAYER) == eTYPE_PLAYER) e = eTYPE_PLAYER;
 	//EntityRenderer * r = renderers[e];
 	auto it = renderers.find(e); // 4J Stu - The .at and [] accessors insert elements if they don't exist
 

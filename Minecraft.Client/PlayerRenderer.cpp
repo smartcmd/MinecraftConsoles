@@ -55,9 +55,10 @@ static unsigned int nametagColorForIndex(int index)
 
 ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR);
 
-PlayerRenderer::PlayerRenderer(bool slimHands) : LivingEntityRenderer( new HumanoidModel(0), 0.5f, slimHands )
+PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0.5f )
 {
 	humanoidModel = static_cast<HumanoidModel *>(model);
+	humanoidModelCustom = static_cast<HumanoidModel *>(modelCustom);
 	humanoidModelSlim = static_cast<HumanoidModel *>(modelSlim);
 
     armorParts1 = new HumanoidModel(1.0f);
@@ -166,7 +167,8 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
-	if (mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	if ((mob != nullptr && modelCustom != nullptr && mob->getPlayerDefaultSkin() == 18) || mob->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
+	else if ((mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() >= 9) || mob->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
 	else resModel = humanoidModel;
 
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
@@ -272,7 +274,8 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 	HumanoidModel *resModel;
 
-	if (mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	if ((mob != nullptr && modelCustom != nullptr && mob->getPlayerDefaultSkin() == 18) || mob->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
+	else if ((mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() >= 9) || mob->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
 	else resModel = humanoidModel;
 
     shared_ptr<ItemInstance> headGear = mob->inventory->getArmor(3);
@@ -520,7 +523,8 @@ void PlayerRenderer::renderHand()
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player);
 	HumanoidModel *resModel;
 
-	if (player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() == 9) resModel = humanoidModelSlim;
+	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
+	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
 	else resModel = humanoidModel;
 
 	float brightness = 1;

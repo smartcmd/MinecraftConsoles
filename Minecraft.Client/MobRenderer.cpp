@@ -9,7 +9,7 @@
 #include "..\Minecraft.World\Mth.h"
 #include "entityRenderDispatcher.h"
 
-MobRenderer::MobRenderer(Model *model, float shadow) : LivingEntityRenderer(model, shadow, false)
+MobRenderer::MobRenderer(Model *model, float shadow) : LivingEntityRenderer(model, shadow)
 {
 }
 

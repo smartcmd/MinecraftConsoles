@@ -259,10 +259,47 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 
 	HumanoidModel *model;
 
-	if (m_backupTexture == TN_MOB_CHAR8)
+	switch (m_backupTexture)
+	{
+	case TN_MOB_ALEX:
 		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-	else
-		model = static_cast<HumanoidModel *>(renderer->getModel());
+		break;
+	case TN_MOB_ALEX1:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX2:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX3:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX4:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX5:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX6:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_ALEX7:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_DEVALEX:
+		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		break;
+	case TN_MOB_DEVSTEVE:
+		model = static_cast<HumanoidModel *>(renderer->getModelCustom());
+		break;
+	default:
+		if (m_uiAnimOverrideBitmask&(1<<18))
+			model = static_cast<HumanoidModel *>(renderer->getModelCustom());
+		else if (m_uiAnimOverrideBitmask&(1<<19))
+			model = static_cast<HumanoidModel *>(renderer->getModelSlim());
+		else
+			model = static_cast<HumanoidModel *>(renderer->getModel());
+		break;
+	}
 
 	//getAttackAnim(mob, a);
 	//if (armor != nullptr) armor->attackTime = model->attackTime;

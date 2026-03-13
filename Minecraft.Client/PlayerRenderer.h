@@ -14,13 +14,14 @@ public:
 
 private:
 	HumanoidModel *humanoidModel;
+	HumanoidModel *humanoidModelCustom;
 	HumanoidModel *humanoidModelSlim;
     HumanoidModel *armorParts1;
     HumanoidModel *armorParts2;
-	bool defaultSlimHands;
+	int defaultSkinType;
 
 public:
-	PlayerRenderer(bool slimHands);
+	PlayerRenderer();
 
 	static unsigned int getNametagColour(int index);
 

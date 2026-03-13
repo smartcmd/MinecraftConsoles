@@ -58,7 +58,7 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 	return pNewBox;
 }
 
-void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, bool slimHands)
+void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, int skinType)
 {
 	this->texWidth = texWidth;
 	this->texHeight = texHeight;
@@ -85,27 +85,39 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
     arm0 = new ModelPart(this, 24 + 16, 16);
     arm0->setPos(-5, 2 + yOffset, 0);
 
-    arm1 = new ModelPart(this, 24 + 16, 16);
-    arm1->bMirror = true;
-    arm1->setPos(5, 2 + yOffset, 0);
+    if (skinType == 2)
+    {
+        arm0->addHumanoidBox(-2, -2, -2, 3, 12, 4, g); // Arm0 Slim
 
-	if (slimHands == false)
-	{
-		arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g);
-		arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g);
-	}
-	else if (slimHands == true)
-	{
-		arm0->addHumanoidBox(-2, -2, -2, 3, 12, 4, 0);
-		arm1->addHumanoidBox(-1, -2, -2, 3, 12, 4, 0);
-	}
+        arm1 = new ModelPart(this, 16 + 16, 16 * 3);
+        arm1->addHumanoidBox(-1, -2, -2, 3, 12, 4, g); // Arm1 Slim
+    }
+    else
+    {
+        arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g); // Arm0
+
+        if (skinType == 1)
+            arm1 = new ModelPart(this, 16 + 16, 16 * 3); // Arm1 Custom
+        else
+        {
+            arm1 = new ModelPart(this, 24 + 16, 16);
+            arm1->bMirror = true;
+        }
+        arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g); // Arm1
+    }
+    arm1->setPos(5, 2 + yOffset, 0);
 
     leg0 = new ModelPart(this, 0, 16);
     leg0->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg0
     leg0->setPos(-1.9, 12 + yOffset, 0);
 
-    leg1 = new ModelPart(this, 0, 16);
-    leg1->bMirror = true;
+    if (skinType >= 1)
+        leg1 = new ModelPart(this, 16, 16 * 3);
+    else
+    {
+        leg1 = new ModelPart(this, 0, 16);
+        leg1->bMirror = true;
+    }
     leg1->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg1
     leg1->setPos(1.9, 12 + yOffset, 0);
 
@@ -137,22 +149,22 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
 
 HumanoidModel::HumanoidModel() : Model()
 {
-	_init(0, 0, 64, 32, false);
+	_init(0, 0, 64, 32, 0);
 }
 
 HumanoidModel::HumanoidModel(float g) : Model()
 {
-	_init(g, 0, 64, 32, false);
+	_init(g, 0, 64, 32, 0);
 }
 
 HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight) : Model()
 {
-	_init(g,yOffset,texWidth,texHeight, false);
+	_init(g,yOffset,texWidth,texHeight,0);
 }
 
-HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands) : Model()
+HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, int skinType) : Model()
 {
-	_init(g,yOffset,texWidth,texHeight, slimHands);
+	_init(g,yOffset,texWidth,texHeight,skinType);
 }
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
