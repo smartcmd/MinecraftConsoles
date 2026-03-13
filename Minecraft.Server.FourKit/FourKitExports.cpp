@@ -46,9 +46,9 @@ namespace FourKitInternal
 			if (NativeCallback_GetPlayerSnapshot((const char*)namePtr.ToPointer(), &snapshot))
 			{
 				player->SetPlayerData(snapshot.health, snapshot.food, snapshot.fallDistance,
-				                      snapshot.yRot, snapshot.xRot,
-				                      snapshot.sneaking, snapshot.sprinting,
-				                      snapshot.x, snapshot.y, snapshot.z, snapshot.dimension);
+									  snapshot.yRot, snapshot.xRot,
+									  snapshot.sneaking, snapshot.sprinting, snapshot.insideVehicle,
+									  snapshot.x, snapshot.y, snapshot.z, snapshot.dimension);
 			}
 		}
 		finally
@@ -230,7 +230,9 @@ namespace FourKitInternal
     X(FourKit_FireOnPlayerInteract, (PlayerInteractData * interactData, bool *cancelled), (FourKit::FireEventOnPlayerInteract(interactData, cancelled))) \
 	X(FourKit_FireOnPlayerDropItem, (PlayerDropItemData * dropData, bool *cancelled), (FourKit::FireEventOnPlayerDropItem(dropData, cancelled)))         \
 	X(FourKit_FireOnLoad, (), (FourKit::FireEventOnLoad()))                                                                                              \
-	X(FourKit_FireOnExit, (), (FourKit::FireEventOnExit()))
+	X(FourKit_FireOnExit, (), (FourKit::FireEventOnExit()))                                                                                              \
+	X(FourKit_FireOnEntityDamage, (EntityDamageData * damageData, bool *cancelled), (FourKit::FireEventOnEntityDamage(damageData, cancelled)))            \
+	X(FourKit_FireOnEntityDamageByEntity, (EntityDamageData * damageData, bool *cancelled), (FourKit::FireEventOnEntityDamageByEntity(damageData, cancelled)))
 
 #define PB_FOURKIT_VALUE_EXPORT_LIST(X) \
     X(FourKit_DispatchPlayerCommand, int, (const char *playerName, const char *commandLine), (FourKitInternal::DispatchPlayerCommandExport(playerName, commandLine)))

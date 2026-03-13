@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Block.h"
 #include "Item.h"
+#include "Entity.h"
 
 using namespace System;
 
@@ -252,11 +253,68 @@ public:
     void setNewLevel(int level) { NewLevel = level; }
     //void setNewTotalExp(int totalExp) { NewTotalExp = totalExp; }
 internal:
-    property Player^ PlayerObject;
-    property String^ DeathMessage;
-    property bool KeepInventory;
-    property bool KeepLevel;
-    property int NewExp;
-    property int NewLevel;
-    property int NewTotalExp;
+	property Player^ PlayerObject;
+	property String^ DeathMessage;
+	property bool KeepInventory;
+	property bool KeepLevel;
+	property int NewExp;
+	property int NewLevel;
+	property int NewTotalExp;
+};
+
+public enum class DamageCause
+{
+	BLOCK_EXPLOSION,
+	CONTACT,
+	CUSTOM,
+	DROWNING,
+	ENTITY_ATTACK,
+	ENTITY_EXPLOSION,
+	FALL,
+	FALLING_BLOCK,
+	FIRE,
+	FIRE_TICK,
+	LAVA,
+	LIGHTNING,
+	MAGIC,
+	MELTING,
+	POISON,
+	PROJECTILE,
+	STARVATION,
+	SUFFOCATION,
+	SUICIDE,
+	THORNS,
+	VOID_DAMAGE,
+	WITHER
+};
+
+public ref class EntityDamageEvent
+{
+public:
+	Entity^ getEntity() { return EntityObject; }
+	EntityType getEntityType()
+	{
+		return (EntityObject != nullptr) ? EntityObject->getType() : EntityType::UNKNOWN;
+	}
+	DamageCause getCause() { return Cause; }
+	double getDamage() { return Damage; }
+	double getFinalDamage() { return FinalDamage; }
+	bool isCancelled() { return Cancelled; }
+	void setCancelled(bool cancel) { Cancelled = cancel; }
+	void setDamage(double damage) { Damage = damage; }
+internal:
+	property Entity^ EntityObject;
+	property DamageCause Cause;
+	property double Damage;
+	property double FinalDamage;
+	property double OriginalDamage;
+	property bool Cancelled;
+};
+
+public ref class EntityDamageByEntityEvent : public EntityDamageEvent
+{
+public:
+	Entity^ getDamager() { return DamagerObject; }
+internal:
+	property Entity^ DamagerObject;
 };

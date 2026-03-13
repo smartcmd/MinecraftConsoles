@@ -1,20 +1,21 @@
 #include "Player.h"
 #include "NativePlayerCallbacks.h"
 #include "World.h"
+#include "Events.h"
 
 using namespace System;
 using namespace System::Net;
 
 Player::Player(String^ name)
-	: m_name(name), m_health(20.0f), m_food(20), m_fallDistance(0.0f), 
-	  m_yRot(0.0f), m_xRot(0.0f), m_sneaking(false), m_sprinting(false),
-	  m_x(0.0), m_y(0.0), m_z(0.0), m_dimension(0)
+	: m_name(name), m_health(20.0f), m_food(20),
+	  m_yRot(0.0f), m_xRot(0.0f), m_sneaking(false), m_sprinting(false), m_insideVehicle(false)
 {
+	m_entityType = EntityType::PLAYER;
 }
 
 void Player::SetPlayerData(float health, int food, float fallDistance, float yRot, float xRot,
-                           bool sneaking, bool sprinting,
-                           double x, double y, double z, int dimension)
+					   bool sneaking, bool sprinting, bool insideVehicle,
+					   double x, double y, double z, int dimension)
 {
 	m_health = health;
 	m_food = food;
@@ -23,6 +24,7 @@ void Player::SetPlayerData(float health, int food, float fallDistance, float yRo
 	m_xRot = xRot;
 	m_sneaking = sneaking;
 	m_sprinting = sprinting;
+	m_insideVehicle = insideVehicle;
 	m_x = x;
 	m_y = y;
 	m_z = z;
@@ -87,9 +89,11 @@ void Player::teleport(double x, double y, double z)
 	NativePlayerCallbacks::TeleportTo(m_name, x, y, z);
 }
 
-World^ Player::getWorld()
+bool Player::teleport(Location^ location)
 {
-	return gcnew World(m_dimension);
+	if (location == nullptr) return false;
+	teleport(location->getX(), location->getY(), location->getZ());
+	return true;
 }
 
 InetSocketAddress^ Player::getAddress()

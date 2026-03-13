@@ -18,6 +18,9 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "..\Minecraft.World\MobEffect.h"
+#include "..\Minecraft.World\MobEffectInstance.h"
+#include "..\Minecraft.World\EnchantmentHelper.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.item.trading.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
@@ -711,6 +714,31 @@ void ServerPlayer::die(DamageSource *source)
 	//awardStat(Stats::deaths, 1);
 }
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+static int MapDamageSourceToCause(DamageSource *src)
+{
+	if (src == DamageSource::inFire)       return 8;  // FIRE
+	if (src == DamageSource::onFire)       return 9;  // FIRE_TICK
+	if (src == DamageSource::lava)         return 10; // LAVA
+	if (src == DamageSource::inWall)       return 17; // SUFFOCATION
+	if (src == DamageSource::drown)        return 3;  // DROWNING
+	if (src == DamageSource::starve)       return 16; // STARVATION
+	if (src == DamageSource::cactus)       return 1;  // CONTACT
+	if (src == DamageSource::fall)         return 6;  // FALL
+	if (src == DamageSource::outOfWorld)   return 20; // VOID_DAMAGE
+	if (src == DamageSource::magic)        return 12; // MAGIC
+	if (src == DamageSource::dragonbreath) return 12; // MAGIC
+	if (src == DamageSource::wither)       return 21; // WITHER
+	if (src == DamageSource::anvil)        return 7;  // FALLING_BLOCK
+	if (src == DamageSource::fallingBlock) return 7;  // FALLING_BLOCK
+	if (src == DamageSource::genericSource) return 2; // CUSTOM
+	if (src->isExplosion())                return 5;  // ENTITY_EXPLOSION
+	if (src->isProjectile())               return 15; // PROJECTILE
+	if (dynamic_cast<EntityDamageSource *>(src) != nullptr) return 4; // ENTITY_ATTACK
+	return 2; // CUSTOM
+}
+#endif
+
 bool ServerPlayer::hurt(DamageSource *dmgSource, float dmg)
 {
 	if (isInvulnerable()) return false;
@@ -740,6 +768,73 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, float dmg)
 			}
 		}
 	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	{
+		int cause = MapDamageSourceToCause(dmgSource);
+		double damage = (double)dmg;
+
+		// todo: move code to entity so it fires for all entities
+		// combined from other places in code where damage is modified
+		// cant call getdamageafterarmorabsorb because it hurts armor 
+		float finalDmg = dmg;
+		if (!dmgSource->isBypassArmor())
+		{
+			if (isBlocking() && finalDmg > 0)
+				finalDmg = (1 + finalDmg) * 0.5f;
+			int armorAbsorb = 25 - getArmorValue();
+			finalDmg = (finalDmg * armorAbsorb) / 25.0f;
+		}
+		if (hasEffect(MobEffect::damageResistance) && dmgSource != DamageSource::outOfWorld)
+		{
+			int absorbValue = (getEffect(MobEffect::damageResistance)->getAmplifier() + 1) * 5;
+			int resistAbsorb = 25 - absorbValue;
+			finalDmg = (finalDmg * resistAbsorb) / 25.0f;
+		}
+		if (finalDmg > 0)
+		{
+			int enchantmentArmor = EnchantmentHelper::getDamageProtection(getEquipmentSlots(), dmgSource);
+			if (enchantmentArmor > 20) enchantmentArmor = 20;
+			if (enchantmentArmor > 0 && enchantmentArmor <= 20)
+			{
+				int enchAbsorb = 25 - enchantmentArmor;
+				finalDmg = (finalDmg * enchAbsorb) / 25.0f;
+			}
+		}
+		else
+		{
+			finalDmg = 0;
+		}
+		finalDmg = max(finalDmg - getAbsorptionAmount(), 0.0f);
+		double finalDamage = (double)finalDmg;
+
+		shared_ptr<Entity> attackerEntity = dmgSource->getEntity();
+		ServerPlayer* damagerServerPlayer = nullptr;
+		if (attackerEntity != nullptr && (attackerEntity->instanceof(eTYPE_PLAYER) || attackerEntity->instanceof(eTYPE_SERVERPLAYER)))
+		{
+			damagerServerPlayer = dynamic_cast<ServerPlayer*>(attackerEntity.get());
+		}
+
+		if (damagerServerPlayer != nullptr)
+		{
+			double outDamage = damage;
+			double outFinalDamage = finalDamage;
+			if (FourKit::EmitEntityDamageByEntityEvent(this, damagerServerPlayer, cause, damage, finalDamage, outDamage, outFinalDamage))
+			{
+				return false;
+			}
+			dmg = (float)outDamage;
+		}
+		else
+		{
+			if (FourKit::EmitEntityDamageEvent(this, cause, damage, finalDamage))
+			{
+				return false;
+			}
+		}
+	}
+#endif
+
 	bool returnVal = Player::hurt(dmgSource, dmg);
 
 	if( returnVal )

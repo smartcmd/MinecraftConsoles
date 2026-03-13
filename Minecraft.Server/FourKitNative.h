@@ -44,6 +44,10 @@ namespace FourKit
 	void EmitPlayerDeathEvent(ServerPlayer* nativePlayer, PlayerDeathData* deathData);
 	bool EmitPlayerDropItemEvent(ServerPlayer* nativePlayer, int itemId, int itemCount, int itemData,
 		int& outItemId, int& outItemCount, int& outItemData, int& outPickupDelay);
+	bool EmitEntityDamageEvent(ServerPlayer* nativePlayer, int cause, double damage, double finalDamage);
+	bool EmitEntityDamageByEntityEvent(ServerPlayer* nativePlayer, ServerPlayer* damagerPlayer,
+		int cause, double damage, double finalDamage,
+		double& outDamage, double& outFinalDamage);
 }
 
 #endif

@@ -78,7 +78,7 @@ void EventManager::FireEvent(Object^ eventObject)
 			{
 				cli::array<ParameterInfo^>^ parameters = method->GetParameters();
 				
-				if (parameters->Length == 1 && parameters[0]->ParameterType == eventType)
+				if (parameters->Length == 1 && parameters[0]->ParameterType->IsAssignableFrom(eventType))
 				{
 					try
 					{

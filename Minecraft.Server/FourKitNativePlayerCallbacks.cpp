@@ -558,6 +558,7 @@ namespace FourKit
 		outData->xRot = p->xRot;
 		outData->sneaking = p->isSneaking();
 		outData->sprinting = p->isSprinting();
+		outData->insideVehicle = p->isRiding();
 		outData->x = p->x;
 		outData->y = p->y;
 		outData->z = p->z;
@@ -690,7 +691,8 @@ namespace FourKit
 			playerData.xRot = nativePlayer->xRot;
 			playerData.sneaking = nativePlayer->isSneaking();
 			playerData.sprinting = nativePlayer->isSprinting();
-			
+			playerData.insideVehicle = nativePlayer->isRiding();
+
 			playerData.x = nativePlayer->x;
 			playerData.y = nativePlayer->y;
 			playerData.z = nativePlayer->z;

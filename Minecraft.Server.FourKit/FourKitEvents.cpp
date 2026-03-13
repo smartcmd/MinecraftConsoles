@@ -72,7 +72,7 @@ void FourKit::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
         Player ^ player = gcnew Player(name);
         player->SetPlayerData(playerData.health, playerData.food, playerData.fallDistance,
                               playerData.yRot, playerData.xRot,
-                              playerData.sneaking, playerData.sprinting,
+                              playerData.sneaking, playerData.sprinting, playerData.insideVehicle,
                               playerData.x, playerData.y, playerData.z, playerData.dimension);
 
         PlayerJoinEvent ^ event = gcnew PlayerJoinEvent();
@@ -567,6 +567,166 @@ void FourKit::FireEventOnPlayerDropItem(PlayerDropItemData* dropData, bool* canc
 	catch (Exception^ ex)
 	{
 		PluginLogger::LogError("fourkit", String::Format("Error firing OnPlayerDropItem event: {0}", ex->Message));
+		if (cancelled != nullptr)
+		{
+			*cancelled = false;
+		}
+	}
+}
+
+static DamageCause ToDamageCause(int cause)
+{
+	switch (cause)
+	{
+	case 0: return DamageCause::BLOCK_EXPLOSION;
+	case 1: return DamageCause::CONTACT;
+	case 2: return DamageCause::CUSTOM;
+	case 3: return DamageCause::DROWNING;
+	case 4: return DamageCause::ENTITY_ATTACK;
+	case 5: return DamageCause::ENTITY_EXPLOSION;
+	case 6: return DamageCause::FALL;
+	case 7: return DamageCause::FALLING_BLOCK;
+	case 8: return DamageCause::FIRE;
+	case 9: return DamageCause::FIRE_TICK;
+	case 10: return DamageCause::LAVA;
+	case 11: return DamageCause::LIGHTNING;
+	case 12: return DamageCause::MAGIC;
+	case 13: return DamageCause::MELTING;
+	case 14: return DamageCause::POISON;
+	case 15: return DamageCause::PROJECTILE;
+	case 16: return DamageCause::STARVATION;
+	case 17: return DamageCause::SUFFOCATION;
+	case 18: return DamageCause::SUICIDE;
+	case 19: return DamageCause::THORNS;
+	case 20: return DamageCause::VOID_DAMAGE;
+	case 21: return DamageCause::WITHER;
+	default: return DamageCause::CUSTOM;
+	}
+}
+
+static EntityType ToEntityType(int type)
+{
+	return (EntityType)type;
+}
+
+static Entity^ BuildEntityFromDamageData(
+	const char* name, int entityType, int entityId,
+	double x, double y, double z, int dimension,
+	bool isPlayer, float fallDistance, bool onGround)
+{
+	if (isPlayer)
+	{
+		String^ playerName = gcnew String((name != nullptr) ? name : "");
+		Player^ player = FourKitInternal::ResolvePlayerByName(playerName);
+		if (player == nullptr)
+		{
+			player = gcnew Player(playerName);
+		}
+		player->SetEntityData(entityId, EntityType::PLAYER, x, y, z, dimension, fallDistance, onGround, false);
+		return player;
+	}
+	else
+	{
+		Entity^ entity = gcnew Entity(entityId, ToEntityType(entityType), x, y, z, dimension);
+		entity->SetEntityData(entityId, ToEntityType(entityType), x, y, z, dimension, fallDistance, onGround, false);
+		return entity;
+	}
+}
+
+void FourKit::FireEventOnEntityDamage(EntityDamageData* damageData, bool* cancelled)
+{
+	try
+	{
+		if (damageData == nullptr)
+		{
+			if (cancelled != nullptr)
+			{
+				*cancelled = false;
+			}
+			return;
+		}
+
+		Entity^ entity = BuildEntityFromDamageData(
+			damageData->entityName, damageData->entityType, damageData->entityId,
+			damageData->entityX, damageData->entityY, damageData->entityZ,
+			damageData->entityDimension, damageData->entityIsPlayer,
+			damageData->entityFallDistance, damageData->entityOnGround);
+
+		EntityDamageEvent^ event = gcnew EntityDamageEvent();
+		event->EntityObject = entity;
+		event->Cause = ToDamageCause(damageData->cause);
+		event->Damage = damageData->damage;
+		event->FinalDamage = damageData->finalDamage;
+		event->OriginalDamage = damageData->damage;
+		event->Cancelled = false;
+
+		EventManager::FireEvent(event);
+
+		damageData->damage = event->Damage;
+		damageData->finalDamage = event->FinalDamage;
+
+		if (cancelled != nullptr)
+		{
+			*cancelled = event->Cancelled;
+		}
+	}
+	catch (Exception^ ex)
+	{
+		PluginLogger::LogError("fourkit", String::Format("Error firing OnEntityDamage event: {0}", ex->Message));
+		if (cancelled != nullptr)
+		{
+			*cancelled = false;
+		}
+	}
+}
+
+void FourKit::FireEventOnEntityDamageByEntity(EntityDamageData* damageData, bool* cancelled)
+{
+	try
+	{
+		if (damageData == nullptr)
+		{
+			if (cancelled != nullptr)
+			{
+				*cancelled = false;
+			}
+			return;
+		}
+
+		Entity^ entity = BuildEntityFromDamageData(
+			damageData->entityName, damageData->entityType, damageData->entityId,
+			damageData->entityX, damageData->entityY, damageData->entityZ,
+			damageData->entityDimension, damageData->entityIsPlayer,
+			damageData->entityFallDistance, damageData->entityOnGround);
+
+		Entity^ damager = BuildEntityFromDamageData(
+			damageData->damagerName, damageData->damagerEntityType, damageData->damagerEntityId,
+			damageData->damagerX, damageData->damagerY, damageData->damagerZ,
+			damageData->damagerDimension, damageData->damagerIsPlayer,
+			damageData->damagerFallDistance, damageData->damagerOnGround);
+
+		EntityDamageByEntityEvent^ event = gcnew EntityDamageByEntityEvent();
+		event->EntityObject = entity;
+		event->DamagerObject = damager;
+		event->Cause = ToDamageCause(damageData->cause);
+		event->Damage = damageData->damage;
+		event->FinalDamage = damageData->finalDamage;
+		event->OriginalDamage = damageData->damage;
+		event->Cancelled = false;
+
+		EventManager::FireEvent(event);
+
+		damageData->damage = event->Damage;
+		damageData->finalDamage = event->FinalDamage;
+
+		if (cancelled != nullptr)
+		{
+			*cancelled = event->Cancelled;
+		}
+	}
+	catch (Exception^ ex)
+	{
+		PluginLogger::LogError("fourkit", String::Format("Error firing OnEntityDamageByEntity event: {0}", ex->Message));
 		if (cancelled != nullptr)
 		{
 			*cancelled = false;

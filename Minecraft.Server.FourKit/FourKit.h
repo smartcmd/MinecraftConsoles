@@ -61,4 +61,6 @@ internal:
 	static bool DispatchPlayerCommand(String^ playerName, String^ commandLine);
 	static void FireEventOnPlayerDropItem(PlayerDropItemData* dropData, bool* cancelled);
 	static void FireEventOnPlayerDeath(PlayerDeathData* deathData);
+	static void FireEventOnEntityDamage(EntityDamageData* damageData, bool* cancelled);
+	static void FireEventOnEntityDamageByEntity(EntityDamageData* damageData, bool* cancelled);
 };

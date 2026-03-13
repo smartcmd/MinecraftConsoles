@@ -241,4 +241,89 @@ namespace FourKit
 
 		return cancelled;
 	}
+
+	bool EmitEntityDamageEvent(ServerPlayer* nativePlayer, int cause, double damage, double finalDamage)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		EntityDamageData damageData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		damageData.entityName = nameUtf8.c_str();
+		damageData.entityType = 0;
+		damageData.entityId = nativePlayer->entityId;
+		damageData.entityX = nativePlayer->x;
+		damageData.entityY = nativePlayer->y;
+		damageData.entityZ = nativePlayer->z;
+		damageData.entityDimension = nativePlayer->dimension;
+		damageData.entityIsPlayer = true;
+		damageData.entityFallDistance = nativePlayer->fallDistance;
+		damageData.entityOnGround = nativePlayer->onGround;
+		damageData.cause = cause;
+		damageData.damage = damage;
+		damageData.finalDamage = finalDamage;
+		damageData.hasDamager = false;
+
+		bool cancelled = false;
+		FourKit_FireOnEntityDamage(&damageData, &cancelled);
+		return cancelled;
+	}
+
+	bool EmitEntityDamageByEntityEvent(ServerPlayer* nativePlayer, ServerPlayer* damagerPlayer,
+		int cause, double damage, double finalDamage,
+		double& outDamage, double& outFinalDamage)
+	{
+		if (nativePlayer == nullptr)
+		{
+			return false;
+		}
+
+		EntityDamageData damageData;
+		std::string nameUtf8 = ServerRuntime::StringUtils::WideToUtf8(nativePlayer->name);
+		damageData.entityName = nameUtf8.c_str();
+		damageData.entityType = 0;
+		damageData.entityId = nativePlayer->entityId;
+		damageData.entityX = nativePlayer->x;
+		damageData.entityY = nativePlayer->y;
+		damageData.entityZ = nativePlayer->z;
+		damageData.entityDimension = nativePlayer->dimension;
+		damageData.entityIsPlayer = true;
+		damageData.entityFallDistance = nativePlayer->fallDistance;
+		damageData.entityOnGround = nativePlayer->onGround;
+		damageData.cause = cause;
+		damageData.damage = damage;
+		damageData.finalDamage = finalDamage;
+		damageData.hasDamager = true;
+
+		std::string damagerNameUtf8;
+		if (damagerPlayer != nullptr)
+		{
+			damagerNameUtf8 = ServerRuntime::StringUtils::WideToUtf8(damagerPlayer->name);
+			damageData.damagerName = damagerNameUtf8.c_str();
+			damageData.damagerEntityType = 0;
+			damageData.damagerEntityId = damagerPlayer->entityId;
+			damageData.damagerX = damagerPlayer->x;
+			damageData.damagerY = damagerPlayer->y;
+			damageData.damagerZ = damagerPlayer->z;
+			damageData.damagerDimension = damagerPlayer->dimension;
+			damageData.damagerIsPlayer = true;
+			damageData.damagerFallDistance = damagerPlayer->fallDistance;
+			damageData.damagerOnGround = damagerPlayer->onGround;
+		}
+		else
+		{
+			damageData.damagerName = nullptr;
+			damageData.damagerIsPlayer = false;
+		}
+
+		bool cancelled = false;
+		FourKit_FireOnEntityDamageByEntity(&damageData, &cancelled);
+
+		outDamage = damageData.damage;
+		outFinalDamage = damageData.finalDamage;
+
+		return cancelled;
+	}
 }

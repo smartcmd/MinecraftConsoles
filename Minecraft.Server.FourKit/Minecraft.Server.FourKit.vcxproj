@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="FourKitEvents.cpp" />
     <ClCompile Include="FourKitExports.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandSender.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="CommandExecutor.h" />

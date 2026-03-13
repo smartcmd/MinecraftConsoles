@@ -11,13 +11,14 @@ struct PlayerJoinData
 	float xRot;
 	bool sneaking;
 	bool sprinting;
-	
+	bool insideVehicle;
+
 	double x;
 	double y;
 	double z;
-	
+
 	int dimension;
-	
+
 	PlayerJoinData()
 		: playerName(nullptr)
 		, health(20.0f)
@@ -27,6 +28,7 @@ struct PlayerJoinData
 		, xRot(0.0f)
 		, sneaking(false)
 		, sprinting(false)
+		, insideVehicle(false)
 		, x(0.0)
 		, y(0.0)
 		, z(0.0)
@@ -296,6 +298,64 @@ struct PlayerDropItemData
 		, itemCount(0)
 		, itemData(0)
 		, pickupDelay(40)
+	{
+	}
+};
+
+struct EntityDamageData
+{
+	const char* entityName;
+	int entityType;
+	int entityId;
+	double entityX;
+	double entityY;
+	double entityZ;
+	int entityDimension;
+	bool entityIsPlayer;
+	float entityFallDistance;
+	bool entityOnGround;
+
+	int cause;
+	double damage;
+	double finalDamage;
+
+	bool hasDamager;
+	const char* damagerName;
+	int damagerEntityType;
+	int damagerEntityId;
+	double damagerX;
+	double damagerY;
+	double damagerZ;
+	int damagerDimension;
+	bool damagerIsPlayer;
+	float damagerFallDistance;
+	bool damagerOnGround;
+
+	EntityDamageData()
+		: entityName(nullptr)
+		, entityType(0)
+		, entityId(-1)
+		, entityX(0.0)
+		, entityY(0.0)
+		, entityZ(0.0)
+		, entityDimension(0)
+		, entityIsPlayer(false)
+		, entityFallDistance(0.0f)
+		, entityOnGround(false)
+		, cause(0)
+		, damage(0.0)
+		, finalDamage(0.0)
+		, hasDamager(false)
+		, damagerName(nullptr)
+		, damagerEntityType(0)
+		, damagerEntityId(-1)
+		, damagerX(0.0)
+		, damagerY(0.0)
+		, damagerZ(0.0)
+		, damagerDimension(0)
+		, damagerIsPlayer(false)
+		, damagerFallDistance(0.0f)
+		, damagerOnGround(false)
 	{
 	}
 };
