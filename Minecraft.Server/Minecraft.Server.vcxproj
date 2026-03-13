@@ -44,7 +44,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\obj\MinecraftServer\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>Minecraft.Server</TargetName>
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>-port 25565 -bind 0.0.0.0 -name DedicatedServer</LocalDebuggerCommandArguments>
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\obj\MinecraftServer\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>Minecraft.Server</TargetName>
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>-port 25565 -bind 0.0.0.0 -name DedicatedServer</LocalDebuggerCommandArguments>
@@ -741,4 +741,3 @@
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
-
