@@ -65,22 +65,26 @@ void UIScene_HUD::updateSafeZone()
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-		safeBottom = getSafeZoneHalfHeight();
+		// safeTop mirrors SPLIT_TOP so both players have the same vertical inset
+		// from their viewport's top edge (split divider), keeping GUI symmetrical.
+		// safeBottom is intentionally omitted: it would shift m_Hud.y upward in
+		// ActionScript, placing the hotbar too high relative to SPLIT_TOP.
+		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-		safeLeft = getSafeZoneHalfWidth();
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
+		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		safeRight = getSafeZoneHalfWidth();
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		safeTop = getSafeZoneHalfHeight();
@@ -88,22 +92,22 @@ void UIScene_HUD::updateSafeZone()
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		safeTop = getSafeZoneHalfHeight();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-		safeBottom = getSafeZoneHalfHeight();
+		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-		safeBottom = getSafeZoneHalfHeight();
-		safeRight = getSafeZoneHalfWidth();
+		safeTop = getSafeZoneHalfHeight();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
 	default:
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	}
 	setSafeZone(safeTop, safeBottom, safeLeft, safeRight);
@@ -734,7 +738,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 
 		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
-		repositionHud(tileWidth, tileHeight, scale);
+		repositionHud(tileWidth, tileHeight, scale, needsYTile);
 
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
@@ -805,7 +809,7 @@ void UIScene_HUD::handleTimerComplete(int id)
 	//setVisible(anyVisible);
 }
 
-void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale)
+void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale, bool needsYTile)
 {
 	if(!m_bSplitscreen) return;
 

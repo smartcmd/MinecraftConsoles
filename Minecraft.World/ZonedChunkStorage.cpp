@@ -194,7 +194,11 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
         if (type == 0)
 		{
             shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
-            if (e != nullptr) lc->addEntity(e);
+            if (e != nullptr)
+            {
+                lc->addEntity(e);
+                lc->addRidingEntities(e, tag);
+            }
         }
 		else if (type == 1)
 		{

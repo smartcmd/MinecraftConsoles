@@ -93,18 +93,22 @@ void UIComponent_Tooltips::updateSafeZone()
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-		safeBottom = getSafeZoneHalfHeight();
+		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-		safeLeft = getSafeZoneHalfWidth();
+		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
+		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		safeRight = getSafeZoneHalfWidth();
+		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		safeTop = getSafeZoneHalfHeight();
@@ -112,22 +116,22 @@ void UIComponent_Tooltips::updateSafeZone()
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		safeTop = getSafeZoneHalfHeight();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-		safeBottom = getSafeZoneHalfHeight();
+		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-		safeBottom = getSafeZoneHalfHeight();
-		safeRight = getSafeZoneHalfWidth();
+		safeTop = getSafeZoneHalfHeight();
+
 		break;
 	case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
 	default:
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-		safeRight = getSafeZoneHalfWidth();
+
 		break;
 	}
 	setSafeZone(safeTop, safeBottom, safeLeft, safeRight);
