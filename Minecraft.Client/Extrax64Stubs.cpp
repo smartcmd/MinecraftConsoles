@@ -696,6 +696,7 @@ void C_4JProfile::RegisterRichPresenceContext(int iGameConfigContextID)
 {
 }
 
+#ifdef _WINDOWS64
 std::string WStringToUtf8(LPCWSTR wstr)
 {
     int size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
@@ -703,6 +704,7 @@ std::string WStringToUtf8(LPCWSTR wstr)
     WideCharToMultiByte(CP_UTF8, 0, wstr, -1, result.data(), size, NULL, NULL);
     return result;
 }
+#endif
 
 void C_4JProfile::SetRichPresenceContextValue(int iPad, int iContextID, int iVal)
 {
@@ -723,8 +725,6 @@ void C_4JProfile::SetRichPresenceContextValue(int iPad, int iContextID, int iVal
     {
         discordPresence.details = "Playing Minecraft: Legacy Console Edition";
 
-        // the comments are pretty generic, that would be sick if i could find the real ones
-        // i will probably make different icons depending of what situation the player is to make the rich presence more fun soon
         discordPresence.largeImageKey = "main_icon";
         discordPresence.largeImageText = "Minecraft: LCE";
 
@@ -760,24 +760,21 @@ void C_4JProfile::SetRichPresenceContextValue(int iPad, int iContextID, int iVal
             discordPresence.smallImageKey = "pig_icon";
             break;
 
+		case CONTEXT_GAME_STATE_BREWING:
+            s_stateUtf8 = "Brewing a potion";
+            discordPresence.smallImageKey = "brewing_icon";
+            break;
+
+		 case CONTEXT_GAME_STATE_ENCHANTING:
+            s_stateUtf8 = "Enchanting";
+            discordPresence.smallImageKey = "enchanting_icon";
+            break;
+
         case CONTEXT_GAME_STATE_BLANK:
         default:
             s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BLANK));
             discordPresence.smallImageKey = nullptr;
             break;
-        }
-
-        // After leaving for exemple an anvil the rich presence would get stuck at "Forging" so to avoid that behaviour,
-        // i just reset every (5*20 / 10) ticks (5 seconds), the division by ten is due to the fact that i call this function once per 10 ticks.
-        // If the player is still forging it will just reset itself and if he dont it will be corrected!
-        //
-        // \/ CODE TO CHANGE \/
-        static int resetRP = 0;
-        if (++resetRP >= (5 * 20) / 10)
-        {
-            iVal = CONTEXT_GAME_STATE_BLANK;
-            s_stateUtf8 = WStringToUtf8(app.GetString(IDS_RICHPRESENCESTATE_BLANK));
-            discordPresence.smallImageKey = nullptr;
         }
 
         discordPresence.state = s_stateUtf8.c_str();

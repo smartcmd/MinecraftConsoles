@@ -33,6 +33,12 @@
 #include "..\Minecraft.World\Random.h"
 #include "..\Minecraft.World\TileEntity.h"
 #include "..\Minecraft.World\Mth.h"
+
+#include "..\AnvilMenu.h"
+#include "..\CraftingMenu.h"
+#include "..\BrewingStandMenu.h"
+#include "..\EnchantmentMenu.h"
+
 #include "AchievementPopup.h"
 #include "CritParticle.h"
 
@@ -469,42 +475,6 @@ void LocalPlayer::aiStep()
 		fallDistance = 0.0f;
 		yd = 0.0f;
 		onGround = true;
-	}
-
-	// Check if the player is idle and the rich presence needs updated
-	if( !m_bIsIdle && InputManager.GetIdleSeconds( m_iPad ) > PLAYER_IDLE_TIME )
-	{
-		ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_IDLE,false);
-		m_bIsIdle = true;
-	}
-	else if ( m_bIsIdle && InputManager.GetIdleSeconds( m_iPad ) < PLAYER_IDLE_TIME )
-	{
-		// Are we offline or online, and how many players are there
-		if(g_NetworkManager.GetPlayerCount()>1)
-		{
-			// only do it for this player here - each player will run this code
-			if(g_NetworkManager.IsLocalGame())
-			{
-				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,false);
-			}
-			else
-			{
-				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYER,false);
-			}			
-		}
-		else
-		{
-			if(g_NetworkManager.IsLocalGame())
-			{
-				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE,false);
-			}
-			else
-			{
-				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYER_1P,false);
-			}
-		}
-		updateRichPresence();
-		m_bIsIdle = false;
 	}
 }
 
@@ -1600,42 +1570,67 @@ bool LocalPlayer::handleMouseClick(int button)
 
 void LocalPlayer::updateRichPresence()
 {
-	if((m_iPad!=-1)/* && !ui.GetMenuDisplayed(m_iPad)*/ )
-	{
-		shared_ptr<ItemInstance> selectedItem = inventory->getSelected();
-		if(selectedItem != NULL && selectedItem->id == Item::fishingRod_Id)
+    if (m_iPad == -1)
+    {
+        return;
+    }
+
+	if (containerMenu != nullptr && containerMenu != inventoryMenu)
+    {
+        if (dynamic_cast<AnvilMenu *>(containerMenu) != nullptr)
+        {
+            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_FORGING);
+        }
+        else if (dynamic_cast<CraftingMenu *>(containerMenu) != nullptr)
+        {
+            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_CRAFTING);
+        }
+		else if (dynamic_cast<BrewingStandMenu*>(containerMenu) != nullptr)
 		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_FISHING);
+            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BREWING);
 		}
-		else if(selectedItem != NULL && selectedItem->id == Item::map_Id)
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_MAP);
-		}	
-		else if ( (riding != NULL) && riding->instanceof(eTYPE_MINECART) )
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_MINECART);
-		}
-		else if ( (riding != NULL) && riding->instanceof(eTYPE_BOAT) )
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_BOATING);
-		}
-		else if ( (riding != NULL) && riding->instanceof(eTYPE_PIG) )
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_PIG);
-		}
-		else if( this->dimension == -1 )
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_NETHER);
-		}
-		else if( minecraft->soundEngine->GetIsPlayingStreamingCDMusic() )
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_CD);
-		}
-		else
-		{
-			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_BLANK);
-		}
-	}
+        else if (dynamic_cast<EnchantmentMenu *>(containerMenu) != nullptr)
+        {
+            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_ENCHANTING);
+        }
+        return;
+    }
+
+	// INGAME ACTIVITY
+    shared_ptr<ItemInstance> selectedItem = inventory->getSelected();
+    if (selectedItem != NULL && selectedItem->id == Item::fishingRod_Id)
+    {
+		// TODO
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_FISHING);
+    }
+    else if (selectedItem != NULL && selectedItem->id == Item::map_Id)
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_MAP);
+    }
+    else if ((riding != NULL) && riding->instanceof(eTYPE_MINECART))
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_RIDING_MINECART);
+    }
+    else if ((riding != NULL) && riding->instanceof(eTYPE_BOAT))
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BOATING);
+    }
+    else if ((riding != NULL) && riding->instanceof(eTYPE_PIG))
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_RIDING_PIG);
+    }
+    else if (this->dimension == -1)
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_NETHER);
+    }
+    else if (minecraft->soundEngine->GetIsPlayingStreamingCDMusic())
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_CD);
+    }
+    else
+    {
+        app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BLANK);
+    }
 }
 
 // 4J Stu - Added for telemetry

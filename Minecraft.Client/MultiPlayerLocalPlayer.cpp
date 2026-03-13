@@ -366,8 +366,6 @@ void MultiplayerLocalPlayer::ride(shared_ptr<Entity> e)
 		TelemetryManager->RecordEnemyKilledOrOvercome(GetXboxPad(), 0, y, 0, 0, 0, 0, eventType);
 	}
 
-	updateRichPresence();
-
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	
 	if( pMinecraft->localgameModes[m_iPad] != NULL )

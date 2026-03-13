@@ -2795,9 +2795,6 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 			gameMode->getTutorial()->showTutorialPopup(false);
 		}
 
-		// 4J-JEV: Fix for Durango #156334 - Content: UI: Rich Presence 'In the Nether' message is updating with a 3 to 10 minute  delay.
-		minecraft->localplayers[m_userIndex]->updateRichPresence();
-
 		ConnectionProgressParams *param = new ConnectionProgressParams();
 		param->iPad = m_userIndex;
 		if( packet->dimension == -1)

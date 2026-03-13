@@ -3553,9 +3553,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				gameMode->getTutorial()->onSelectedItemChanged(player->inventory->getSelected());
 			}
 
-			// Update presence
-			player->updateRichPresence();
-
 			if (options->isFlying)
 			{
 				if (wheel > 0) wheel = 1;
