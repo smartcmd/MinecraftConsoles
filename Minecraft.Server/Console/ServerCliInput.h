@@ -47,6 +47,9 @@ namespace ServerRuntime
 
 	private:
 		void RunInputLoop();
+		void RunLinenoiseLoop();
+		void RunStreamInputLoop();
+		void EnqueueLine(const char *line);
 		static void CompletionThunk(const char *line, linenoiseCompletions *completions);
 		void BuildCompletions(const char *line, linenoiseCompletions *completions);
 

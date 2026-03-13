@@ -10,6 +10,8 @@ services:
       WINEARCH: win64
       WINEPREFIX: /var/opt/wineprefix64
       WINEDEBUG: -all
+      # linux require use file stdin
+      SERVER_CLI_INPUT_MODE: ${SERVER_CLI_INPUT_MODE:-stream}
       # minimum required virtual screen
       XVFB_DISPLAY: ${XVFB_DISPLAY:-:99}
       XVFB_SCREEN: ${XVFB_SCREEN:-720x1280x16}
