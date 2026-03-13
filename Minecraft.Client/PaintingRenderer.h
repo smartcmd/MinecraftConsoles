@@ -12,7 +12,7 @@ private:
 
 public:
 	PaintingRenderer();		// 4J -added
-	virtual void render(shared_ptr<Entity> _painting, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> _painting, double x, double y, double z, float rot, float a);
 
 private:
 	void renderPainting(shared_ptr<Painting> painting, int w, int h, int uo, int vo);

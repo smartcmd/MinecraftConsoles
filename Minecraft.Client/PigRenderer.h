@@ -14,6 +14,6 @@ protected:
 	virtual int prepareArmor(shared_ptr<LivingEntity> _pig, int layer, float a);
 
 public:
-	virtual void render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

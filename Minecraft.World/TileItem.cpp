@@ -82,6 +82,7 @@ bool TileItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> playe
 			Tile *tile = Tile::tiles[tileId];
 			// 4J - Adding this from 1.6
 			int itemValue = getLevelDataForAuxValue(instance->getAuxValue());
+            ButtonTile::lastPlayer = player; // STARSEED- used for retrieving player rotation
 			int dataValue = Tile::tiles[tileId]->getPlacedOnFaceDataValue(level, x, y, z, face, clickX, clickY, clickZ, itemValue);
 			if (level->setTileAndData(x, y, z, tileId, dataValue, Tile::UPDATE_ALL)) 
 			{

@@ -295,6 +295,11 @@ void EntityRenderDispatcher::render(shared_ptr<Entity> entity, double x, double 
 	}
 }
 
+void EntityRenderDispatcher::beginFrame()
+{
+    shadowTileCache.clear();
+}
+
 double EntityRenderDispatcher::distanceToSqr(double x, double y, double z)
 {
 	double xd = x - xPlayer;

@@ -13,7 +13,7 @@ private:
 
 public:
 	WitherSkullRenderer();
-	void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a);
+	void render(const shared_ptr<Entity> entity, double x, double y, double z, float rot, float a);
 	ResourceLocation *getTextureLocation(shared_ptr<Entity> entity);
 
 private:

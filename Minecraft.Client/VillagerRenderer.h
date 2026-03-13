@@ -18,7 +18,7 @@ protected:
 
 public:
 	VillagerRenderer();
-	virtual void render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> _mob);
 
 protected:	
