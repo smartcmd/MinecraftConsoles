@@ -287,7 +287,11 @@ void UIScene_FullscreenProgress::handleInput(int iPad, int key, bool repeat, boo
 		case ACTION_MENU_CANCEL:
 			if( pressed && m_cancelFunc != nullptr && !m_bWasCancelled ) 			
 			{
+				m_cancelText = -1;
+				updateTooltips();
+
 				m_bWasCancelled = true;
+
 				m_cancelFunc( m_cancelFuncParam );
 			}
 			break;

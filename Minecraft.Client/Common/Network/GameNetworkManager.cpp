@@ -54,6 +54,8 @@ int64_t CGameNetworkManager::messageQueue[512];
 int64_t CGameNetworkManager::byteQueue[512];
 int CGameNetworkManager::messageQueuePos = 0;
 
+CRITICAL_SECTION bCancelRequestedCS;
+
 CGameNetworkManager::CGameNetworkManager()
 {
 	m_bInitialised = false;
@@ -80,9 +82,12 @@ void CGameNetworkManager::Initialise()
 #else
 	s_pPlatformNetworkManager = new CPlatformNetworkManagerStub();
 #endif
+	m_bCancelRequested = false;
 	s_pPlatformNetworkManager->Initialise( this, flagIndexSize );
 	m_bNetworkThreadRunning = false;
 	m_bInitialised = true;
+
+	InitializeCriticalSection(&bCancelRequestedCS);
 }
 
 void CGameNetworkManager::Terminate()
@@ -421,6 +426,24 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 		app.DebugPrintf("ticking connection A\n");
 		connection->tick();
 
+		EnterCriticalSection(&bCancelRequestedCS);
+		bool bCancelled = g_NetworkManager.m_bCancelRequested;
+
+		if (bCancelled)
+		{
+			if (!app.GetGameStarted())
+			{
+				app.DebugPrintf("Cancel requested, closing connection\n");
+				g_NetworkManager.m_bCancelRequested = false;
+				LeaveCriticalSection(&bCancelRequestedCS);
+				connection->close();
+
+				break;
+			}
+		}
+		LeaveCriticalSection(&bCancelRequestedCS);
+
+
 		// 4J Stu - We were ticking this way too fast which could cause the connection to time out
 		// The connections should tick at 20 per second
 		Sleep(50);
@@ -538,6 +561,10 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 	else if ( connection->isClosed() || !IsInSession())
 	{
 //		assert(false);
+		// Set to NULL because we're returning to home
+		// The level is not reset when you leave the progress UI which causes a crash
+		Minecraft::GetInstance()->setLevel(NULL);
+
 		MinecraftServer::HaltServer();
 		return false;
 	}
@@ -754,6 +781,9 @@ CGameNetworkManager::eJoinGameResult CGameNetworkManager::JoinGame(FriendSession
 
 void CGameNetworkManager::CancelJoinGame(LPVOID lpParam)
 {
+	EnterCriticalSection(&bCancelRequestedCS);
+	g_NetworkManager.m_bCancelRequested = true;
+	LeaveCriticalSection(&bCancelRequestedCS);
 #ifdef _XBOX_ONE
 	s_pPlatformNetworkManager->CancelJoinGame();
 #endif
@@ -1437,6 +1467,9 @@ void CGameNetworkManager::StateChange_AnyToStarting()
 		LoadingInputParams *loadingParams = new LoadingInputParams();
 		loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
 		loadingParams->lpParam = nullptr;
+		loadingParams->cancelText = IDS_TOOLTIPS_CANCEL_JOIN;
+		loadingParams->cancelFunc = &CGameNetworkManager::CancelJoinGame;
+		loadingParams->waitForThreadToDelete = TRUE;
 
 		UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 		completionData->bShowBackground=TRUE;

@@ -213,6 +213,7 @@ private:
 	int GetJoiningReadyPercentage();
 	bool m_bLastDisconnectWasLostRoomOnly;
 	bool m_bFullSessionMessageOnNextSessionChange;
+	bool m_bCancelRequested;
 #if defined __PS3__ || defined __PSVITA__ || defined __ORBIS__
 	bool m_bSignedOutofPSN;
 #endif
