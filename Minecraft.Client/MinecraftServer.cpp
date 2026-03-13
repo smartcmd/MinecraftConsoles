@@ -8,6 +8,9 @@
 #include "DispenserBootstrap.h"
 #include "EntityTracker.h"
 #include "MinecraftServer.h"
+#ifdef _WINDOWS64
+#include "ServerConsole.h"
+#endif
 #include "Options.h"
 #include "PlayerList.h"
 #include "ServerChunkCache.h"
@@ -58,6 +61,9 @@
 #include "..\Minecraft.World\BiomeSource.h"
 #include "PlayerChunkMap.h"
 #include "Common\Telemetry\TelemetryManager.h"
+#include "ServerCommands.h"
+#ifdef _WINDOWS64
+#endif
 #include "PlayerConnection.h"
 #ifdef _XBOX_ONE
 #include "Durango\Network\NetworkPlayerDurango.h"
@@ -726,6 +732,19 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	ProgressRenderer *mcprogress = Minecraft::GetInstance()->progressRenderer;
 	mcprogress->progressStart(IDS_PROGRESS_INITIALISING_SERVER);
 
+	if (ShouldUseDedicatedServerProperties())
+	{
+		wstring seedStr = GetDedicatedServerString(settings, L"seed", L"");
+		if (!seedStr.empty())
+		{
+			int64_t parsedSeed = _wtoi64(seedStr.c_str());
+			if (parsedSeed != 0)
+				seed = parsedSeed;
+		}
+		if (seed == 0 && !findSeed)
+			findSeed = true;
+	}
+
 	if( findSeed )
 	{
 #ifdef __PSVITA__
@@ -733,6 +752,10 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 #else
 		seed = BiomeSource::findSeed(pLevelType);
 #endif
+		if (ShouldUseDedicatedServerProperties() && settings != nullptr)
+		{
+			settings->setStringAndSave(L"seed", std::to_wstring(seed));
+		}
 	}
 
 	setMaxBuildHeight(GetDedicatedServerInt(settings, L"max-build-height", Level::maxBuildHeight));
@@ -2212,10 +2235,13 @@ void MinecraftServer::handleConsoleInputs()
 	pendingInputs.swap(consoleInput);
 	LeaveCriticalSection(&m_consoleInputCS);
 
+	ServerCommands::initialize();
+
 	for (size_t i = 0; i < pendingInputs.size(); ++i)
 	{
 		ConsoleInput *input = pendingInputs[i];
-		ExecuteConsoleCommand(this, input->msg);
+		CommandSource source(this, input->source, CommandSource::CONSOLE, L"CONSOLE");
+		ServerCommands::execute(this, input->msg, source);
 		delete input;
 	}
 }
@@ -2249,11 +2275,25 @@ File *MinecraftServer::getFile(const wstring& name)
 
 void MinecraftServer::info(const wstring& string)
 {
+#ifdef _WINDOWS64
+	if (ServerConsole::getInstance())
+	{
+		ServerConsole::logInfo(string.c_str());
+		return;
+	}
+#endif
 	PrintConsoleLine(L"[INFO] ", string);
 }
 
 void MinecraftServer::warn(const wstring& string)
 {
+#ifdef _WINDOWS64
+	if (ServerConsole::getInstance())
+	{
+		ServerConsole::logWarn(string.c_str());
+		return;
+	}
+#endif
 	PrintConsoleLine(L"[WARN] ", string);
 }
 

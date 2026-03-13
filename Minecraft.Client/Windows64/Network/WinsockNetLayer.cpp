@@ -65,6 +65,7 @@ char g_Win64MultiplayerIP[256] = "127.0.0.1";
 bool g_Win64DedicatedServer = false;
 int g_Win64DedicatedServerPort = WIN64_NET_DEFAULT_PORT;
 char g_Win64DedicatedServerBindIP[256] = "";
+bool g_Win64Verbose = false;
 
 bool WinsockNetLayer::Initialize()
 {
