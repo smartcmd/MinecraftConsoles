@@ -6,10 +6,10 @@
 
 ## Introduction
 
-This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) from https://archive.org/details/minecraft-legacy-console-edition-source-code, with some fixes and improvements applied.
+This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) with some fixes and improvements applied.
 
 ## Download
-Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file) and add servers to connect to in `servers.txt`
+Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
 
 ## Platform Support
 
@@ -35,29 +35,10 @@ Basic LAN multiplayer is available on the Windows build
 - Other players on the same LAN can discover the session from the in-game Join Game menu
 - Game connections use TCP port `25565` by default
 - LAN discovery uses UDP port `25566`
-- Add servers to your server list with `servers.txt` (temp solution)
+- Add servers to your server list with the in-game Add Server button (temp)
 - Rename yourself without losing data by keeping your `uid.dat`
 
 Parts of this feature are based on code from [LCEMP](https://github.com/LCEMP/LCEMP) (thanks!)
-
-### servers.txt
-
-To add a server to your game, create the `servers.txt` file in the same directory as you have `Minecraft.Client.exe`. Inside, follow this format:
-```
-serverip.example.com
-25565
-The name of your server in UI!
-```
-
-For example, here's a valid servers.txt
-```
-1.1.1.1
-25565
-Cloudflare's Very Own LCE Server
-127.0.0.1
-25565
-Localhost Test Crap
-```
 
 ### Launch Arguments
 
@@ -100,7 +81,7 @@ Minecraft.Client.exe -name Steve -fullscreen
 2. Clone the repository.
 3. Open the project by double-clicking `MinecraftConsoles.sln`.
 4. Make sure `Minecraft.Client` is set as the Startup Project.
-5. Set the build configuration to **Debug** (Release is also OK but has some bugs) and the target platform to **Windows64**, then build and run.
+5. Set the build configuration to **Debug** (Release is also ok but missing some debug features) and the target platform to **Windows64**, then build and run.
 
 ### CMake (Windows x64)
 

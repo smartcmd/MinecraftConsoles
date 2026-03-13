@@ -195,8 +195,8 @@ void IUIScene_HUD::renderPlayerHealth()
 	// Update health
 	bool blink = pMinecraft->localplayers[iPad]->invulnerableTime / 3 % 2 == 1;
 	if (pMinecraft->localplayers[iPad]->invulnerableTime < 10) blink = false;
-	int currentHealth = pMinecraft->localplayers[iPad]->getHealth();
-	int oldHealth = pMinecraft->localplayers[iPad]->lastHealth;
+	int currentHealth = static_cast<int>(ceil(pMinecraft->localplayers[iPad]->getHealth()));
+    int oldHealth = static_cast<int>(ceil(pMinecraft->localplayers[iPad]->lastHealth));
 	bool bHasPoison = pMinecraft->localplayers[iPad]->hasEffect(MobEffect::poison);
 	bool bHasWither = pMinecraft->localplayers[iPad]->hasEffect(MobEffect::wither);
 	AttributeInstance *maxHealthAttribute = pMinecraft->localplayers[iPad]->getAttribute(SharedMonsterAttributes::MAX_HEALTH);
