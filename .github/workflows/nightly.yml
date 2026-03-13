@@ -25,6 +25,15 @@ jobs:
 
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
+      
+    - name: Create temporary global.json
+      run: |
+        echo '{"sdk":{"version": "8.0.418"}}' > ./global.json
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '8.0.418'
 
     - name: Build
       run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
@@ -51,7 +60,7 @@ jobs:
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe
             ./x64/Release/Minecraft.Client.pdb
-
+            
     - name: Update Dedicated Server release
       uses: andelf/nightly-release@main
       env:
@@ -67,3 +76,7 @@ jobs:
             LCEServerWindows64.zip
             ./x64/Minecraft.Server/Release/Minecraft.Server.exe
             ./x64/Minecraft.Server/Release/Minecraft.Server.pdb
+            ./x64/Minecraft.Server/Release/Ijwhost.dll
+            ./x64/Minecraft.Server/Release/Minecraft.Server.FourKit.dll
+            ./x64/Minecraft.Server/Release/Minecraft.Server.FourKit.deps.json
+            ./x64/Minecraft.Server/Release/Minecraft.Server.FourKit.runtimeconfig.json

@@ -24,6 +24,10 @@ COPY ${MC_RUNTIME_DIR}/Minecraft.Server.exe /srv/mc/Minecraft.Server.exe
 COPY ${MC_RUNTIME_DIR}/iggy_w64.dll /srv/mc/iggy_w64.dll
 COPY ${MC_RUNTIME_DIR}/Common /srv/mc/Common
 COPY ${MC_RUNTIME_DIR}/Windows64 /srv/mc/Windows64
+COPY ${MC_RUNTIME_DIR}/Ijwhost.dll /srv/mc/Ijwhost.dll
+COPY ${MC_RUNTIME_DIR}/Minecraft.Server.FourKit.dll /srv/mc/Minecraft.Server.FourKit.dll
+COPY ${MC_RUNTIME_DIR}/Minecraft.Server.FourKit.deps.json /srv/mc/Minecraft.Server.FourKit.deps.json
+COPY ${MC_RUNTIME_DIR}/Minecraft.Server.FourKit.runtimeconfig.json /srv/mc/Minecraft.Server.FourKit.runtimeconfig.json
 COPY docker/dedicated-server/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod 0755 /usr/local/bin/entrypoint.sh \
