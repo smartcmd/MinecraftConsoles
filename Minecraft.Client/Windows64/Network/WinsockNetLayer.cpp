@@ -392,6 +392,11 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 	}
 	s_localSmallId = assignedSmallId;
 
+	// Save the host IP and port so JoinSplitScreen can connect to the same host
+	// regardless of how the connection was initiated (UI vs command line).
+	strncpy_s(g_Win64MultiplayerIP, sizeof(g_Win64MultiplayerIP), ip, _TRUNCATE);
+	g_Win64MultiplayerPort = port;
+
 	app.DebugPrintf("Win64 LAN: Connected to %s:%d, assigned smallId=%d\n", ip, port, s_localSmallId);
 
 	s_active = true;
@@ -733,6 +738,11 @@ bool WinsockNetLayer::PopDisconnectedSmallId(BYTE* outSmallId)
 
 void WinsockNetLayer::PushFreeSmallId(BYTE smallId)
 {
+	// SmallIds 0..(XUSER_MAX_COUNT-1) are permanently reserved for the host's
+	// local pads and must never be recycled to remote clients.
+	if (smallId < (BYTE)XUSER_MAX_COUNT)
+		return;
+
 	EnterCriticalSection(&s_freeSmallIdLock);
 	// Guard against double-recycle: the reconnect path (queueSmallIdForRecycle) and
 	// the DoWork disconnect path can both push the same smallId. If we allow duplicates,
