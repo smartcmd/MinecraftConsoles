@@ -125,3 +125,9 @@ void Settings::setBooleanAndSave(const wstring& key, bool value)
 	properties[key] = value ? L"true" : L"false";
 	saveProperties();
 }
+
+void Settings::setStringAndSave(const wstring& key, const wstring& value)
+{
+	properties[key] = value;
+	saveProperties();
+}

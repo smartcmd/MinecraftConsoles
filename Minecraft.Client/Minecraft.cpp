@@ -1021,7 +1021,8 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 			mpLevel->addClientConnection( clientConnection );
 		}
 
-		if( app.GetTutorialMode() )
+		// Clients joining a server should never use tutorial mode - it blocks jump and other input
+		if( app.GetTutorialMode() && g_NetworkManager.IsLocalGame() )
 		{
 			localgameModes[idx] = new FullTutorialMode(idx, this, clientConnection);
 		}

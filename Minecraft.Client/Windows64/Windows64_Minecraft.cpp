@@ -9,6 +9,7 @@
 #include <shellapi.h>
 #include "GameConfig\Minecraft.spa.h"
 #include "..\MinecraftServer.h"
+#include "..\PlayerList.h"
 #include "..\LocalPlayer.h"
 #include "..\..\Minecraft.World\ItemInstance.h"
 #include "..\..\Minecraft.World\MapItem.h"
@@ -1427,11 +1428,28 @@ static int RunHeadlessServer()
 	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible, 1);
 	app.SetGameHostOption(eGameHostOption_MobGriefing, 1);
 	app.SetGameHostOption(eGameHostOption_KeepInventory, 0);
-	app.SetGameHostOption(eGameHostOption_DoMobSpawning, 1);
+	app.SetGameHostOption(eGameHostOption_DoMobSpawning, serverSettings.getBoolean(L"spawn-monsters", true) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_DoMobLoot, 1);
 	app.SetGameHostOption(eGameHostOption_DoTileDrops, 1);
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1);
+
+	// World size: 0=classic, 1=small, 2=medium, 3=large
+	int worldSizeSetting = serverSettings.getInt(L"world-size", 3);
+	if (worldSizeSetting < 0) worldSizeSetting = 0;
+	if (worldSizeSetting > 3) worldSizeSetting = 3;
+	app.SetGameHostOption(eGameHostOption_WorldSize, worldSizeSetting + 1);
+
+	// Save name — defaults to "server", configurable via level-name in server.properties
+	wstring levelNameW = serverSettings.getString(L"level-name", L"server");
+    if (levelNameW.empty()) levelNameW = L"server";
+    char levelNameA[256] = {};
+    WideCharToMultiByte(CP_ACP, 0, levelNameW.c_str(), -1, levelNameA, sizeof(levelNameA), NULL, NULL);
+
+	 // Tell StorageManager where to save — creates GameHDD/{name}/saveData.ms
+    StorageManager.ResetSaveData();
+    StorageManager.SetSaveTitle(levelNameW.c_str());
+    StorageManager.SetSaveUniqueFilename(levelNameA);
 
 	MinecraftServer::resetFlags();
 	g_NetworkManager.HostGame(0, false, true, MINECRAFT_NET_MAX_PLAYERS, 0);
@@ -1445,8 +1463,66 @@ static int RunHeadlessServer()
 	g_NetworkManager.FakeLocalPlayerJoined();
 
 	NetworkGameInitData* param = new NetworkGameInitData();
-	param->seed = 0;
+	param->findSeed = true; // set this only and just set seed 0 (fallback to seed generation) only if there isn't an existing seed to load
+
+	wstring seedStr = serverSettings.getString(L"seed", L"");
+	if (!seedStr.empty())
+	{
+		__int64 configSeed = _wtoi64(seedStr.c_str());
+		if (configSeed != 0)
+		{
+			param->seed = configSeed;
+			param->findSeed = false;
+			printf("Using configured seed: %lld\n", (long long)configSeed);
+		}
+	}
+
+	if (param->findSeed)
+	{
+		param->seed = 0;
+		printf("No seed configured, generating random world.\n");
+	}
+
 	param->settings = app.GetGameHostOption(eGameHostOption_All);
+	param->levelName = levelNameW;
+
+	switch (worldSizeSetting)
+	{
+	case 0: param->xzSize = LEVEL_WIDTH_CLASSIC; param->hellScale = HELL_LEVEL_SCALE_CLASSIC; break;
+	case 1: param->xzSize = LEVEL_WIDTH_SMALL;   param->hellScale = HELL_LEVEL_SCALE_SMALL;   break;
+	case 2: param->xzSize = LEVEL_WIDTH_MEDIUM;  param->hellScale = HELL_LEVEL_SCALE_MEDIUM;  break;
+	case 3: param->xzSize = LEVEL_WIDTH_LARGE;   param->hellScale = HELL_LEVEL_SCALE_LARGE;   break;
+	}
+
+	// this will load an existing save for the server instead of creating a new one every launch
+	char savePath[MAX_PATH];
+	sprintf_s(savePath, "Windows64\\GameHDD\\%s\\saveData.ms", levelNameA);
+	HANDLE hFile = CreateFileA(savePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		LARGE_INTEGER fileSize;
+		GetFileSizeEx(hFile, &fileSize);
+		if (fileSize.QuadPart > 0 && fileSize.QuadPart < 256 * 1024 * 1024)
+		{
+			LPVOID saveBuffer = new unsigned char[(size_t)fileSize.QuadPart];
+			DWORD bytesRead = 0;
+			if (ReadFile(hFile, saveBuffer, (DWORD)fileSize.QuadPart, &bytesRead, NULL) && bytesRead == fileSize.QuadPart)
+			{
+				param->saveData = new LoadSaveDataThreadParam(saveBuffer, fileSize.QuadPart, levelNameW);
+				printf("Loading save '%s' (%lld bytes)\n", levelNameA, fileSize.QuadPart);
+			}
+			else
+			{
+				delete[] (unsigned char*)saveBuffer;
+				printf("Failed to read save file, creating new world.\n");
+			}
+		}
+		CloseHandle(hFile);
+	}
+	else
+	{
+		printf("No existing save found at %s, creating new world.\n", savePath);
+	}
 
 	g_NetworkManager.ServerStoppedCreate(true);
 	g_NetworkManager.ServerReadyCreate(true);
@@ -1498,6 +1574,20 @@ static int RunHeadlessServer()
 
 	printf("Stopping server...\n");
 	fflush(stdout);
+
+	// force everything to save before shutdown
+	MinecraftServer* shutdownServer = MinecraftServer::getInstance();
+	if (shutdownServer != NULL)
+	{
+		printf("Saving world...\n");
+		fflush(stdout);
+		PlayerList* pl = shutdownServer->getPlayers();
+		if (pl != NULL)
+			pl->saveAll(NULL, false);
+		shutdownServer->saveWorldToDisk();
+		printf("World saved.\n");
+		fflush(stdout);
+	}
 
 	app.m_bShutdown = true;
 	MinecraftServer::HaltServer();
