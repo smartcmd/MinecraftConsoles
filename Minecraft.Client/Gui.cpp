@@ -84,7 +84,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		guiScale=app.GetGameSettings(iPad,eGameSetting_UISizeSplitscreen) + 2;
 	}
 
-
+	app.DebugPrintf("STARTS HERE STARTS HERE STARTS HERE");
 	ScreenSizeCalculator ssc(minecraft->options, minecraft->width, minecraft->height, guiScale );
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();
@@ -1104,30 +1104,39 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	
     float scaleFactor = 1.0f;
 	float textScale = 0.65f;
-	int bgfirsty = 2;
-	int bgsecondy = 9;
+	int bgfirsty = 1;
+	int bgsecondy = 8;
 
-	if (uiSetting == 0)
-    {
-        textScale = textScale * 1.5; //20pixels wrong (correct is 21)
-		bgfirsty = 5; //15pixels correct
-		bgsecondy = 10; //10pixels wrong (correct is 14)
-    }
-    else if (uiSetting == 1)
-    {
-        textScale = textScale * 1; //20 pixels wrong (correct is 21)
-		bgfirsty = 2; //9pixels wrong (correct is 15)
-		bgsecondy = 9; //20pixels wrong (correct is 14)
-    }
-    else if (uiSetting == 2)
-    {
-        textScale = textScale * 0.75; //20 pixels wrong (correct is 21)
-		bgfirsty = 2; //12pixels wrong (correct is 15)
-		bgsecondy = 9; //34pixels wrong (correct is 14)
-    }
+	ScreenSizeCalculator sscchat(minecraft->options, minecraft->width, minecraft->height, 3 );
+	int screenWidthchat = sscchat.getWidth();
+	int screenHeightchat = sscchat.getHeight();
+
+	int iSafezoneXHalfChat = screenWidthchat/20;
+	int iSafezoneYHalfChat = screenHeightchat/20;
+	int iTooltipsYOffsetChat = 40;
+	float fScaleFactorWidthChat = 1.0f; 
+
+	//if (uiSetting == 0)
+    //{
+    //    textScale = textScale * 1.5; //20pixels wrong (correct is 21)
+	//	bgfirsty = 5; //15pixels correct
+	//	bgsecondy = 9; //15pixels wrong (correct is 14)
+    //}
+    //else if (uiSetting == 1)
+    //{
+    //    textScale = textScale * 1; //20 pixels wrong (correct is 21)
+	//	bgfirsty = 2; //9pixels wrong (correct is 15)
+	//	bgsecondy = 9; //20pixels wrong (correct is 14)
+    //}
+    //else if (uiSetting == 2)
+    //{
+    //    textScale = textScale * 0.75; //20 pixels wrong (correct is 21)
+	//	bgfirsty = 2; //12pixels wrong (correct is 15)
+	//	bgsecondy = 9; //34pixels wrong (correct is 14)
+    //}
 
     glPushMatrix();
-    glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
+    glTranslatef(0.0f, static_cast<float>(screenHeightchat - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 
 	if(bDisplayGui)
 	{
@@ -1156,7 +1165,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 					wstring msg = guiMessages[iPad][i].string;
 					int bgColor = ((alpha / 2) << 24) | (0x404040);
-					this->fill(0, y - bgfirsty, screenWidth/fScaleFactorWidth, y + bgsecondy, bgColor);
+					this->fill(0, y - bgfirsty, screenWidthchat/fScaleFactorWidth, y + bgsecondy, bgColor);
 					glEnable(GL_BLEND);
 
 					glPushMatrix();
