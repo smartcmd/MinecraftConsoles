@@ -121,6 +121,7 @@ public:
 	int maxBuildHeight;
 	int playerIdleTimeout;
 	bool forceGameType;
+	int m_spawnProtectionRadius;
 
 private:
 	// 4J Added

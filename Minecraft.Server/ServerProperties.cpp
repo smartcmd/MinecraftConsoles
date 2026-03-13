@@ -63,6 +63,7 @@ static const ServerPropertyDefault kServerPropertyDefaults[] =
 	{ "level-seed", "" },
 	{ "level-type", "default" },
 	{ "world-size", "classic" },
+	{ "spawn-protection", "0" },
 	{ "log-level", "info" },
 	{ "max-build-height", "256" },
 	{ "max-players", "16" },
@@ -834,6 +835,7 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 		&config.worldHellScale,
 		&shouldWrite);
 	config.levelType = ReadNormalizedLevelTypeProperty(&merged, "level-type", &config.levelTypeFlat, &shouldWrite);
+	config.spawnProtectionRadius = ReadNormalizedIntProperty(&merged, "spawn-protection", 0, 0, 256, &shouldWrite);
 	config.generateStructures = ReadNormalizedBoolProperty(&merged, "generate-structures", true, &shouldWrite);
 	config.bonusChest = ReadNormalizedBoolProperty(&merged, "bonus-chest", false, &shouldWrite);
 	config.pvp = ReadNormalizedBoolProperty(&merged, "pvp", true, &shouldWrite);
