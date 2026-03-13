@@ -17,12 +17,12 @@ namespace ServerRuntime
 	class IServerCliCommand
 	{
 	public:
-		virtual ~IServerCliCommand() {}
+		virtual ~IServerCliCommand() = default;
 
 		/** Primary command name */
 		virtual const char *Name() const = 0;
 		/** Optional aliases */
-		virtual std::vector<std::string> Aliases() const { return std::vector<std::string>(); }
+		virtual std::vector<std::string> Aliases() const { return {}; }
 		/** Usage text for help */
 		virtual const char *Usage() const = 0;
 		/** Short command description*/

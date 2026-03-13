@@ -4,14 +4,18 @@
 
 #include "..\..\ServerCliEngine.h"
 #include "..\..\ServerCliParser.h"
-#include "..\..\..\Common\StringUtils.h"
 #include "..\..\..\..\Minecraft.Client\MinecraftServer.h"
 #include "..\..\..\..\Minecraft.Client\PlayerList.h"
 #include "..\..\..\..\Minecraft.Client\ServerPlayer.h"
-#include "..\..\..\..\Minecraft.World\LevelSettings.h"
 
 namespace ServerRuntime
 {
+	namespace
+	{
+		constexpr const char *kGamemodeUsage = "gamemode <survival|creative|0|1> [player]";
+		constexpr const char *kGamemodeUsageWithPlayer = "gamemode <survival|creative|0|1> <player>";
+	}
+
 	const char *CliCommandGamemode::Name() const
 	{
 		return "gamemode";
@@ -24,7 +28,7 @@ namespace ServerRuntime
 
 	const char *CliCommandGamemode::Usage() const
 	{
-		return "gamemode <survival|creative|0|1> [player]";
+		return kGamemodeUsage;
 	}
 
 	const char *CliCommandGamemode::Description() const
@@ -34,14 +38,14 @@ namespace ServerRuntime
 
 	bool CliCommandGamemode::Execute(const ServerCliParsedLine &line, ServerCliEngine *engine)
 	{
-		if (line.tokens.size() < 2)
+		if (line.tokens.size() < 2 || line.tokens.size() > 3)
 		{
-			engine->LogWarn("Usage: gamemode <survival|creative|0|1> [player]");
+			engine->LogWarn(std::string("Usage: ") + kGamemodeUsage);
 			return false;
 		}
 
 		GameType *mode = engine->ParseGamemode(line.tokens[1]);
-		if (mode == NULL)
+		if (mode == nullptr)
 		{
 			engine->LogWarn("Unknown gamemode: " + line.tokens[1]);
 			return false;
@@ -51,7 +55,7 @@ namespace ServerRuntime
 		if (line.tokens.size() >= 3)
 		{
 			target = engine->FindPlayerByNameUtf8(line.tokens[2]);
-			if (target == NULL)
+			if (target == nullptr)
 			{
 				engine->LogWarn("Unknown player: " + line.tokens[2]);
 				return false;
@@ -60,16 +64,16 @@ namespace ServerRuntime
 		else
 		{
 			MinecraftServer *server = MinecraftServer::getInstance();
-			if (server == NULL || server->getPlayers() == NULL)
+			if (server == nullptr || server->getPlayers() == nullptr)
 			{
 				engine->LogWarn("Player list is not available.");
 				return false;
 			}
 
 			PlayerList *players = server->getPlayers();
-			if (players->players.size() != 1 || players->players[0] == NULL)
+			if (players->players.size() != 1 || players->players[0] == nullptr)
 			{
-				engine->LogWarn("Usage: gamemode <survival|creative|0|1> <player>");
+				engine->LogWarn(std::string("Usage: ") + kGamemodeUsageWithPlayer);
 				return false;
 			}
 			target = players->players[0];
@@ -77,9 +81,15 @@ namespace ServerRuntime
 
 		target->setGameMode(mode);
 		target->fallDistance = 0.0f;
-		engine->LogInfo(
-			"Set " + StringUtils::WideToUtf8(target->getName()) + " gamemode to " +
-			StringUtils::WideToUtf8(mode->getName()) + ".");
+
+		if (line.tokens.size() >= 3)
+		{
+			engine->LogInfo("Set " + line.tokens[2] + " gamemode to " + line.tokens[1] + ".");
+		}
+		else
+		{
+			engine->LogInfo("Set gamemode to " + line.tokens[1] + ".");
+		}
 		return true;
 	}
 

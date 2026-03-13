@@ -4,7 +4,7 @@
 
 namespace ServerRuntime
 {
-	class CliCommandGamemode : public IServerCliCommand
+	class CliCommandExperience : public IServerCliCommand
 	{
 	public:
 		const char *Name() const override;
@@ -15,4 +15,3 @@ namespace ServerRuntime
 		void Complete(const ServerCliCompletionContext &context, const ServerCliEngine *engine, std::vector<std::string> *out) const override;
 	};
 }
-

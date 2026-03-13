@@ -570,10 +570,25 @@
     <ClCompile Include="Console\commands\ban-list\CliCommandBanList.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="Console\commands\defaultgamemode\CliCommandDefaultGamemode.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Console\commands\enchant\CliCommandEnchant.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Console\commands\experience\CliCommandExperience.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
     <ClCompile Include="Console\commands\gamemode\CliCommandGamemode.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="Console\commands\give\CliCommandGive.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
     <ClCompile Include="Console\commands\help\CliCommandHelp.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Console\commands\kill\CliCommandKill.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Console\commands\list\CliCommandList.cpp">
@@ -588,7 +603,13 @@
     <ClCompile Include="Console\commands\stop\CliCommandStop.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="Console\commands\time\CliCommandTime.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
     <ClCompile Include="Console\commands\tp\CliCommandTp.cpp">
+      <Filter>Server\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Console\commands\weather\CliCommandWeather.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Console\commands\whitelist\CliCommandWhitelist.cpp">
@@ -654,10 +675,28 @@
     <ClInclude Include="Console\commands\ban-list\CliCommandBanList.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="Console\commands\defaultgamemode\CliCommandDefaultGamemode.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\enchant\CliCommandEnchant.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\experience\CliCommandExperience.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
     <ClInclude Include="Console\commands\gamemode\CliCommandGamemode.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="Console\commands\give\CliCommandGive.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
     <ClInclude Include="Console\commands\help\CliCommandHelp.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\CommandParsing.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\kill\CliCommandKill.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Console\commands\list\CliCommandList.h">
@@ -672,7 +711,13 @@
     <ClInclude Include="Console\commands\stop\CliCommandStop.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="Console\commands\time\CliCommandTime.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
     <ClInclude Include="Console\commands\tp\CliCommandTp.h">
+      <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Console\commands\weather\CliCommandWeather.h">
       <Filter>Server\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Console\commands\whitelist\CliCommandWhitelist.h">

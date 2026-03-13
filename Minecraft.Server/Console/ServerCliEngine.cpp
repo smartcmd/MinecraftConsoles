@@ -8,13 +8,20 @@
 #include "commands\ban\CliCommandBan.h"
 #include "commands\ban-ip\CliCommandBanIp.h"
 #include "commands\ban-list\CliCommandBanList.h"
+#include "commands\defaultgamemode\CliCommandDefaultGamemode.h"
+#include "commands\enchant\CliCommandEnchant.h"
+#include "commands\experience\CliCommandExperience.h"
 #include "commands\gamemode\CliCommandGamemode.h"
+#include "commands\give\CliCommandGive.h"
 #include "commands\help\CliCommandHelp.h"
+#include "commands\kill\CliCommandKill.h"
 #include "commands\list\CliCommandList.h"
 #include "commands\pardon\CliCommandPardon.h"
 #include "commands\pardon-ip\CliCommandPardonIp.h"
 #include "commands\stop\CliCommandStop.h"
+#include "commands\time\CliCommandTime.h"
 #include "commands\tp\CliCommandTp.h"
+#include "commands\weather\CliCommandWeather.h"
 #include "commands\whitelist\CliCommandWhitelist.h"
 #include "..\Common\StringUtils.h"
 #include "..\ServerShutdown.h"
@@ -22,6 +29,8 @@
 #include "..\..\Minecraft.Client\MinecraftServer.h"
 #include "..\..\Minecraft.Client\PlayerList.h"
 #include "..\..\Minecraft.Client\ServerPlayer.h"
+#include "..\..\Minecraft.World\CommandDispatcher.h"
+#include "..\..\Minecraft.World\CommandSender.h"
 #include "..\..\Minecraft.World\LevelSettings.h"
 #include "..\..\Minecraft.World\StringHelpers.h"
 
@@ -30,8 +39,48 @@
 
 namespace ServerRuntime
 {
+
+	/**
+	 * Create an authorized Sender to make the CLI appear as a user.
+	 * The return value can also be used to display logs.
+	 */
+	namespace
+	{
+		class ServerCliConsoleCommandSender : public CommandSender
+		{
+		public:
+			explicit ServerCliConsoleCommandSender(const ServerCliEngine *engine)
+				: m_engine(engine)
+			{
+			}
+
+			void sendMessage(const wstring &message, ChatPacket::EChatPacketMessage type, int customData, const wstring &additionalMessage) override
+			{
+				(void)type;
+				(void)customData;
+				(void)additionalMessage;
+				if (m_engine == nullptr)
+				{
+					return;
+				}
+
+				m_engine->LogInfo(StringUtils::WideToUtf8(message));
+			}
+
+			bool hasPermission(EGameCommand command) override
+			{
+				(void)command;
+				return true;
+			}
+
+		private:
+			const ServerCliEngine *m_engine;
+		};
+	}
+
 	ServerCliEngine::ServerCliEngine()
 		: m_registry(new ServerCliRegistry())
+		, m_consoleSender(std::make_shared<ServerCliConsoleCommandSender>(this))
 	{
 		RegisterDefaultCommands();
 	}
@@ -52,7 +101,14 @@ namespace ServerRuntime
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandBanList()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandWhitelist()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandTp()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandTime()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandWeather()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandGive()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandEnchant()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandKill()));
 		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandGamemode()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandDefaultGamemode()));
+		m_registry->Register(std::unique_ptr<IServerCliCommand>(new CliCommandExperience()));
 	}
 
 	void ServerCliEngine::EnqueueCommandLine(const std::string &line)
@@ -300,9 +356,40 @@ namespace ServerRuntime
 		return NULL;
 	}
 
+	bool ServerCliEngine::DispatchWorldCommand(EGameCommand command, byteArray commandData, const std::shared_ptr<CommandSender> &sender) const
+	{
+		MinecraftServer *server = MinecraftServer::getInstance();
+		if (server == NULL)
+		{
+			LogWarn("MinecraftServer instance is not available.");
+			return false;
+		}
+
+		CommandDispatcher *dispatcher = server->getCommandDispatcher();
+		if (dispatcher == NULL)
+		{
+			LogWarn("Command dispatcher is not available.");
+			return false;
+		}
+
+		std::shared_ptr<CommandSender> commandSender = sender;
+		if (commandSender == nullptr)
+		{
+			// fall back to console sender if caller did not provide one
+			commandSender = m_consoleSender;
+		}
+		if (commandSender == nullptr)
+		{
+			LogWarn("No command sender is available.");
+			return false;
+		}
+
+		dispatcher->performCommand(commandSender, command, commandData);
+		return true;
+	}
+
 	const ServerCliRegistry &ServerCliEngine::Registry() const
 	{
 		return *m_registry;
 	}
 }
-
