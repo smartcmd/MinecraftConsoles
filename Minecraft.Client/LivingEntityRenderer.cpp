@@ -12,12 +12,11 @@
 ResourceLocation LivingEntityRenderer::ENCHANT_GLINT_LOCATION = ResourceLocation(TN__BLUR__MISC_GLINT);
 int LivingEntityRenderer::MAX_ARMOR_LAYERS = 4;
 
-LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow, bool slimHands)
+LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow)
 {
 	this->model = model;
-
-	if (slimHands == true)
-		this->modelSlim = new HumanoidModel(0, 0, 64, 32, true);
+	this->modelCustom = new HumanoidModel(0, 0, 64, 64, 1);
+	this->modelSlim = new HumanoidModel(0, 0, 64, 64, 2);
 
 	shadowRadius = shadow;
 	armor = nullptr;
@@ -57,7 +56,8 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-	if (player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() == 9) resModel = modelSlim;
+	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = modelCustom;
+	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = modelSlim;
 	else resModel = model;
 
 	resModel->attackTime = getAttackAnim(mob, a);
@@ -253,7 +253,8 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
 	Model *resModel;
 
-	if (player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() == 9) resModel = modelSlim;
+	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = modelCustom;
+	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = modelSlim;
 	else resModel = model;
 
 	bindTexture(mob);
@@ -341,10 +342,12 @@ void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 
 			ModelPart *modelPart;
 
-			if (player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() == 9)
-				modelPart = model->getRandomModelPart(random);
-			else
+			if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18))
+				modelPart = modelCustom->getRandomModelPart(random);
+			else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19))
 				modelPart = modelSlim->getRandomModelPart(random);
+			else
+				modelPart = model->getRandomModelPart(random);
 
 			Cube *cube = modelPart->cubes[random.nextInt(modelPart->cubes.size())];
 			modelPart->translateTo(1 / 16.0f);
