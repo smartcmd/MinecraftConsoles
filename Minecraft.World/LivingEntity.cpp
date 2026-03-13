@@ -1354,6 +1354,10 @@ bool LivingEntity::shouldShowName()
 
 Icon *LivingEntity::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer)
 {
+    if (item->getItem()->hasMultipleSpriteLayers())
+    {
+        return item->getItem()->getLayerIcon(item->getAuxValue(), layer);
+    }
 	return item->getIcon();
 }
 

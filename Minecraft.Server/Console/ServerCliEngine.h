@@ -6,8 +6,12 @@
 #include <string>
 #include <vector>
 
+#include "..\..\Minecraft.World\ArrayWithLength.h"
+#include "..\..\Minecraft.World\CommandsEnum.h"
+
 class GameType;
 class ServerPlayer;
+class CommandSender;
 
 namespace ServerRuntime
 {
@@ -98,6 +102,17 @@ namespace ServerRuntime
 		 */
 		GameType *ParseGamemode(const std::string &token) const;
 
+		/**
+		 * **Dispatch one Minecraft.World game command**
+		 *
+		 * Uses `Minecraft.World::CommandDispatcher` for actual execution.
+		 * When `sender` is null, an internal console command sender is used.
+		 * 
+		 * Minecraft.Worldのコマンドを実行するためのディスパッチャーのラッパー
+		 * 内部でsenderがnullの場合はコンソールコマンド送信者を使用
+		 */
+		bool DispatchWorldCommand(EGameCommand command, byteArray commandData, const std::shared_ptr<CommandSender> &sender = nullptr) const;
+
 		const ServerCliRegistry &Registry() const;
 
 	private:
@@ -107,5 +122,6 @@ namespace ServerRuntime
 		mutable std::mutex m_queueMutex;
 		std::queue<std::string> m_pendingLines;
 		std::unique_ptr<ServerCliRegistry> m_registry;
+		std::shared_ptr<CommandSender> m_consoleSender;
 	};
 }

@@ -5,12 +5,17 @@
 #include "..\..\ServerCliEngine.h"
 #include "..\..\ServerCliParser.h"
 #include "..\..\..\..\Minecraft.Client\PlayerConnection.h"
+#include "..\..\..\..\Minecraft.Client\TeleportCommand.h"
 #include "..\..\..\..\Minecraft.Client\ServerPlayer.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.dimension.h"
+#include "..\..\..\..\Minecraft.World\GameCommandPacket.h"
 
 namespace ServerRuntime
 {
+	namespace
+	{
+		constexpr const char *kTpUsage = "tp <player> <target>";
+	}
+
 	const char *CliCommandTp::Name() const
 	{
 		return "tp";
@@ -23,49 +28,47 @@ namespace ServerRuntime
 
 	const char *CliCommandTp::Usage() const
 	{
-		return "tp <player> <target>";
+		return kTpUsage;
 	}
 
 	const char *CliCommandTp::Description() const
 	{
-		return "Teleport one player to another player.";
+		return "Teleport one player to another via Minecraft.World command dispatcher.";
 	}
 
 	bool CliCommandTp::Execute(const ServerCliParsedLine &line, ServerCliEngine *engine)
 	{
-		if (line.tokens.size() < 3)
+		if (line.tokens.size() != 3)
 		{
-			engine->LogWarn("Usage: tp <player> <target>");
+			engine->LogWarn(std::string("Usage: ") + kTpUsage);
 			return false;
 		}
 
 		std::shared_ptr<ServerPlayer> subject = engine->FindPlayerByNameUtf8(line.tokens[1]);
 		std::shared_ptr<ServerPlayer> destination = engine->FindPlayerByNameUtf8(line.tokens[2]);
-		if (subject == NULL)
+		if (subject == nullptr)
 		{
 			engine->LogWarn("Unknown player: " + line.tokens[1]);
 			return false;
 		}
-		if (destination == NULL)
+		if (destination == nullptr)
 		{
 			engine->LogWarn("Unknown player: " + line.tokens[2]);
 			return false;
 		}
-		if (subject->connection == NULL)
+		if (subject->connection == nullptr)
 		{
 			engine->LogWarn("Cannot teleport because source player connection is inactive.");
 			return false;
 		}
-		if (subject->level == NULL || destination->level == NULL || subject->level->dimension->id != destination->level->dimension->id || !subject->isAlive())
+		std::shared_ptr<GameCommandPacket> packet = TeleportCommand::preparePacket(subject->getXuid(), destination->getXuid());
+		if (packet == nullptr)
 		{
-			engine->LogWarn("Teleport failed because players are in different dimensions or source player is dead.");
+			engine->LogError("Failed to build teleport command packet.");
 			return false;
 		}
 
-		subject->ride(nullptr);
-		subject->connection->teleport(destination->x, destination->y, destination->z, destination->yRot, destination->xRot);
-		engine->LogInfo("Teleported " + line.tokens[1] + " to " + line.tokens[2] + ".");
-		return true;
+		return engine->DispatchWorldCommand(packet->command, packet->data);
 	}
 
 	void CliCommandTp::Complete(const ServerCliCompletionContext &context, const ServerCliEngine *engine, std::vector<std::string> *out) const

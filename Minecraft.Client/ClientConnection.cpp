@@ -149,8 +149,56 @@ bool ClientConnection::isPrimaryConnection() const
 	return g_NetworkManager.IsHost() || m_userIndex == ProfileManager.GetPrimaryPad();
 }
 
+ClientConnection* ClientConnection::findPrimaryConnection() const
+{
+	if (level == nullptr) return nullptr;
+	int primaryPad = ProfileManager.GetPrimaryPad();
+	MultiPlayerLevel* mpLevel = (MultiPlayerLevel*)level;
+	for (ClientConnection* conn : mpLevel->connections)
+	{
+		if (conn != this && conn->m_userIndex == primaryPad)
+			return conn;
+	}
+	return nullptr;
+}
+
+bool ClientConnection::shouldProcessForEntity(int entityId) const
+{
+	if (g_NetworkManager.IsHost()) return true;
+	if (m_userIndex == ProfileManager.GetPrimaryPad()) return true;
+
+	ClientConnection* primary = findPrimaryConnection();
+	if (primary == nullptr) return true;
+	return !primary->isTrackingEntity(entityId);
+}
+
+bool ClientConnection::shouldProcessForPosition(int blockX, int blockZ) const
+{
+	if (g_NetworkManager.IsHost()) return true;
+	if (m_userIndex == ProfileManager.GetPrimaryPad()) return true;
+
+	ClientConnection* primary = findPrimaryConnection();
+	if (primary == nullptr) return true;
+	return !primary->m_visibleChunks.count(chunkKey(blockX >> 4, blockZ >> 4));
+}
+
+bool ClientConnection::anyOtherConnectionHasChunk(int x, int z) const
+{
+	if (level == nullptr) return false;
+	MultiPlayerLevel* mpLevel = (MultiPlayerLevel*)level;
+	int64_t key = chunkKey(x, z);
+	for (ClientConnection* conn : mpLevel->connections)
+	{
+		if (conn != this && conn->m_visibleChunks.count(key))
+			return true;
+	}
+	return false;
+}
+
 ClientConnection::~ClientConnection()
 {
+	m_trackedEntityIds.clear();
+	m_visibleChunks.clear();
 	delete connection;
 	delete random;
 	delete savedDataStorage;
@@ -664,6 +712,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		}
 		e->entityId = packet->id;
 		level->putEntity(packet->id, e);
+		m_trackedEntityIds.insert(packet->id);
 
 		if (packet->data > -1) // 4J - changed "no data" value to be -1, we can have a valid entity id of 0
 		{
@@ -712,6 +761,7 @@ void ClientConnection::handleAddExperienceOrb(shared_ptr<AddExperienceOrbPacket>
 	e->xRot = 0;
 	e->entityId = packet->id;
 	level->putEntity(packet->id, e);
+	m_trackedEntityIds.insert(packet->id);
 }
 
 void ClientConnection::handleAddGlobalEntity(shared_ptr<AddGlobalEntityPacket> packet)
@@ -738,13 +788,13 @@ void ClientConnection::handleAddPainting(shared_ptr<AddPaintingPacket> packet)
 {
 	shared_ptr<Painting> painting = std::make_shared<Painting>(level, packet->x, packet->y, packet->z, packet->dir, packet->motive);
 	level->putEntity(packet->id, painting);
+	m_trackedEntityIds.insert(packet->id);
 }
 
 void ClientConnection::handleSetEntityMotion(shared_ptr<SetEntityMotionPacket> packet)
 {
-	if (!isPrimaryConnection())
+	if (!shouldProcessForEntity(packet->id))
 	{
-		// Secondary connection: only accept motion for our own local player (knockback)
 		if (minecraft->localplayers[m_userIndex] == NULL ||
 			packet->id != minecraft->localplayers[m_userIndex]->entityId)
 			return;
@@ -939,6 +989,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	app.DebugPrintf("Custom cape for player %ls is %ls\n",player->name.c_str(),player->customTextureUrl2.c_str());
 
 	level->putEntity(packet->id, player);
+	m_trackedEntityIds.insert(packet->id);
 
 	vector<shared_ptr<SynchedEntityData::DataItem> > *unpackedData = packet->getUnpackedData();
 	if (unpackedData != nullptr)
@@ -979,7 +1030,7 @@ void ClientConnection::handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> pac
 
 void ClientConnection::handleMoveEntity(shared_ptr<MoveEntityPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
+	if (!shouldProcessForEntity(packet->id)) return;
 	shared_ptr<Entity> e = getEntity(packet->id);
 	if (e == nullptr) return;
 	e->xp += packet->xa;
@@ -1009,7 +1060,7 @@ void ClientConnection::handleRotateMob(shared_ptr<RotateHeadPacket> packet)
 
 void ClientConnection::handleMoveEntitySmall(shared_ptr<MoveEntityPacketSmall> packet)
 {
-	if (!isPrimaryConnection()) return;
+	if (!shouldProcessForEntity(packet->id)) return;
 	shared_ptr<Entity> e = getEntity(packet->id);
 	if (e == nullptr) return;
 	e->xp += packet->xa;
@@ -1068,6 +1119,7 @@ void ClientConnection::handleRemoveEntity(shared_ptr<RemoveEntitiesPacket> packe
 #endif
 	for (int i = 0; i < packet->ids.length; i++)
 	{
+		m_trackedEntityIds.erase(packet->ids[i]);
 		level->removeEntity(packet->ids[i]);
 	}
 }
@@ -1136,19 +1188,35 @@ void ClientConnection::handleChunkVisibilityArea(shared_ptr<ChunkVisibilityAreaP
 {
 	if (level == NULL) return;
 	for(int z = packet->m_minZ; z <= packet->m_maxZ; ++z)
+	{
 		for(int x = packet->m_minX; x <= packet->m_maxX; ++x)
+		{
+			m_visibleChunks.insert(chunkKey(x, z));
 			level->setChunkVisible(x, z, true);
+		}
+	}
 }
 
 void ClientConnection::handleChunkVisibility(shared_ptr<ChunkVisibilityPacket> packet)
 {
 	if (level == NULL) return;
-	level->setChunkVisible(packet->x, packet->z, packet->visible);
+	if (packet->visible)
+	{
+		m_visibleChunks.insert(chunkKey(packet->x, packet->z));
+		level->setChunkVisible(packet->x, packet->z, true);
+	}
+	else
+	{
+		m_visibleChunks.erase(chunkKey(packet->x, packet->z));
+		if (!anyOtherConnectionHasChunk(packet->x, packet->z))
+		{
+			level->setChunkVisible(packet->x, packet->z, false);
+		}
+	}
 }
 
 void ClientConnection::handleChunkTilesUpdate(shared_ptr<ChunkTilesUpdatePacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	// 4J - changed to encode level in packet
 	MultiPlayerLevel *dimensionLevel = (MultiPlayerLevel *)minecraft->levels[packet->levelIdx];
 	if( dimensionLevel )
@@ -1218,7 +1286,6 @@ void ClientConnection::handleChunkTilesUpdate(shared_ptr<ChunkTilesUpdatePacket>
 
 void ClientConnection::handleBlockRegionUpdate(shared_ptr<BlockRegionUpdatePacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	// 4J - changed to encode level in packet
 	MultiPlayerLevel *dimensionLevel = (MultiPlayerLevel *)minecraft->levels[packet->levelIdx];
 	if( dimensionLevel )
@@ -1279,7 +1346,6 @@ void ClientConnection::handleBlockRegionUpdate(shared_ptr<BlockRegionUpdatePacke
 
 void ClientConnection::handleTileUpdate(shared_ptr<TileUpdatePacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	// 4J added - using a block of 255 to signify that this is a packet for destroying a tile, where we need to inform the level renderer that we are about to do so.
 	// This is used in creative mode as the point where a tile is first destroyed at the client end of things. Packets formed like this are potentially sent from
 	// ServerPlayerGameMode::destroyBlock
@@ -1394,7 +1460,7 @@ void ClientConnection::send(shared_ptr<Packet> packet)
 
 void ClientConnection::handleTakeItemEntity(shared_ptr<TakeItemEntityPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
+	if (!shouldProcessForEntity(packet->itemId)) return;
 	shared_ptr<Entity> from = getEntity(packet->itemId);
 	shared_ptr<LivingEntity> to = dynamic_pointer_cast<LivingEntity>(getEntity(packet->playerId));
 
@@ -2414,6 +2480,8 @@ void ClientConnection::close()
 	// If it's already done, then we don't need to do anything here. And in fact trying to do something could cause a crash
 	if(done) return;
 	done = true;
+	m_trackedEntityIds.clear();
+	m_visibleChunks.clear();
 	connection->flush();
 	connection->close(DisconnectPacket::eDisconnect_Closed);
 }
@@ -2453,6 +2521,7 @@ void ClientConnection::handleAddMob(shared_ptr<AddMobPacket> packet)
 	mob->yd = packet->yd / 8000.0f;
 	mob->zd = packet->zd / 8000.0f;
 	level->putEntity(packet->id, mob);
+	m_trackedEntityIds.insert(packet->id);
 
 	vector<shared_ptr<SynchedEntityData::DataItem> > *unpackedData = packet->getUnpackedData();
 	if (unpackedData != nullptr)
@@ -2792,6 +2861,9 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		// so it doesn't leak into the new dimension
 		level->playStreamingMusic(L"", 0, 0, 0);
 
+		m_trackedEntityIds.clear();
+		m_visibleChunks.clear();
+
 		// Remove client connection from this level
 		level->removeClientConnection(this, false);
 
@@ -2899,8 +2971,7 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 
 void ClientConnection::handleExplosion(shared_ptr<ExplodePacket> packet)
 {
-	// World modification (block destruction) must only happen once
-	if (isPrimaryConnection())
+	if (shouldProcessForPosition((int)packet->x, (int)packet->z))
 	{
 		if(!packet->m_bKnockbackOnly)
 		{
@@ -3244,7 +3315,6 @@ void ClientConnection::handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> pac
 
 void ClientConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	app.DebugPrintf("ClientConnection::handleSignUpdate - ");
 	if (minecraft->level->hasChunkAt(packet->x, packet->y, packet->z))
 	{
@@ -3278,7 +3348,6 @@ void ClientConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 
 void ClientConnection::handleTileEntityData(shared_ptr<TileEntityDataPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	if (minecraft->level->hasChunkAt(packet->x, packet->y, packet->z))
 	{
 		shared_ptr<TileEntity> te = minecraft->level->getTileEntity(packet->x, packet->y, packet->z);
@@ -3331,7 +3400,6 @@ void ClientConnection::handleContainerClose(shared_ptr<ContainerClosePacket> pac
 
 void ClientConnection::handleTileEvent(shared_ptr<TileEventPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	PIXBeginNamedEvent(0,"Handle tile event\n");
 	minecraft->level->tileEvent(packet->x, packet->y, packet->z, packet->tile, packet->b0, packet->b1);
 	PIXEndNamedEvent();
@@ -3339,7 +3407,6 @@ void ClientConnection::handleTileEvent(shared_ptr<TileEventPacket> packet)
 
 void ClientConnection::handleTileDestruction(shared_ptr<TileDestructionPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	minecraft->level->destroyTileProgress(packet->getEntityId(), packet->getX(), packet->getY(), packet->getZ(), packet->getState());
 }
 
@@ -3421,7 +3488,6 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 
 void ClientConnection::handleComplexItemData(shared_ptr<ComplexItemDataPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	if (packet->itemType == Item::map->id)
 	{
 		MapItem::getSavedData(packet->itemId, minecraft->level)->handleComplexItemData(packet->data);
@@ -3436,7 +3502,7 @@ void ClientConnection::handleComplexItemData(shared_ptr<ComplexItemDataPacket> p
 
 void ClientConnection::handleLevelEvent(shared_ptr<LevelEventPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
+	if (!shouldProcessForPosition(packet->x, packet->z)) return;
 	if (packet->type == LevelEvent::SOUND_DRAGON_DEATH)
 	{
 		for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
@@ -3456,8 +3522,6 @@ void ClientConnection::handleLevelEvent(shared_ptr<LevelEventPacket> packet)
 	{
 		minecraft->level->levelEvent(packet->type, packet->x, packet->y, packet->z, packet->data);
 	}
-
-	minecraft->level->levelEvent(packet->type, packet->x, packet->y, packet->z, packet->data);
 }
 
 void ClientConnection::handleAwardStat(shared_ptr<AwardStatPacket> packet)
@@ -3660,7 +3724,6 @@ void ClientConnection::handlePlayerAbilities(shared_ptr<PlayerAbilitiesPacket> p
 
 void ClientConnection::handleSoundEvent(shared_ptr<LevelSoundPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	minecraft->level->playLocalSound(packet->getX(), packet->getY(), packet->getZ(), packet->getSound(), packet->getVolume(), packet->getPitch(), false);
 }
 
@@ -3973,7 +4036,6 @@ void ClientConnection::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket>
 
 void ClientConnection::handleParticleEvent(shared_ptr<LevelParticlesPacket> packet)
 {
-	if (!isPrimaryConnection()) return;
 	for (int i = 0; i < packet->getCount(); i++)
 	{
 		double xVarience = random->nextGaussian() * packet->getXDist();
