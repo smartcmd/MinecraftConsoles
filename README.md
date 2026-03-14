@@ -86,7 +86,7 @@ Minecraft.Client.exe -name Steve -fullscreen
 
 ```powershell
 cmake --preset windows64
-cmake --build --preset windows64-release --target Minecraft.Client
+cmake --build --preset windows64-debug --target Minecraft.Client
 ```
 
 For more information, see [COMPILE.md](COMPILE.md).
