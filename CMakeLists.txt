@@ -30,9 +30,19 @@ function(configure_msvc_target target)
     $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
     $<$<COMPILE_LANGUAGE:CXX>:/GR>
     $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/Od>
-    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF /Ob3>
+    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF>
   )
 endfunction()
+function(configure_clang_target target)
+  target_compile_options(${target} PRIVATE
+    $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:-O0 -Wall>
+    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:-O2 -w -flto>
+  )
+  target_link_options(${target} PRIVATE
+    $<$<CONFIG:Release>:-flto>
+  )
+endfunction()
+
 
 # ---
 # Configuration

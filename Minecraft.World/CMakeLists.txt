@@ -29,3 +29,6 @@ target_precompile_headers(Minecraft.World PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:std
 if(MSVC)
   configure_msvc_target(Minecraft.World)
 endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  configure_clang_target(Minecraft.World)
+endif()

@@ -45,6 +45,9 @@ if(MSVC)
     $<$<CONFIG:Release>:/LTCG:incremental>
   )
 endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  configure_clang_target(Minecraft.Client)
+endif()
 
 set_target_properties(Minecraft.Client PROPERTIES
   VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
