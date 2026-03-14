@@ -37,6 +37,7 @@ void FireworksRecipe::ReleaseThreadStorage()
 void FireworksRecipe::setResultItem(shared_ptr<ItemInstance> item)
 {
 	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
+	if (tls == nullptr) tls = tlsDefault;
 	tls->resultItem = item;
 }
 
@@ -269,6 +270,7 @@ bool FireworksRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *l
 shared_ptr<ItemInstance> FireworksRecipe::assemble(shared_ptr<CraftingContainer> craftSlots)
 {
 	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
+	if (tls == nullptr) tls = tlsDefault;
 	return tls->resultItem->copy();
 	//return resultItem->copy();
 }
@@ -281,6 +283,7 @@ int FireworksRecipe::size()
 const ItemInstance *FireworksRecipe::getResultItem()
 {
 	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
+	if (tls == nullptr) tls = tlsDefault;
 	return tls->resultItem.get();
 	//return resultItem.get();
 }
