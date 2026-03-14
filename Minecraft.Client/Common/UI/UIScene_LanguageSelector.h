@@ -16,7 +16,7 @@
 #define HAS_LANGUAGE_KO_KR(exp)	exp,
 #define HAS_LANGUAGE_CN_TW(exp)	exp,
 
-#ifdef _DURANGO
+#if defined(_DURANGO) || defined(_WINDOWS64)
 #define HAS_LANGUAGE_CN_CN(exp)	exp,
 #define HAS_LANGUAGE_SK_SK(exp)	exp,
 #define HAS_LANGUAGE_CZ_CZ(exp)	exp,

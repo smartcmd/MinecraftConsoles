@@ -2189,6 +2189,8 @@
 #define IDS_LANG_NORWEGIAN                                     2183
 #define IDS_LANG_GREEK                                         2184
 #define IDS_LANG_TURKISH                                       2185
+#define IDS_LANG_SLOVAK                                        2286
+#define IDS_LANG_CZECH                                         2287
 #define IDS_LEADERBOARD_KILLS_EASY                             2186
 #define IDS_LEADERBOARD_KILLS_NORMAL                           2187
 #define IDS_LEADERBOARD_KILLS_HARD                             2188

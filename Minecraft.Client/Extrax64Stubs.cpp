@@ -544,8 +544,113 @@ void XMemDestroyDecompressionContext(XMEMDECOMPRESSION_CONTEXT Context)
 
 //#ifndef __PS3__
 #if !(defined _DURANGO || defined __PS3__ || defined __ORBIS__ || defined __PSVITA__)
+#ifdef _WINDOWS64
+DWORD XGetLanguage()
+{
+	// If the player has explicitly selected a language in-game, honour that override
+	unsigned char ucLang = app.GetMinecraftLanguage(0);
+	if (ucLang != MINECRAFT_LANGUAGE_DEFAULT) return ucLang;
+
+	// Otherwise detect the Windows UI language and map it to an XC_LANGUAGE_ constant
+	WCHAR wchLocaleName[LOCALE_NAME_MAX_LENGTH];
+	GetUserDefaultLocaleName(wchLocaleName, LOCALE_NAME_MAX_LENGTH);
+	eMCLang eLang = static_cast<eMCLang>(app.get_eMCLang(wchLocaleName));
+
+	switch (eLang)
+	{
+	case eMCLang_jaJP:
+		return XC_LANGUAGE_JAPANESE;
+	case eMCLang_deDE:
+	case eMCLang_deAT:
+	case eMCLang_deCH:
+		return XC_LANGUAGE_GERMAN;
+	case eMCLang_frFR:
+	case eMCLang_frCA:
+	case eMCLang_frBE:
+	case eMCLang_frCH:
+		return XC_LANGUAGE_FRENCH;
+	case eMCLang_esES:
+	case eMCLang_esMX:
+	case eMCLang_laLAS:
+	case eMCLang_esAR:
+	case eMCLang_esCL:
+	case eMCLang_esCO:
+	case eMCLang_esUS:
+		return XC_LANGUAGE_SPANISH;
+	case eMCLang_itIT:
+		return XC_LANGUAGE_ITALIAN;
+	case eMCLang_koKR:
+		return XC_LANGUAGE_KOREAN;
+	case eMCLang_zhCHT:
+	case eMCLang_zhHK:
+	case eMCLang_zhTW:
+	case eMCLang_hant:
+		return XC_LANGUAGE_TCHINESE;
+	case eMCLang_ptPT:
+	case eMCLang_ptBR:
+		return XC_LANGUAGE_PORTUGUESE;
+	case eMCLang_plPL:
+		return XC_LANGUAGE_POLISH;
+	case eMCLang_ruRU:
+		return XC_LANGUAGE_RUSSIAN;
+	case eMCLang_svSV:
+	case eMCLang_svSE:
+		return XC_LANGUAGE_SWEDISH;
+	case eMCLang_trTR:
+		return XC_LANGUAGE_TURKISH;
+	case eMCLang_nbNO:
+	case eMCLang_noNO:
+	case eMCLang_nnNO:
+		return XC_LANGUAGE_BNORWEGIAN;
+	case eMCLang_nlNL:
+	case eMCLang_nlBE:
+		return XC_LANGUAGE_DUTCH;
+	case eMCLang_zhCN:
+	case eMCLang_zhSG:
+	case eMCLang_hans:
+	case eMCLang_csCS:
+		return XC_LANGUAGE_SCHINESE;
+	case eMCLang_fiFI:
+		return XC_LANGUAGE_FINISH;
+	case eMCLang_daDA:
+	case eMCLang_daDK:
+		return XC_LANGUAGE_DANISH;
+	case eMCLang_csCZ:
+	case eMCLang_enCZ:
+		return XC_LANGUAGE_CZECH;
+	case eMCLang_skSK:
+	case eMCLang_enSK:
+		return XC_LANGUAGE_SLOVAK;
+	case eMCLang_elEL:
+	case eMCLang_elGR:
+	case eMCLang_enGR:
+		return XC_LANGUAGE_GREEK;
+	case eMCLang_enGB:
+	case eMCLang_enIE:
+	case eMCLang_enAU:
+	case eMCLang_enNZ:
+	case eMCLang_enCA:
+	case eMCLang_enUS:
+	default:
+		return XC_LANGUAGE_ENGLISH;
+	}
+}
+
+DWORD XGetLocale()
+{
+	// If the player has explicitly selected a locale in-game, honour that override
+	unsigned char ucLocale = app.GetMinecraftLocale(0);
+	if (ucLocale != MINECRAFT_LANGUAGE_DEFAULT) return ucLocale;
+
+	// Otherwise map the Windows UI locale to an XC_LOCALE_ constant
+	WCHAR wchLocaleName[LOCALE_NAME_MAX_LENGTH];
+	GetUserDefaultLocaleName(wchLocaleName, LOCALE_NAME_MAX_LENGTH);
+	return app.get_xcLang(wchLocaleName);
+}
+#else
 DWORD XGetLanguage() { return 1; }
 DWORD XGetLocale() { return 0; }
+#endif
 DWORD XEnableGuestSignin(BOOL fEnable) { return 0; }
 #endif
 

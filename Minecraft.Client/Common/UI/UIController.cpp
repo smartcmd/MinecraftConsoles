@@ -392,8 +392,8 @@ void UIController::SetupFont()
 
 	if (m_eTargetFont == m_eCurrentFont)
 	{
-		// 4J-JEV: If we're ingame, reload the font to update all the text.
-		if (app.GetGameStarted()) app.SetAction(ProfileManager.GetPrimaryPad(), eAppAction_ReloadFont);
+		// 4J-JEV: Font type unchanged but language changed - always reload UI to refresh strings.
+		app.SetAction(ProfileManager.GetPrimaryPad(), eAppAction_ReloadFont);
 		return;
 	}
 
@@ -708,7 +708,7 @@ int UIController::reloadSkinThreadProc(void* lpParam)
 	controller->m_groups[eUIGroup_Fullscreen]->ReloadAll();
 
 	// 4J Stu - Don't do this on windows, as we never navigated forwards to start with
-#ifndef _WINDOW64
+#ifndef _WINDOWS64
 	controller->NavigateBack(0, false, eUIScene_COUNT, eUILayer_Tooltips);
 #endif
 	LeaveCriticalSection(&ms_reloadSkinCS);

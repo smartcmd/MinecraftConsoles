@@ -9776,7 +9776,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_zhCN);
 		break;
 
-#if defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ || defined _DURANGO
+#if defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ || defined _DURANGO || defined _WINDOWS64
 	case XC_LANGUAGE_DANISH:
 		locales.push_back(eMCLang_daDA);
 		locales.push_back(eMCLang_daDK);
