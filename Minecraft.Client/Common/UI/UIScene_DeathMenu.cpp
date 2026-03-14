@@ -18,9 +18,9 @@ UIScene_DeathMenu::UIScene_DeathMenu(int iPad, void *initData, UILayer *parentLa
 	m_bIgnoreInput = false;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft != NULL && pMinecraft->localgameModes[iPad] != NULL )
+	if(pMinecraft != nullptr && pMinecraft->localgameModes[iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 
 		// This just allows it to be shown
 		gameMode->getTutorial()->showTutorialPopup(false);
@@ -30,9 +30,9 @@ UIScene_DeathMenu::UIScene_DeathMenu(int iPad, void *initData, UILayer *parentLa
 UIScene_DeathMenu::~UIScene_DeathMenu()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft != NULL && pMinecraft->localgameModes[m_iPad] != NULL )
+	if(pMinecraft != nullptr && pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 
 		// This just allows it to be shown
 		gameMode->getTutorial()->showTutorialPopup(true);
@@ -81,7 +81,7 @@ void UIScene_DeathMenu::handleInput(int iPad, int key, bool repeat, bool pressed
 
 void UIScene_DeathMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Respawn:
 		m_bIgnoreInput = true;
@@ -104,9 +104,9 @@ void UIScene_DeathMenu::handlePress(F64 controlId, F64 childId)
 				{
 					UINT uiIDA[3];
 					int playTime = -1;
-					if( pMinecraft->localplayers[m_iPad] != NULL )
+					if( pMinecraft->localplayers[m_iPad] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[m_iPad]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[m_iPad]->getSessionTimer());
 					}
 					TelemetryManager->RecordLevelExit(m_iPad, eSen_LevelExitStatus_Failed);
 					

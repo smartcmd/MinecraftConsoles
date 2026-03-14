@@ -15,7 +15,7 @@ BowItem::BowItem(int id) : Item( id )
 	maxStackSize = 1;
 	setMaxDamage(384);
 
-	icons = NULL;
+	icons = nullptr;
 }
 
 void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player, int durationLeft)
@@ -25,17 +25,17 @@ void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, 
 	if (infiniteArrows || player->inventory->hasResource(Item::arrow_Id))
 	{
 		int timeHeld = getUseDuration(itemInstance) - durationLeft;
-		float pow = timeHeld / (float) MAX_DRAW_DURATION;
+		float pow = timeHeld / static_cast<float>(MAX_DRAW_DURATION);
 		pow = ((pow * pow) + pow * 2) / 3;
 		if (pow < 0.1) return;
 		if (pow > 1) pow = 1;
 
-		shared_ptr<Arrow> arrow = shared_ptr<Arrow>( new Arrow(level, player, pow * 2.0f) );
+		shared_ptr<Arrow> arrow = std::make_shared<Arrow>(level, player, pow * 2.0f);
 		if (pow == 1) arrow->setCritArrow(true);
 		int damageBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowBonus->id, itemInstance);
 		if (damageBonus > 0)
 		{
-			arrow->setBaseDamage(arrow->getBaseDamage() + (double) damageBonus * .5 + .5);
+			arrow->setBaseDamage(arrow->getBaseDamage() + static_cast<double>(damageBonus) * .5 + .5);
 		}
 		int knockbackBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowKnockback->id, itemInstance);
 		if (knockbackBonus > 0)

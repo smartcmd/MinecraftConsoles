@@ -48,7 +48,7 @@ void StoneMonsterTile::destroy(Level *level, int x, int y, int z, int data)
 			// Also limit the amount of silverfish specifically
 			if(level->countInstanceOf( eTYPE_SILVERFISH, true) < 15 )
 			{
-				shared_ptr<Silverfish> silverfish = shared_ptr<Silverfish>(new Silverfish(level));
+				shared_ptr<Silverfish> silverfish = std::make_shared<Silverfish>(level);
 				silverfish->moveTo(x + .5, y, z + .5, 0, 0);
 				level->addEntity(silverfish);
 
@@ -106,7 +106,7 @@ shared_ptr<ItemInstance> StoneMonsterTile::getSilkTouchItemInstance(int data)
 	{
 		tile = Tile::stoneBrick;
 	}
-	return shared_ptr<ItemInstance>(new ItemInstance(tile));
+	return std::make_shared<ItemInstance>(tile);
 }
 
 int StoneMonsterTile::cloneTileData(Level *level, int x, int y, int z)

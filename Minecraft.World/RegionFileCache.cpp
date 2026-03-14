@@ -12,6 +12,11 @@ bool RegionFileCache::useSplitSaves(ESavePlatform platform)
 	case SAVE_FILE_PLATFORM_XBONE:
 	case SAVE_FILE_PLATFORM_PS4:
 		return true;
+	case SAVE_FILE_PLATFORM_WIN64:
+	{
+		LevelGenerationOptions* lgo = app.getLevelGenerationOptions();
+		return (lgo != nullptr && lgo->isFromDLC());
+	}
 	default:
 		return false;
 	};
@@ -38,13 +43,13 @@ RegionFile *RegionFileCache::_getRegionFile(ConsoleSaveFile *saveFile, const wst
 	}
 	MemSect(0);
 
-	RegionFile *ref = NULL;
+	RegionFile *ref = nullptr;
     auto it = cache.find(file);
     if( it != cache.end() )
 		ref = it->second;
 
 	// 4J Jev, put back in.
-    if (ref != NULL)
+    if (ref != nullptr)
 	{
 		return ref;
     }
@@ -72,7 +77,7 @@ void RegionFileCache::_clear()															// 4J - TODO was synchronized
 	for(auto& it : cache)
 	{
         RegionFile *regionFile = it.second;
-        if (regionFile != NULL)
+        if (regionFile != nullptr)
 		{
             regionFile->close();
         }

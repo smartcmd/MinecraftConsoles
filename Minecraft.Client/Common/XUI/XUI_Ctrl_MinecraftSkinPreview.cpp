@@ -30,10 +30,10 @@ CXuiCtrlMinecraftSkinPreview::CXuiCtrlMinecraftSkinPreview() :
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
 	m_customTextureUrl = L"default";
 	m_backupTexture = TN_MOB_CHAR;
@@ -62,7 +62,7 @@ CXuiCtrlMinecraftSkinPreview::CXuiCtrlMinecraftSkinPreview() :
 	m_fOriginalRotation = 0.0f;
 	m_framesAnimatingRotation = 0;
 	m_bAnimatingToFacing = false;
-	m_pvAdditionalModelParts=NULL;
+	m_pvAdditionalModelParts=nullptr;
 	m_uiAnimOverrideBitmask=0L;
 }
 
@@ -137,7 +137,7 @@ void CXuiCtrlMinecraftSkinPreview::SetFacing(ESkinPreviewFacing facing, bool bAn
 
 void CXuiCtrlMinecraftSkinPreview::CycleNextAnimation()
 {
-	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation + 1);
+	m_currentAnimation = static_cast<ESkinPreviewAnimations>(m_currentAnimation + 1);
 	if(m_currentAnimation >= e_SkinPreviewAnimation_Count) m_currentAnimation = e_SkinPreviewAnimation_Walking;
 
 	m_swingTime = 0.0f;
@@ -145,8 +145,8 @@ void CXuiCtrlMinecraftSkinPreview::CycleNextAnimation()
 
 void CXuiCtrlMinecraftSkinPreview::CyclePreviousAnimation()
 {
-	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation - 1);
-	if(m_currentAnimation < e_SkinPreviewAnimation_Walking) m_currentAnimation = (ESkinPreviewAnimations)(e_SkinPreviewAnimation_Count - 1);
+	m_currentAnimation = static_cast<ESkinPreviewAnimations>(m_currentAnimation - 1);
+	if(m_currentAnimation < e_SkinPreviewAnimation_Walking) m_currentAnimation = static_cast<ESkinPreviewAnimations>(e_SkinPreviewAnimation_Count - 1);
 
 	m_swingTime = 0.0f;
 }
@@ -241,7 +241,7 @@ HRESULT CXuiCtrlMinecraftSkinPreview::OnRender(XUIMessageRender *pRenderData, BO
 	Lighting::turnOn();
 	//glRotatef(-45 - 90, 0, 1, 0);
 
-	glRotatef(-(float)m_xRot, 1, 0, 0);
+	glRotatef(-static_cast<float>(m_xRot), 1, 0, 0);
 
 	// 4J Stu - Turning on hideGui while we do this stops the name rendering in split-screen
 	bool wasHidingGui = pMinecraft->options->hideGui;
@@ -249,7 +249,7 @@ HRESULT CXuiCtrlMinecraftSkinPreview::OnRender(XUIMessageRender *pRenderData, BO
 
 	//EntityRenderDispatcher::instance->render(pMinecraft->localplayers[0], 0, 0, 0, 0, 1);
 	EntityRenderer *renderer = EntityRenderDispatcher::instance->getRenderer(eTYPE_PLAYER);
-    if (renderer != NULL)
+    if (renderer != nullptr)
 	{
 		// 4J-PB - any additional parts to turn on for this player (skin dependent)
 		//vector<ModelPart *> *pAdditionalModelParts=mob->GetAdditionalModelParts();
@@ -294,12 +294,12 @@ void CXuiCtrlMinecraftSkinPreview::render(EntityRenderer *renderer, double x, do
     glPushMatrix();
     glDisable(GL_CULL_FACE);
 
-	HumanoidModel *model = (HumanoidModel *)renderer->getModel();
+	HumanoidModel *model = static_cast<HumanoidModel *>(renderer->getModel());
 
    //getAttackAnim(mob, a);
-    //if (armor != NULL) armor->attackTime = model->attackTime;
+    //if (armor != nullptr) armor->attackTime = model->attackTime;
     //model->riding = mob->isRiding();
-    //if (armor != NULL) armor->riding = model->riding;
+    //if (armor != nullptr) armor->riding = model->riding;
 
 	// 4J Stu - Remember to reset these values once the rendering is done if you add another one
 	model->attackTime = 0;
@@ -329,7 +329,7 @@ void CXuiCtrlMinecraftSkinPreview::render(EntityRenderer *renderer, double x, do
 				{
 					m_swingTime = 0;
 				}
-				model->attackTime = m_swingTime / (float) (Player::SWING_DURATION * 3);
+				model->attackTime = m_swingTime / static_cast<float>(Player::SWING_DURATION * 3);
 				break;
 			default:
 				break;
@@ -343,7 +343,7 @@ void CXuiCtrlMinecraftSkinPreview::render(EntityRenderer *renderer, double x, do
 
 	//setupPosition(mob, x, y, z);
 	// is equivalent to
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
     //float bob = getBob(mob, a);
 #ifdef SKIN_PREVIEW_BOB_ANIM
@@ -415,11 +415,11 @@ void CXuiCtrlMinecraftSkinPreview::render(EntityRenderer *renderer, double x, do
         double xa = sin(yr * PI / 180);
         double za = -cos(yr * PI / 180);
 
-        float flap = (float) yd * 10;
+        float flap = static_cast<float>(yd) * 10;
         if (flap < -6) flap = -6;
         if (flap > 32) flap = 32;
-        float lean = (float) (xd * xa + zd * za) * 100;
-        float lean2 = (float) (xd * za - zd * xa) * 100;
+        float lean = static_cast<float>(xd * xa + zd * za) * 100;
+        float lean2 = static_cast<float>(xd * za - zd * xa) * 100;
         if (lean < 0) lean = 0;
 
         //float pow = 1;//mob->oBob + (bob - mob->oBob) * a;

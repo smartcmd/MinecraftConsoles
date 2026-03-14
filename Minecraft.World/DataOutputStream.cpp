@@ -184,7 +184,7 @@ void DataOutputStream::writeChars(const wstring& str)
 //v - a boolean value to be written.
 void DataOutputStream::writeBoolean(bool b)
 {
-	stream->write( b ? (byte)1 : (byte)0 );
+	stream->write( b ? static_cast<byte>(1) : static_cast<byte>(0) );
 	// TODO 4J Stu - Error handling?
 	written += 1;
 }
@@ -199,7 +199,7 @@ void DataOutputStream::writeBoolean(bool b)
 //str - a string to be written.
 void DataOutputStream::writeUTF(const wstring& str)
 {
-	int strlen = (int)str.length();
+	int strlen = static_cast<int>(str.length());
 	int utflen = 0;
 	int c, count = 0;
 
@@ -227,15 +227,15 @@ void DataOutputStream::writeUTF(const wstring& str)
 
 	byteArray bytearr(utflen+2);
 
-	bytearr[count++] = (byte) ((utflen >> 8) & 0xFF);
-	bytearr[count++] = (byte) ((utflen >> 0) & 0xFF);
+	bytearr[count++] = static_cast<byte>((utflen >> 8) & 0xFF);
+	bytearr[count++] = static_cast<byte>((utflen >> 0) & 0xFF);
 
 	int i=0;
 	for (i=0; i<strlen; i++)
 	{
 		c = str.at(i);
 		if (!((c >= 0x0001) && (c <= 0x007F))) break;
-		bytearr[count++] = (byte) c;
+		bytearr[count++] = static_cast<byte>(c);
 	}
 
 	for (;i < strlen; i++)
@@ -243,19 +243,19 @@ void DataOutputStream::writeUTF(const wstring& str)
 		c = str.at(i);
 		if ((c >= 0x0001) && (c <= 0x007F))
 		{
-			bytearr[count++] = (byte) c;
+			bytearr[count++] = static_cast<byte>(c);
 
 		}
 		else if (c > 0x07FF)
 		{
-			bytearr[count++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  6) & 0x3F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+			bytearr[count++] = static_cast<byte>(0xE0 | ((c >> 12) & 0x0F));
+			bytearr[count++] = static_cast<byte>(0x80 | ((c >> 6) & 0x3F));
+			bytearr[count++] = static_cast<byte>(0x80 | ((c >> 0) & 0x3F));
 		}
 		else
 		{
-			bytearr[count++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+			bytearr[count++] = static_cast<byte>(0xC0 | ((c >> 6) & 0x1F));
+			bytearr[count++] = static_cast<byte>(0x80 | ((c >> 0) & 0x3F));
 		}
 	}
 	write(bytearr, 0, utflen+2);

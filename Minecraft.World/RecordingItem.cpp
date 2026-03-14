@@ -30,7 +30,7 @@ bool RecordingItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Play
 		{
 			if (level->isClientSide) return true;
 
-			((JukeboxTile *) Tile::jukebox)->setRecord(level, x, y, z, itemInstance);
+			static_cast<JukeboxTile *>(Tile::jukebox)->setRecord(level, x, y, z, itemInstance);
 			level->levelEvent(nullptr, LevelEvent::SOUND_PLAY_RECORDING, x, y, z, id);
 			itemInstance->count--;
 
@@ -73,6 +73,6 @@ RecordingItem *RecordingItem::getByName(const wstring &name)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }

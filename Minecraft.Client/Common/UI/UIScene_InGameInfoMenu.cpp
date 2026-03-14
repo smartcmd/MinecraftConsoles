@@ -23,7 +23,7 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL )
+		if( player != nullptr )
 		{
 			PlayerInfo *info = BuildPlayerInfo(player);
 
@@ -36,7 +36,7 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 
 	INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex( m_iPad );
 	m_isHostPlayer = false;
-	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
+	if(thisPlayer != nullptr) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
@@ -109,7 +109,7 @@ void UIScene_InGameInfoMenu::updateTooltips()
 		{
 			keyA = IDS_TOOLTIPS_SELECT;
 		}
-		else if( selectedPlayer != NULL)
+		else if( selectedPlayer != nullptr)
 		{
 			bool editingHost = selectedPlayer->IsHost();
 			if( (cheats && (m_isHostPlayer || !editingHost ) ) || (!trust && (m_isHostPlayer || !editingHost))
@@ -134,7 +134,7 @@ void UIScene_InGameInfoMenu::updateTooltips()
 	if(!m_buttonGameOptions.hasFocus())
 	{
 		// if the player is me, then view gamer profile
-		if(selectedPlayer != NULL && selectedPlayer->IsLocal() && selectedPlayer->GetUserIndex()==m_iPad)
+		if(selectedPlayer != nullptr && selectedPlayer->IsLocal() && selectedPlayer->GetUserIndex()==m_iPad)
 		{
 			ikeyY = IDS_TOOLTIPS_VIEW_GAMERPROFILE;
 		}
@@ -150,8 +150,6 @@ void UIScene_InGameInfoMenu::updateTooltips()
 void UIScene_InGameInfoMenu::handleDestroy()
 {
 	g_NetworkManager.UnRegisterPlayerChangedCallback(m_iPad, &UIScene_InGameInfoMenu::OnPlayerChanged, this);
-
-	m_parentLayer->removeComponent(eUIComponent_MenuBackground);
 }
 
 void UIScene_InGameInfoMenu::handleGainFocus(bool navBack)
@@ -172,7 +170,7 @@ void UIScene_InGameInfoMenu::handleReload()
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL )
+		if( player != nullptr )
 		{
 			PlayerInfo *info = BuildPlayerInfo(player);
 
@@ -183,7 +181,7 @@ void UIScene_InGameInfoMenu::handleReload()
 
 	INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex( m_iPad );
 	m_isHostPlayer = false;
-	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
+	if(thisPlayer != nullptr) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
@@ -209,7 +207,7 @@ void UIScene_InGameInfoMenu::tick()
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if(player != NULL)
+		if(player != nullptr)
 		{
 			PlayerInfo *info = BuildPlayerInfo(player);
 
@@ -283,7 +281,7 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 		if(pressed && m_playerList.hasFocus() && (m_playerList.getItemCount() > 0) && (m_playerList.getCurrentSelection() < m_players.size()) )
 		{
 			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId(m_players[m_playerList.getCurrentSelection()]->m_smallId);
-			if( player != NULL )
+			if( player != nullptr )
 			{
 				PlayerUID uid = player->GetUID();
 				if( uid != INVALID_XUID )
@@ -327,14 +325,14 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 
 void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 {
-	app.DebugPrintf("Pressed = %d, %d\n", (int)controlId, (int)childId);
-	switch((int)controlId)
+	app.DebugPrintf("Pressed = %d, %d\n", static_cast<int>(controlId), static_cast<int>(childId));
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GameOptions:
 		ui.NavigateToScene(m_iPad,eUIScene_InGameHostOptionsMenu);
 		break;
 	case eControl_GamePlayers:
-		int currentSelection = (int)childId;
+		int currentSelection = static_cast<int>(childId);
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId(m_players[currentSelection]->m_smallId);
 
 		Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -344,7 +342,7 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 		bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
 		bool trust = app.GetGameHostOption(eGameHostOption_TrustPlayers) != 0;
 
-		if( isOp && selectedPlayer != NULL)
+		if( isOp && selectedPlayer != nullptr)
 		{
 			bool editingHost = selectedPlayer->IsHost();
 			if( (cheats && (m_isHostPlayer || !editingHost ) ) || (!trust && (m_isHostPlayer || !editingHost))
@@ -377,10 +375,10 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_InGameInfoMenu::handleFocusChange(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GamePlayers:
-		m_playerList.updateChildFocus( (int) childId );
+		m_playerList.updateChildFocus( static_cast<int>(childId) );
 	};
 	updateTooltips();
 }
@@ -389,7 +387,7 @@ void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer
 {
 	app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Player \"%ls\" %s (smallId: %d)\n", pPlayer->GetOnlineName(), leaving ? "leaving" : "joining", pPlayer->GetSmallId());
 
-	UIScene_InGameInfoMenu *scene = (UIScene_InGameInfoMenu *)callbackParam;
+	UIScene_InGameInfoMenu *scene = static_cast<UIScene_InGameInfoMenu *>(callbackParam);
 	bool playerFound = false;
 	int foundIndex = 0;
 	for(int i = 0; i < scene->m_players.size(); ++i)
@@ -439,7 +437,7 @@ void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer
 
 int UIScene_InGameInfoMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
@@ -448,7 +446,7 @@ int UIScene_InGameInfoMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage:
 		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
 		if(localPlayer->connection)
 		{
-			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send(std::make_shared<KickPlayerPacket>(smallId));
 		}
 	}
 
@@ -473,7 +471,7 @@ UIScene_InGameInfoMenu::PlayerInfo *UIScene_InGameInfoMenu::BuildPlayerInfo(INet
 	}
 
 	int voiceStatus = 0;
-	if(player != NULL && player->HasVoice() )
+	if(player != nullptr && player->HasVoice() )
 	{
 		if( player->IsMutedByLocalUser(m_iPad) )
 		{

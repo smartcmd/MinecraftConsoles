@@ -170,9 +170,9 @@ int ArmorItem::getColor(shared_ptr<ItemInstance> item)
 	if (armorType != ArmorMaterial::CLOTH) return -1;
 
 	CompoundTag *tag = item->getTag();
-	if (tag == NULL) return Minecraft::GetInstance()->getColourTable()->getColor( DEFAULT_LEATHER_COLOR );
+	if (tag == nullptr) return Minecraft::GetInstance()->getColourTable()->getColor( DEFAULT_LEATHER_COLOR );
 	CompoundTag *display = tag->getCompound(L"display");
-	if (display == NULL) return Minecraft::GetInstance()->getColourTable()->getColor( DEFAULT_LEATHER_COLOR );
+	if (display == nullptr) return Minecraft::GetInstance()->getColourTable()->getColor( DEFAULT_LEATHER_COLOR );
 
 	if (display->contains(L"color"))
 	{
@@ -197,7 +197,7 @@ void ArmorItem::clearColor(shared_ptr<ItemInstance> item)
 {
 	if (armorType != ArmorMaterial::CLOTH) return;
 	CompoundTag *tag = item->getTag();
-	if (tag == NULL) return;
+	if (tag == nullptr) return;
 	CompoundTag *display = tag->getCompound(L"display");
 	if (display->contains(L"color")) display->remove(L"color");
 }
@@ -215,7 +215,7 @@ void ArmorItem::setColor(shared_ptr<ItemInstance> item, int color)
 
 	CompoundTag *tag = item->getTag();
 
-	if (tag == NULL)
+	if (tag == nullptr)
 	{
 		tag = new CompoundTag();
 		item->setTag(tag);
@@ -262,5 +262,5 @@ Icon *ArmorItem::getEmptyIcon(int slot)
 		return Item::boots_diamond->iconEmpty;
 	}
 
-	return NULL;
+	return nullptr;
 }

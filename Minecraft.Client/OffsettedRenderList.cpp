@@ -20,9 +20,9 @@ void OffsettedRenderList::init(int x, int y, int z, double xOff, double yOff, do
     this->y = y;
     this->z = z;
 
-    this->xOff = (float) xOff;
-    this->yOff = (float) yOff;
-    this->zOff = (float) zOff;
+    this->xOff = static_cast<float>(xOff);
+    this->yOff = static_cast<float>(yOff);
+    this->zOff = static_cast<float>(zOff);
 }
 
 bool OffsettedRenderList::isAt(int x, int y, int z)

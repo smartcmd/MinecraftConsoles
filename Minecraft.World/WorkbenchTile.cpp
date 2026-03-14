@@ -7,8 +7,8 @@
 
 WorkbenchTile::WorkbenchTile(int id) : Tile(id, Material::wood)
 {
-	iconTop = NULL;
-	iconFront = NULL;
+	iconTop = nullptr;
+	iconFront = nullptr;
 }
 
 Icon *WorkbenchTile::getTexture(int face, int data)

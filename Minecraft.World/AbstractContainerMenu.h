@@ -35,7 +35,7 @@ public:
 	static const int CONTAINER_ID_INVENTORY = 0;
 	static const int CONTAINER_ID_CREATIVE = -2;
 
-	vector<shared_ptr<ItemInstance> > lastSlots;
+	vector<shared_ptr<ItemInstance>> lastSlots;
 	vector<Slot *> slots;
 	int containerId;
 
@@ -95,7 +95,7 @@ public:
 	virtual bool stillValid(shared_ptr<Player> player) = 0;
 
 	// 4J Stu Added for UI
-	unsigned int getSize() { return (unsigned int)slots.size(); }
+	unsigned int getSize() { return static_cast<unsigned int>(slots.size()); }
 
 
 protected:

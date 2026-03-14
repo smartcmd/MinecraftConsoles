@@ -77,31 +77,32 @@ class SoundEngine : public ConsoleSoundEngine
 #endif
 public:
 	SoundEngine();
-	virtual void destroy();
-	virtual void play(int iSound, float x, float y, float z, float volume, float pitch);
-	virtual void playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay=true);
-	virtual void playUI(int iSound, float volume, float pitch);
-	virtual void playMusicTick();
-	virtual void updateMusicVolume(float fVal);
-	virtual void updateSystemMusicPlaying(bool isPlaying);
-	virtual void updateSoundEffectVolume(float fVal);
-	virtual void init(Options *);
-	virtual void tick(shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
-	virtual void add(const wstring& name, File *file);
-	virtual void addMusic(const wstring& name, File *file);
-	virtual void addStreaming(const wstring& name, File *file);
+    void destroy() override;
+    void play(int iSound, float x, float y, float z, float volume, float pitch) override;
+    void playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay=true) override;
+    void playUI(int iSound, float volume, float pitch) override;
+    void playMusicTick() override;
+    void updateMusicVolume(float fVal) override;
+    void updateSystemMusicPlaying(bool isPlaying) override;
+    void updateSoundEffectVolume(float fVal) override;
+    void init(Options *) override;
+    void tick(shared_ptr<Mob> *players, float a) override;	// 4J - updated to take array of local players rather than single one
+    void add(const wstring& name, File *file) override;
+    void addMusic(const wstring& name, File *file) override;
+    void addStreaming(const wstring& name, File *file) override;
 #ifndef __PS3__
 	static void setXACTEngine( IXACT3Engine *pXACT3Engine);
 	void CreateStreamingWavebank(const char *pchName, IXACT3WaveBank **ppStreamedWaveBank);
 	void CreateSoundbank(const char *pchName, IXACT3SoundBank **ppSoundBank);
 
 #endif // __PS3__
-	virtual char *ConvertSoundPathToName(const wstring& name, bool bConvertSpaces=false);
+    char *ConvertSoundPathToName(const wstring& name, bool bConvertSpaces=false) override;
 	bool isStreamingWavebankReady();		// 4J Added
 #ifdef _XBOX
 		bool isStreamingWavebankReady(IXACT3WaveBank *pWaveBank);
 #endif
-		int initAudioHardware(int iMinSpeakers)	{ return iMinSpeakers;}
+		int initAudioHardware(int iMinSpeakers) override
+        { return iMinSpeakers;}
 
 private:
 #ifndef __PS3__

@@ -22,7 +22,7 @@ bool WebTile::isSolidRender(bool isServerLevel)
 
 AABB *WebTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 

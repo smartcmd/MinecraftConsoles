@@ -54,7 +54,7 @@ int user_malloc_init(void)
 		return 1;
 	}
 
-	addr = NULL;
+	addr = nullptr;
 	//E Map direct memory to the process address space
 	res = sceKernelMapDirectMemory(&addr, s_heapLength, SCE_KERNEL_PROT_CPU_READ | SCE_KERNEL_PROT_CPU_WRITE, 0, s_memStart, s_memAlign);
 	if (res < 0) {
@@ -64,7 +64,7 @@ int user_malloc_init(void)
 
 	//E Generate mspace
 	s_mspace = sceLibcMspaceCreate("User Malloc", addr, s_heapLength, 0);
-	if (s_mspace == NULL) {
+	if (s_mspace == nullptr) {
 		//E Error handling
 		return 1;
 	}
@@ -77,7 +77,7 @@ int user_malloc_finalize(void)
 {
 	int res;
 
-	if (s_mspace != NULL) {
+	if (s_mspace != nullptr) {
 		//E Free mspace
 		//J mspace を解放する
 		res = sceLibcMspaceDestroy(s_mspace);

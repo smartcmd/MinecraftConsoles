@@ -169,7 +169,7 @@ class ZipFile;
 class ImageIO
 {
 public:
-	static BufferedImage *read(InputStream *in) { return NULL; }
+	static BufferedImage *read(InputStream *in) { return nullptr; }
 };
 
 class Keyboard

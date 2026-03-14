@@ -37,7 +37,7 @@ public:
 	virtual int GetLocalTMSFileIndex(WCHAR *wchTMSFile,bool bFilenameIncludesExtension,eFileExtensionType eEXT=eFileExtensionType_PNG);
 
 	// BANNED LEVEL LIST
-	virtual void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false) {}
+	virtual void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false) {}
 
 	// TMS++
  	void TMSPP_RetrieveFileList(int iPad,C4JStorage::eGlobalStorage eStorageFacility,eTMSAction NextAction);
@@ -58,7 +58,7 @@ public:
 	static void Callback_SaveGameIncomplete(void *pParam, C4JStorage::ESaveIncompleteType saveIncompleteType);
 	static int Callback_SaveGameIncompleteMessageBoxReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
 
-	C4JStringTable *GetStringTable()																									{ return NULL;}
+	C4JStringTable *GetStringTable()																									{ return nullptr;}
 
 	// original code
 	virtual void TemporaryCreateGameStart();

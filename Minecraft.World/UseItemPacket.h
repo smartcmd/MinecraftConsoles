@@ -31,6 +31,6 @@ public:
 	float getClickZ();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new UseItemPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<UseItemPacket>(); }
 	virtual int getId() { return 15; }
 };

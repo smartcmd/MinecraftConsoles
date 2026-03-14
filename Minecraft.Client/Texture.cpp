@@ -24,7 +24,7 @@ Texture::Texture(const wstring &name, int mode, int width, int height, int depth
 void Texture::_init(const wstring &name, int mode, int width, int height, int depth, int wrapMode, int format, int minFilter, int magFilter, bool mipMap)
 {
 #ifdef __PS3__
-	if(g_texBlitJobQueuePort == NULL)
+	if(g_texBlitJobQueuePort == nullptr)
 		g_texBlitJobQueuePort = new C4JSpursJobQueue::Port("C4JSpursJob_Texture_blit");
 #endif
 	this->name = name;
@@ -40,7 +40,7 @@ void Texture::_init(const wstring &name, int mode, int width, int height, int de
 	m_bInitialised = false;
 	for( int i = 0 ; i < 10; i++ )
 	{
-		data[i] = NULL;
+		data[i] = nullptr;
 	}
 
 	rect = new Rect2i(0, 0, width, height);
@@ -105,7 +105,7 @@ void Texture::_init(const wstring &name, int mode, int width, int height, int de
 void Texture::_init(const wstring &name, int mode, int width, int height, int depth, int wrapMode, int format, int minFilter, int magFilter, BufferedImage *image, bool mipMap)
 {
 	_init(name, mode, width, height, depth, wrapMode, format, minFilter, magFilter, mipMap);
-	if (image == NULL)
+	if (image == nullptr)
 	{
 		if (width == -1 || height == -1)
 		{
@@ -195,7 +195,7 @@ Texture::~Texture()
 	
 	for(int i  = 0; i < 10; i++ )
 	{
-		if(data[i] != NULL) delete data[i];
+		if(data[i] != nullptr) delete data[i];
 	}
 
 	if(glId >= 0)
@@ -225,10 +225,10 @@ void Texture::fill(const Rect2i *rect, int color)
 		int line = y * width * 4;
 		for (int x = myRect->getX(); x < (myRect->getX() + myRect->getWidth()); x++)
 		{
-			data[0]->put(line + x * 4 + 0, (BYTE)((color >> 24) & 0x000000ff));
-			data[0]->put(line + x * 4 + 1, (BYTE)((color >> 16) & 0x000000ff));
-			data[0]->put(line + x * 4 + 2, (BYTE)((color >>  8) & 0x000000ff));
-			data[0]->put(line + x * 4 + 3, (BYTE)((color >>  0) & 0x000000ff));
+			data[0]->put(line + x * 4 + 0, static_cast<BYTE>((color >> 24) & 0x000000ff));
+			data[0]->put(line + x * 4 + 1, static_cast<BYTE>((color >> 16) & 0x000000ff));
+			data[0]->put(line + x * 4 + 2, static_cast<BYTE>((color >> 8) & 0x000000ff));
+			data[0]->put(line + x * 4 + 3, static_cast<BYTE>((color >> 0) & 0x000000ff));
 		}
 	}
 	delete myRect;
@@ -258,7 +258,7 @@ void Texture::writeAsBMP(const wstring &name)
 		outFile.delete();
 	}
 
-	DataOutputStream *outStream = NULL;
+	DataOutputStream *outStream = nullptr;
 	//try {
 	outStream = new DataOutputStream(new FileOutputStream(outFile));
 	//} catch (IOException e) {
@@ -384,7 +384,7 @@ void Texture::blit(int x, int y, Texture *source, bool rotated)
 	{
 		ByteBuffer *srcBuffer = source->getData(level);
 
-		if(srcBuffer == NULL) break;
+		if(srcBuffer == nullptr) break;
 
 		int yy = y >> level;
 		int xx = x >> level;
@@ -530,10 +530,10 @@ void Texture::transferFromBuffer(intArray buffer)
 			{
 				int texel = column + x * 4;
 				data[0]->position(0);
-				data[0]->put(texel + byteRemap[0], (byte)((buffer[texel >> 2] >> 24) & 0xff));
-				data[0]->put(texel + byteRemap[1], (byte)((buffer[texel >> 2] >> 16) & 0xff));
-				data[0]->put(texel + byteRemap[2], (byte)((buffer[texel >> 2] >>  8) & 0xff));
-				data[0]->put(texel + byteRemap[3], (byte)((buffer[texel >> 2] >>  0) & 0xff));
+				data[0]->put(texel + byteRemap[0], static_cast<byte>((buffer[texel >> 2] >> 24) & 0xff));
+				data[0]->put(texel + byteRemap[1], static_cast<byte>((buffer[texel >> 2] >> 16) & 0xff));
+				data[0]->put(texel + byteRemap[2], static_cast<byte>((buffer[texel >> 2] >> 8) & 0xff));
+				data[0]->put(texel + byteRemap[3], static_cast<byte>((buffer[texel >> 2] >> 0) & 0xff));
 			}
 		}
 	}
@@ -589,19 +589,19 @@ void Texture::transferFromImage(BufferedImage *image)
 
 			// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-			tempBytes[byteIndex + byteRemap[0]] = (byte)((tempPixels[intIndex] >> 24) & 0xff);
-			tempBytes[byteIndex + byteRemap[1]] = (byte)((tempPixels[intIndex] >> 16) & 0xff);
-			tempBytes[byteIndex + byteRemap[2]] = (byte)((tempPixels[intIndex] >>  8) & 0xff);
-			tempBytes[byteIndex + byteRemap[3]] = (byte)((tempPixels[intIndex] >>  0) & 0xff);
+			tempBytes[byteIndex + byteRemap[0]] = static_cast<byte>((tempPixels[intIndex] >> 24) & 0xff);
+			tempBytes[byteIndex + byteRemap[1]] = static_cast<byte>((tempPixels[intIndex] >> 16) & 0xff);
+			tempBytes[byteIndex + byteRemap[2]] = static_cast<byte>((tempPixels[intIndex] >> 8) & 0xff);
+			tempBytes[byteIndex + byteRemap[3]] = static_cast<byte>((tempPixels[intIndex] >> 0) & 0xff);
 		}
 	}
 
 	for(int i  = 0; i < 10; i++ )
 	{
-		if(data[i] != NULL)
+		if(data[i] != nullptr)
 		{
 			delete data[i];
-			data[i] = NULL;
+			data[i] = nullptr;
 		}
 	}
 
@@ -618,7 +618,7 @@ void Texture::transferFromImage(BufferedImage *image)
 
 	delete [] tempBytes.data;
 
-	if(mipmapped || image->getData(1) != NULL)
+	if(mipmapped || image->getData(1) != nullptr)
 	{
 		mipmapped = true;
 		for(unsigned int level = 1; level < MAX_MIP_LEVELS; ++level)
@@ -641,10 +641,10 @@ void Texture::transferFromImage(BufferedImage *image)
 
 						// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-						tempBytes[byteIndex + byteRemap[0]] = (byte)((tempData[intIndex] >> 24) & 0xff);
-						tempBytes[byteIndex + byteRemap[1]] = (byte)((tempData[intIndex] >> 16) & 0xff);
-						tempBytes[byteIndex + byteRemap[2]] = (byte)((tempData[intIndex] >>  8) & 0xff);
-						tempBytes[byteIndex + byteRemap[3]] = (byte)((tempData[intIndex] >>  0) & 0xff);
+						tempBytes[byteIndex + byteRemap[0]] = static_cast<byte>((tempData[intIndex] >> 24) & 0xff);
+						tempBytes[byteIndex + byteRemap[1]] = static_cast<byte>((tempData[intIndex] >> 16) & 0xff);
+						tempBytes[byteIndex + byteRemap[2]] = static_cast<byte>((tempData[intIndex] >> 8) & 0xff);
+						tempBytes[byteIndex + byteRemap[3]] = static_cast<byte>((tempData[intIndex] >> 0) & 0xff);
 					}
 				}
 			}
@@ -676,10 +676,10 @@ void Texture::transferFromImage(BufferedImage *image)
 
 						// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-						tempBytes[byteIndex + byteRemap[0]] = (byte)((col >> 24) & 0xff);
-						tempBytes[byteIndex + byteRemap[1]] = (byte)((col >> 16) & 0xff);
-						tempBytes[byteIndex + byteRemap[2]] = (byte)((col >>  8) & 0xff);
-						tempBytes[byteIndex + byteRemap[3]] = (byte)((col >>  0) & 0xff);
+						tempBytes[byteIndex + byteRemap[0]] = static_cast<byte>((col >> 24) & 0xff);
+						tempBytes[byteIndex + byteRemap[1]] = static_cast<byte>((col >> 16) & 0xff);
+						tempBytes[byteIndex + byteRemap[2]] = static_cast<byte>((col >> 8) & 0xff);
+						tempBytes[byteIndex + byteRemap[3]] = static_cast<byte>((col >> 0) & 0xff);
 					}
 			}
 
@@ -713,8 +713,8 @@ void Texture::transferFromImage(BufferedImage *image)
 // 4J Kept from older versions for where we create mip-maps for levels that do not have pre-made graphics
 int Texture::crispBlend(int c0, int c1)
 {
-	int a0 = (int) (((c0 & 0xff000000) >> 24)) & 0xff;
-	int a1 = (int) (((c1 & 0xff000000) >> 24)) & 0xff;
+	int a0 = static_cast<int>(((c0 & 0xff000000) >> 24)) & 0xff;
+	int a1 = static_cast<int>(((c1 & 0xff000000) >> 24)) & 0xff;
 
 	int a = 255;
 	if (a0 + a1 < 255)
@@ -807,7 +807,7 @@ void Texture::updateOnGPU()
 	{
 		for (int level = 1; level < m_iMipLevels; level++)
 		{
-			if(data[level] == NULL) break;
+			if(data[level] == nullptr) break;
 		
 			data[level]->flip();
 		}

@@ -45,7 +45,7 @@ void UIControl_LeaderboardList::ReInit()
 void UIControl_LeaderboardList::clearList()
 {
 	IggyDataValue result;
-	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath(), m_funcResetLeaderboard , 0 , NULL );
+	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath(), m_funcResetLeaderboard , 0 , nullptr );
 }
 
 void UIControl_LeaderboardList::setupTitles(const wstring &rank, const wstring &gamertag)

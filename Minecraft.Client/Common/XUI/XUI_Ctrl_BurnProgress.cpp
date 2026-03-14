@@ -10,9 +10,9 @@ int CXuiCtrlBurnProgress::GetValue()
 	void* pvUserData;
 	this->GetUserData( &pvUserData );
 
-	if( pvUserData != NULL )
+	if( pvUserData != nullptr )
 	{
-		FurnaceTileEntity *pFurnaceTileEntity = (FurnaceTileEntity *)pvUserData;
+		FurnaceTileEntity *pFurnaceTileEntity = static_cast<FurnaceTileEntity *>(pvUserData);
 
 		// TODO This param is a magic number in Java but we should really define it somewhere with a name
 		// I think it is the number of states of the progress display (ie the max value)

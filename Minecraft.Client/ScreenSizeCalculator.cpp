@@ -21,10 +21,10 @@ ScreenSizeCalculator::ScreenSizeCalculator(Options *options, int width, int heig
 	{
 		scale = forceScale;
 	}
-    rawWidth = w / (double) scale;
-    rawHeight = h / (double) scale;
-    w = (int) ceil(rawWidth);
-    h = (int) ceil(rawHeight);
+    rawWidth = w / static_cast<double>(scale);
+    rawHeight = h / static_cast<double>(scale);
+    w = static_cast<int>(ceil(rawWidth));
+    h = static_cast<int>(ceil(rawHeight));
 }
 
 int ScreenSizeCalculator::getWidth()

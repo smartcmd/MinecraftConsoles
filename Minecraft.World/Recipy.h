@@ -49,7 +49,7 @@ public:
 	virtual const int getGroup()	 = 0;		
 
 	// 4J-PB
-	virtual bool requires(int iRecipe) = 0;
-	virtual void requires(INGREDIENTS_REQUIRED *pIngReq) = 0;
+	virtual bool reqs(int iRecipe) = 0;
+	virtual void reqs(INGREDIENTS_REQUIRED *pIngReq) = 0;
 };
 

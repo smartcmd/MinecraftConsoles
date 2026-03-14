@@ -43,7 +43,7 @@ Skeleton::Skeleton(Level *level) : Monster( level )
 	targetSelector.addGoal(1, new HurtByTargetGoal(this, false));
 	targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, typeid(Player), 0, true));
 
-	if (level != NULL && !level->isClientSide) reassessWeaponGoal();
+	if (level != nullptr && !level->isClientSide) reassessWeaponGoal();
 }
 
 Skeleton::~Skeleton()
@@ -63,7 +63,7 @@ void Skeleton::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) TYPE_DEFAULT);
+	entityData->define(DATA_TYPE_ID, static_cast<byte>(TYPE_DEFAULT));
 }
 
 bool Skeleton::useNewAi()
@@ -114,12 +114,12 @@ void Skeleton::aiStep()
 	if (level->isDay() && !level->isClientSide)
 	{
 		float br = getBrightness(1);
-		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)))
+		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), static_cast<int>(floor(y + 0.5)), Mth::floor(z)))
 		{
 			bool burn = true;
 
 			shared_ptr<ItemInstance> helmet = getCarried(SLOT_HELM);
-			if (helmet != NULL)
+			if (helmet != nullptr)
 			{
 				if (helmet->isDamageableItem())
 				{
@@ -155,7 +155,7 @@ void Skeleton::rideTick()
 {
 	Monster::rideTick();
 
-	if ( riding != NULL && riding->instanceof(eTYPE_PATHFINDER_MOB) )
+	if ( riding != nullptr && riding->instanceof(eTYPE_PATHFINDER_MOB) )
 	{
 		yBodyRot = dynamic_pointer_cast<PathfinderMob>(riding)->yBodyRot;
 	}
@@ -166,7 +166,7 @@ void Skeleton::die(DamageSource *source)
 {
 	Monster::die(source);
 	
-	if ( source->getDirectEntity() != NULL && source->getDirectEntity()->instanceof(eTYPE_ARROW) && source->getEntity() != NULL && source->getEntity()->instanceof(eTYPE_PLAYER) )
+	if ( source->getDirectEntity() != nullptr && source->getDirectEntity()->instanceof(eTYPE_ARROW) && source->getEntity() != nullptr && source->getEntity()->instanceof(eTYPE_PLAYER) )
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>( source->getEntity() );
 
@@ -217,7 +217,7 @@ void Skeleton::dropRareDeathLoot(int rareLootLevel)
 {
 	if (getSkeletonType() == TYPE_WITHER)
 	{
-		spawnAtLocation( shared_ptr<ItemInstance>( new ItemInstance(Item::skull_Id, 1, SkullTileEntity::TYPE_WITHER) ), 0);
+		spawnAtLocation(std::make_shared<ItemInstance>(Item::skull_Id, 1, SkullTileEntity::TYPE_WITHER), 0);
 	}
 }
 
@@ -225,19 +225,19 @@ void Skeleton::populateDefaultEquipmentSlots()
 {
 	Monster::populateDefaultEquipmentSlots();
 
-	setEquippedSlot(SLOT_WEAPON, shared_ptr<ItemInstance>( new ItemInstance(Item::bow)));
+	setEquippedSlot(SLOT_WEAPON, std::make_shared<ItemInstance>(Item::bow));
 }
 
 MobGroupData *Skeleton::finalizeMobSpawn(MobGroupData *groupData, int extraData /*= 0*/) // 4J Added extraData param
 {
 	groupData = Monster::finalizeMobSpawn(groupData);
 
-	if ( dynamic_cast<HellDimension *>(level->dimension) != NULL && getRandom()->nextInt(5) > 0)
+	if ( dynamic_cast<HellDimension *>(level->dimension) != nullptr && getRandom()->nextInt(5) > 0)
 	{
 		goalSelector.addGoal(4, meleeGoal, false);
 
 		setSkeletonType(TYPE_WITHER);
-		setEquippedSlot(SLOT_WEAPON, shared_ptr<ItemInstance>( new ItemInstance(Item::sword_stone)));
+		setEquippedSlot(SLOT_WEAPON, std::make_shared<ItemInstance>(Item::sword_stone));
 		getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(4);
 	}
 	else
@@ -250,12 +250,12 @@ MobGroupData *Skeleton::finalizeMobSpawn(MobGroupData *groupData, int extraData 
 
 	setCanPickUpLoot(random->nextFloat() < MAX_PICKUP_LOOT_CHANCE * level->getDifficulty(x, y, z));
 
-	if (getCarried(SLOT_HELM) == NULL)
+	if (getCarried(SLOT_HELM) == nullptr)
 	{
 		if (Calendar::GetMonth() + 1 == 10 && Calendar::GetDayOfMonth() == 31 && random->nextFloat() < 0.25f)
 		{
 			// Halloween! OooOOo! 25% of all skeletons/zombies can wear pumpkins on their heads.
-			setEquippedSlot(SLOT_HELM, shared_ptr<ItemInstance>( new ItemInstance(random->nextFloat() < 0.1f ? Tile::litPumpkin : Tile::pumpkin)));
+			setEquippedSlot(SLOT_HELM, std::make_shared<ItemInstance>(random->nextFloat() < 0.1f ? Tile::litPumpkin : Tile::pumpkin));
 			dropChances[SLOT_HELM] = 0;
 		}
 	}
@@ -269,7 +269,7 @@ void Skeleton::reassessWeaponGoal()
 
 	shared_ptr<ItemInstance> carried = getCarriedItem();
 
-	if (carried != NULL && carried->id == Item::bow_Id)
+	if (carried != nullptr && carried->id == Item::bow_Id)
 	{
 		goalSelector.addGoal(4, bowGoal, false);
 	}
@@ -281,7 +281,7 @@ void Skeleton::reassessWeaponGoal()
 
 void Skeleton::performRangedAttack(shared_ptr<LivingEntity> target, float power)
 {
-	shared_ptr<Arrow> arrow = shared_ptr<Arrow>( new Arrow(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), target, 1.60f, 14 - (level->difficulty * 4)) );
+	shared_ptr<Arrow> arrow = std::make_shared<Arrow>(level, dynamic_pointer_cast<LivingEntity>(shared_from_this()), target, 1.60f, 14 - (level->difficulty * 4));
 	int damageBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowBonus->id, getCarriedItem());
 	int knockbackBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowKnockback->id, getCarriedItem());
 
@@ -289,7 +289,7 @@ void Skeleton::performRangedAttack(shared_ptr<LivingEntity> target, float power)
 
 	if (damageBonus > 0)
 	{
-		arrow->setBaseDamage(arrow->getBaseDamage() + (double) damageBonus * .5 + .5);
+		arrow->setBaseDamage(arrow->getBaseDamage() + static_cast<double>(damageBonus) * .5 + .5);
 	}
 	if (knockbackBonus > 0)
 	{
@@ -311,7 +311,7 @@ int Skeleton::getSkeletonType()
 
 void Skeleton::setSkeletonType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, static_cast<byte>(type));
 
 	fireImmune = type == TYPE_WITHER;
 	if (type == TYPE_WITHER)
@@ -340,7 +340,7 @@ void Skeleton::readAdditionalSaveData(CompoundTag *tag)
 void Skeleton::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	Monster::addAdditonalSaveData(entityTag);
-	entityTag->putByte(L"SkeletonType", (byte) getSkeletonType());
+	entityTag->putByte(L"SkeletonType", static_cast<byte>(getSkeletonType()));
 }
 
 void Skeleton::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)

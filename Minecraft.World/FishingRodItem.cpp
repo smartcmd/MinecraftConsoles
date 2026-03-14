@@ -17,7 +17,7 @@ FishingRodItem::FishingRodItem(int id) : Item(id)
 {
 	setMaxDamage(64);
 	setMaxStackSize(1);
-	emptyIcon = NULL;
+	emptyIcon = nullptr;
 }
 
 bool FishingRodItem::isHandEquipped() 
@@ -32,7 +32,7 @@ bool FishingRodItem::isMirroredArt()
 
 shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player) 
 {
-	if (player->fishing != NULL) 
+	if (player->fishing != nullptr) 
 	{
 		int dmg = player->fishing->retrieve();
 		instance->hurtAndBreak(dmg, player);
@@ -44,7 +44,7 @@ shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, 
 		if (!level->isClientSide) 
 		{
 			// 4J Stu - Move the player->fishing out of the ctor as we cannot reference 'this'
-			shared_ptr<FishingHook> hook = shared_ptr<FishingHook>( new FishingHook(level, player) );
+			shared_ptr<FishingHook> hook = std::make_shared<FishingHook>(level, player);
 			player->fishing = hook;
 			level->addEntity( shared_ptr<FishingHook>( hook ) );
 		}

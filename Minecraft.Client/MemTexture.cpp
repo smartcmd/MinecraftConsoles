@@ -15,7 +15,7 @@ MemTexture::MemTexture(const wstring& _url, PBYTE pbData,DWORD dwBytes, MemTextu
 	//loadedImage=Textures::getTexture()
 	// 4J - remember to add deletes in here for any created BufferedImages when implemented
 	loadedImage = new BufferedImage(pbData,dwBytes);
-	if(processor==NULL)
+	if(processor==nullptr)
 	{
 
 	}

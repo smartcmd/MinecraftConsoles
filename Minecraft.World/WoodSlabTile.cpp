@@ -33,7 +33,7 @@ int WoodSlabTile::getResource(int data, Random *random, int playerBonusLevel)
 
 shared_ptr<ItemInstance> WoodSlabTile::getSilkTouchItemInstance(int data)
 {
-	return shared_ptr<ItemInstance>(new ItemInstance(Tile::woodSlabHalf, 2, data & TYPE_MASK));
+	return std::make_shared<ItemInstance>(Tile::woodSlabHalf, 2, data & TYPE_MASK);
 }
 
 int WoodSlabTile::getAuxName(int auxValue)

@@ -18,7 +18,7 @@ DyePowderItem::DyePowderItem(int id) : Item( id )
 {
 	setStackedByData(true);
 	setMaxDamage(0);
-	icons = NULL;
+	icons = nullptr;
 }
 
 const unsigned int DyePowderItem::COLOR_DESCS[] = 
@@ -177,7 +177,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{	
 			if (!level->isClientSide) 
 			{
-				if (level->random->nextFloat() < 0.45) ((Sapling *) Tile::sapling)->advanceTree(level, x, y, z, level->random);
+				if (level->random->nextFloat() < 0.45) static_cast<Sapling *>(Tile::sapling)->advanceTree(level, x, y, z, level->random);
 				itemInstance->count--;
 			}
 		}
@@ -189,7 +189,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide)
 			{
-				if (level->random->nextFloat() < 0.4) ((Mushroom *) Tile::tiles[tile])->growTree(level, x, y, z, level->random);
+				if (level->random->nextFloat() < 0.4) static_cast<Mushroom *>(Tile::tiles[tile])->growTree(level, x, y, z, level->random);
 				itemInstance->count--;
 			}
 		}
@@ -202,7 +202,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide)
 			{
-				((StemTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<StemTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}
@@ -215,7 +215,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide) 
 			{
-				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<CropTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}
@@ -228,7 +228,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{	
 			if (!level->isClientSide) 
 			{
-				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<CropTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}
@@ -306,9 +306,9 @@ void DyePowderItem::addGrowthParticles(Level *level, int x, int y, int z, int co
 {
     int id = level->getTile(x, y, z);
     if (count == 0) count = 15;
-    Tile *tile = id > 0 && id < Tile::TILE_NUM_COUNT ? Tile::tiles[id] : NULL;
+    Tile *tile = id > 0 && id < Tile::TILE_NUM_COUNT ? Tile::tiles[id] : nullptr;
 
-    if (tile == NULL) return;
+    if (tile == nullptr) return;
     tile->updateShape(level, x, y, z);
 
     for (int i = 0; i < count; i++)
@@ -322,7 +322,7 @@ void DyePowderItem::addGrowthParticles(Level *level, int x, int y, int z, int co
 
 bool DyePowderItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, shared_ptr<LivingEntity> mob) 
 {
-	if (dynamic_pointer_cast<Sheep>( mob ) != NULL) 
+	if (dynamic_pointer_cast<Sheep>( mob ) != nullptr) 
 	{
 		shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(mob);
 		// convert to tile-based color value (0 is white instead of black)

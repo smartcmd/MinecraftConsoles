@@ -74,7 +74,7 @@ Icon_SPU *ThinFenceTile_SPU::getEdgeTexture()
 #ifndef SN_TARGET_PS3_SPU
 	assert(0);
 #endif
-	return NULL;
+	return nullptr;
 }
 
 bool ThinFenceTile_SPU::attachsTo(int tile)

@@ -12,7 +12,7 @@ const unsigned int SmoothStoneBrickTile::SMOOTH_STONE_BRICK_NAMES[SMOOTH_STONE_B
 
 SmoothStoneBrickTile::SmoothStoneBrickTile(int id) : Tile(id, Material::stone)
 {
-	icons = NULL;
+	icons = nullptr;
 }
 
 Icon *SmoothStoneBrickTile::getTexture(int face, int data)

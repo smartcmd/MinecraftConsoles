@@ -55,9 +55,9 @@ void WitherSkull::onHit(HitResult *res)
 {
 	if (!level->isClientSide)
 	{
-		if (res->entity != NULL)
+		if (res->entity != nullptr)
 		{
-			if (owner != NULL)
+			if (owner != nullptr)
 			{
 				DamageSource *damageSource = DamageSource::mobAttack(owner);
 				if (res->entity->hurt(damageSource, 8))
@@ -111,7 +111,7 @@ bool WitherSkull::hurt(DamageSource *source, float damage)
 
 void WitherSkull::defineSynchedData()
 {
-	entityData->define(DATA_DANGEROUS, (byte) 0);
+	entityData->define(DATA_DANGEROUS, static_cast<byte>(0));
 }
 
 bool WitherSkull::isDangerous()
@@ -121,7 +121,7 @@ bool WitherSkull::isDangerous()
 
 void WitherSkull::setDangerous(bool value)
 {
-	entityData->set(DATA_DANGEROUS, value ? (byte) 1 : (byte) 0);
+	entityData->set(DATA_DANGEROUS, value ? static_cast<byte>(1) : static_cast<byte>(0));
 }
 
 bool WitherSkull::shouldBurn()

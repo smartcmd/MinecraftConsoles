@@ -34,7 +34,7 @@ public:
 		m_texture = textureNameArray(textures.length);
 		for(unsigned int i = 0; i < textures.length; ++i)
 		{
-			m_texture[i] = (_TEXTURE_NAME)textures[i];
+			m_texture[i] = static_cast<_TEXTURE_NAME>(textures[i]);
 		}
 		m_preloaded = true;
 	}

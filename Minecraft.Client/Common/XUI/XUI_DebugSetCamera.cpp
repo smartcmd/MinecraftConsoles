@@ -25,7 +25,7 @@ HRESULT CScene_DebugSetCamera::OnInit( XUIMessageInit *pInitData, BOOL &bHandled
 	currentPosition->player = playerNo;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if (pMinecraft != NULL)
+	if (pMinecraft != nullptr)
 	{
 		Vec3 *vec = pMinecraft->localplayers[playerNo]->getPos(1.0);
 
@@ -43,12 +43,12 @@ HRESULT CScene_DebugSetCamera::OnInit( XUIMessageInit *pInitData, BOOL &bHandled
 	m_yRot.SetKeyboardType(C_4JInput::EKeyboardMode_Full);
 	m_elevation.SetKeyboardType(C_4JInput::EKeyboardMode_Full);
 
-	m_camX.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camX).c_str());
-	m_camY.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camY + 1.62).c_str());
-	m_camZ.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camZ).c_str());
+	m_camX.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camX).c_str()));
+	m_camY.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camY + 1.62).c_str()));
+	m_camZ.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camZ).c_str()));
 
-	m_yRot.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_yRot).c_str());
-	m_elevation.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_elev).c_str());
+	m_yRot.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_yRot).c_str()));
+	m_elevation.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_elev).c_str()));
 
 	//fpp = new FreezePlayerParam();
 	//fpp->player = playerNo;
@@ -94,7 +94,7 @@ HRESULT CScene_DebugSetCamera::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHa
 		NavigateBack();
 
 		//delete currentPosition;
-		//currentPosition = NULL;
+		//currentPosition = nullptr;
 
 		rfHandled = TRUE;
 		break;

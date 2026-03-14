@@ -16,23 +16,23 @@ MinecartModel::MinecartModel() : Model()
     int h = 16;
     int yOff = 4;
 
-    cubes[0]->addBox((float)(-w / 2), (float)(-h / 2), -1, w, h, 2, 0);
-    cubes[0]->setPos(0, (float)(0 + yOff), 0);
+    cubes[0]->addBox(static_cast<float>(-w / 2), static_cast<float>(-h / 2), -1, w, h, 2, 0);
+    cubes[0]->setPos(0, static_cast<float>(0 + yOff), 0);
 			
-    cubes[5]->addBox((float)(-w / 2 + 1), (float)(-h / 2 + 1), -1, w - 2, h - 2, 1, 0);
-    cubes[5]->setPos(0, (float)(0 + yOff), 0);
+    cubes[5]->addBox(static_cast<float>(-w / 2 + 1), static_cast<float>(-h / 2 + 1), -1, w - 2, h - 2, 1, 0);
+    cubes[5]->setPos(0, static_cast<float>(0 + yOff), 0);
 			
-    cubes[1]->addBox((float)(-w / 2 + 2), (float)(-d - 1), -1, w - 4, d, 2, 0);
-    cubes[1]->setPos((float)(-w / 2 + 1), (float)(0 + yOff), 0);
+    cubes[1]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
+    cubes[1]->setPos(static_cast<float>(-w / 2 + 1), static_cast<float>(0 + yOff), 0);
 			
-    cubes[2]->addBox((float)(-w / 2 + 2), (float)(-d - 1), -1, w - 4, d, 2, 0);
-    cubes[2]->setPos((float)(+w / 2 - 1), (float)(0 + yOff), 0);
+    cubes[2]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
+    cubes[2]->setPos(static_cast<float>(+w / 2 - 1), static_cast<float>(0 + yOff), 0);
 			
-    cubes[3]->addBox((float)(-w / 2 + 2), (float)(-d - 1), -1, w - 4, d, 2, 0);
-    cubes[3]->setPos(0, (float)(0 + yOff), (float)(-h / 2 + 1));
+    cubes[3]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
+    cubes[3]->setPos(0, static_cast<float>(0 + yOff), static_cast<float>(-h / 2 + 1));
 			
-    cubes[4]->addBox((float)(-w / 2 + 2), (float)(-d - 1), -1, w - 4, d, 2, 0);
-    cubes[4]->setPos(0, (float)(0 + yOff), (float)(+h / 2 - 1));
+    cubes[4]->addBox(static_cast<float>(-w / 2 + 2), static_cast<float>(-d - 1), -1, w - 4, d, 2, 0);
+    cubes[4]->setPos(0, static_cast<float>(0 + yOff), static_cast<float>(+h / 2 - 1));
 			
     cubes[0]->xRot = PI / 2;
     cubes[1]->yRot = PI / 2 * 3;
