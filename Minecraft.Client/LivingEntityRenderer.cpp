@@ -56,9 +56,9 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = modelCustom;
-	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = modelSlim;
-	else resModel = model;
+	if (player != nullptr && model != nullptr &&  player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
+	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
+	else resModel = modelCustom;
 
 	resModel->attackTime = getAttackAnim(mob, a);
 	if (armor != nullptr) armor->attackTime = resModel->attackTime;
@@ -253,9 +253,9 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
 	Model *resModel;
 
-	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = modelCustom;
-	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = modelSlim;
-	else resModel = model;
+	if (player != nullptr && model != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
+	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
+	else resModel = modelCustom;
 
 	bindTexture(mob);
 	if (!mob->isInvisible())
@@ -329,6 +329,12 @@ void LivingEntityRenderer::additionalRendering(shared_ptr<LivingEntity> mob, flo
 void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
+	Model *resModel;
+
+	if (player != nullptr && model != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
+	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
+	else resModel = modelCustom;
+
 	int arrowCount = mob->getArrowCount();
 
 	if (arrowCount > 0)
@@ -341,13 +347,7 @@ void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 			glPushMatrix();
 
 			ModelPart *modelPart;
-
-			if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18))
-				modelPart = modelCustom->getRandomModelPart(random);
-			else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19))
-				modelPart = modelSlim->getRandomModelPart(random);
-			else
-				modelPart = model->getRandomModelPart(random);
+			modelPart = resModel->getRandomModelPart(random);
 
 			Cube *cube = modelPart->cubes[random.nextInt(modelPart->cubes.size())];
 			modelPart->translateTo(1 / 16.0f);

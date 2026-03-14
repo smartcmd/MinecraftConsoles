@@ -167,9 +167,9 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
-	if ((mob != nullptr && modelCustom != nullptr && mob->getPlayerDefaultSkin() == 18) || mob->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
-	else if ((mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() >= 9) || mob->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
-	else resModel = humanoidModel;
+	if (mob != nullptr && humanoidModel != nullptr && mob->getCustomSkin() >= 0 && mob->getCustomSkin() <= 9) resModel = humanoidModel;
+	else if (mob != nullptr && humanoidModelSlim != nullptr && mob->getCustomSkin() >= 10 && mob->getCustomSkin() <= 17) resModel = humanoidModelSlim;
+	else resModel = humanoidModelCustom;
 
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
 
@@ -274,9 +274,9 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 	HumanoidModel *resModel;
 
-	if ((mob != nullptr && modelCustom != nullptr && mob->getPlayerDefaultSkin() == 18) || mob->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
-	else if ((mob != nullptr && modelSlim != nullptr && mob->getPlayerDefaultSkin() >= 9) || mob->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
-	else resModel = humanoidModel;
+	if (mob != nullptr && humanoidModel != nullptr && mob->getCustomSkin() >= 0 && mob->getCustomSkin() <= 9) resModel = humanoidModel;
+	else if (mob != nullptr && humanoidModelSlim != nullptr && mob->getCustomSkin() >= 10 && mob->getCustomSkin() <= 17) resModel = humanoidModelSlim;
+	else resModel = humanoidModelCustom;
 
     shared_ptr<ItemInstance> headGear = mob->inventory->getArmor(3);
     if (headGear != nullptr)
@@ -523,9 +523,9 @@ void PlayerRenderer::renderHand()
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player);
 	HumanoidModel *resModel;
 
-	if ((player != nullptr && modelCustom != nullptr && player->getPlayerDefaultSkin() == 18) || player->getAnimOverrideBitmask()&(1<<18)) resModel = humanoidModelCustom;
-	else if ((player != nullptr && modelSlim != nullptr && player->getPlayerDefaultSkin() >= 9) || player->getAnimOverrideBitmask()&(1<<19)) resModel = humanoidModelSlim;
-	else resModel = humanoidModel;
+	if (player != nullptr && humanoidModel != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = humanoidModel;
+	else if (player != nullptr && humanoidModelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = humanoidModelSlim;
+	else resModel = humanoidModelCustom;
 
 	float brightness = 1;
     glColor3f(brightness, brightness, brightness);

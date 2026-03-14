@@ -258,48 +258,14 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 	glDisable(GL_CULL_FACE);
 
 	HumanoidModel *model;
+	Textures *t = Minecraft::GetInstance()->textures;
 
-	switch (m_backupTexture)
-	{
-	case TN_MOB_ALEX:
+	if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 46 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 53)
 		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX1:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX2:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX3:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX4:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX5:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX6:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_ALEX7:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_DEVALEX:
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		break;
-	case TN_MOB_DEVSTEVE:
+	else if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 37 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 45)
+		model = static_cast<HumanoidModel *>(renderer->getModel());
+	else
 		model = static_cast<HumanoidModel *>(renderer->getModelCustom());
-		break;
-	default:
-		if (m_uiAnimOverrideBitmask&(1<<18))
-			model = static_cast<HumanoidModel *>(renderer->getModelCustom());
-		else if (m_uiAnimOverrideBitmask&(1<<19))
-			model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-		else
-			model = static_cast<HumanoidModel *>(renderer->getModel());
-		break;
-	}
 
 	//getAttackAnim(mob, a);
 	//if (armor != nullptr) armor->attackTime = model->attackTime;
