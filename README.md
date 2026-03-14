@@ -80,13 +80,13 @@ Minecraft.Client.exe -name Steve -fullscreen
 1. Install [Visual Studio 2022](https://aka.ms/vs/17/release/vs_community.exe) or [newer](https://visualstudio.microsoft.com/downloads/).
 2. Clone the repository.
 3. Open the project folder from Visual Studio.
-5. Set the build configuration to **Windows - Debug** (Release is also ok but missing some debug features), then build and run.
+4. Set the build configuration to **Windows - Debug** (Release is also ok but missing some debug features), then build and run.
 
 ### CMake (Windows x64)
 
 ```powershell
-cmake -B out/build --preset windows64
-cmake --build out/build --preset windows64-release --target Minecraft.Client
+cmake --preset windows64
+cmake --build --preset windows64-release --target Minecraft.Client
 ```
 
 For more information, see [COMPILE.md](COMPILE.md).

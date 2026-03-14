@@ -26,7 +26,7 @@ function(configure_msvc_target target)
     $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
     $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
     $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
-    $<$<COMPILE_LANGUAGE:C,CXX>:/GS->
+    $<$<COMPILE_LANGUAGE:C,CXX>:/GS>
     $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
     $<$<COMPILE_LANGUAGE:CXX>:/GR>
     $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/Od>
