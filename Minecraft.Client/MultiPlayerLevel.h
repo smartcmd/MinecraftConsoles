@@ -12,6 +12,7 @@ using namespace std;
 
 class MultiPlayerLevel : public Level
 {
+	friend class ClientConnection;
 private:
 	static const int TICKS_BEFORE_RESET = 20 * 4;
 

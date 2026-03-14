@@ -1222,6 +1222,30 @@ void LevelChunk::addEntity(shared_ptr<Entity> e)
 #endif
 }
 
+void LevelChunk::addRidingEntities(shared_ptr<Entity> rider, CompoundTag *riderTag)
+{
+#ifdef _LARGE_WORLDS #This shouldnt be called when we dont have large worlds enabled
+    CompoundTag *mountTag = riderTag;
+    shared_ptr<Entity> ridingEntity = rider;
+
+    while (mountTag != NULL && mountTag->contains(Entity::RIDING_TAG))
+    {
+        CompoundTag *nextMountTag = mountTag->getCompound(Entity::RIDING_TAG);
+        shared_ptr<Entity> mount = EntityIO::loadStatic(nextMountTag, level);
+        if (mount == NULL)
+        {
+            break;
+        }
+
+        mount->onLoadedFromSave();
+        addEntity(mount);
+        ridingEntity->ride(mount);
+
+        ridingEntity = mount;
+        mountTag = nextMountTag;
+    }
+#endif
+};
 
 void LevelChunk::removeEntity(shared_ptr<Entity> e)
 {
@@ -1431,6 +1455,7 @@ void LevelChunk::load()
 					{
 						ent->onLoadedFromSave();
 						addEntity(ent);
+						addRidingEntities(ent, teTag);
 					}
 				}
 			}
@@ -1628,18 +1653,18 @@ void LevelChunk::getEntities(shared_ptr<Entity> except, AABB *bb, vector<shared_
 
 		for (auto& e : *entities)
 		{
-			if ( e && e != except && e->bb->intersects(bb) && (selector == nullptr || selector->matches(e)))
+			if (e && e != except && e->bb->intersects(bb) && (selector == nullptr || selector->matches(e)))
 			{
 				es.push_back(e);
+
 				vector<shared_ptr<Entity> > *subs = e->getSubEntities();
 				if (subs != nullptr)
 				{
-					for (const auto& sub : *subs)
+					for (const auto& subEntity : *subs)
 					{
-						e = sub;
-						if ( e && e != except && e->bb->intersects(bb) && (selector == nullptr || selector->matches(e)))
+						if (subEntity && subEntity != except && subEntity->bb->intersects(bb) && (selector == nullptr || selector->matches(subEntity)))
 						{
-							es.push_back(e);
+							es.push_back(subEntity);
 						}
 					}
 				}

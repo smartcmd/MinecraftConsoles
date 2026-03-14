@@ -66,7 +66,7 @@ void ConsoleSaveFileOutputStream::write(byteArray b)
 
 	BOOL result = m_saveFile->writeFile(
 		m_file,
-		&b.data, // data buffer
+		b.data, // data buffer
 		b.length, // number of bytes to write
 		&numberOfBytesWritten // number of bytes written
 		);

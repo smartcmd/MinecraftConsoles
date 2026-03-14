@@ -150,8 +150,6 @@ void UIScene_InGameInfoMenu::updateTooltips()
 void UIScene_InGameInfoMenu::handleDestroy()
 {
 	g_NetworkManager.UnRegisterPlayerChangedCallback(m_iPad, &UIScene_InGameInfoMenu::OnPlayerChanged, this);
-
-	m_parentLayer->removeComponent(eUIComponent_MenuBackground);
 }
 
 void UIScene_InGameInfoMenu::handleGainFocus(bool navBack)

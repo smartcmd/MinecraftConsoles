@@ -12,6 +12,11 @@ bool RegionFileCache::useSplitSaves(ESavePlatform platform)
 	case SAVE_FILE_PLATFORM_XBONE:
 	case SAVE_FILE_PLATFORM_PS4:
 		return true;
+	case SAVE_FILE_PLATFORM_WIN64:
+	{
+		LevelGenerationOptions* lgo = app.getLevelGenerationOptions();
+		return (lgo != nullptr && lgo->isFromDLC());
+	}
 	default:
 		return false;
 	};

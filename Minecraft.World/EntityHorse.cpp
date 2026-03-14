@@ -515,6 +515,15 @@ bool EntityHorse::canSpawn()
 	return Animal::canSpawn();
 }
 
+bool EntityHorse::removeWhenFarAway()
+{
+	if (isTamed())          return false;
+	if (isSaddled())        return false;
+	if (isLeashed())        return false;
+	if (getArmorType() > 0) return false;
+	return Animal::removeWhenFarAway();
+}
+
 
 shared_ptr<EntityHorse> EntityHorse::getClosestMommy(shared_ptr<Entity> baby, double searchRadius)
 {

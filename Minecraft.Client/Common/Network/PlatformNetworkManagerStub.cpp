@@ -240,7 +240,7 @@ void CPlatformNetworkManagerStub::DoWork()
 				qnetPlayer->m_resolvedXuid = INVALID_XUID;
 				qnetPlayer->m_gamertag[0] = 0;
 				qnetPlayer->SetCustomDataValue(0);
-				if (IQNet::s_playerCount > 1)
+				while (IQNet::s_playerCount > 1 && IQNet::m_player[IQNet::s_playerCount - 1].GetCustomDataValue() == 0)
 					IQNet::s_playerCount--;
 			}
 			// NOTE: Do NOT call PushFreeSmallId here. The old PlayerConnection's
