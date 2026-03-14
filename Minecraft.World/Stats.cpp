@@ -8,7 +8,7 @@
 #include "ItemStat.h"
 #include "GeneralStat.h"
 #include "Stats.h"
-#include "..\Minecraft.Client\StatsCounter.h"
+#include "../Minecraft.Client/StatsCounter.h"
 
 const int Stats::BLOCKS_MINED_OFFSET = 0x1000000;
 const int Stats::ITEMS_COLLECTED_OFFSET = 0x1010000;

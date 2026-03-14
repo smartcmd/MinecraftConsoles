@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_set>
-#include "..\Minecraft.World\net.minecraft.network.h"
+#include "../Minecraft.World/net.minecraft.network.h"
 class Minecraft;
 class MultiPlayerLevel;
 class SavedDataStorage;

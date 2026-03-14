@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "Common\DLC\DLCGameRulesFile.h"
-#include "Common\DLC\DLCGameRulesHeader.h"
-#include "Common\DLC\DLCGameRules.h"
+#include "Common/DLC/DLCGameRulesFile.h"
+#include "Common/DLC/DLCGameRulesHeader.h"
+#include "Common/DLC/DLCGameRules.h"
 #include "DLCTexturePack.h"
-#include "Common\DLC\DLCColourTableFile.h"
-#include "Common\DLC\DLCUIDataFile.h"
-#include "Common\DLC\DLCTextureFile.h"
-#include "Common\DLC\DLCLocalisationFile.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "Common/DLC/DLCColourTableFile.h"
+#include "Common/DLC/DLCUIDataFile.h"
+#include "Common/DLC/DLCTextureFile.h"
+#include "Common/DLC/DLCLocalisationFile.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include "StringTable.h"
 #include "Common/UI/UI.h"
-#include "Common\DLC\DLCAudioFile.h"
+#include "Common/DLC/DLCAudioFile.h"
 
 #if defined _XBOX || defined _WINDOWS64
-#include "Xbox\XML\ATGXmlParser.h"
-#include "Xbox\XML\xmlFilesCallback.h"
+#include "Xbox/XML/ATGXmlParser.h"
+#include "Xbox/XML/xmlFilesCallback.h"
 #endif
 
 DLCTexturePack::DLCTexturePack(DWORD id, DLCPack *pack, TexturePack *fallback) : AbstractTexturePack(id, nullptr, pack->getName(), fallback)

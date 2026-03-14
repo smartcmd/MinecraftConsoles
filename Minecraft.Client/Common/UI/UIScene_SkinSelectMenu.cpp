@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_SkinSelectMenu.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #ifdef __ORBIS__
 #include <error_dialog.h>
 #elif defined __PSVITA__

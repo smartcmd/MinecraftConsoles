@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_DebugTips.h"
+#include "../media/xuiscene_debugtips.h"
 
 
 

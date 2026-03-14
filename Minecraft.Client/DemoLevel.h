@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
 
 class DemoLevel : public Level
 {

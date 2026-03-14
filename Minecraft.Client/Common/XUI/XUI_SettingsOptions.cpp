@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "..\XUI\XUI_SettingsOptions.h"
+#include "../XUI/XUI_SettingsOptions.h"
 
 int CScene_SettingsOptions::m_iDifficultySettingA[4]=
 {

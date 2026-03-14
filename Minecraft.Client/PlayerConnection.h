@@ -1,6 +1,6 @@
 #include "ConsoleInputSource.h"
-#include "..\Minecraft.World\PacketListener.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/PacketListener.h"
+#include "../Minecraft.World/JavaIntHash.h"
 
 class MinecraftServer;
 class Connection;

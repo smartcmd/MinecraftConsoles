@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GhastRenderer.h"
 #include "GhastModel.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
 
 ResourceLocation GhastRenderer::GHAST_LOCATION = ResourceLocation(TN_MOB_GHAST);
 ResourceLocation GhastRenderer::GHAST_SHOOTING_LOCATION = ResourceLocation(TN_MOB_GHAST_FIRE);

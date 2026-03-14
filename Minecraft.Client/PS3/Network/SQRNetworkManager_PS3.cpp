@@ -15,9 +15,9 @@
 #include "SonyVoiceChat.h"
 #include "Common/Network/Sony/SonyHttp.h"
 #endif
-#include "..\..\..\Minecraft.World\C4JThread.h"
-#include "..\PS3Extras\PS3Strings.h"
-#include "PS3\Network\SonyRemoteStorage_PS3.h"
+#include "../../../Minecraft.World/C4JThread.h"
+#include "../PS3Extras/PS3Strings.h"
+#include "PS3/Network/SonyRemoteStorage_PS3.h"
 
 int (* SQRNetworkManager_PS3::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = nullptr;
 void * SQRNetworkManager_PS3::s_SignInCompleteParam = nullptr;

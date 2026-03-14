@@ -1,21 +1,21 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
 
-#include "..\..\Minecraft.h"
-#include "..\..\ScreenSizeCalculator.h"
-#include "..\..\TileEntityRenderDispatcher.h"
-#include "..\..\EnchantTableRenderer.h"
-#include "..\..\Lighting.h"
-#include "..\..\LocalPlayer.h"
+#include "../../Minecraft.h"
+#include "../../ScreenSizeCalculator.h"
+#include "../../TileEntityRenderDispatcher.h"
+#include "../../EnchantTableRenderer.h"
+#include "../../Lighting.h"
+#include "../../LocalPlayer.h"
 
 #include "XUI_Scene_Enchant.h"
 
 #include "XUI_Ctrl_EnchantmentBook.h"
-#include "..\..\BookModel.h"
-#include "..\..\Options.h"
+#include "../../BookModel.h"
+#include "../../Options.h"
 
 //-----------------------------------------------------------------------------
 //  CXuiCtrlEnchantmentBook class

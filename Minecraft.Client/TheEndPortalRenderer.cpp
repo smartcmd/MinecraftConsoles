@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/Random.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
 #include "Tesselator.h"
 #include "TileEntityRenderDispatcher.h"
 #include "Camera.h"
-#include "..\Minecraft.World\FloatBuffer.h"
+#include "../Minecraft.World/FloatBuffer.h"
 #include "TheEndPortalRenderer.h"
 
 ResourceLocation TheEndPortalRenderer::END_SKY_LOCATION = ResourceLocation(TN_MISC_TUNNEL);

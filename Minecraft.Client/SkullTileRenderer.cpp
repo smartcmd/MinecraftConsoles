@@ -2,9 +2,9 @@
 #include "SkullTileRenderer.h"
 #include "SkeletonHeadModel.h"
 #include "PlayerRenderer.h"
-#include "..\Minecraft.World\SkullTileEntity.h"
-#include "..\Minecraft.World\net.minecraft.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/SkullTileEntity.h"
+#include "../Minecraft.World/net.minecraft.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
 
 SkullTileRenderer *SkullTileRenderer::instance = nullptr;
 

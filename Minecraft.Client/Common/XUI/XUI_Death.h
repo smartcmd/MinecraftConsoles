@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_Death.h"
+#include "../media/xuiscene_death.h"
 #include "XUI_CustomMessages.h"
 
 #define BUTTON_DEATH_RESPAWN		0

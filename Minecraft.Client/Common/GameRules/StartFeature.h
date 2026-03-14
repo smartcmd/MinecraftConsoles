@@ -2,7 +2,7 @@
 using namespace std;
 
 #include "GameRuleDefinition.h"
-#include "..\..\..\Minecraft.World\StructureFeature.h"
+#include "../../../Minecraft.World/StructureFeature.h"
 
 class StartFeature : public GameRuleDefinition
 {

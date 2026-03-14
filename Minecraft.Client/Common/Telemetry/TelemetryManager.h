@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Common\UI\UIEnums.h"
+#include "../../Common/UI/UIEnums.h"
 
 class CTelemetryManager
 {

@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\Font.h"
-#include "..\..\Lighting.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../Font.h"
+#include "../../Lighting.h"
+#include "../../MultiPlayerLocalPlayer.h"
 #include "XUI_Scene_Enchant.h"
 #include "XUI_Ctrl_EnchantButton.h"
 #include "XUI_Ctrl_EnchantmentButtonText.h"
-#include "..\..\Minecraft.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\TexturePack.h"
+#include "../../Minecraft.h"
+#include "../../TexturePackRepository.h"
+#include "../../TexturePack.h"
 
 #include <iostream>
 #include <string>

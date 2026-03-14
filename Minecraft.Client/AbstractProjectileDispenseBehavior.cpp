@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.core.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.core.h"
+#include "../Minecraft.World/net.minecraft.world.entity.projectile.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
 #include "AbstractProjectileDispenseBehavior.h"
 
 shared_ptr<ItemInstance> AbstractProjectileDispenseBehavior::execute(BlockSource *source, shared_ptr<ItemInstance> dispensed)

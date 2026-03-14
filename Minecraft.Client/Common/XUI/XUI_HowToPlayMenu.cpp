@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_HowToPlayMenu.h"
-#include "..\XUI\XUI_HelpHowToPlay.h"
+#include "../XUI/XUI_HowToPlayMenu.h"
+#include "../XUI/XUI_HelpHowToPlay.h"
 
 // strings for buttons in the list				  
 unsigned int CScene_HowToPlayMenu::m_uiHTPButtonNameA[]=

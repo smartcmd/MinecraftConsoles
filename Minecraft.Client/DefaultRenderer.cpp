@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DefaultRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
+#include "../Minecraft.World/net.minecraft.world.entity.h"
 
 void DefaultRenderer::render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a)
 {

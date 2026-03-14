@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DurangoLeaderboardManager.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 namespace WFC = Windows::Foundation::Collections;
 namespace CC = concurrency;

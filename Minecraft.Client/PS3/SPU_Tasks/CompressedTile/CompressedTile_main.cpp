@@ -13,7 +13,7 @@ PlayStation(R)3 Programmer Tool Runtime Library 430.001
 #include <cell/spurs/job_queue.h>
 
 #include "CompressedTileStorage_SPU.h"
-#include "..\Common\DmaData.h"
+#include "../Common/DmaData.h"
 
 // #define SPU_HEAPSIZE (128*1024)
 // #define SPU_STACKSIZE (16*1024)

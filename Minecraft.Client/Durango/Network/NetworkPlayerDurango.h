@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Common\Network\NetworkPlayerInterface.h"
+#include "../../Common/Network/NetworkPlayerInterface.h"
 #include "DQRNetworkPlayer.h"
 
 // This is an implementation of the INetworkPlayer interface, for Durango. It effectively wraps the DQRNetworkPlayer class in a non-platform-specific way.

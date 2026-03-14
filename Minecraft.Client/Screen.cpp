@@ -5,9 +5,9 @@
 #include "GuiParticles.h"
 #include "Tesselator.h"
 #include "Textures.h"
-#include "..\Minecraft.World\SoundTypes.h"
+#include "../Minecraft.World/SoundTypes.h"
 #ifdef _WINDOWS64
-#include "Windows64\KeyboardMouseInput.h"
+#include "Windows64/KeyboardMouseInput.h"
 #endif
 
 

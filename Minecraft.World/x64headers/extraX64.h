@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 
-#include "..\..\Minecraft.Client\SkinBox.h"
+#include "../../Minecraft.Client/SkinBox.h"
 
 
 #include <vector>
@@ -30,8 +30,8 @@ const int MINECRAFT_NET_MAX_PLAYERS = 256;
 #include <net.h>
 #include <np/np_npid.h>
 #include <user_service.h>
-#include "..\..\Minecraft.Client\Orbis\Orbis_PlayerUID.h"
-#include "..\..\Minecraft.Client\Orbis\Network\SQRNetworkManager_Orbis.h"
+#include "../../Minecraft.Client/Orbis/Orbis_PlayerUID.h"
+#include "../../Minecraft.Client/Orbis/Network/SQRNetworkManager_Orbis.h"
 typedef SQRNetworkManager_Orbis::SessionID SessionID;
 typedef SQRNetworkManager_Orbis::PresenceSyncInfo INVITE_INFO;
 
@@ -41,8 +41,8 @@ typedef SQRNetworkManager_Orbis::PresenceSyncInfo INVITE_INFO;
 #include <netex/libnetctl.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "..\..\Minecraft.Client\PS3\PS3_PlayerUID.h"
-#include "..\..\Minecraft.Client\PS3\Network\SQRNetworkManager_PS3.h"
+#include "../../Minecraft.Client/PS3/PS3_PlayerUID.h"
+#include "../../Minecraft.Client/PS3/Network/SQRNetworkManager_PS3.h"
 typedef SQRNetworkManager::SessionID SessionID;
 typedef SQRNetworkManager::PresenceSyncInfo INVITE_INFO;
 
@@ -50,15 +50,15 @@ typedef SQRNetworkManager::PresenceSyncInfo INVITE_INFO;
 #include <np.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "..\..\Minecraft.Client\PSVita\Network\SQRNetworkManager_Vita.h"
-#include "..\..\Minecraft.Client\PSVita\Network\SQRNetworkManager_AdHoc_Vita.h"
-#include "..\..\Minecraft.Client\PSVita\4JLibs\inc\4J_Profile.h"
+#include "../../Minecraft.Client/PSVita/Network/SQRNetworkManager_Vita.h"
+#include "../../Minecraft.Client/PSVita/Network/SQRNetworkManager_AdHoc_Vita.h"
+#include "../../Minecraft.Client/PSVita/4JLibs/inc/4J_Profile.h"
 typedef SQRNetworkManager_Vita::SessionID SessionID;
 typedef SQRNetworkManager_Vita::PresenceSyncInfo INVITE_INFO;
 
 #elif defined _DURANGO
-#include "..\..\Minecraft.Client\Durango\4JLibs\inc\4J_Profile.h"
-#include "..\..\Minecraft.Client\Durango\Network\DQRNetworkManager.h"
+#include "../../Minecraft.Client/Durango/4JLibs/inc/4J_Profile.h"
+#include "../../Minecraft.Client/Durango/Network/DQRNetworkManager.h"
 typedef ULONGLONG SessionID;
 typedef ULONGLONG GameSessionUID;
 typedef DQRNetworkManager::SessionInfo INVITE_INFO;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DQRNetworkPlayer.h"
-#include "..\Minecraft.World\C4JThread.h"
+#include "../Minecraft.World/C4JThread.h"
 #include <collection.h>
 
 class IDQRNetworkManagerListener;

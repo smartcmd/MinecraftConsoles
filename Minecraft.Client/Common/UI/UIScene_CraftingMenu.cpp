@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
 #include "UIScene_CraftingMenu.h"
 #ifdef _WINDOWS64
-#include "..\..\Windows64\Iggy\gdraw\gdraw_d3d11.h"
+#include "../../Windows64/Iggy/gdraw/gdraw_d3d11.h"
 #endif
 
 #ifdef __PSVITA__

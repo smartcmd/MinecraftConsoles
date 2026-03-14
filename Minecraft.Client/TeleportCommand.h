@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Minecraft.World\Command.h"
+#include "../Minecraft.World/Command.h"
 
 class TeleportCommand : public Command
 {

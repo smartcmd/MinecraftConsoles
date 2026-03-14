@@ -1,6 +1,6 @@
 #pragma once
 #include "IUIScene_AbstractContainerMenu.h"
-#include "..\..\..\Minecraft.World\AbstractContainerMenu.h"
+#include "../../../Minecraft.World/AbstractContainerMenu.h"
 // 4J Stu - This class is for code that is common between XUI and Iggy
 
 class SimpleContainer;

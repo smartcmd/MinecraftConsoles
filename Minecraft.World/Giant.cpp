@@ -3,7 +3,7 @@
 #include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.monster.h"
 #include "Giant.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 
 
 

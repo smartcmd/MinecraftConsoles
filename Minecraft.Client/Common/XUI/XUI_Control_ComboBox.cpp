@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "XUI_Control_ComboBox.h"
-#include "..\Xbox_App.h"
+#include "../Xbox_App.h"
 
 HRESULT CXuiControl4JComboBox::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 {

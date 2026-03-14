@@ -4,8 +4,8 @@
 #include "net.minecraft.world.phys.h"
 #include "LightningBolt.h"
 #include "SoundTypes.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
-#include "..\Minecraft.Client\PlayerList.h"
+#include "../Minecraft.Client/MinecraftServer.h"
+#include "../Minecraft.Client/PlayerList.h"
 #include "net.minecraft.world.level.dimension.h"
 
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HugeExplosionParticle.h"
-#include "..\Minecraft.World\Random.h"
+#include "../Minecraft.World/Random.h"
 #include "Textures.h"
 #include "Tesselator.h"
 #include "Lighting.h"

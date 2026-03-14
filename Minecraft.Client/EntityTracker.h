@@ -1,6 +1,6 @@
 #pragma once
-#include "..\Minecraft.World\HashExtension.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/HashExtension.h"
+#include "../Minecraft.World/JavaIntHash.h"
 class Entity;
 class ServerPlayer;
 class TrackedEntity;

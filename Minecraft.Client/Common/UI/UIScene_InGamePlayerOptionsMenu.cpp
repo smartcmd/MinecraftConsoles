@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_InGamePlayerOptionsMenu.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../ClientConnection.h"
+#include "../../../Minecraft.World/net.minecraft.network.packet.h"
 
 #define CHECKBOXES_TIMER_ID 0
 #define CHECKBOXES_TIMER_TIME 100

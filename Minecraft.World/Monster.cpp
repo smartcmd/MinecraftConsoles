@@ -10,7 +10,7 @@
 #include "net.minecraft.world.item.enchantment.h"
 #include "Monster.h"
 
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Minecraft.h"
 
 
 Monster::Monster(Level *level) : PathfinderMob( level )

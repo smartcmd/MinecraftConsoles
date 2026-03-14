@@ -2,9 +2,9 @@
 #include "TrapScreen.h"
 #include "LocalPlayer.h"
 #include "Textures.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\DispenserTileEntity.h"
-#include "..\Minecraft.World\net.minecraft.world.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../Minecraft.World/DispenserTileEntity.h"
+#include "../Minecraft.World/net.minecraft.world.h"
 
 TrapScreen::TrapScreen(shared_ptr<Inventory> inventory, shared_ptr<DispenserTileEntity> trap) : AbstractContainerScreen(new TrapMenu(inventory, trap))
 {

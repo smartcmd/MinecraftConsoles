@@ -14,7 +14,7 @@ PlayStation(R)3 Programmer Tool Runtime Library 430.001
 #include <cell/dma.h>
 #include <cell/spurs/job_queue.h>
 
-#include "..\Common\DmaData.h"
+#include "../Common/DmaData.h"
 
 #include "GameRenderer_updateLightTexture.h"
 

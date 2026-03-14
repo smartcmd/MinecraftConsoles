@@ -2,8 +2,8 @@
 #include "DLCManager.h"
 #include "DLCAudioFile.h"
 #if defined _XBOX || defined _WINDOWS64
-#include "..\..\Xbox\XML\ATGXmlParser.h"
-#include "..\..\Xbox\XML\xmlFilesCallback.h"
+#include "../../Xbox/XML/ATGXmlParser.h"
+#include "../../Xbox/XML/xmlFilesCallback.h"
 #endif
 
 DLCAudioFile::DLCAudioFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_Audio,path)

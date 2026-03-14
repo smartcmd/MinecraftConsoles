@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "CompressedTileStorage_SPU.h"
 #ifdef SN_TARGET_PS3_SPU
-#include "..\Common\DmaData.h"
+#include "../Common/DmaData.h"
 #else
-#include "..\..\..\..\Minecraft.World\Tile.h"
-#include "..\..\..\..\Minecraft.World\TilePos.h"
-#include "..\..\..\..\Minecraft.World\LevelChunk.h"
+#include "../../../../Minecraft.World/Tile.h"
+#include "../../../../Minecraft.World/TilePos.h"
+#include "../../../../Minecraft.World/LevelChunk.h"
 #endif
 
 #include <stdlib.h>

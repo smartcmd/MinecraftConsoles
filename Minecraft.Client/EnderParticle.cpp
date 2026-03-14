@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EnderParticle.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\Random.h"
+#include "../Minecraft.World/JavaMath.h"
+#include "../Minecraft.World/Random.h"
 
 // 4J Stu - This class was originally "PortalParticle" but I have split the two uses of the particle
 // End creatures/items (e.g. EnderMan, EyeOfEnder, etc) use this particle

@@ -3,8 +3,8 @@
 #include "../media/xuiscene_base.h"
 #include "XUI_Ctrl_SlotItem.h"
 #include "XUI_CustomMessages.h"
-#include "..\UI\UIEnums.h"
-#include "..\..\..\Minecraft.World\SoundTypes.h"
+#include "../UI/UIEnums.h"
+#include "../../../Minecraft.World/SoundTypes.h"
 
 #define BUTTON_TOOLTIP_A	0
 #define BUTTON_TOOLTIP_B	1

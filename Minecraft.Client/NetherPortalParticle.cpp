@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NetherPortalParticle.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\Random.h"
+#include "../Minecraft.World/JavaMath.h"
+#include "../Minecraft.World/Random.h"
 #include "Minecraft.h"
 
 // 4J Stu - This class was originally "PortalParticle" but I have split the two uses of the particle

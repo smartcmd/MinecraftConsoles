@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\Minecraft.h"
-#include "..\..\LocalPlayer.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../Minecraft.h"
+#include "../../LocalPlayer.h"
 #include "UIScene_FireworksMenu.h"
 
 UIScene_FireworksMenu::UIScene_FireworksMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene_AbstractContainerMenu(iPad, parentLayer)

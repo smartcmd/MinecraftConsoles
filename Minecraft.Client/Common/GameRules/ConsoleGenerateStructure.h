@@ -1,6 +1,6 @@
 #pragma once
 #include "GameRuleDefinition.h"
-#include "..\..\..\Minecraft.World\StructurePiece.h"
+#include "../../../Minecraft.World/StructurePiece.h"
 
 class Level;
 class Random;

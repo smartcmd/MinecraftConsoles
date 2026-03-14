@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #if defined(__PS3__) || defined(__ORBIS__)
-#include "Common\Network\Sony\SonyCommerce.h"
+#include "Common/Network/Sony/SonyCommerce.h"
 #endif
 #include "UIScene_DLCMainMenu.h"
 

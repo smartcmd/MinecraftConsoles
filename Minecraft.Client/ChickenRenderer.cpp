@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "ChickenRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 ResourceLocation ChickenRenderer::CHICKEN_LOCATION = ResourceLocation(TN_MOB_CHICKEN);
 

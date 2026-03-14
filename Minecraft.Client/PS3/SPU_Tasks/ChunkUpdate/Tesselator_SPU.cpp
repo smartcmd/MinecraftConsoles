@@ -9,7 +9,7 @@
 #include <cell/spurs.h>
 #include <cell/dma.h>
 #include <math.h>
-#include "..\Common\spu_assert.h"
+#include "../Common/spu_assert.h"
 #endif // SN_TARGET_PS3_SPU
 
 #include "Tesselator_SPU.h"

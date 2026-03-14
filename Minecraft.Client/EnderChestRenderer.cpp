@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
 #include "ModelPart.h"
 #include "EnderChestRenderer.h"
 

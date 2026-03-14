@@ -4,18 +4,18 @@
 #include "UIScene.h"
 #include "UIControl_Slider.h"
 #include "UIControl_TexturePackList.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\LocalPlayer.h"
-#include "..\..\DLCTexturePack.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\Minecraft.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.boss.enderdragon.h"
-#include "..\..\EnderDragonRenderer.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../LocalPlayer.h"
+#include "../../DLCTexturePack.h"
+#include "../../TexturePackRepository.h"
+#include "../../Minecraft.h"
+#include "../../../Minecraft.World/net.minecraft.world.entity.boss.enderdragon.h"
+#include "../../EnderDragonRenderer.h"
+#include "../../MultiPlayerLocalPlayer.h"
 #include "UIFontData.h"
 #include "UISplitScreenHelpers.h"
 #ifdef _WINDOWS64
-#include "..\..\Windows64\KeyboardMouseInput.h"
+#include "../../Windows64/KeyboardMouseInput.h"
 #endif
 #ifdef __PSVITA__
 #include <message_dialog.h>
@@ -27,7 +27,7 @@
 
 //#define ENABLE_IGGY_EXPLORER
 #ifdef ENABLE_IGGY_EXPLORER
-#include "Windows64\Iggy\include\iggyexpruntime.h"
+#include "Windows64/Iggy/include/iggyexpruntime.h"
 #endif
 
 //#define ENABLE_IGGY_PERFMON
@@ -37,18 +37,18 @@
 #define PM_ORIGIN_Y 34
 
 #ifdef __ORBIS__
-#include "Orbis\Iggy\include\iggyperfmon.h"
-#include "Orbis\Iggy\include\iggyperfmon_orbis.h"
+#include "Orbis/Iggy/include/iggyperfmon.h"
+#include "Orbis/Iggy/include/iggyperfmon_orbis.h"
 #elif defined _DURANGO
-#include "Durango\Iggy\include\iggyperfmon.h"
+#include "Durango/Iggy/include/iggyperfmon.h"
 #elif defined __PS3__
-#include "PS3\Iggy\include\iggyperfmon.h"
-#include "PS3\Iggy\include\iggyperfmon_ps3.h"
+#include "PS3/Iggy/include/iggyperfmon.h"
+#include "PS3/Iggy/include/iggyperfmon_ps3.h"
 #elif defined __PSVITA__
-#include "PSVita\Iggy\include\iggyperfmon.h"
-#include "PSVita\Iggy\include\iggyperfmon_psp2.h"
+#include "PSVita/Iggy/include/iggyperfmon.h"
+#include "PSVita/Iggy/include/iggyperfmon_psp2.h"
 #elif defined __WINDOWS64
-#include "Windows64\Iggy\include\iggyperfmon.h"
+#include "Windows64/Iggy/include/iggyperfmon.h"
 #endif
 
 #endif

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "XUI_Ctrl_PassThroughList.h"
+#include "XUI_Ctrl_PassthroughList.h"
 
 HRESULT CXuiCtrlPassThroughList::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 {

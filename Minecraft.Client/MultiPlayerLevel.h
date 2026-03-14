@@ -1,9 +1,9 @@
 #pragma once
 using namespace std;
-#include "..\Minecraft.World\HashExtension.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/HashExtension.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.entity.h"
+#include "../Minecraft.World/JavaIntHash.h"
 
 class ClientConnection;
 class MultiPlayerChunkCache;

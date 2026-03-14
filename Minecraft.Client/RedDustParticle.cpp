@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\JavaMath.h"
+#include "../Minecraft.World/JavaMath.h"
 #include "RedDustParticle.h"
 
 void RedDustParticle::init(Level *level, double x, double y, double z, float scale, float rCol, float gCol, float bCol)

@@ -2,7 +2,7 @@
 #include "DisconnectedScreen.h"
 #include "TitleScreen.h"
 #include "Button.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
 
 DisconnectedScreen::DisconnectedScreen(const wstring& title, const wstring reason, void *reasonObjects, ...)
 {

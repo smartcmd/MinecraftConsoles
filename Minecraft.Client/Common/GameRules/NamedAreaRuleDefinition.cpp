@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NamedAreaRuleDefinition.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.phys.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/net.minecraft.world.phys.h"
 
 NamedAreaRuleDefinition::NamedAreaRuleDefinition()
 {

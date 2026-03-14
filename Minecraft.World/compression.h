@@ -2,7 +2,7 @@
 #include "FileHeader.h"
 
 #ifdef _XBOX_ONE
-#include "..\Minecraft.Client\Durango\DurangoExtras\xcompress.h"
+#include "../Minecraft.Client/Durango/DurangoExtras/xcompress.h"
 #endif
 
 class Compression

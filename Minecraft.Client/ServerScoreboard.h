@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Minecraft.World\Scoreboard.h"
+#include "../Minecraft.World/Scoreboard.h"
 
 class MinecraftServer;
 class ScoreboardSaveData;

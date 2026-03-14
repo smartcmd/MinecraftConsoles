@@ -2,8 +2,8 @@
 #include "Windows64_UIController.h"
 
 // Temp
-#include "..\Minecraft.h"
-#include "..\Textures.h"
+#include "../Minecraft.h"
+#include "../Textures.h"
 
 #define _ENABLEIGGY
 

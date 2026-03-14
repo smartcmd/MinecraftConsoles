@@ -53,7 +53,7 @@
 #include "StemTile_SPU.h"
 #include "VineTile_SPU.h"
 #include "MycelTile_SPU.h"
-#include "WaterlilyTile_SPU.h"
+#include "WaterLilyTile_SPU.h"
 #include "NetherStalkTile_SPU.h"
 #include "EnchantmentTableTile_SPU.h"
 #include "BrewingStandTile_SPU.h"
@@ -85,7 +85,7 @@
 #include "WoolCarpetTile_SPU.h"
 
 #ifdef SN_TARGET_PS3_SPU
-#include "..\Common\spu_assert.h"
+#include "../Common/spu_assert.h"
 #endif
 
 #include <assert.h>

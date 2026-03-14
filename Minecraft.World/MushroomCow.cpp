@@ -4,7 +4,7 @@
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.entity.item.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "MushroomCow.h"
 #include "MobCategory.h"
 #include "AABB.h"

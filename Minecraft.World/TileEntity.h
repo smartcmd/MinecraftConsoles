@@ -2,7 +2,7 @@
 using namespace std;
 
 #include "HashExtension.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/JavaIntHash.h"
 
 class Level;
 class Packet;

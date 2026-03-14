@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #ifdef _WINDOWS64
-#include "Windows64\KeyboardMouseInput.h"
+#include "Windows64/KeyboardMouseInput.h"
 
 static const int s_keyToVK[] = {
 	'A',        // KEY_A = 0

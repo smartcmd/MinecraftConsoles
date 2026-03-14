@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "../../../Minecraft.World/ItemInstance.h"
 #if !(defined _XBOX) && !(defined __PSVITA__)
-#include "..\UI\UI.h"
+#include "../UI/UI.h"
 #endif
 #include "Tutorial.h"
 #include "XuiCraftingTask.h"

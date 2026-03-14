@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_Intro.h"
+#include "../XUI/XUI_Intro.h"
 
 #define TIMELINE_NORMAL		0
 #define TIMELINE_ESRBFADE	1
@@ -23,7 +23,7 @@ HRESULT CScene_Intro::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	// 4J-PB - We can't check to see if the version is a trial or full game until after 5 seconds...
 	// The reason that this is a requirement is that there is a problem that occasionally happens *only* in the production 
-	// environment (not partnernet or cert), where if you don’t wait 5 seconds, you can run into an issue where the timing 
+	// environment (not partnernet or cert), where if you dont wait 5 seconds, you can run into an issue where the timing 
 	// of the call fails and the game is always identified as being the trial version even if you have upgraded to the full version.
 	// -Joe Dunavant
 

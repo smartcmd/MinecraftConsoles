@@ -1,6 +1,6 @@
 #pragma once
-#include "..\Minecraft.World\FloatBuffer.h"
-#include "..\Minecraft.World\IntBuffer.h"
+#include "../Minecraft.World/FloatBuffer.h"
+#include "../Minecraft.World/IntBuffer.h"
 
 
 class TilePos;

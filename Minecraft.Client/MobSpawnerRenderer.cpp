@@ -2,8 +2,8 @@
 #include "MobSpawnerRenderer.h"
 #include "TileEntityRenderDispatcher.h"
 #include "EntityRenderDispatcher.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/net.minecraft.world.entity.h"
 
 void MobSpawnerRenderer::render(shared_ptr<TileEntity> _spawner, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {

@@ -5,8 +5,8 @@
 #include "Options.h"
 #include "Textures.h"
 #include "Tesselator.h"
-#include "..\Minecraft.World\net.minecraft.world.level.saveddata.h"
-#include "..\Minecraft.World\net.minecraft.world.level.material.h"
+#include "../Minecraft.World/net.minecraft.world.level.saveddata.h"
+#include "../Minecraft.World/net.minecraft.world.level.material.h"
 
 #ifdef __ORBIS__
 short Minimap::LUT[256];	// 4J added

@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "StatsCounter.h"
-#include "..\Minecraft.World\Stat.h"
-#include "..\Minecraft.World\Stats.h"
-#include "..\Minecraft.World\Achievement.h"
-#include "..\Minecraft.World\Achievements.h"
-#include "..\Minecraft.Client\LocalPlayer.h"
+#include "../Minecraft.World/Stat.h"
+#include "../Minecraft.World/Stats.h"
+#include "../Minecraft.World/Achievement.h"
+#include "../Minecraft.World/Achievements.h"
+#include "../Minecraft.Client/LocalPlayer.h"
 
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 
-#include "..\Minecraft.Client\Common\Leaderboards\LeaderboardManager.h"
+#include "../Minecraft.Client/Common/Leaderboards/LeaderboardManager.h"
 
 Stat** StatsCounter::LARGE_STATS[] = {
 	&Stats::walkOneM,

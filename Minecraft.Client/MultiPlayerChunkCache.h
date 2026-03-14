@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.chunk.h"
-#include "..\Minecraft.World\RandomLevelSource.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.chunk.h"
+#include "../Minecraft.World/RandomLevelSource.h"
 
 using namespace std;
 class ServerChunkCache;

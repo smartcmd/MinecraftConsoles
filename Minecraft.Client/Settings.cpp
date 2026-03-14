@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Settings.h"
-#include "..\Minecraft.World\File.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/File.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include <fstream>
 
 static wstring ParsePropertyText(const string &text)

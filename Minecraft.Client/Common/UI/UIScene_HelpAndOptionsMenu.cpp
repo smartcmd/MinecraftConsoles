@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_HelpAndOptionsMenu.h"
-#include "..\..\Minecraft.h"
+#include "../../Minecraft.h"
 
 UIScene_HelpAndOptionsMenu::UIScene_HelpAndOptionsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

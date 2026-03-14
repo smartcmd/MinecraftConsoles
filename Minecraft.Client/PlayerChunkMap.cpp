@@ -5,12 +5,12 @@
 #include "ServerChunkCache.h"
 #include "ServerPlayer.h"
 #include "MinecraftServer.h"
-#include "..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.chunk.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\ArrayWithLength.h"
-#include "..\Minecraft.World\System.h"
+#include "../Minecraft.World/net.minecraft.network.packet.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.chunk.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/ArrayWithLength.h"
+#include "../Minecraft.World/System.h"
 #include "PlayerList.h"
 #include <unordered_set>
 

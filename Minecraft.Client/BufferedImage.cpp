@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include "Textures.h"
-#include "..\Minecraft.World\ArrayWithLength.h"
+#include "../Minecraft.World/ArrayWithLength.h"
 #include "BufferedImage.h"
 
 #ifdef _XBOX

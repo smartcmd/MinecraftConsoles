@@ -3,12 +3,12 @@
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.item.h"
 #include "MapItemSavedData.h"
-#include "..\Minecraft.Client\PlayerList.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
-#include "..\Minecraft.Client\ServerPlayer.h"
+#include "../Minecraft.Client/PlayerList.h"
+#include "../Minecraft.Client/MinecraftServer.h"
+#include "../Minecraft.Client/ServerPlayer.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.storage.h"
-#include "..\Minecraft.Client\PlayerConnection.h"
+#include "../Minecraft.Client/PlayerConnection.h"
 
 const int MapItemSavedData::END_PORTAL_DECORATION_KEY = -1;
 

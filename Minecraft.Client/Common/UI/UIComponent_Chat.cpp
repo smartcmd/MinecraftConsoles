@@ -2,8 +2,8 @@
 #include "UI.h"
 #include "UIComponent_Chat.h"
 #include "UISplitScreenHelpers.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Gui.h"
+#include "../../Minecraft.h"
+#include "../../Gui.h"
 
 UIComponent_Chat::UIComponent_Chat(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

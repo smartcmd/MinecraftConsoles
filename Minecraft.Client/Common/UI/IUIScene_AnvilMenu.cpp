@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "IUIScene_AnvilMenu.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\InputOutputStream.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/InputOutputStream.h"
+#include "../../../Minecraft.World/net.minecraft.network.packet.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../ClientConnection.h"
 
 IUIScene_AnvilMenu::IUIScene_AnvilMenu()
 {

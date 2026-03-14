@@ -1,6 +1,6 @@
 #pragma once
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/JavaIntHash.h"
 class ServerChunkCache;
 class MinecraftServer;
 class Node;

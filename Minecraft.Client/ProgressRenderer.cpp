@@ -2,7 +2,7 @@
 #include "Tesselator.h"
 #include "Textures.h"
 #include "ProgressRenderer.h"
-#include "..\Minecraft.World\System.h"
+#include "../Minecraft.World/System.h"
 
 CRITICAL_SECTION ProgressRenderer::s_progress;
 

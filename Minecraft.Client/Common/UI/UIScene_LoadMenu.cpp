@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_LoadMenu.h"
-#include "..\..\Minecraft.h"
-#include "..\..\User.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\Options.h"
-#include "..\..\MinecraftServer.h"
-#include "..\..\..\Minecraft.World\LevelSettings.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../Minecraft.h"
+#include "../../User.h"
+#include "../../TexturePackRepository.h"
+#include "../../Options.h"
+#include "../../MinecraftServer.h"
+#include "../../../Minecraft.World/LevelSettings.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
-#include "Common\Network\Sony\SonyHttp.h"
+#include "Common/Network/Sony/SonyHttp.h"
 #endif
-#include "..\..\DLCTexturePack.h"
+#include "../../DLCTexturePack.h"
 #if defined(__ORBIS__) || defined(__PSVITA__)
 #include <ces.h>
 #endif

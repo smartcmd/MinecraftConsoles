@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Tutorial\FullTutorialMode.h"
+#include "../Tutorial/FullTutorialMode.h"
 
 class TrialMode : public FullTutorialMode
 {

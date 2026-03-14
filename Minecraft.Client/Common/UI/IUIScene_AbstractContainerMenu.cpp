@@ -3,19 +3,19 @@
 #include "IUIScene_AbstractContainerMenu.h"
 
 #include "UI.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.crafting.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.crafting.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../Minecraft.h"
 
 #ifdef __ORBIS__
 #include <pad.h>
 #endif
 
 #ifdef _WINDOWS64
-#include "..\..\Windows64\KeyboardMouseInput.h"
+#include "../../Windows64/KeyboardMouseInput.h"
 
 SavedInventoryCursorPos g_savedInventoryCursorPos = { 0.0f, 0.0f, false };
 #endif

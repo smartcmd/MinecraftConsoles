@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "BookModel.h"
 #include "ModelPart.h"
 

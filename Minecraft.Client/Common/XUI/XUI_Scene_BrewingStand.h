@@ -1,8 +1,8 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_brewingstand.h"
+#include "../Media/xuiscene_brewingstand.h"
 #include "XUI_Scene_AbstractContainer.h"
-#include "..\UI\IUIScene_BrewingMenu.h"
+#include "../UI/IUIScene_BrewingMenu.h"
 
 class CXuiCtrlSlotList;
 class CXuiCtrlBrewProgress;

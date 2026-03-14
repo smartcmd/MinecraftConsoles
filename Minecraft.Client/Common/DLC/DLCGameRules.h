@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DLCFile.h"
-#include "..\GameRules\LevelGenerationOptions.h"
+#include "../GameRules/LevelGenerationOptions.h"
 
 class DLCGameRules : public DLCFile
 {

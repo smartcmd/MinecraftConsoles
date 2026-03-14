@@ -1,5 +1,5 @@
 #pragma once
-#include "Common\UI\IUIScene_AbstractContainerMenu.h"
+#include "Common/UI/IUIScene_AbstractContainerMenu.h"
 
 class BeaconTileEntity;
 
