@@ -392,7 +392,7 @@ float GameRenderer::getFov(float a, bool applyEffects)
 	float fov = m_fov;//70;
 	if (applyEffects)
 	{
-		fov += mc->options->fov * 40;
+		//fov += mc->options->fov * 40;
 		fov *= oFov[playerIdx] + (this->fov[playerIdx] - oFov[playerIdx]) * a;
 	}
 	if (player->getHealth() <= 0)
