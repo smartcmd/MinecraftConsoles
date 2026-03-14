@@ -109,6 +109,19 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Debug --target MinecraftClient
 ```
 
+### CMake (Linux Cross-compilation)
+
+MinecraftConsoles does not support Linux but can cross-compile a Windows build from Linux.
+
+You will need a Windows x64 MSVC SDK. You can get one from [msvc-wine](https://github.com/mstorsjo/msvc-wine).
+
+```bash
+mkdir build && cd build
+cmake .. -B . -G Ninja -DWINDOWS_SDK_PATH=<windows msvc sdk location> -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake -DCMAKE_BUILD_TYPE=Debug
+ninja
+wine MinecraftClient.exe
+```
+
 For more information, see [COMPILE.md](COMPILE.md).
 
 ## Known Issues

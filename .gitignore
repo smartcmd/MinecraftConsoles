@@ -437,3 +437,7 @@ Minecraft.Client/Saves/
 # Visual Studio Per-User Config
 *.user
 /out
+
+# IDE files
+.idea/
+.kate-swp
