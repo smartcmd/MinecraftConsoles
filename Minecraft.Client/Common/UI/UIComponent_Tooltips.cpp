@@ -198,13 +198,26 @@ void UIComponent_Tooltips::tick()
 
 void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportType viewport)
 {
-	if((ProfileManager.GetLockedProfile()!=-1) && !ui.GetMenuDisplayed(m_iPad) && (app.GetGameSettings(m_iPad,eGameSetting_Tooltips)==0 || app.GetGameSettings(m_iPad,eGameSetting_DisplayHUD)==0))
-	{
-		return;
-	}
 
-	if(m_bSplitscreen)
+	//This is the proper flag for single player, NOT for all players
+
+	bool renderTooltipsOK = !((ProfileManager.GetLockedProfile() == -1) || (app.GetGameSettings(m_iPad, eGameSetting_Tooltips) == 0 || app.GetGameSettings(m_iPad, eGameSetting_DisplayHUD) == 0));
+
+	// However, if we are in the menu, we want to show the tooltips regardless of the tooltip setting so that players can navigate the menu and change the setting if they want to. So we will override the renderTooltipsOK flag if we are in a menu.
+	bool menuOKoverride = false;
+
+	Minecraft *pMinecraft = Minecraft::GetInstance();
+	if (pMinecraft != nullptr)
 	{
+        if (pMinecraft->level == nullptr || pMinecraft->player == nullptr)
+		{
+			menuOKoverride = true;
+        }
+    }
+
+
+	if(m_bSplitscreen) {
+		//Individiualize the flags for each viewport :)
 		S32 xPos = 0;
 		S32 yPos = 0;
 		switch( viewport )
@@ -222,6 +235,7 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
+
 		ui.setupRenderPosition(xPos, yPos);
 
 		S32 tileXStart = 0;
@@ -248,9 +262,49 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 			needsYTile = true;
 			break;
 		}
+		// I'm not sure if this is a good way to iterate pads...
 
+		//Anyways, new pad based on render settings to differentiate splitscreen players
+		int plr_pad;
+		switch (viewport)
+		{
+
+		//Player zero;
+		case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
+		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
+		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
+			plr_pad = m_iPad;
+			break;
+		//Player one;
+		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
+		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+			plr_pad = 1;
+			break;
+		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
+			plr_pad = 2;
+			break;
+		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
+			plr_pad = 3;
+			break;
+		default:
+			plr_pad = -1;
+			break;
+		}
+
+		if (plr_pad == -1) {
+			renderTooltipsOK = false;
+		}
+		else {
+			renderTooltipsOK = (app.GetGameSettings(plr_pad, eGameSetting_Tooltips) != 0) && (app.GetGameSettings(plr_pad, eGameSetting_DisplayHUD) != 0);
+		}
+		m_renderWidth = tileWidth;
+		m_renderHeight = tileHeight;
 		F32 scale;
 		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+
+
 
 		// For vertical split, scale down to fit the full SWF height when the
 		// window is shorter than the movie (same fix as HUD).
@@ -263,10 +317,8 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 
 		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
+		if (!renderTooltipsOK && !menuOKoverride) return;
 		IggyPlayerDrawTilesStart ( getMovie() );
-
-		m_renderWidth = tileWidth;
-		m_renderHeight = tileHeight;
 		IggyPlayerDrawTile ( getMovie() ,
 			tileXStart ,
 			tileYStart ,
@@ -277,6 +329,7 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
 	}
 	else
 	{
+		if (!renderTooltipsOK && !menuOKoverride) return;
 		UIScene::render(width, height, viewport);
 	}
 }
