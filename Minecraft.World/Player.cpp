@@ -1631,6 +1631,10 @@ void Player::attack(shared_ptr<Entity> entity)
 		}
 
 		DamageSource *damageSource = DamageSource::playerAttack(dynamic_pointer_cast<Player>(shared_from_this()));
+
+		if (bCrit) {
+			damageSource->setIsCritical();
+		}
 		bool wasHurt = entity->hurt(damageSource, dmg);
 		delete damageSource;
 		if (wasHurt)
