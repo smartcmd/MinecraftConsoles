@@ -212,8 +212,7 @@ void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportTyp
     }
 
 
-	if(m_bSplitscreen)
-	|
+	if(m_bSplitscreen) {
 		//Individiualize the flags for each viewport :)
 		S32 xPos = 0;
 		S32 yPos = 0;
