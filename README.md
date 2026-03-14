@@ -1,31 +1,15 @@
-# MinecraftConsoles
-
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/jrum7HhegA)
-
-![Tutorial World](.github/TutorialWorld.png)
+# BetterMinecraftLCE
 
 ## Introduction
 
-This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) with some fixes and improvements applied.
+This project contains the fork of MinecraftConsoles, this fork aims to be better and only focus on windows build.
 
 ## Download
-Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
+Windows users can download our [Nightly Build](https://github.com/MarvelcoCode/BetterMinecraftLCE/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
 
 ## Platform Support
 
 - **Windows**: Supported for building and running the project
-- **macOS / Linux**: The Windows nightly build may run through Wine or CrossOver based on community reports, but this is unofficial and not currently tested by the maintainers
-
-## Features
-
-- Fixed compilation and execution in both Debug and Release mode on Windows using Visual Studio 2022
-- Added support for keyboard and mouse input
-- Added fullscreen mode support (toggle using F11)
-- (WIP) Disabled V-Sync for better performance
-- Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
-- Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
-- LAN Multiplayer & Discovery
-- Added persistent username system via "username.txt"
 
 ## Multiplayer
 
@@ -83,22 +67,7 @@ Minecraft.Client.exe -name Steve -fullscreen
 4. Make sure `Minecraft.Client` is set as the Startup Project.
 5. Set the build configuration to **Debug** (Release is also ok but missing some debug features) and the target platform to **Windows64**, then build and run.
 
-### CMake (Windows x64)
-
-```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Debug --target MinecraftClient
-```
-
 For more information, see [COMPILE.md](COMPILE.md).
-
-## Known Issues
-
-- Native builds for platforms other than Windows have not been tested and are most likely non-functional. The Windows nightly build may still run on macOS and Linux through Wine or CrossOver, but that path is unofficial and not currently supported
 
 ## Contributors
 Would you like to contribute to this project? Please read our [Contributor's Guide](CONTRIBUTING.md) before doing so! This document includes our current goals, standards for inclusions, rules, and more.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=smartcmd/MinecraftConsoles&type=date&legend=top-left)](https://www.star-history.com/?spm=a2c6h.12873639.article-detail.7.7b9d7fabjNxTRk#smartcmd/MinecraftConsoles&type=date&legend=top-left)
