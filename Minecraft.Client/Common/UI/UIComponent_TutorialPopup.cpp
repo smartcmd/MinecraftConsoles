@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIComponent_TutorialPopup.h"
+#include "UISplitScreenHelpers.h"
 #include "..\..\Common\Tutorial\Tutorial.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 #include "..\..\MultiplayerLocalPlayer.h"
@@ -474,27 +475,17 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 {
 	if(viewport != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 	{
-		S32 xPos = 0;
-		S32 yPos = 0;
-		switch( viewport )
-		{
-		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
-			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
-			break;
-		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
-			break;
-		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
-			break;
-		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
-			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
-			break;
-		}
+		// Derive the viewport origin and fit a 16:9 box inside it (same as UIScene::render),
+		// then apply safezone nudges so the popup stays clear of screen edges.
+		F32 originX, originY, viewW, viewH;
+		GetViewportRect(ui.getScreenWidth(), ui.getScreenHeight(), viewport, originX, originY, viewW, viewH);
+
+		S32 fitW, fitH, offsetX, offsetY;
+		Fit16x9(viewW, viewH, fitW, fitH, offsetX, offsetY);
+
+		S32 xPos = static_cast<S32>(originX) + offsetX;
+		S32 yPos = static_cast<S32>(originY) + offsetY;
+
 		//Adjust for safezone
 		switch( viewport )
 		{
@@ -505,6 +496,7 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 			case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 				yPos += getSafeZoneHalfHeight();
 				break;
+			default: break;
 		}
 		switch( viewport )
 		{
@@ -515,10 +507,11 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 			case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
 				xPos -= getSafeZoneHalfWidth();
 				break;
+			default: break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
 
-		IggyPlayerSetDisplaySize( getMovie(), width, height );
+		IggyPlayerSetDisplaySize( getMovie(), fitW, fitH );
 		IggyPlayerDraw( getMovie() );
 	}
 	else

@@ -403,6 +403,7 @@ void OldChunkStorage::loadEntities(LevelChunk *lc, Level *level, CompoundTag *ta
 			if (te != nullptr)
 			{
 				lc->addEntity(te);
+				lc->addRidingEntities(te, teTag);
 			}
 		}
 	}
