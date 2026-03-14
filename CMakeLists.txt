@@ -20,27 +20,42 @@ set(CMAKE_CONFIGURATION_TYPES
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-function(configure_msvc_target target)
-  target_compile_options(${target} PRIVATE
-    $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/W3>
-    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
-    $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
-    $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
-    $<$<COMPILE_LANGUAGE:C,CXX>:/GS>
-    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
-    $<$<COMPILE_LANGUAGE:CXX>:/GR>
-    $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/Od>
-    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF>
-  )
-endfunction()
-function(configure_clang_target target)
-  target_compile_options(${target} PRIVATE
-    $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:-O0 -Wall>
-    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:-O2 -w -flto>
-  )
-  target_link_options(${target} PRIVATE
-    $<$<CONFIG:Release>:-flto>
-  )
+function(configure_compiler_target target)
+  # MSVC and compatible compilers (like Clang-cl)
+  if (MSVC)
+    target_compile_options(${target} PRIVATE
+      $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/W3>
+      $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
+      $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
+      $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
+      $<$<COMPILE_LANGUAGE:C,CXX>:/GS>
+      $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+      $<$<COMPILE_LANGUAGE:CXX>:/GR>
+      $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:/Od>
+      $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/O2 /Oi /GT /GF>
+    )
+  endif()
+
+  # MSVC
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(${target} PRIVATE
+      $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL>
+    )
+    target_link_options(${target} PRIVATE
+      $<$<CONFIG:Release>:/LTCG:incremental>
+    )
+  endif()
+
+  # Clang
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${target} PRIVATE
+      $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C,CXX>>:-O0 -Wall>
+      $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:-O2 -w -flto>
+    )
+    target_link_options(${target} PRIVATE
+      $<$<CONFIG:Release>:-flto>
+    )
+  endif()
 endfunction()
 
 

@@ -26,9 +26,5 @@ target_compile_definitions(Minecraft.World PRIVATE
   _LIB
 )
 target_precompile_headers(Minecraft.World PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:stdafx.h>")
-if(MSVC)
-  configure_msvc_target(Minecraft.World)
-endif()
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  configure_clang_target(Minecraft.World)
-endif()
+
+configure_compiler_target(Minecraft.World)

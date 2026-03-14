@@ -39,15 +39,8 @@ target_compile_definitions(Minecraft.Client PRIVATE
 )
 target_precompile_headers(Minecraft.Client PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:stdafx.h>")
 set_source_files_properties(compat_shims.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON) # This redefines internal MSVC CRT symbols which will cause an issue with PCH
-if(MSVC)
-  configure_msvc_target(Minecraft.Client)
-  target_link_options(Minecraft.Client PRIVATE
-    $<$<CONFIG:Release>:/LTCG:incremental>
-  )
-endif()
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  configure_clang_target(Minecraft.Client)
-endif()
+
+configure_compiler_target(Minecraft.Client)
 
 set_target_properties(Minecraft.Client PROPERTIES
   VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
@@ -83,10 +76,13 @@ endforeach()
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/AssetCopyTargets.cmake")
 setup_asset_copy_targets()
 
+# This is needed for VS to find the script, command line seems to work without it
+set(COPY_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyAssets.cmake")
+
 # Copy redist files
 add_custom_target(CopyRedist ALL
   COMMAND ${CMAKE_COMMAND}
-    "-DCOPY_SOURCE=${CMAKE_SOURCE_DIR}/x64/Release"
+    "-DCOPY_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}/Windows64/Iggy/lib/redist64" # This will copy the windows redist regardless of platform
     "-DCOPY_DEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
     -P "${COPY_SCRIPT}"
   COMMENT "Copying redist files..."
