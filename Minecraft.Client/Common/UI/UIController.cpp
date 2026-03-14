@@ -345,7 +345,7 @@ UIController::EFont UIController::getFontForLanguage(int language)
 	switch(language)
 	{
 	case XC_LANGUAGE_JAPANESE:	return eFont_Japanese;
-#ifdef _DURANGO
+#if defined(_DURANGO) || defined(_WINDOWS64)
 	case XC_LANGUAGE_SCHINESE:	return eFont_SimpChinese;
 #endif
 	case XC_LANGUAGE_TCHINESE:	return eFont_TradChinese;
