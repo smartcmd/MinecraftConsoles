@@ -41,7 +41,7 @@ if(CMAKE_HOST_WIN32)
     RESULT_VARIABLE rc
   )
 
-  if(rc GREATER 3) # Allows for "files copied" and "no files copied" cases, but treats actual errors as failures
+  if(rc GREATER 7) # Allows for "files copied" and "no files copied" cases, but treats actual errors as failures
     message(FATAL_ERROR "robocopy failed (exit code ${rc})")
   endif()
 elseif(CMAKE_HOST_UNIX)
