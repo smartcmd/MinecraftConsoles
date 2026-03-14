@@ -54,8 +54,8 @@ Icon *StoneSlabTile::getTexture(int face, int data)
 
 void StoneSlabTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"stoneslab_top");
-	iconSide = iconRegister->registerIcon(L"stoneslab_side");
+	icon = iconRegister->registerIcon(getIconName());
+	iconSide = iconRegister->registerIcon(getIconName() + L"_slab_side");
 }
 
 int StoneSlabTile::getResource(int data, Random *random, int playerBonusLevel)

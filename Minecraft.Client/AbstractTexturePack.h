@@ -1,15 +1,19 @@
 #pragma once
-using namespace std;
-
+#include <cstdint>
 #include "TexturePack.h"
 
 class BufferedImage;
+union Pixel;
 
 class AbstractTexturePack : public TexturePack
 {
+public:
+	static const unordered_map<std::wstring, std::wstring> INDEXED_TO_JAVA_MAP;
+
 private:
 	const DWORD id;
 	const wstring name;
+	int texSize;
 
 protected:
 	File *file;
@@ -28,9 +32,10 @@ protected:
 	TexturePack *fallback;
 
 	ColourTable *m_colourTable;
-
-protected:
+	
 	BufferedImage *iconImage;
+	std::unique_ptr<BufferedImage> terrainAtlas, itemAtlas, bedTexCache;
+	BufferedImage* AbstractTexturePack::grabFromDefault(pair<wstring, Icon*> item, Pixel* ogAtlas, pair<int, int> ogDimensions);
 
 private:
 	int textureId;
@@ -46,6 +51,7 @@ protected:
 	virtual void loadComparison();
 	virtual void loadDescription();
 	virtual void loadName();
+	void checkTexSize();
 
 public:
 	virtual InputStream *getResource(const wstring &name, bool allowFallback); //throws IOException
@@ -66,8 +72,9 @@ public:
 	virtual wstring getDesc1();
 	virtual wstring getDesc2();
 	virtual wstring getWorldName();
-	
 	virtual wstring getAnimationString(const wstring &textureName, const wstring &path, bool allowFallback);
+	BufferedImage* AbstractTexturePack::getBedTex(std::wstring name);
+	virtual void generateStitched(unordered_map<wstring, Icon*> texturesByName);
 
 protected:
 	virtual wstring getAnimationString(const wstring &textureName, const wstring &path);

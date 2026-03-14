@@ -15,7 +15,7 @@ const wstring PistonBaseTile::EDGE_TEX = L"piston_side";
 const wstring PistonBaseTile::PLATFORM_TEX = L"piston_top";
 const wstring PistonBaseTile::PLATFORM_STICKY_TEX = L"piston_top_sticky";
 const wstring PistonBaseTile::BACK_TEX = L"piston_bottom";
-const wstring PistonBaseTile::INSIDE_TEX = L"piston_inner_top";
+const wstring PistonBaseTile::INSIDE_TEX = L"piston_inner";
 
 const float PistonBaseTile::PLATFORM_THICKNESS = 4.0f;
 

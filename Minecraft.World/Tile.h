@@ -715,9 +715,9 @@ public:
 
 protected:
 	virtual Tile *setIconName(const wstring &iconName);
-	virtual wstring getIconName();
 
 public:
+	virtual wstring getIconName();
 	virtual void registerIcons(IconRegister *iconRegister);
 	virtual wstring getTileItemIconName();
 

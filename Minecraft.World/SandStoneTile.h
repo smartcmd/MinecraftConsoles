@@ -22,8 +22,8 @@ public:
 private:
 	static const wstring TEXTURE_TOP;
 	static const wstring TEXTURE_BOTTOM;
-	static const wstring TEXTURE_NAMES[];
 	static const int SANDSTONE_TILE_TEXTURE_COUNT = 3;
+	static const wstring TEXTURE_NAMES[];
 
 	Icon **icons;
 	Icon *iconTop;

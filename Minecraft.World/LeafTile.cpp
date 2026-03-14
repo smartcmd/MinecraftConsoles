@@ -6,6 +6,7 @@
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.stats.h"
 #include "net.minecraft.world.h"
+#include "WoodTile.h"
 
 const unsigned int LeafTile::LEAF_NAMES[LEAF_NAMES_LENGTH] = {	IDS_TILE_LEAVES_OAK,
 	IDS_TILE_LEAVES_SPRUCE,
@@ -349,10 +350,13 @@ void LeafTile::registerIcons(IconRegister *iconRegister)
 	for (int fancy = 0; fancy < 2; fancy++)
 	{
 		//icons[fancy] = new Icon[TEXTURES[fancy].length];
+		auto wood = (WoodTile*)Tile::wood;
+		auto woodNames = wood->TEXTURE_NAMES;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < wood->WOOD_NAMES_LENGTH; i++)
 		{
-			icons[fancy][i] = iconRegister->registerIcon(TEXTURES[fancy][i]);
+			auto iconName = i != 2 ? woodNames[i] : woodNames[0];
+			icons[fancy][i] = iconRegister->registerIcon(iconName + L"_leaves" + (fancy == 1 ? L"_opaque" : L""));
 		}
 	}
 }

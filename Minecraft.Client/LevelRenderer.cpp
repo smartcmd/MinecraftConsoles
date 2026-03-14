@@ -3331,7 +3331,7 @@ void LevelRenderer::registerTextures(IconRegister *iconRegister)
 
 	for (int i = 0; i < 10; i++)
 	{
-		breakingTextures[i] = iconRegister->registerIcon(L"destroy_" + std::to_wstring(i) );
+		breakingTextures[i] = iconRegister->registerIcon(L"destroy_stage_" + std::to_wstring(i) );
 	}
 }
 

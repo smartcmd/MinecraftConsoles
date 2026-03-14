@@ -14,8 +14,8 @@
 #include "SoundTypes.h"
 
 const wstring PotionItem::DEFAULT_ICON = L"potion";
-const wstring PotionItem::THROWABLE_ICON = L"potion_splash";
-const wstring PotionItem::CONTENTS_ICON = L"potion_contents";
+const wstring PotionItem::THROWABLE_ICON = L"splash_potion";
+const wstring PotionItem::CONTENTS_ICON = L"potion_overlay";
 
 // 4J Added
 vector<pair<int, int> >  PotionItem::s_uniquePotionValues;

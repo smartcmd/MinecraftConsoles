@@ -28,9 +28,9 @@ Icon *TheEndPortalFrameTile::getTexture(int face, int data)
 
 void TheEndPortalFrameTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"endframe_side");
-	iconTop = iconRegister->registerIcon(L"endframe_top");
-	iconEye = iconRegister->registerIcon(L"endframe_eye");
+	icon = iconRegister->registerIcon(getIconName() + L"_side");
+	iconTop = iconRegister->registerIcon(getIconName() + L"_top");
+	iconEye = iconRegister->registerIcon(getIconName() + L"_eye");
 }
 
 Icon *TheEndPortalFrameTile::getEye()

@@ -62,7 +62,7 @@ const unsigned int DyePowderItem::COLOR_USE_DESCS[] =
 };
 
 const wstring DyePowderItem::COLOR_TEXTURES[] =
-{ L"black", L"red", L"green", L"brown", L"blue", L"purple", L"cyan", L"silver", L"gray", L"pink",
+{ L"black", L"red", L"green", L"brown", L"blue", L"purple", L"cyan", L"light_gray", L"gray", L"pink",
 L"lime", L"yellow", L"light_blue", L"magenta", L"orange", L"white"};
 
 const int DyePowderItem::COLOR_RGB[] =
@@ -343,6 +343,6 @@ void DyePowderItem::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < DYE_POWDER_ITEM_TEXTURE_COUNT; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_" + COLOR_TEXTURES[i]);
+		icons[i] = iconRegister->registerIcon(COLOR_TEXTURES[i] + L"_" + getIconName());
 	}
 }

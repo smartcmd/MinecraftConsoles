@@ -19,5 +19,4 @@ protected:
 
 public:
 	void spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonus);
-	void registerIcons(IconRegister *iconRegister);
 };

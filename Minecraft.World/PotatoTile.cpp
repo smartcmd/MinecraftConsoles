@@ -6,6 +6,7 @@
 
 PotatoTile::PotatoTile(int id) : CropTile(id)
 {
+	stages = 4;
 }
 
 Icon *PotatoTile::getTexture(int face, int data)
@@ -48,13 +49,5 @@ void PotatoTile::spawnResources(Level *level, int x, int y, int z, int data, flo
 		{
 			popResource(level, x, y, z, std::make_shared<ItemInstance>(Item::potatoPoisonous));
 		}
-	}
-}
-
-void PotatoTile::registerIcons(IconRegister *iconRegister)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i) );
 	}
 }

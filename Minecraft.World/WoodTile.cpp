@@ -51,6 +51,6 @@ void WoodTile::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < WOOD_NAMES_LENGTH; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_NAMES[i]);
+		icons[i] = iconRegister->registerIcon(TEXTURE_NAMES[i] + L"_" + getIconName());
 	}
 }

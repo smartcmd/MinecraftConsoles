@@ -219,8 +219,8 @@ int StemTile::cloneTileId(Level *level, int x, int y, int z)
 
 void StemTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"stem_straight");
-	iconAngled = iconRegister->registerIcon(TEXTURE_ANGLED);
+	icon = iconRegister->registerIcon(L"pumpkin_stem_disconnected");
+	iconAngled = iconRegister->registerIcon(L"attached_pumpkin_stem");
 }
 
 Icon *StemTile::getAngledTexture()

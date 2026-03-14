@@ -14,9 +14,9 @@ public:
 
 private:
 	static const int healthPerSlot[];
-	static const wstring LEATHER_OVERLAYS[] ;
 
 public:
+	static const wstring LEATHER_OVERLAYS[];
 	static const wstring TEXTURE_EMPTY_SLOTS[];
 
 private:

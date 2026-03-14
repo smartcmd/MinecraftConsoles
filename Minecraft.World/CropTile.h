@@ -27,6 +27,7 @@ public:
 	virtual Icon *getTexture(int face, int data);
 	virtual int getRenderShape();
 protected:
+	int stages;
 	virtual int getBaseSeedId();
 	virtual int getBasePlantId();
 

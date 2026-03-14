@@ -216,6 +216,47 @@ void TexturePackRepository::updateList()
 	delete texturePacks;
     texturePacks = currentPacks;
 #endif
+	File texturePackDir;
+	if (minecraft->workingDirectory.getPath() == L"")
+		texturePackDir = File(L"resourcepacks");
+	else
+		texturePackDir = File(minecraft->workingDirectory, L"resourcepacks");
+
+	if (!texturePackDir.exists()) {
+		texturePackDir.mkdir();
+		return;
+	}
+
+	int c = 0;
+	for (File* file : *texturePackDir.listFiles()) {
+		if (c++ < 2) continue; // Skip `.` and `..`
+		try {
+			std::wstring name = file->getName();
+			std::wstring zipEnd = L".zip";
+			if (file->isFile() && (name.size() >= zipEnd.size() && name.substr(name.size() - zipEnd.size()) == zipEnd)) {
+				app.DebugPrintf("Found zip file texture pack!");
+				app.DebugPrintf("Finding unique id...");
+				DWORD id = 0;
+				for (int i = 0; i < INT_MAX; i++)
+					if (cacheById.find(i) == cacheById.end()) {
+						id = i;
+						break;
+					}
+				FileTexturePack* tp = new FileTexturePack(id, file, DEFAULT_TEXTURE_PACK);
+				if (tp->hasData()) {
+					texturePacks->push_back(tp);
+					cacheById[id] = tp;
+				}
+			}
+			else if (file->isDirectory()) {
+				app.DebugPrintf("Found texture pack folder! %s", name);
+			}
+		}
+		catch (exception e) {
+			app.DebugPrintf("Error loading texture pack '%ls'!", file->getName());
+			__debugbreak();
+		}
+	}
 }
 
 wstring TexturePackRepository::getIdOrNull(File file)

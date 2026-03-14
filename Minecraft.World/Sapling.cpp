@@ -161,9 +161,10 @@ bool Sapling::isSapling(Level *level, int x, int y, int z, int type)
 void Sapling::registerIcons(IconRegister *iconRegister)
 {
 	icons = new Icon*[SAPLING_NAMES_SIZE];
+	auto woodTile = (WoodTile*)Tile::wood;
 
 	for (int i = 0; i < SAPLING_NAMES_SIZE; i++)
 	{
-		icons[i] = iconRegister->registerIcon(TEXTURE_NAMES[i]);
+		icons[i] = iconRegister->registerIcon(woodTile->TEXTURE_NAMES[i] + L"_sapling");
 	}
 }

@@ -34,7 +34,9 @@ void StainedGlassBlock::registerIcons(IconRegister *iconRegister)
 {
 	for (int i = 0; i < ICONS_LENGTH; i++)
 	{
-		ICONS[i] = iconRegister->registerIcon(getIconName() + L"_" + DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
+		int val = getItemAuxValueForBlockData(i);
+		auto colorName = (val != DyePowderItem::SILVER ? DyePowderItem::COLOR_TEXTURES[val] : L"light_gray");
+		ICONS[i] = iconRegister->registerIcon(colorName + L"_" + getIconName());
 	}
 }
 

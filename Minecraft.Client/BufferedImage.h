@@ -1,8 +1,19 @@
 #pragma once
+#include <cstdint>
 using namespace std;
 
 class Graphics;
 class DLCPack;
+
+union Pixel { // Could be a duplicate but I didnt search that hard
+	uint32_t raw;
+	struct { // argb flipped because of endianness
+		unsigned char b;
+		unsigned char g;
+		unsigned char r;
+		unsigned char a;
+	};
+};
 
 class BufferedImage
 {

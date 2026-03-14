@@ -52,7 +52,9 @@ public:
 	virtual unsigned char getDLCSubPackId() = 0;
 	virtual ColourTable *getColourTable() = 0;
 	virtual ArchiveFile *getArchiveFile() = 0;
-
+	// Needed otherwise game go boom during unsafe cast
+	virtual DLCPack* getDLCInfoParentPack() { return NULL; }
+	virtual void generateStitched(unordered_map<wstring, Icon*> texturesByName) {}
 private:
 	bool m_bHasAudio;
 

@@ -55,7 +55,7 @@ shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, 
 
 void FishingRodItem::registerIcons(IconRegister *iconRegister)
 {
-        icon = iconRegister->registerIcon(getIconName() + L"_uncast");
+        icon = iconRegister->registerIcon(getIconName());
 	emptyIcon = iconRegister->registerIcon(getIconName() + L"_cast");
 }
 

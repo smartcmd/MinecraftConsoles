@@ -61,7 +61,7 @@ const Rarity *RecordingItem::getRarity(shared_ptr<ItemInstance> itemInstance)
 
 void RecordingItem::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"record_" + recording);
+	icon = iconRegister->registerIcon(getIconName() + L"_" + recording);
 }
 
 RecordingItem *RecordingItem::getByName(const wstring &name)

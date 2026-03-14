@@ -16,7 +16,7 @@ void DropperTile::registerIcons(IconRegister *iconRegister)
 {
 	icon = iconRegister->registerIcon(L"furnace_side");
 	iconTop = iconRegister->registerIcon(L"furnace_top");
-	iconFront = iconRegister->registerIcon(getIconName() + L"_front_horizontal");
+	iconFront = iconRegister->registerIcon(getIconName() + L"_front");
 	iconFrontVertical = iconRegister->registerIcon(getIconName() + L"_front_vertical");
 }
 

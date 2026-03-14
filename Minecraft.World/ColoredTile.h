@@ -17,5 +17,6 @@ public:
 	virtual int getSpawnResourcesAuxValue(int data);
 	static int getTileDataForItemAuxValue(int auxValue);
 	static int getItemAuxValueForTileData(int data);
+	wstring getColoredIconName(int id);
 	virtual void registerIcons(IconRegister *iconRegister);
 };

@@ -735,6 +735,24 @@
     <Filter Include="include\lce_filesystem">
       <UniqueIdentifier>{70b1f1aa-fe50-4aab-9a6c-14df8cb1f231}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Source Files\libs">
+      <UniqueIdentifier>{280237d6-cf3a-418c-990d-30c98fe24dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Source Files\libs\bit7z">
+      <UniqueIdentifier>{c05c44be-8378-4b7a-b3b6-25980dd2e212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Source Files\libs\bit7z\lib">
+      <UniqueIdentifier>{d47a8022-a3e9-4ce4-8176-4779d6e9512d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Source Files\libs\bit7z\include">
+      <UniqueIdentifier>{4ed3fe84-3f44-4ec9-97f4-258c9b41fab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Source Files\libs\bit7z\lib\Debug">
+      <UniqueIdentifier>{3c65b1f9-fa53-4956-9e9f-f43bd0ba8a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Source Files\libs\bit7z\lib\Release">
+      <UniqueIdentifier>{66652ea1-d6b0-403d-800b-0609c3691785}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -3790,6 +3808,105 @@
     <ClInclude Include="Common\Audio\stb_vorbis.h">
       <Filter>Common\Source Files\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bit7z.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bit7zlibrary.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitabstractarchivecreator.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitabstractarchivehandler.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitabstractarchiveopener.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchiveeditor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchiveitem.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchiveiteminfo.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchiveitemoffset.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchivereader.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitarchivewriter.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitcompressionlevel.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitcompressionmethod.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitcompressor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitdefines.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\biterror.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitexception.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitextractor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitfilecompressor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitfileextractor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitformat.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitfs.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitgenericitem.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitinputarchive.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bititemsvector.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitmemcompressor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitmemextractor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitoutputarchive.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitpropvariant.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitstreamcompressor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitstreamextractor.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bittypes.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\libs\bit7z\include\bit7z\bitwindows.hpp">
+      <Filter>Common\Source Files\libs\bit7z\include</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\lce_filesystem\lce_filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -6179,6 +6296,13 @@
     <Library Include="Xbox\4JLibs\libs\4J_XTMS_r.lib">
       <Filter>Xbox\4JLibs\libs</Filter>
     </Library>
+    <Library Include="Common\libs\bit7z\lib\x64\Debug\bit7z.lib">
+      <Filter>Common\Source Files\libs\bit7z\lib\Debug</Filter>
+    </Library>
+    <Library Include="Common\libs\bit7z\lib\x64\Release\bit7z.lib">
+      <Filter>Common\Source Files\libs\bit7z\lib\Release</Filter>
+    </Library>
+    <Library Include="..\Windows64Media\7z.dll" />
     <!-- <Library Include="PSVita\4JLibs\libs\libSceNpToolkit_rtti.a">
       <Filter>PSVita\4JLibs\libs</Filter>
     </Library>
@@ -6312,8 +6436,5 @@
     <MASM Include="iob_shim.asm">
       <Filter>Source Files</Filter>
     </MASM>
-  </ItemGroup>
-  <ItemGroup>
-    <AppxManifest Include="Durango\Autogenerated.appxmanifest" />
   </ItemGroup>
 </Project>

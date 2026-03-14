@@ -46,7 +46,9 @@ void StainedGlassPaneBlock::registerIcons(IconRegister *iconRegister)
 	ThinFenceTile::registerIcons(iconRegister);
 	for (int i = 0; i < ICONS_COUNT; i++)
 	{
-		ICONS[i] = iconRegister->registerIcon(getIconName() + L"_" + DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
-		EDGE_ICONS[i] = iconRegister->registerIcon(getIconName() + L"_pane_top_" + DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
+		int val = getItemAuxValueForBlockData(i);
+		auto colorName = (val != DyePowderItem::SILVER ? DyePowderItem::COLOR_TEXTURES[val] : L"light_gray");
+		ICONS[i] = iconRegister->registerIcon(colorName + L"_" + getIconName());
+		EDGE_ICONS[i] = iconRegister->registerIcon(colorName + L"_" + getIconName() + L"_pane_top");
 	}
 }
