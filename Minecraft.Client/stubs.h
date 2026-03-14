@@ -160,20 +160,11 @@ public:
 	void dispose() {}
 };
 
-class ZipEntry
-{
-};
+class ZipEntry;
 class InputStream;
 
 class File;
-class ZipFile
-{
-public:
-	ZipFile(File *file) {}
-	InputStream *getInputStream(ZipEntry *entry) { return NULL; }
-	ZipEntry *getEntry(const wstring& name) {return NULL;}
-	void close() {}
-};
+class ZipFile;
 
 class ImageIO
 {

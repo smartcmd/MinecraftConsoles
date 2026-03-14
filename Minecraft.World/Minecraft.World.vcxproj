@@ -3441,6 +3441,8 @@
     <ClInclude Include="ConsoleSaveFileIO.h" />
     <ClInclude Include="ConsoleSaveFileOutputStream.h" />
     <ClInclude Include="ConsoleSavePath.h" />
+    <ClInclude Include="ZipEntry.h" />
+    <ClInclude Include="ZipFile.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="WaterAnimal.h" />
     <ClInclude Include="ZonedChunkStorage.h" />
@@ -4793,6 +4795,8 @@
     <ClCompile Include="WorkbenchTile.cpp" />
     <ClCompile Include="ConsoleSaveFileInputStream.cpp" />
     <ClCompile Include="ConsoleSaveFileOutputStream.cpp" />
+    <ClCompile Include="ZipEntry.cpp" />
+    <ClCompile Include="ZipFile.cpp" />
     <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="WaterAnimal.cpp" />
     <ClCompile Include="ZonedChunkStorage.cpp">

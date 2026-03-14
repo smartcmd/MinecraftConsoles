@@ -3197,6 +3197,12 @@
     <ClInclude Include="FireworksMenu.h">
       <Filter>net\minecraft\world\inventory</Filter>
     </ClInclude>
+    <ClInclude Include="ZipEntry.h">
+      <Filter>ConsoleJavaLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipFile.h">
+      <Filter>ConsoleJavaLibs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -5625,6 +5631,12 @@
     </ClCompile>
     <ClCompile Include="EmptyMapItem.cpp">
       <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipEntry.cpp">
+      <Filter>ConsoleJavaLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipFile.cpp">
+      <Filter>ConsoleJavaLibs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
