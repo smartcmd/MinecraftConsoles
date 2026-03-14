@@ -41,6 +41,19 @@
 #include "..\Minecraft.Server\Common\StringUtils.h"
 #endif
 
+namespace
+{
+	// Anti-cheat thresholds. Keep server-side checks authoritative even in host mode.
+	// Base max squared displacement allowed per move packet before speed flags trigger.
+	const double kMoveBaseAllowanceSq = 100.0;
+	// Extra squared displacement allowance derived from current server-side velocity.
+	const double kMoveVelocityAllowanceScale = 100.0;
+	// Max squared distance for interact/attack when the target is visible (normal reach).
+	const double kInteractReachSq = 6.0 * 6.0;
+	// Stricter max squared distance used when LOS is blocked to reduce wall-hit abuse.
+	const double kInteractBlockedReachSq = 3.0 * 3.0;
+}
+
 Random PlayerConnection::random;
 
 
@@ -327,16 +340,19 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 		double dist = xDist * xDist + yDist * yDist + zDist * zDist;
 
-		// 4J-PB - removing this one for now
-		/*if (dist > 100.0f)
+		// Anti-cheat: reject movement packets that exceed server-authoritative bounds.
+		double velocitySq = player->xd * player->xd + player->yd * player->yd + player->zd * player->zd;
+		double maxAllowedSq = kMoveBaseAllowanceSq + (velocitySq * kMoveVelocityAllowanceScale);
+		if (player->isAllowedToFly() || player->gameMode->isCreative())
 		{
-		//            logger.warning(player->name + " moved too quickly!");
-		disconnect(DisconnectPacket::eDisconnect_MovedTooQuickly);
-		//                System.out.println("Moved too quickly at " + xt + ", " + yt + ", " + zt);
-		//                teleport(player->x, player->y, player->z, player->yRot, player->xRot);
-		return;
+			// Creative / flight-allowed players can move farther legitimately per tick.
+			maxAllowedSq *= 1.5;
 		}
-		*/
+		if (dist > maxAllowedSq)
+		{
+			disconnect(DisconnectPacket::eDisconnect_MovedTooQuickly);
+			return;
+		}
 
 		float r = 1 / 16.0f;
 		bool oldOk = level->getCubes(player, player->bb->copy()->shrink(r, r, r))->empty();
@@ -372,8 +388,8 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 		xDist = xt - player->x;
 		yDist = yt - player->y;
 
-		// 4J-PB - line below will always be true!
-		if (yDist > -0.5 || yDist < 0.5)
+		// Clamp tiny Y drift noise to reduce false positives.
+		if (yDist > -0.5 && yDist < 0.5)
 		{
 			yDist = 0;
 		}
@@ -605,7 +621,9 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 		}
 #endif
 
-		if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
+		//if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
+		// Anti-cheat: validate spawn protection on the server for mining start.
+		if (!server->isUnderSpawnProtection(level, x, y, z, player)) player->gameMode->startDestroyBlock(x, y, z, packet->face);
 		else player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 
 	}
@@ -684,7 +702,8 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 	{
 		if (synched && player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) < 8 * 8)
 		{
-			if (true)		// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from java 1.6.4) but putting back to old behaviour
+			// Anti-cheat: block placement/use must pass server-side spawn protection.
+			if (!server->isUnderSpawnProtection(level, x, y, z, player))
 			{
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 				if (!informClient)
@@ -1059,17 +1078,16 @@ void PlayerConnection::handleInteract(shared_ptr<InteractPacket> packet)
 	// 4J Stu - If the client says that we hit something, then agree with it. The canSee can fail here as it checks
 	// a ray from head->head, but we may actually be looking at a different part of the entity that can be seen
 	// even though the ray is blocked.
-	if (target != nullptr) // && player->canSee(target) && player->distanceToSqr(target) < 6 * 6)
+	if (target != nullptr)
 	{
-		//boole canSee = player->canSee(target);
-		//double maxDist = 6 * 6;
-		//if (!canSee)
-		//{
-		//	maxDist = 3 * 3;
-		//}
+		// Anti-cheat: enforce reach and LOS on the server to reject forged hits.
+		bool canSeeTarget = player->canSee(target);
+		double maxDistSq = canSeeTarget ? kInteractReachSq : kInteractBlockedReachSq;
+		if (player->distanceToSqr(target) > maxDistSq)
+		{
+			return;
+		}
 
-		//if (player->distanceToSqr(target) < maxDist)
-		//{
 		if (packet->action == InteractPacket::INTERACT)
 		{
 			player->interact(target);
@@ -1084,7 +1102,6 @@ void PlayerConnection::handleInteract(shared_ptr<InteractPacket> packet)
 			}
 			player->attack(target);
 		}
-		//}
 	}
 
 }

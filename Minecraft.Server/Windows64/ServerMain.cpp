@@ -410,6 +410,7 @@ int main(int argc, char **argv)
 	accessShutdownGuard.Activate();
 	LogInfof("startup", "LAN advertise: %s", serverProperties.lanAdvertise ? "enabled" : "disabled");
 	LogInfof("startup", "Whitelist: %s", serverProperties.whiteListEnabled ? "enabled" : "disabled");
+	LogInfof("startup", "Spawn protection radius: %d", serverProperties.spawnProtectionRadius);
 #ifdef _LARGE_WORLDS
 	LogInfof(
 		"startup",

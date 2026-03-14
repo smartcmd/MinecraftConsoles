@@ -569,6 +569,7 @@ MinecraftServer::MinecraftServer()
 	playerIdleTimeout = 0;
 	m_postUpdateThread = nullptr;
 	forceGameType = false;
+	m_spawnProtectionRadius = 0;
 
 	commandDispatcher = new ServerCommandDispatcher();
 	InitializeCriticalSection(&m_consoleInputCS);
@@ -615,6 +616,10 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	logger.info("Loading properties");
 #endif
 	settings = new Settings(new File(L"server.properties"));
+	// Dedicated-only: spawn-protection radius in blocks; 0 disables protection.
+	m_spawnProtectionRadius = GetDedicatedServerInt(settings, L"spawn-protection", 0);
+	if (m_spawnProtectionRadius < 0) m_spawnProtectionRadius = 0;
+	if (m_spawnProtectionRadius > 256) m_spawnProtectionRadius = 256;
 
 	app.SetGameHostOption(eGameHostOption_Difficulty, GetDedicatedServerInt(settings, L"difficulty", app.GetGameHostOption(eGameHostOption_Difficulty)));
 	app.SetGameHostOption(eGameHostOption_GameType, GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType)));
@@ -631,6 +636,7 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	app.DebugPrintf("ServerSettings: pvp is %s\n",(app.GetGameHostOption(eGameHostOption_PvP)>0)?"on":"off");
 	app.DebugPrintf("ServerSettings: fire spreads is %s\n",(app.GetGameHostOption(eGameHostOption_FireSpreads)>0)?"on":"off");
 	app.DebugPrintf("ServerSettings: tnt explodes is %s\n",(app.GetGameHostOption(eGameHostOption_TNT)>0)?"on":"off");
+	app.DebugPrintf("ServerSettings: spawn protection radius is %d\n", m_spawnProtectionRadius);
 	app.DebugPrintf("\n");
 
 	// TODO 4J Stu - Init a load of settings based on data passed as params
@@ -1661,7 +1667,9 @@ Level *MinecraftServer::getCommandSenderWorld()
 
 int MinecraftServer::getSpawnProtectionRadius()
 {
-	return 16;
+	// Client-host mode must never apply dedicated-server spawn protection settings.
+	if (!ShouldUseDedicatedServerProperties()) return 0;
+	return m_spawnProtectionRadius;
 }
 
 bool MinecraftServer::isUnderSpawnProtection(Level *level, int x, int y, int z, shared_ptr<Player> player)

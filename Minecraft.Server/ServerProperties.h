@@ -46,6 +46,8 @@ namespace ServerRuntime
 		/** Nether scale derived from `world-size` */
 		int worldHellScale;
 		bool levelTypeFlat;
+		/** `spawn-protection` radius in blocks (0 disables protection) */
+		int spawnProtectionRadius;
 		bool generateStructures;
 		bool bonusChest;
 		bool pvp;

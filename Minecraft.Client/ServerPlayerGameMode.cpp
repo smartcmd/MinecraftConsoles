@@ -176,31 +176,29 @@ void ServerPlayerGameMode::stopDestroyBlock(int x, int y, int z)
 {
 	if (x == xDestroyBlock && y == yDestroyBlock && z == zDestroyBlock)
 	{
-		//         int ticksSpentDestroying = gameTicks - destroyProgressStart;
-
 		int t = level->getTile(x, y, z);
 		if (t != 0)
 		{
 			Tile *tile = Tile::tiles[t];
-
-			// MGH -	removed checking for the destroy progress here, it has already been checked on the client before it sent the packet.
-			//			fixes issues with this failing to destroy because of packets bunching up
-			//             float destroyProgress = tile->getDestroyProgress(player, player->level, x, y, z) * (ticksSpentDestroying + 1);
-			//             if (destroyProgress >= .7f || bIgnoreDestroyProgress)
+			// Anti-cheat: re-check destroy progress on the server for STOP_DESTROY.
+			int ticksSpentDestroying = gameTicks - destroyProgressStart;
+			float destroyProgress = tile->getDestroyProgress(player, player->level, x, y, z) * (ticksSpentDestroying + 1);
+			if (destroyProgress >= 1.0f)
 			{
 				isDestroyingBlock = false;
 				level->destroyTileProgress(player->entityId, x, y, z, -1);
 				destroyBlock(x, y, z);
 			}
-			// 			else if (!hasDelayedDestroy)
-			// 			{
-			// 				isDestroyingBlock = false;
-			//                 hasDelayedDestroy = true;
-			//                 delayedDestroyX = x;
-			//                 delayedDestroyY = y;
-			//                 delayedDestroyZ = z;
-			//                 delayedTickStart = destroyProgressStart;
-			//             }
+			else if (!hasDelayedDestroy)
+			{
+				// Keep server-authoritative mining while allowing legit latency to finish via delayed tick progression.
+				isDestroyingBlock = false;
+				hasDelayedDestroy = true;
+				delayedDestroyX = x;
+				delayedDestroyY = y;
+				delayedDestroyZ = z;
+				delayedTickStart = destroyProgressStart;
+			}
 		}
 	}
 }
