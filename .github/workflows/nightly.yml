@@ -78,13 +78,18 @@ jobs:
         tag_name: nightly
         name: Nightly Release
         body: |
-          Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
+          Requires at least Windows 7 and DirectX 11 compatible GPU to run.
           
           # 🚨 First time here? 🚨
           If you've never downloaded the game before, you need to download `LCEWindows64.zip` and extract it to the folder where you'd like to keep the game. The other files are included in this `.zip` file!
         files: |
           artifacts/*
 
+  cleanup:
+    needs: [build, release]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
     - name: Cleanup artifacts
       uses: geekyeggo/delete-artifact@v5
       with:
