@@ -14,6 +14,7 @@ public:
 private:
 	const DWORD id;
 	const wstring name;
+	int texSize;
 
 protected:
 	File *file;
@@ -50,6 +51,7 @@ protected:
 	virtual void loadComparison();
 	virtual void loadDescription();
 	virtual void loadName();
+	void checkTexSize();
 
 public:
 	virtual InputStream *getResource(const wstring &name, bool allowFallback); //throws IOException

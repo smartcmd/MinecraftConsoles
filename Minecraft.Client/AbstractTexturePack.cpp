@@ -327,6 +327,21 @@ void AbstractTexturePack::loadName()
 {
 }
 
+void AbstractTexturePack::checkTexSize() {
+	BufferedImage* img = getImageResource(L"dirt.png", true);
+	if (img != NULL) {
+		int width = img->getWidth();
+		int height = img->getHeight();
+		if (width != height) {
+			app.DebugPrintf("Warning: Texture pack contains texture with bad size: %d x %d\n", width, height);
+		} else
+			texSize = width;
+		delete img;
+	} else {
+		texSize = 16;
+	}
+}
+
 InputStream *AbstractTexturePack::getResource(const wstring &name, bool allowFallback) //throws IOException
 {
 	app.DebugPrintf("texture - %ls\n",name.c_str());
