@@ -14,7 +14,7 @@ const unsigned int AnvilTile::ANVIL_NAMES[ANVIL_NAMES_LENGTH] = {	IDS_TILE_ANVIL
 
 
 wstring AnvilTile::TEXTURE_DAMAGE_NAMES[ANVIL_NAMES_LENGTH] = {
-	L"anvil_top", L"anvil_top_damaged_1", L"anvil_top_damaged_2"
+	L"anvil_top", L"chipped_anvil_top", L"damaged_anvil_top"
 };
 
 AnvilTile::AnvilTile(int id) : HeavyTile(id, Material::heavyMetal, isSolidRender() )
@@ -46,7 +46,7 @@ Icon *AnvilTile::getTexture(int face, int data)
 
 void AnvilTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"anvil_base");
+	icon = iconRegister->registerIcon(L"anvil");
 	icons = new Icon*[ANVIL_NAMES_LENGTH];
 
 	for (int i = 0; i < ANVIL_NAMES_LENGTH; i++)

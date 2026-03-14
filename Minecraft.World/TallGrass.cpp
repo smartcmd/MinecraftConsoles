@@ -12,7 +12,7 @@ const unsigned int TallGrass::TALL_GRASS_TILE_NAMES[TALL_GRASS_TILE_NAMES_LENGTH
 													IDS_TILE_FERN,
 												};
 
-const wstring TallGrass::TEXTURE_NAMES[] = {L"deadbush", L"tallgrass", L"fern"};
+const wstring TallGrass::TEXTURE_NAMES[] = {L"dead_bush", L"short_grass", L"fern"};
 
 TallGrass::TallGrass(int id) : Bush(id, Material::replaceable_plant)
 {

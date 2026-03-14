@@ -14,9 +14,9 @@ int QuartzBlockTile::BLOCK_NAMES[QUARTZ_BLOCK_NAMES] = {
 
 const wstring QuartzBlockTile::TEXTURE_TOP = L"top";
 const wstring QuartzBlockTile::TEXTURE_CHISELED_TOP = L"chiseled_top";
-const wstring QuartzBlockTile::TEXTURE_LINES_TOP = L"lines_top";
+const wstring QuartzBlockTile::TEXTURE_LINES_TOP = L"pillar_top";
 const wstring QuartzBlockTile::TEXTURE_BOTTOM = L"bottom";
-const wstring QuartzBlockTile::TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES] = {	L"side", L"chiseled", L"lines", L"", L""};
+const wstring QuartzBlockTile::TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES] = {	L"side", L"chiseled", L"pillar", L"", L""};
 
 QuartzBlockTile::QuartzBlockTile(int id) : Tile(id, Material::stone)
 {
@@ -103,20 +103,20 @@ int QuartzBlockTile::getRenderShape()
 
 void QuartzBlockTile::registerIcons(IconRegister *iconRegister)
 {
+	icons[0] = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_NAMES[0]); // side
+	icons[1] = iconRegister->registerIcon(TEXTURE_NAMES[1] + L"_" + getIconName()); // chiseled
+	icons[2] = iconRegister->registerIcon(L"quartz_" + TEXTURE_NAMES[2]); // pillar
+
 	for (int i = 0; i < QUARTZ_BLOCK_TEXTURES; i++)
 	{
 		if (TEXTURE_NAMES[i].empty())
 		{
 			icons[i] = icons[i - 1];
 		}
-		else
-		{
-			icons[i] = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_NAMES[i]);
-		}
 	}
 
 	iconTop = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_TOP);
-	iconChiseledTop = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_CHISELED_TOP);
-	iconLinesTop = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_LINES_TOP);
+	iconChiseledTop = iconRegister->registerIcon(L"chiseled_" + getIconName() + L"_top");
+	iconLinesTop = iconRegister->registerIcon(L"quartz_" + TEXTURE_LINES_TOP);
 	iconBottom = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_BOTTOM);
 }

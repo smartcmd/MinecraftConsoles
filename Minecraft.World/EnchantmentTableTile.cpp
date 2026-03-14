@@ -96,7 +96,7 @@ void EnchantmentTableTile::setPlacedBy(Level *level, int x, int y, int z, shared
 
 void EnchantmentTableTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(TEXTURE_SIDE);
-	iconTop = iconRegister->registerIcon(TEXTURE_TOP);
-	iconBottom = iconRegister->registerIcon(TEXTURE_BOTTOM);
+	icon = iconRegister->registerIcon(getIconName() + L"_side");
+	iconTop = iconRegister->registerIcon(getIconName() + L"_top");
+	iconBottom = iconRegister->registerIcon(getIconName() + L"_bottom");
 }

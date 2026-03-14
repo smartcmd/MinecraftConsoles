@@ -29,9 +29,9 @@ Icon *MycelTile::getTexture(LevelSource *level, int x, int y, int z, int face)
 
 void MycelTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(L"mycel_side");
-	iconTop = iconRegister->registerIcon(L"mycel_top");
-	iconSnowSide = iconRegister->registerIcon(L"snow_side");
+	icon = iconRegister->registerIcon(getIconName() + L"_side");
+	iconTop = iconRegister->registerIcon(getIconName() + L"_top");
+	iconSnowSide = iconRegister->registerIcon(L"grass_block_snow");
 }
 
 void MycelTile::tick(Level *level, int x, int y, int z, Random *random)

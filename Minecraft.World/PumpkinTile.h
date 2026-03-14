@@ -13,10 +13,10 @@ public:
 	static const int DIR_WEST = 1;
 	static const int DIR_NORTH = 2;
 	static const int DIR_EAST = 3;
-
-private:
 	static const wstring TEXTURE_FACE;
 	static const wstring TEXTURE_LANTERN;
+
+private:
 	bool lit;
 	Icon *iconTop;
 	Icon *iconFace;

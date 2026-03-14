@@ -134,8 +134,8 @@ int DetectorRailTile::getAnalogOutputSignal(Level *level, int x, int y, int z, i
 void DetectorRailTile::registerIcons(IconRegister *iconRegister)
 {
 	icons = new Icon*[2];
-	icons[0] = iconRegister->registerIcon(L"detectorRail");
-	icons[1] = iconRegister->registerIcon(L"detectorRail_on");
+	icons[0] = iconRegister->registerIcon(getIconName());
+	icons[1] = iconRegister->registerIcon(getIconName() + L"_on");
 }
 
 Icon *DetectorRailTile::getTexture(int face, int data)

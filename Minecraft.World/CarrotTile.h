@@ -15,7 +15,4 @@ public:
 protected:
 	int getBaseSeedId();
 	int getBasePlantId();
-
-public:
-	void registerIcons(IconRegister *iconRegister);
 };

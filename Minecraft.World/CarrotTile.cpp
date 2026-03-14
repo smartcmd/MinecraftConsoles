@@ -5,6 +5,7 @@
 
 CarrotTile::CarrotTile(int id) : CropTile(id)
 {
+	stages = 4;
 }
 
 Icon *CarrotTile::getTexture(int face, int data)
@@ -33,10 +34,11 @@ int CarrotTile::getBasePlantId()
 	return Item::carrots_Id;
 }
 
-void CarrotTile::registerIcons(IconRegister *iconRegister)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i));
-	}
-}
+// updated base crop to be consistent
+//void CarrotTile::registerIcons(IconRegister *iconRegister)
+//{
+//	for (int i = 0; i < 4; i++)
+//	{
+//		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i));
+//	}
+//}

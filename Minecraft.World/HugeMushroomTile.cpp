@@ -2,9 +2,9 @@
 #include "net.minecraft.world.h"
 #include "HugeMushroomTile.h"
 
-const wstring HugeMushroomTile::TEXTURE_STEM = L"skin_stem";
+const wstring HugeMushroomTile::TEXTURE_STEM = L"stem";
 const wstring HugeMushroomTile::TEXTURE_INSIDE = L"inside";
-const wstring HugeMushroomTile::TEXTURE_TYPE[] = {L"skin_brown", L"skin_red"};
+const wstring HugeMushroomTile::TEXTURE_TYPE[] = {L"brown", L"red"};
 
 HugeMushroomTile::HugeMushroomTile(int id, Material *material, int type) : Tile(id, material)
 {
@@ -63,9 +63,9 @@ void HugeMushroomTile::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < HUGE_MUSHROOM_TEXTURE_COUNT; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_TYPE[i]);
+		icons[i] = iconRegister->registerIcon(TEXTURE_TYPE[i] + L"_" + getIconName());
 	}
 
 	iconInside = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_INSIDE);
-	iconStem = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_STEM);
+	iconStem = iconRegister->registerIcon(L"mushroom_" + TEXTURE_STEM);
 }

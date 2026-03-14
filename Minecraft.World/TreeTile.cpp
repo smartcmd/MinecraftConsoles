@@ -88,7 +88,7 @@ void TreeTile::registerIcons(IconRegister *iconRegister)
 {
 	for (int i = 0; i < TREE_NAMES_LENGTH; i++)
 	{
-		icons_side[i] = iconRegister->registerIcon(getIconName() + L"_" + TREE_STRING_NAMES[i]);
-		icons_top[i] = iconRegister->registerIcon(getIconName() + L"_" + TREE_STRING_NAMES[i] + L"_top");
+		icons_side[i] = iconRegister->registerIcon(TREE_STRING_NAMES[i] + L"_" + getIconName());
+		icons_top[i] = iconRegister->registerIcon(TREE_STRING_NAMES[i] + L"_" + getIconName() + L"_top");
 	}
 }

@@ -10,6 +10,7 @@ CropTile::CropTile(int id) : Bush(id)
 	setTicking(true);
 	updateDefaultShape();
 	icons = NULL;
+	stages = 8;
 
 	setDestroyTime(0.0f);
 	setSoundType(SOUND_GRASS);
@@ -163,10 +164,10 @@ int CropTile::cloneTileId(Level *level, int x, int y, int z)
 
 void CropTile::registerIcons(IconRegister *iconRegister)
 {
-	icons = new Icon*[8];
+	icons = new Icon*[stages];
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < stages; i++)
 	{
-		icons[i] = iconRegister->registerIcon(L"crops_" + std::to_wstring(i));
+		icons[i] = iconRegister->registerIcon(iconName + L"_stage" + std::to_wstring(i));
 	}
 }

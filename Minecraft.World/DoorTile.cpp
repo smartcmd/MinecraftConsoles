@@ -69,8 +69,8 @@ Icon *DoorTile::getTexture(LevelSource *level, int x, int y, int z, int face)
 
 void DoorTile::registerIcons(IconRegister *iconRegister)
 {
-	iconTop[TEXTURE_NORMAL] = iconRegister->registerIcon(getIconName() + L"_upper");
-	iconBottom[TEXTURE_NORMAL] = iconRegister->registerIcon(getIconName() + L"_lower");
+	iconTop[TEXTURE_NORMAL] = iconRegister->registerIcon(getIconName() + L"_top");
+	iconBottom[TEXTURE_NORMAL] = iconRegister->registerIcon(getIconName() + L"_bottom");
 	iconTop[TEXTURE_FLIPPED] = new FlippedIcon(iconTop[TEXTURE_NORMAL], true, false);
 	iconBottom[TEXTURE_FLIPPED] = new FlippedIcon(iconBottom[TEXTURE_NORMAL], true, false);
 }

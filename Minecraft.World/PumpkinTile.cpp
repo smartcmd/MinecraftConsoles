@@ -163,7 +163,7 @@ void PumpkinTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Livi
 
 void PumpkinTile::registerIcons(IconRegister *iconRegister)
 {
-	iconFace = iconRegister->registerIcon(getIconName() + L"_face_" + (lit ? L"on" : L"off"));
+	iconFace = iconRegister->registerIcon((lit ? L"jack_o_lantern" : L"carved_" + getIconName()));
 	iconTop = iconRegister->registerIcon(getIconName() + L"_top");
 	icon = iconRegister->registerIcon(getIconName() + L"_side");
 }

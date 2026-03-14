@@ -16,14 +16,7 @@ RedlightTile::RedlightTile(int id, bool isLit) : Tile(id, Material::buildable_gl
 
 void RedlightTile::registerIcons(IconRegister *iconRegister)
 {
-	if (isLit)
-	{
-		icon = iconRegister->registerIcon(L"redstoneLight_lit");
-	}
-	else
-	{
-		icon = iconRegister->registerIcon(L"redstoneLight");
-	}
+	icon = iconRegister->registerIcon(getIconName());
 }
 
 void RedlightTile::onPlace(Level *level, int x, int y, int z)

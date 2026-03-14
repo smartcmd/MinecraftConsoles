@@ -14,11 +14,11 @@ const int ArmorItem::healthPerSlot[] = {
 };
 
 const wstring ArmorItem::LEATHER_OVERLAYS[] = {
-		L"helmetCloth_overlay", L"chestplateCloth_overlay", L"leggingsCloth_overlay", L"bootsCloth_overlay"
+		L"leather_helmet_overlay", L"leather_chestplate_overlay", L"leather_leggings_overlay", L"leather_boots_overlay"
 	};
 
 const wstring ArmorItem::TEXTURE_EMPTY_SLOTS[] = {
-		L"slot_empty_helmet", L"slot_empty_chestplate", L"slot_empty_leggings", L"slot_empty_boots"
+		L"empty_armor_slot_helmet", L"empty_armor_slot_chestplate", L"empty_armor_slot_leggings", L"empty_armor_slot_boots"
 	};
 
 
