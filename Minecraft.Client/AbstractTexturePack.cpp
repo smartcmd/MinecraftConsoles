@@ -388,7 +388,18 @@ void AbstractTexturePack::load(Textures *textures)
 
 bool AbstractTexturePack::hasFile(const wstring &name, bool allowFallback)
 {
+	if (name == L"res/terrain.png" && terrainAtlas != nullptr)
+		return true;
+
+	if (name == L"res/items.png" && itemAtlas != nullptr)
+		return true;
+
 	bool hasFile = this->hasFile(name);
+
+	auto it = INDEXED_TO_JAVA_MAP.find(name);
+	if (it != INDEXED_TO_JAVA_MAP.end()) {
+		hasFile = this->hasFile(L"assets/minecraft/textures/" + it->second);
+	}
 
 	return !hasFile && (allowFallback && fallback != NULL) ? fallback->hasFile(name, allowFallback) : hasFile;
 }

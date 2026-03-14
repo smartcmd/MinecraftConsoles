@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint>
-
 #include "TexturePack.h"
 
 class BufferedImage;
@@ -34,8 +33,8 @@ protected:
 
 	ColourTable *m_colourTable;
 
-protected:
 	BufferedImage *iconImage;
+	std::unique_ptr<BufferedImage> terrainAtlas, itemAtlas, bedTexCache;
 
 private:
 	int textureId;
