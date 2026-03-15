@@ -168,7 +168,7 @@ void Player::registerAttributes()
 {
 	LivingEntity::registerAttributes();
 
-	getAttributes()->registerAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(1-);
+	getAttributes()->registerAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(1);
 }
 
 void Player::defineSynchedData()
