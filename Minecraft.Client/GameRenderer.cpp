@@ -390,6 +390,8 @@ float GameRenderer::getFov(float a, bool applyEffects)
 	shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
 	int playerIdx = player ? player->GetXboxPad() : 0;
 	float fov = m_fov;//70;
+	if (fov < 1) fov = 0.01; // Crash fix
+	
 	if (applyEffects)
 	{
 		fov += mc->options->fov * 40;
