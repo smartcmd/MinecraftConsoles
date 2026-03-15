@@ -17,8 +17,14 @@
 #include <string>
 
 static bool RecvExact(SOCKET sock, BYTE* buf, int len);
+<<<<<<< HEAD
 #ifdef _WINDOWS64
 static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp);
+=======
+#if defined(MINECRAFT_SERVER_BUILD)
+static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp);
+#endif
+>>>>>>> smartcmd/main
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;
 SOCKET WinsockNetLayer::s_hostConnectionSocket = INVALID_SOCKET;
@@ -565,6 +571,10 @@ static bool RecvExact(SOCKET sock, BYTE* buf, int len)
 	return true;
 }
 
+<<<<<<< HEAD
+=======
+#if defined(MINECRAFT_SERVER_BUILD)
+>>>>>>> smartcmd/main
 static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp)
 {
 	if (outIp == nullptr)
@@ -583,6 +593,10 @@ static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string 
 	*outIp = ip;
 	return true;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> smartcmd/main
 
 void WinsockNetLayer::HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsigned char* data, unsigned int dataSize)
 {
@@ -632,11 +646,18 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		int noDelay = 1;
 		setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&noDelay, sizeof(noDelay));
 
+<<<<<<< HEAD
 		std::string remoteIp;
 		const bool hasRemoteIp = TryGetNumericRemoteIp(remoteAddress, &remoteIp);
 		const char *remoteIpForLog = hasRemoteIp ? remoteIp.c_str() : "unknown";
 
 #if defined(MINECRAFT_SERVER_BUILD)
+=======
+#if defined(MINECRAFT_SERVER_BUILD)
+		std::string remoteIp;
+		const bool hasRemoteIp = TryGetNumericRemoteIp(remoteAddress, &remoteIp);
+		const char *remoteIpForLog = hasRemoteIp ? remoteIp.c_str() : "unknown";
+>>>>>>> smartcmd/main
 		if (g_Win64DedicatedServer)
 		{
 			ServerRuntime::ServerLogManager::OnIncomingTcpConnection(remoteIpForLog);
