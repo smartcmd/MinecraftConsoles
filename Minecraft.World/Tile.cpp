@@ -371,7 +371,12 @@ void Tile::staticCtor()
 
 
 	Tile::ironFence = (new ThinFenceTile(101, L"iron_bars", L"iron_bars", Material::metal, true))	->setBaseItemTypeAndMaterial(Item::eBaseItemType_fence,		Item::eMaterial_iron)->setDestroyTime(5.0f)->setExplodeable(10)->setSoundType(SOUND_METAL)->setDescriptionId(IDS_TILE_IRON_FENCE)->setUseDescriptionId(IDS_DESC_IRON_FENCE);
-	Tile::thinGlass = (new ThinFenceTile(102, L"glass", L"glass_pane_top", Material::glass, false))	->setDestroyTime(0.3f)->setSoundType(SOUND_GLASS)->setDescriptionId(IDS_TILE_THIN_GLASS)->setUseDescriptionId(IDS_DESC_THIN_GLASS);
+	Tile::thinGlass = (new ThinFenceTile(102, L"glass", L"glass_pane_top", Material::glass, false))
+    ->setBaseItemTypeAndMaterial(Item::eBaseItemType_glass, Item::eMaterial_glass) 
+    ->setDestroyTime(0.3f)
+    ->setSoundType(SOUND_GLASS)
+    ->setDescriptionId(IDS_TILE_THIN_GLASS)
+    ->setUseDescriptionId(IDS_DESC_THIN_GLASS);
 	Tile::melon = (new MelonTile(103))											->setDestroyTime(1.0f)->setSoundType(SOUND_WOOD)->setIconName(L"melon")->setDescriptionId(IDS_TILE_MELON)->setUseDescriptionId(IDS_DESC_MELON_BLOCK);
 	Tile::pumpkinStem = (new StemTile(104, Tile::pumpkin))						->setDestroyTime(0.0f)->setSoundType(SOUND_WOOD)->setIconName(L"pumpkin_stem")->setDescriptionId(IDS_TILE_PUMPKIN_STEM)->sendTileData();
 	Tile::melonStem = (new StemTile(105, Tile::melon))							->setDestroyTime(0.0f)->setSoundType(SOUND_WOOD)->setIconName(L"melon_stem")->setDescriptionId(IDS_TILE_MELON_STEM)->sendTileData();

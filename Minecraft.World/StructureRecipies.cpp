@@ -115,6 +115,28 @@ void StructureRecipies::addRecipes(Recipes *r)
 
 		L'#', Tile::glass,
 		L'D');
+	
+
+
+
+// Stained Glass block + pane per color
+for (int i = 0; i < 16; i++)
+{
+    r->addShapedRecipy(new ItemInstance(Tile::stained_glass, 8, ColoredTile::getItemAuxValueForTileData(i)),
+        L"sssczczg",
+        L"###",
+        L"#X#",
+        L"###",
+        L'#', new ItemInstance(Tile::glass),
+        L'X', new ItemInstance(Item::dye_powder, 1, i),
+        L'D');
+    r->addShapedRecipy(new ItemInstance(Tile::stained_glass_pane, 16, ColoredTile::getItemAuxValueForTileData(i)),
+        L"ssczg",
+        L"###",
+        L"###",
+        L'#', new ItemInstance(Tile::stained_glass, 1, ColoredTile::getItemAuxValueForTileData(i)),
+        L'D');
+}
 
 	r->addShapedRecipy(new ItemInstance(Tile::netherBrick, 1), //
 		L"sscig",

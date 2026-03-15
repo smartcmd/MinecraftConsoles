@@ -20,9 +20,9 @@ protected:
 		eGroupTab_Right
 	};
 
-	static const int m_iMaxHSlotC = 12;
-	static const int m_iMaxHCraftingSlotC = 10;
-	static const int m_iMaxVSlotC = 17; 
+	static const int m_iMaxHSlotC = 40;
+	static const int m_iMaxHCraftingSlotC = 40;
+	static const int m_iMaxVSlotC = 99; 
 	static const int m_iMaxDisplayedVSlotC = 3;
 	static const int m_iIngredients3x3SlotC = 9;
 	static const int m_iIngredients2x2SlotC = 4;

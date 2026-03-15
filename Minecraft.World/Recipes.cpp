@@ -299,6 +299,7 @@ Recipes::Recipes()
 	pClothDyeRecipes->addRecipes(this);
 
 
+
 	addShapedRecipy(new ItemInstance(Tile::snow, 1), //
 		L"sscig",
 		L"##", //
