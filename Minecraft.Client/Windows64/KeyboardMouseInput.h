@@ -32,6 +32,8 @@ public:
 	static const int KEY_DEBUG_INFO = VK_F3;
 	static const int KEY_DEBUG_MENU = VK_F4;
 
+	static const int KEY_CONTROL = VK_CONTROL;
+
 	void Init();
 	void Tick();
 	void ClearAllState();

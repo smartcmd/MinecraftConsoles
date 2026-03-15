@@ -48,6 +48,7 @@ If you're looking for Dedicated Server software, download its [Nightly Build her
 - **Inventory**: `E`
 - **Chat**: `T`
 - **Drop Item**: `Q`
+- **Drop Stack**: `Ctrl` + `Q`
 - **Crafting**: `C` Use `Q` and `E` to move through tabs (cycles Left/Right)
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
