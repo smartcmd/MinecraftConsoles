@@ -367,19 +367,17 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 	else
 	{
 		//		printf("NULLing player %d, chunks @ 0x%x\n",playerIndex,chunks[playerIndex]);
-		if( chunks[playerIndex].data != nullptr )
-		{
-			for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
-			{
-				chunks[playerIndex][i].chunk->_delete();
-				delete chunks[playerIndex][i].chunk;
-			}
-			delete chunks[playerIndex].data;
-			chunks[playerIndex].data = nullptr;
-			chunks[playerIndex].length = 0;
-			//			delete sortedChunks[playerIndex];	// 4J - removed - not sorting our chunks anymore
-			//			sortedChunks[playerIndex] = nullptr;	// 4J - removed - not sorting our chunks anymore
-		}
+        if (chunks[playerIndex].data != nullptr)
+        {
+            for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
+            {
+                chunks[playerIndex][i].chunk->_delete();
+                delete chunks[playerIndex][i].chunk;
+            }
+            delete[] chunks[playerIndex].data;
+            chunks[playerIndex].data = nullptr;
+            chunks[playerIndex].length = 0;
+        }
 
 		// 4J Stu - If we do this for splitscreen players leaving, then all the tile entities in the world dissappear
 		// We should only do this when actually exiting the game, so only when the primary player sets there level to nullptr
@@ -451,7 +449,7 @@ void LevelRenderer::allChanged(int playerIndex)
 			chunks[playerIndex][i].chunk->_delete();
 			delete chunks[playerIndex][i].chunk;
 		}
-		delete chunks[playerIndex].data;
+        delete[] chunks[playerIndex].data;
 		//		delete sortedChunks[playerIndex];	// 4J - removed - not sorting our chunks anymore
 	}
 
@@ -823,8 +821,8 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 	unsigned char emptyFlag = LevelRenderer::CHUNK_FLAG_EMPTY0 << layer;
 	for( int i = 0; i < chunks[playerIndex].length; i++, pClipChunk++ )
 	{
-		if( !pClipChunk->visible ) continue;													// This will be set if the chunk isn't visible, or isn't compiled, or has both empty flags set
-		if( pClipChunk->globalIdx == -1 ) continue;												// Not sure if we should ever encounter this... TODO check
+		if( !pClipChunk->visible ) [[likely]] continue;											// This will be set if the chunk isn't visible, or isn't compiled, or has both empty flags set
+		if( pClipChunk->globalIdx == -1 ) [[unlikely]] continue;								// Not sure if we should ever encounter this... TODO check
 		if( ( globalChunkFlags[pClipChunk->globalIdx] & emptyFlag ) == emptyFlag ) continue;	// Check that this particular layer isn't empty
 
 		// List can be calculated directly from the chunk's global idex
@@ -1943,7 +1941,11 @@ bool LevelRenderer::updateDirtyChunks()
 		int maxNearestChunks = MAX_CONCURRENT_CHUNK_REBUILDS;
 		// 4J Stu - On XboxOne we should cut this down if in a constrained state so the saving threads get more time
 #endif
-		// Find nearest chunk that is dirty
+		// Find nearest chunk that is dirty.
+		// Rewritten for performance: linear scan of clip chunks (cache-friendly), with dirty flag
+		// checked BEFORE computing distances. The old triple-nested x/z/y loop computed distances
+		// for every chunk (~20K) regardless of dirty state. Now only dirty chunks (typically <1%)
+		// pay the cost of distance computation and nearest-selection.
 		for( int p = 0; p < XUSER_MAX_COUNT; p++ )
 		{
 			// It's possible that the localplayers member can be set to nullptr on the main thread when a player chooses to exit the game
@@ -1957,96 +1959,91 @@ bool LevelRenderer::updateDirtyChunks()
 			int py = static_cast<int>(player->y);
 			int pz = static_cast<int>(player->z);
 
-			//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
-
-			int considered = 0;
-			int wouldBeNearButEmpty = 0;
-			for( int x = 0; x < xChunks; x++ )
+			int numClipChunks = static_cast<int>(chunks[p].length);
+			ClipChunk *pClipChunk = chunks[p].data;
+			for( int i = 0; i < numClipChunks; i++, pClipChunk++ )
 			{
-				for( int z = 0; z < zChunks; z++ )
+				// Fast reject: skip non-dirty chunks immediately before any distance work.
+				// globalIdx can be -1 for unassigned chunks.
+				const int gIdx = pClipChunk->globalIdx;
+				if (gIdx < 0)
+					continue;
+				const unsigned char flags = globalChunkFlags[gIdx];
+				if (!(flags & CHUNK_FLAG_DIRTY))
+					continue;
+
+				// Batch-clear empty chunks upfront. After teleport, thousands of sky/void chunks
+				// are dirty. Clearing them all in one scan (rather than ~8 per call) dramatically
+				// reduces the dirty set for subsequent iterations.
+				Chunk *chunk = pClipChunk->chunk;
+				if (chunk == nullptr)
+					continue;
+				const int ySlice = (pClipChunk->ym - (CHUNK_SIZE / 2)) / CHUNK_SIZE;
+				LevelChunk *lc = level[p]->getChunkAt(chunk->x, chunk->z);
+				if (lc == nullptr || lc->isRenderChunkEmpty(ySlice * 16))
 				{
-					for( int y = 0; y < CHUNK_Y_COUNT; y++ )
+					chunk->clearDirty();
+					globalChunkFlags[gIdx] |= CHUNK_FLAG_EMPTYBOTH;
+					continue;
+				}
+
+				// Non-empty dirty chunk — now compute distance
+				const int xd = pClipChunk->xm - px;
+				const int yd = pClipChunk->ym - py;
+				const int zd = pClipChunk->zm - pz;
+				const int distSq = xd * xd + yd * yd + zd * zd;
+				const int distSqWeighted = distSq + 3 * yd * yd;  // Extra y weighting to prioritise things in same x/z plane as player first
+
+				if( (!onlyRebuild) ||
+					(flags & CHUNK_FLAG_COMPILED) ||
+					( distSq < 96 * 96 ) )	// Always rebuild really near things or else building (say) at tower up into empty blocks when we are low on memory will not create render data
+				{
+					// Is this chunk nearer than our nearest?
+#ifdef _LARGE_WORLDS
+					bool isNearer = nearestClipChunks.empty();
+					auto itNearest = nearestClipChunks.begin();
+					for(; itNearest != nearestClipChunks.end(); ++itNearest)
 					{
-						ClipChunk *pClipChunk = &chunks[p][(z * yChunks + y) * xChunks + x];
-						// Get distance to this chunk - deliberately not calling the chunk's method of doing this to avoid overheads (passing entitie, type conversion etc.) that this involves
-						int xd = pClipChunk->xm - px;
-						int yd = pClipChunk->ym - py;
-						int zd = pClipChunk->zm - pz;
-						int distSq = xd * xd + yd * yd + zd * zd;
-						int distSqWeighted = xd * xd + yd * yd * 4 + zd * zd;  // Weighting against y to prioritise things in same x/z plane as player first
+						isNearer = distSqWeighted < itNearest->second;
+						if(isNearer) break;
+					}
+					isNearer = isNearer || (nearestClipChunks.size() < maxNearestChunks);
+#else
+					bool isNearer = distSqWeighted < minDistSq;
+#endif
 
-						if( globalChunkFlags[ pClipChunk->globalIdx ] & CHUNK_FLAG_DIRTY )
+#ifdef _CRITICAL_CHUNKS
+					// AP - this will make sure that if a deferred grouping has started, only critical chunks go into that
+					// grouping, even if a non-critical chunk is closer.
+					if( (!veryNearCount && isNearer) ||
+						(distSq < 20 * 20 && (flags & CHUNK_FLAG_CRITICAL)) )
+#else
+					if( isNearer )
+#endif
+					{
+						// Non-empty (already confirmed above), add to nearest set
+						nearChunk = pClipChunk;
+						minDistSq = distSqWeighted;
+#ifdef _LARGE_WORLDS
+						nearestClipChunks.insert(itNearest, std::make_pair(nearChunk, minDistSq) );
+						if(nearestClipChunks.size() > maxNearestChunks)
 						{
-							if( (!onlyRebuild) ||
-								globalChunkFlags[ pClipChunk->globalIdx ] & CHUNK_FLAG_COMPILED ||
-								( distSq < 96 * 96 ) )	// Always rebuild really near things or else building (say) at tower up into empty blocks when we are low on memory will not create render data
-							{	// distSq adjusted from 20 * 20 to 96 * 96 - updated by detectiveren
-								considered++;
-								// Is this chunk nearer than our nearest?
-#ifdef _LARGE_WORLDS
-								bool isNearer = nearestClipChunks.empty();
-                                auto itNearest = nearestClipChunks.begin();
-                                for(; itNearest != nearestClipChunks.end(); ++itNearest)
-								{
-									isNearer = distSqWeighted < itNearest->second;
-									if(isNearer) break;
-								}
-								isNearer = isNearer || (nearestClipChunks.size() < maxNearestChunks);
-#else
-								bool isNearer = distSqWeighted < minDistSq;
-#endif
-
-#ifdef _CRITICAL_CHUNKS
-								// AP - this will make sure that if a deferred grouping has started, only critical chunks go into that
-								// grouping, even if a non-critical chunk is closer.
-								if( (!veryNearCount && isNearer) ||
-									(distSq < 20 * 20 && (globalChunkFlags[ pClipChunk->globalIdx ] & CHUNK_FLAG_CRITICAL)) )
-#else
-								if( isNearer )
-#endif
-								{
-									// At this point we've got a chunk that we would like to consider for rendering, at least based on its proximity to the player(s).
-									// Its *quite* quick to generate empty render data for render chunks, but if we let the rebuilding do that then the after rebuilding we will have
-									// to start searching for the next nearest chunk from scratch again. Instead, its better to detect empty chunks at this stage, flag them up as not dirty
-									// (and empty), and carry on. The levelchunk's isRenderChunkEmpty method can be quite optimal as it can make use of the chunk's data compression to detect
-									// emptiness without actually testing as many data items as uncompressed data would.
-									Chunk *chunk = pClipChunk->chunk;
-									LevelChunk *lc = level[p]->getChunkAt(chunk->x,chunk->z);
-									if( !lc->isRenderChunkEmpty(y * 16) )
-									{
-										nearChunk = pClipChunk;
-										minDistSq = distSqWeighted;
-#ifdef _LARGE_WORLDS
-										nearestClipChunks.insert(itNearest, std::make_pair(nearChunk, minDistSq) );
-										if(nearestClipChunks.size() > maxNearestChunks)
-										{
-											nearestClipChunks.pop_back();
-										}
-#endif
-									}
-									else
-									{
-										chunk->clearDirty();
-										globalChunkFlags[ pClipChunk->globalIdx ] |= CHUNK_FLAG_EMPTYBOTH;
-										wouldBeNearButEmpty++;
-									}
-								}
-
-#ifdef _CRITICAL_CHUNKS
-								// AP - is the chunk near and also critical
-								if( distSq < 20 * 20 && ((globalChunkFlags[ pClipChunk->globalIdx ] & CHUNK_FLAG_CRITICAL)) )
-#else
-								if( distSq < 20 * 20 )
-#endif
-								{
-									veryNearCount++;
-								}
-							}
+							nearestClipChunks.pop_back();
 						}
+#endif
+					}
+
+#ifdef _CRITICAL_CHUNKS
+					// AP - is the chunk near and also critical
+					if( distSq < 20 * 20 && (flags & CHUNK_FLAG_CRITICAL) )
+#else
+					if( distSq < 20 * 20 )
+#endif
+					{
+						veryNearCount++;
 					}
 				}
 			}
-			//			app.DebugPrintf("[%d,%d,%d]\n",nearestClipChunks.empty(),considered,wouldBeNearButEmpty);
 		}
 #endif // __PS3__
 		PIXEndNamedEvent();
@@ -2193,7 +2190,11 @@ bool LevelRenderer::updateDirtyChunks()
 		return true;
 	}
 
-	if( nearChunk )	destroyedTileManager->updatedChunkAt(chunk->level, chunk->x, chunk->y, chunk->z, veryNearCount );
+	if( nearChunk )
+	{
+		destroyedTileManager->updatedChunkAt(chunk->level, chunk->x, chunk->y, chunk->z, veryNearCount );
+		return dirtyChunkPresent;
+	}
 
 	return false;
 }
@@ -2444,18 +2445,23 @@ void LevelRenderer::setTilesDirty(int x0, int y0, int z0, int x1, int y1, int z1
 	setDirty(x0 - 1, y0 - 1, z0 - 1, x1 + 1, y1 + 1, z1 + 1, level);
 }
 
-bool inline clip(float *bb, float *frustum)
+bool inline clip(float * __restrict bb, float * __restrict frustum)
 {
+	// Pre-load AABB corners to avoid repeated memory loads
+	const float x0 = bb[0], y0 = bb[1], z0 = bb[2];
+	const float x1 = bb[3], y1 = bb[4], z1 = bb[5];
+
 	for (int i = 0; i < 6; ++i, frustum += 4)
 	{
-		if (frustum[0] * (bb[0]) + frustum[1] * (bb[1]) + frustum[2] * (bb[2]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[3]) + frustum[1] * (bb[1]) + frustum[2] * (bb[2]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[0]) + frustum[1] * (bb[4]) + frustum[2] * (bb[2]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[3]) + frustum[1] * (bb[4]) + frustum[2] * (bb[2]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[0]) + frustum[1] * (bb[1]) + frustum[2] * (bb[5]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[3]) + frustum[1] * (bb[1]) + frustum[2] * (bb[5]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[0]) + frustum[1] * (bb[4]) + frustum[2] * (bb[5]) + frustum[3] > 0) continue;
-		if (frustum[0] * (bb[3]) + frustum[1] * (bb[4]) + frustum[2] * (bb[5]) + frustum[3] > 0) continue;
+		const float a = frustum[0], b = frustum[1], c = frustum[2], d = frustum[3];
+		if (a * x0 + b * y0 + c * z0 + d > 0) continue;
+		if (a * x1 + b * y0 + c * z0 + d > 0) continue;
+		if (a * x0 + b * y1 + c * z0 + d > 0) continue;
+		if (a * x1 + b * y1 + c * z0 + d > 0) continue;
+		if (a * x0 + b * y0 + c * z1 + d > 0) continue;
+		if (a * x1 + b * y0 + c * z1 + d > 0) continue;
+		if (a * x0 + b * y1 + c * z1 + d > 0) continue;
+		if (a * x1 + b * y1 + c * z1 + d > 0) continue;
 
 		return false;
 	}

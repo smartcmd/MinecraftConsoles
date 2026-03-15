@@ -132,6 +132,7 @@ typedef XUID GameSessionUID;
 #include <list>
 #include <map>
 #include <set>
+#include <array>
 #include <deque>
 #include <algorithm>
 #include <string>

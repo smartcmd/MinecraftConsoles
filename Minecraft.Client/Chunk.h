@@ -30,9 +30,8 @@ public:
 	static LevelRenderer *levelRenderer;
 private:
 #ifndef _LARGE_WORLDS
-    static Tesselator *t;
+	static Tesselator *t;
 #else
-	static DWORD tlsIdx;
 public:
 	static void CreateNewThreadStorage();
 	static void ReleaseThreadStorage();

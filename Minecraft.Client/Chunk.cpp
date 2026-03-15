@@ -22,24 +22,21 @@
 int Chunk::updates = 0;
 
 #ifdef _LARGE_WORLDS
-DWORD Chunk::tlsIdx = TlsAlloc();
+static thread_local unsigned char s_tlsTileIds[16 * 16 * Level::maxBuildHeight];
 
 void Chunk::CreateNewThreadStorage()
 {
-	unsigned char *tileIds = new unsigned char[16 * 16 * Level::maxBuildHeight];
-	TlsSetValue(tlsIdx, tileIds);
+	// No-op: thread_local handles per-thread allocation automatically
 }
 
 void Chunk::ReleaseThreadStorage()
 {
-	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
-	delete tileIds;
+	// No-op: thread_local handles per-thread cleanup automatically
 }
 
 unsigned char *Chunk::GetTileIdsStorage()
 {
-	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
-	return tileIds;
+	return s_tlsTileIds;
 }
 #else
 // 4J Stu - Don't want this when multi-threaded
@@ -234,26 +231,51 @@ void Chunk::rebuild()
 	static unsigned char tileIds[16 * 16 * Level::maxBuildHeight];
 #endif
 	byteArray tileArray = byteArray(tileIds, 16 * 16 * Level::maxBuildHeight);
-	level->getChunkAt(x,z)->getBlockData(tileArray);		// 4J - TODO - now our data has been re-arranged, we could just extra the vertical slice of this chunk rather than the whole thing
-
-	LevelSource *region = new Region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r, r);
-	TileRenderer *tileRenderer = new TileRenderer(region, this->x, this->y, this->z, tileIds);
-
-	// AP - added a caching system for Chunk::rebuild to take advantage of
-	// Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data
-	// more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in
-	// Region::getTile went from 20% to 4%.
-#ifdef __PSVITA__
-	int xc = x >> 4;
-	int zc = z >> 4;
-	((Region*)region)->setCachedTiles(tileIds, xc, zc);
-#endif
+	LevelChunk *sourceChunk = level->getChunkAt(x,z);
+	if( sourceChunk == nullptr )
+	{
+		// Level chunk not loaded yet - treat as empty
+		for (int currentLayer = 0; currentLayer < 2; currentLayer++)
+		{
+			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, currentLayer);
+			RenderManager.CBuffClear(lists + currentLayer);
+		}
+		levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_NOTSKYLIT);
+		levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_COMPILED);
+		PIXEndNamedEvent();
+		PIXEndNamedEvent();
+		return;
+	}
+	sourceChunk->getBlockData(tileArray);		// 4J - TODO - now our data has been re-arranged, we could just extra the vertical slice of this chunk rather than the whole thing
 
 	// We now go through the vertical section of this level chunk that we are interested in and try and establish
 	// (1) if it is completely empty
 	// (2) if any of the tiles can be quickly determined to not need rendering because they are in the middle of other tiles and
 	//     so can't be seen. A large amount (> 60% in tests) of tiles that call tesselateInWorld in the unoptimised version
 	//     of this function fall into this category. By far the largest category of these are tiles in solid regions of rock.
+	// Build the occluder lookup from Tile::isSolidRender() so that ALL opaque full-cube blocks act as occluders,
+	// not just stone/dirt/bedrock. This catches sand, gravel, ores, cobblestone, sandstone, netherrack, wool, etc.
+	// which dramatically reduces tesselation work for underground/terrain-heavy chunks.
+	//
+	// thread_local: the table is built once per thread and reused across all subsequent rebuild() calls on that
+	// thread. Without it, a plain local would redo 255 virtual dispatches (isSolidRender) every single call -
+	// rebuild() runs up to MAX_CONCURRENT_CHUNK_REBUILDS times per updateDirtyChunks(), ~10 times per frame,
+	// so hundreds of redundant vtable lookups per second for data that never changes at runtime. A plain static
+	// would avoid that but introduces a data race: multiple rebuild threads run concurrently and the C++ static
+	// init guard (mutex) would serialize them on every entry just to check the "already initialized" flag.
+	// thread_local gives each thread its own copy with zero synchronization after the first call.
+	static thread_local auto isOccluder = [] {
+		std::array<bool, 256> table{};
+		for (int id = 1; id < 256; id++)
+		{
+			Tile *tile = Tile::tiles[id];
+			if (tile != nullptr && tile->isSolidRender())
+				table[id] = true;
+		}
+		table[255] = true;  // already-marked-invisible sentinel
+		return table;
+	}();
+
 	bool empty = true;
 	for( int yy = y0; yy < y1; yy++ )
 	{
@@ -279,17 +301,12 @@ void Chunk::rebuild()
 				if(( xx == 0 ) || ( xx == 15 )) continue;
 				if(( zz == 0 ) || ( zz == 15 )) continue;
 
-				// Establish whether this tile and its neighbours are all made of rock, dirt, unbreakable tiles, or have already
-				// been determined to meet this criteria themselves and have a tile of 255 set.
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
-				tileId = tileIds[ offset + ( ( ( xx - 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
-				tileId = tileIds[ offset + ( ( ( xx + 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
-				tileId = tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz - 1 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
-				tileId = tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 1 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				// Establish whether this tile and its neighbours are all occluders using lookup table
+				if( !isOccluder[tileId] ) continue;
+				if( !isOccluder[ tileIds[ offset + ( ( ( xx - 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ] ] ) continue;
+				if( !isOccluder[ tileIds[ offset + ( ( ( xx + 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ] ] ) continue;
+				if( !isOccluder[ tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz - 1 ) << 7 ) | ( indexY + 0 )) ] ] ) continue;
+				if( !isOccluder[ tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 1 ) << 7 ) | ( indexY + 0 )) ] ] ) continue;
 				// Treat the bottom of the world differently - we shouldn't ever be able to look up at this, so consider tiles as invisible
 				// if they are surrounded on sides other than the bottom
 				if( yy > 0 )
@@ -301,8 +318,7 @@ void Chunk::rebuild()
 						indexYMinusOne -= Level::COMPRESSED_CHUNK_SECTION_HEIGHT;
 						yMinusOneOffset = Level::COMPRESSED_CHUNK_SECTION_TILES;
 					}
-					tileId = tileIds[ yMinusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYMinusOne ) ];
-					if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+					if( !isOccluder[ tileIds[ yMinusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYMinusOne ) ] ] ) continue;
 				}
 				int indexYPlusOne = yy + 1;
 				int yPlusOneOffset = 0;
@@ -311,8 +327,7 @@ void Chunk::rebuild()
 					indexYPlusOne -= Level::COMPRESSED_CHUNK_SECTION_HEIGHT;
 					yPlusOneOffset = Level::COMPRESSED_CHUNK_SECTION_TILES;
 				}
-				tileId = tileIds[ yPlusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYPlusOne ) ];
-				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !isOccluder[ tileIds[ yPlusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYPlusOne ) ] ] ) continue;
 
 				// This tile is surrounded. Flag it as not requiring to be rendered by setting its id to 255.
 				tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 ) ) ] = 0xff;
@@ -329,13 +344,30 @@ void Chunk::rebuild()
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, currentLayer);
 			RenderManager.CBuffClear(lists + currentLayer);
 		}
+		levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_NOTSKYLIT);
+		levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_COMPILED);
 
-		delete region;
-		delete tileRenderer;
+		PIXEndNamedEvent();  // match "Rebuilding chunk" event
 		return;
 	}
 	// 4J - optimisation ends
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// Construct Region and TileRenderer only for non-empty chunks.
+	// This is deferred to here so that empty chunks (common after teleport) skip
+	// the Region construction (9 chunk lookups) and TileRenderer 128KB cache memset.
+	Region region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r, r);
+	TileRenderer tileRenderer(&region, this->x, this->y, this->z, tileIds);
+
+	// AP - added a caching system for Chunk::rebuild to take advantage of
+    // Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data
+    // more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in
+    // Region::getTile went from 20% to 4%.
+#ifdef __PSVITA__
+	int xc = x >> 4;
+	int zc = z >> 4;
+	region.setCachedTiles(tileIds, xc, zc);
+#endif
 
 	PIXBeginNamedEvent(0,"Rebuild section C");
 	Tesselator::Bounds bounds;	// 4J MGH - added
@@ -373,11 +405,11 @@ void Chunk::rebuild()
 					}
 
 					// 4J - get tile from those copied into our local array in earlier optimisation
-					unsigned char tileId = tileIds[ offset + ( ( ( x - x0 ) << 11 ) | ( ( z - z0 ) << 7 ) | indexY) ];
+					const unsigned char tileId = tileIds[ offset + ( ( ( x - x0 ) << 11 ) | ( ( z - z0 ) << 7 ) | indexY) ];
 					// If flagged as not visible, drop out straight away
-					if( tileId == 0xff ) continue;
+					if( tileId == 0xff ) [[unlikely]] continue;
 //					int tileId = region->getTile(x,y,z);
-					if (tileId > 0)
+					if (tileId > 0) [[unlikely]]
 					{
 						if (!started)
 						{
@@ -405,7 +437,7 @@ void Chunk::rebuild()
 						Tile *tile = Tile::tiles[tileId];
 						if (currentLayer == 0 && tile->isEntityTile())
 						{
-							shared_ptr<TileEntity> et = region->getTileEntity(x, y, z);
+							shared_ptr<TileEntity> et = region.getTileEntity(x, y, z);
 							if (TileEntityRenderDispatcher::instance->hasRenderer(et))
 							{
 								renderableTileEntities.push_back(et);
@@ -419,7 +451,7 @@ void Chunk::rebuild()
 						}
 						else if (renderLayer == currentLayer)
 						{
-							rendered |= tileRenderer->tesselateInWorld(tile, x, y, z);
+							rendered |= tileRenderer.tesselateInWorld(tile, x, y, z);
 						}
 					}
 				}
@@ -478,9 +510,6 @@ void Chunk::rebuild()
 		bb->set(bounds.boundingBox[0], bounds.boundingBox[1], bounds.boundingBox[2],
 			   bounds.boundingBox[3], bounds.boundingBox[4], bounds.boundingBox[5]);
 	}
-
-	delete tileRenderer;
-	delete region;
 
 	PIXEndNamedEvent();
 	PIXBeginNamedEvent(0,"Rebuild section D");

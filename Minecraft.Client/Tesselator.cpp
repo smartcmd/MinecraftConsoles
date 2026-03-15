@@ -24,17 +24,16 @@ int normal;
 
 
 */
-DWORD Tesselator::tlsIdx = TlsAlloc();
+static thread_local std::unique_ptr<Tesselator> tlsInstance;
 
 Tesselator *Tesselator::getInstance()
 {
-	return static_cast<Tesselator *>(TlsGetValue(tlsIdx));
+    return tlsInstance.get();
 }
 
 void Tesselator::CreateNewThreadStorage(int bytes)
 {
-	Tesselator *instance = new Tesselator(bytes/4);
-	TlsSetValue(tlsIdx, instance);
+    tlsInstance = std::make_unique<Tesselator>(bytes / 4);
 }
 
 Tesselator::Tesselator(int size)
@@ -310,20 +309,16 @@ void Tesselator::color(int r, int g, int b)
 
 void Tesselator::color(int r, int g, int b, int a)
 {
-    if (_noColor) return;
+	if (_noColor) return;
 
-    if (r > 255) r = 255;
-    if (g > 255) g = 255;
-    if (b > 255) b = 255;
-    if (a > 255) a = 255;
-    if (r < 0) r = 0;
-    if (g < 0) g = 0;
-    if (b < 0) b = 0;
-    if (a < 0) a = 0;
+	r = std::clamp(r, 0, 255);
+	g = std::clamp(g, 0, 255);
+	b = std::clamp(b, 0, 255);
+	a = std::clamp(a, 0, 255);
 
-    hasColor = true;
+	hasColor = true;
 	// 4J - removed little-endian option
-    col = (r << 24) | (g << 16) | (b << 8) | (a);
+	col = (r << 24) | (g << 16) | (b << 8) | (a);
 }
 
 void Tesselator::color(byte r, byte g, byte b)
@@ -381,26 +376,15 @@ void Tesselator::packCompactQuad()
 		m_iz[i] += 16 * 128;
 	}
 	// Find min x/y/z
-	unsigned int minx = m_ix[0];
-	unsigned int miny = m_iy[0];
-	unsigned int minz = m_iz[0];
-	for( int i = 1; i < 4; i++ )
-	{
-		if( m_ix[i] < minx ) minx = m_ix[i];
-		if( m_iy[i] < miny ) miny = m_iy[i];
-		if( m_iz[i] < minz ) minz = m_iz[i];
-	}
+	unsigned int minx = std::min<unsigned int>({m_ix[0], m_ix[1], m_ix[2], m_ix[3]});
+    unsigned int miny = std::min<unsigned int>({m_iy[0], m_iy[1], m_iy[2], m_iy[3]});
+    unsigned int minz = std::min<unsigned int>({m_iz[0], m_iz[1], m_iz[2], m_iz[3]});
 	// Everything has been scaled by a factor of 128 to get it into an int, and so
 	// the minimum now should be in the range of (0->32) * 128. Get the base x/y/z
 	// that our quad will be referenced from now, which can be stored in 5 bits
-	unsigned int basex = ( minx >> 7 );
-	unsigned int basey = ( miny >> 7 );
-	unsigned int basez = ( minz >> 7 );
-	// If the min is 32, then this whole quad must be in that plane - make the min 15 instead so
-	// we can still offset from that with our delta to get to the exact edge
-	if( basex == 32 ) basex = 31;
-	if( basey == 32 ) basey = 31;
-	if( basez == 32 ) basez = 31;
+    unsigned int basex = std::min<unsigned int>(minx >> 7, 31u);
+    unsigned int basey = std::min<unsigned int>(miny >> 7, 31u);
+    unsigned int basez = std::min<unsigned int>(minz >> 7, 31u);
 	// Now get deltas to each vertex - these have an 8-bit range so they can span a
 	// full unit range from the base position
 	for( int i = 0; i < 4; i++ )
@@ -420,28 +404,18 @@ void Tesselator::packCompactQuad()
 	data[0] |= ( basex << 26 ) | ( basey << 21 )| ( basez << 16 );
 
 	// Now process UVs. First find min & max U & V
-	unsigned int minu = m_u[0];
-	unsigned int minv = m_v[0];
-	unsigned int maxu = m_u[0];
-	unsigned int maxv = m_v[0];
-
-	for( int i = 1; i < 4; i++ )
-	{
-		if( m_u[i] < minu ) minu = m_u[i];
-		if( m_v[i] < minv ) minv = m_v[i];
-		if( m_u[i] > maxu ) maxu = m_u[i];
-		if( m_v[i] > maxv ) maxv = m_v[i];
-	}
+    unsigned int minu = std::min<unsigned int>({m_u[0], m_u[1], m_u[2], m_u[3]});
+    unsigned int minv = std::min<unsigned int>({m_v[0], m_v[1], m_v[2], m_v[3]});
+    unsigned int maxu = std::max<unsigned int>({m_u[0], m_u[1], m_u[2], m_u[3]});
+    unsigned int maxv = std::max<unsigned int>({m_v[0], m_v[1], m_v[2], m_v[3]});
 	// In nearly all cases, all our UVs should be axis aligned for this quad. So the only values they should
 	// have in each dimension should be the min/max. We're going to store:
 	// (1) minu/maxu (16 bits each, only actuall needs to store 14 bits to get a 0 to 2 range for each
 	// (2) du/dv ( ie maxu-minu, maxv-minv) - 8 bits each, to store a range of 0 to 15.9375 texels. This
 	// should be enough to map the full UV range of a single 16x16 region of the terrain texture, since
 	// we always pull UVs in by 1/16th of their range at the sides
-	unsigned int du = maxu - minu;
-	unsigned int dv = maxv - minv;
-	if( du > 255 )	du = 255;
-	if( dv > 255 )	dv = 255;
+    unsigned int du = std::min<unsigned int>(maxu - minu, 255u);
+    unsigned int dv = std::min<unsigned int>(maxv - minv, 255u);
 	// Check if this quad has UVs that can be referenced this way. This should only happen for flowing water
 	// and lava, where the texture coordinates are rotated for the top surface of the tile.
 	bool axisAligned = true;
