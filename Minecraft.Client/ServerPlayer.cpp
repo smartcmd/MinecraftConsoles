@@ -164,7 +164,7 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFou
 	if( ( *removedFound ) == false )
 	{
 		*removedFound = true;
-		memset(flags, 0, 2048/32);
+		memset(flags, 0, (2048/32) * sizeof(unsigned int));
 	}
 
 	for(int index : entitiesToRemove)
@@ -394,35 +394,22 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 //						connection->done);
 //				}
 
-				if( dontDelayChunks ||
-					(canSendToPlayer &&
-#ifdef _XBOX_ONE
-					// The network manager on xbox one doesn't currently split data into slow & fast queues - since we can only measure
-					// both together then bytes provides a better metric than count of data items to determine if we should avoid queueing too much up
-					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeBytes( nullptr, true ) < 8192 )&&
-#elif defined _XBOX
-					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( nullptr, true ) < 4 )&&
-#else
-					(connection->countDelayedPackets() < 4 )&&
-					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( nullptr, true ) < 4 )&&
-#endif
-					//(tickCount - lastBrupSendTickCount) > (connection->getNetworkPlayer()->GetCurrentRtt()>>4) &&
-					!connection->done) )
-				{
-					lastBrupSendTickCount = tickCount;
-					okToSend = true;
-					MinecraftServer::chunkPacketManagement_DidSendTo(connection->getNetworkPlayer());
+				if (dontDelayChunks || (canSendToPlayer && !connection->done))
+                {
+                    lastBrupSendTickCount = tickCount;
+                    okToSend = true;
+                    MinecraftServer::chunkPacketManagement_DidSendTo(connection->getNetworkPlayer());
 
-//					static unordered_map<wstring,int64_t> mapLastTime;
-//					int64_t thisTime = System::currentTimeMillis();
-//					int64_t lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
-//					app.DebugPrintf(" - OK to send (%d ms since last)\n", thisTime - lastTime);
-//					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()] = thisTime;
-				}
-				else
-				{
-					//					app.DebugPrintf(" - <NOT OK>\n");
-				}
+                    //					static unordered_map<wstring,int64_t> mapLastTime;
+                    //					int64_t thisTime = System::currentTimeMillis();
+                    //					int64_t lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
+                    //					app.DebugPrintf(" - OK to send (%d ms since last)\n", thisTime - lastTime);
+                    //					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()] = thisTime;
+                }
+                else
+                {
+                    //					app.DebugPrintf(" - <NOT OK>\n");
+                }
 			}
 
 			if (okToSend)

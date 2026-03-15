@@ -657,7 +657,7 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	setFlightAllowed(GetDedicatedServerBool(settings, L"allow-flight", true));
 
 	// 4J Stu - Enabling flight to stop it kicking us when we use it
-#ifdef _DEBUG_MENUS_ENABLED
+#if (defined _DEBUG_MENUS_ENABLED && defined _DEBUG)
 	setFlightAllowed(true);
 #endif
 
@@ -2373,19 +2373,24 @@ void MinecraftServer::chunkPacketManagement_PostTick()
 // not GetSessionIndex() (smallId), so reused smallIds after many connect/disconnects still get chunk sends.
 bool MinecraftServer::chunkPacketManagement_CanSendTo(INetworkPlayer *player)
 {
-	if( player == nullptr ) return false;
+    if (player == nullptr)
+    {
+        return false;
+    }
 
-	int time = GetTickCount();
-	DWORD currentPlayerCount = g_NetworkManager.GetPlayerCount();
-	if( currentPlayerCount == 0 ) return false;
-	int index = s_slowQueuePlayerIndex % (int)currentPlayerCount;
-	INetworkPlayer *queuePlayer = g_NetworkManager.GetPlayerByIndex( index );
-	if( queuePlayer != NULL && (player == queuePlayer || player->IsSameSystem(queuePlayer)) && (time - s_slowQueueLastTime) > MINECRAFT_SERVER_SLOW_QUEUE_DELAY )
-	{
-		return true;
-	}
+    return true;
 
-	return false;
+	//int time = GetTickCount();
+	//DWORD currentPlayerCount = g_NetworkManager.GetPlayerCount();
+	//if( currentPlayerCount == 0 ) return false;
+	//int index = s_slowQueuePlayerIndex % (int)currentPlayerCount;
+	//INetworkPlayer *queuePlayer = g_NetworkManager.GetPlayerByIndex( index );
+	//if( queuePlayer != NULL && (player == queuePlayer || player->IsSameSystem(queuePlayer)) && (time - s_slowQueueLastTime) > MINECRAFT_SERVER_SLOW_QUEUE_DELAY )
+	//{
+	//	return true;
+	//}
+
+	//return false;
 }
 
 void MinecraftServer::chunkPacketManagement_DidSendTo(INetworkPlayer *player)
