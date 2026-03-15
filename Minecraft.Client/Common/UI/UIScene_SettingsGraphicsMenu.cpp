@@ -68,8 +68,20 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 
 	swprintf(TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
 	m_sliderRenderDistance.init(TempString,eControl_RenderDistance,0,5,DistanceToLevel(app.GetGameSettings(m_iPad,eGameSetting_RenderDistance)));
-	
-	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
+
+	int currentGraphics = app.GetGameSettings(m_iPad, eGameSetting_GraphicsMode);
+
+	const wchar_t* graphicsText = L"";
+	if (currentGraphics == 0) graphicsText = L"Graphics: Potato";
+	else if (currentGraphics == 1) graphicsText = L"Graphics: Fast";
+	else graphicsText = L"Graphics: Fancy";
+
+	swprintf((WCHAR*)TempString, 256, L"%ls", graphicsText);
+
+	m_sliderGraphicsMode.init(TempString, eControl_GraphicsMode, 0, 2, currentGraphics);
+
+	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
+
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
     const int initialFovSlider = app.GetGameSettings(m_iPad, eGameSetting_FOV);
@@ -205,7 +217,21 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			m_sliderRenderDistance.setLabel(TempString);
 		}
 		break;
+	case eControl_GraphicsMode:
+    		{
+        		m_sliderGraphicsMode.handleSliderMove(value);
 
+        		app.SetGameSettings(m_iPad, eGameSetting_GraphicsMode, value);
+
+        		const wchar_t* modeName = L"Potato";
+        		if (value == 1) modeName = L"Fast";
+        		else if (value == 2) modeName = L"Fancy";
+
+        		swprintf(TempString, 256, L"Graphics: %ls", modeName);
+
+        		m_sliderGraphicsMode.setLabel(TempString);
+    		}
+    		break;
 	case eControl_Gamma:
 		m_sliderGamma.handleSliderMove(value);
 		

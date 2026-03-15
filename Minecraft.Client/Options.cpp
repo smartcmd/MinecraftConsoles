@@ -117,7 +117,7 @@ void Options::init()
     anaglyph3d = false;
     advancedOpengl = false;
     framerateLimit = 0;
-    fancyGraphics = true;
+    fancyGraphics = false;
     ambientOcclusion = true;
 	renderClouds = true;
     skin = L"Default";
@@ -242,6 +242,14 @@ void Options::set(const Options::Option *item, float fVal)
 	{
 		viewDistance = fVal;
 	}
+	if (item == Option::GRAPHICS)
+	{
+		fancyGraphics = fVal;
+	}
+	if (item == Option::AMBIENT_OCCLUSION)
+	{
+		ambientOcclusion = fVal;
+	}
 }
 
 void Options::toggle(const Options::Option *option, int dir)
@@ -297,6 +305,8 @@ float Options::getProgressValue(const Options::Option *item)
     if (item == Option::SOUND) return sound;
     if (item == Option::SENSITIVITY) return sensitivity;
 	if (item == Option::RENDER_DISTANCE) return viewDistance;
+	if (item == Option::GRAPHICS) return fancyGraphics;
+	if (item == Option::AMBIENT_OCCLUSION) return ambientOcclusion;
     return 0;
 }
 

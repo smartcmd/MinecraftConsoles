@@ -13,7 +13,7 @@
 #include "EntityTileRenderer.h"
 #include "Options.h"
 
-bool TileRenderer::fancy = true;
+bool TileRenderer::fancy = false;
 
 const float smallUV = ( 1.0f / 16.0f );
 

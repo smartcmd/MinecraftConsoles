@@ -859,6 +859,7 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
 	SetGameSettings(iPad,eGameSetting_FOV,0);
+	SetGameSettings(iPad,eGameSetting_GraphicsMode,1);
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==nullptr)
@@ -1355,6 +1356,7 @@ void CMinecraftApp::ApplyGameSettingsChanged(int iPad)
 	ActionGameSettings(iPad,eGameSetting_RenderDistance	);
 	ActionGameSettings(iPad,eGameSetting_Gamma			);
 	ActionGameSettings(iPad,eGameSetting_FOV			);
+	ActionGameSettings(iPad,eGameSetting_GraphicsMode     );
 	ActionGameSettings(iPad,eGameSetting_Difficulty		);
 	ActionGameSettings(iPad,eGameSetting_Sensitivity_InGame	);
 	ActionGameSettings(iPad,eGameSetting_ViewBob		);
@@ -1410,6 +1412,30 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
             int level = UIScene_SettingsGraphicsMenu::DistanceToLevel(dist);
             pMinecraft->options->set(Options::Option::RENDER_DISTANCE, 3 - level);
         };
+		break;
+	case eGameSetting_GraphicsMode:
+		if(iPad == ProfileManager.GetPrimaryPad())
+		{
+			int graphicsLevel = GameSettingsA[iPad]->ucGraphicsMode; 
+
+        		if (graphicsLevel == 0) {
+                		pMinecraft->options->set(Options::Option::GRAPHICS, false);
+				pMinecraft->options->set(Options::Option::AMBIENT_OCCLUSION, false);
+				pMinecraft->options->set(Options::Option::PARTICLES, 2);
+                    	}
+                    	else if (graphicsLevel == 1) {
+                        	pMinecraft->options->set(Options::Option::GRAPHICS, false);
+				pMinecraft->options->set(Options::Option::AMBIENT_OCCLUSION, true);
+				if (graphicsLevel == 0) pMinecraft->options->set(Options::Option::PARTICLES, 1);
+                    	}
+                    	else {
+                        	pMinecraft->options->set(Options::Option::GRAPHICS, true);
+				pMinecraft->options->set(Options::Option::AMBIENT_OCCLUSION, true);
+				if (graphicsLevel == 0) pMinecraft->options->set(Options::Option::PARTICLES, 0);
+                    	}
+			if (pMinecraft && pMinecraft->levelRenderer && pMinecraft->level)
+				pMinecraft->levelRenderer->allChanged();
+		}
 		break;
 	case eGameSetting_Gamma:
 		if(iPad==ProfileManager.GetPrimaryPad())
@@ -1889,6 +1915,17 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 			GameSettingsA[iPad]->bSettingsChanged = true;
 		}
 		break;
+	case eGameSetting_GraphicsMode:
+    		if(GameSettingsA[iPad]->ucGraphicsMode != ucVal)
+    		{
+        		GameSettingsA[iPad]->ucGraphicsMode = ucVal;
+        		if(iPad == ProfileManager.GetPrimaryPad())
+        		{
+            			ActionGameSettings(iPad, eVal);
+        		}
+        		GameSettingsA[iPad]->bSettingsChanged = true;
+    		}
+    		break;
 	case eGameSetting_Gamma:
 		if(GameSettingsA[iPad]->ucGamma!=ucVal)
 		{
@@ -2355,6 +2392,9 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 		return val;
 		break;
 		}
+	case eGameSetting_GraphicsMode:
+    		return GameSettingsA[iPad]->ucGraphicsMode;
+    		break;
 	case eGameSetting_Gamma:
 		return GameSettingsA[iPad]->ucGamma;
 		break;
