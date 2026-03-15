@@ -12,7 +12,7 @@ HoeItem::HoeItem(int id, const Tier *tier) : Item(id)
 	setMaxDamage(tier->getUses());
 }
 
-bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level* level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	if (!player->mayUseItemAt(x, y, z, face, instance)) return false;
 
@@ -21,7 +21,7 @@ bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player
 	int targetType = level->getTile(x, y, z);
 	int above = level->getTile(x, y + 1, z);
 
-	if (face != 0 && above == 0 && (targetType == Tile::grass_Id || targetType == Tile::dirt_Id)) 
+	if (face != 0 && above == 0 && (targetType == Tile::grass_Id || targetType == Tile::dirt_Id || targetType == Tile::mycel_Id))
 	{
 		if(!bTestUseOnOnly)
 		{

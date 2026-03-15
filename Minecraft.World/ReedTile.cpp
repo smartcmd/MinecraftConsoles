@@ -48,7 +48,7 @@ bool ReedTile::mayPlace(Level *level, int x, int y, int z)
 {
 	int below = level->getTile(x, y - 1, z);
 	if (below == id) return true;
-	if (below != Tile::grass_Id && below != Tile::dirt_Id && below != Tile::sand_Id) return false;
+	if (below != Tile::grass_Id && below != Tile::dirt_Id && below != Tile::sand_Id && below != Tile::mycel_Id) return false;
 	if (level->getMaterial(x - 1, y - 1, z) == Material::water) return true;
 	if (level->getMaterial(x + 1, y - 1, z) == Material::water) return true;
 	if (level->getMaterial(x, y - 1, z - 1) == Material::water) return true;

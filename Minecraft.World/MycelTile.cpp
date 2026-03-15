@@ -59,6 +59,9 @@ void MycelTile::tick(Level *level, int x, int y, int z, Random *random)
 			}
 		}
 	}
+
+	Material* above = level->getMaterial(x, y + 1, z);
+	if (above->isSolid() || above->isLiquid()) level->setTileAndUpdate(x, y, z, Tile::dirt_Id);
 }
 
 void MycelTile::animateTick(Level *level, int x, int y, int z, Random *random)
