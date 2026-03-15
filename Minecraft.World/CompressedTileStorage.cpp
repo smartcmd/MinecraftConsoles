@@ -1311,7 +1311,7 @@ int CompressedTileStorage::getHighestNonEmptyY()
 		// Multiply by the number of vertical tiles in a block, and then add that again to be at the top of the block
 		highestNonEmptyY = (highestYBlock * 4) + 4;
 	}
-	else
+	else if( allocatedSize != 1024 )
 	{
 		app.DebugPrintf("[CTS-WARN] getHighestNonEmptyY() returned -1! allocatedSize=%d indicesAndData=%p\n",
 			allocatedSize, indicesAndData);

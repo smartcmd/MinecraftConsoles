@@ -1,5 +1,4 @@
 # Cross-platform recursive copy with exclusion support
-# This allows for the main cmake script to be platform agnostic
 #
 # Required:
 #   COPY_SOURCE   – source directory
@@ -21,6 +20,8 @@ endif()
 if(EXCLUDE_FOLDERS)
   string(REPLACE "|" ";" EXCLUDE_FOLDERS "${EXCLUDE_FOLDERS}")
 endif()
+
+message(STATUS "Copying from ${COPY_SOURCE} to ${COPY_DEST}")
 
 if(CMAKE_HOST_WIN32)
   set(robocopy_args

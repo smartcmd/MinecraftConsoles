@@ -1,0 +1,99 @@
+name: Nightly Server Release
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+    - 'main'
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - '.github/**'
+      - '!.github/workflows/nightly-server.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        platform: [Windows64]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Set platform lowercase
+      run: echo "PLATFORM=$('${{ matrix.platform }}'.ToLower())" >> $env:GITHUB_ENV
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
+    
+    - name: Run CMake
+      uses: lukka/run-cmake@v10
+      env:
+        VCPKG_ROOT: "" # Disable vcpkg for CI builds
+      with:
+        configurePreset: ${{ env.PLATFORM }}
+        buildPreset: ${{ env.PLATFORM }}-release
+        buildPresetAdditionalArgs: "['--target', 'Minecraft.Server']"
+
+    - name: Zip Build
+      run: 7z a -r LCEServer${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Server/Release/* -x!*.ipdb -x!*.iobj
+
+    - name: Stage artifacts
+      run: |
+        New-Item -ItemType Directory -Force -Path staging
+        Copy-Item LCEServer${{ matrix.platform }}.zip staging/
+
+    - name: Stage exe and pdb
+      if: matrix.platform == 'Windows64'
+      run: |
+        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Server/Release/Minecraft.Server.exe staging/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: build-${{ matrix.platform }}
+        path: staging/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v7
+      with:
+        path: artifacts
+        merge-multiple: true
+
+    - name: Update release
+      uses: andelf/nightly-release@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: nightly-dedicated-server
+        name: Nightly Dedicated Server Release
+        body: |
+          Dedicated Server runtime for Windows64.
+
+          Download `LCEServerWindows64.zip` and extract it to a folder where you'd like to keep the server runtime.
+        files: |
+          artifacts/*
+
+  cleanup:
+    needs: [build, release]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cleanup artifacts
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: build-*

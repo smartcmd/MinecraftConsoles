@@ -8,7 +8,11 @@ on:
     paths-ignore:
       - '.gitignore'
       - '*.md'
-      - '.github/*.md'
+      - '.github/**'
+      - '!.github/workflows/nightly.yml'
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -38,9 +42,10 @@ jobs:
       with:
         configurePreset: ${{ env.PLATFORM }}
         buildPreset: ${{ env.PLATFORM }}-release
+        buildPresetAdditionalArgs: "['--target', 'Minecraft.Client']"
 
     - name: Zip Build
-      run: 7z a -r LCE${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/*
+      run: 7z a -r LCE${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/* -x!*.ipdb -x!*.iobj
 
     - name: Stage artifacts
       run: |
@@ -51,7 +56,6 @@ jobs:
       if: matrix.platform == 'Windows64'
       run: |
         Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.exe staging/
-        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.pdb staging/
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v6
@@ -76,7 +80,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: nightly
-        name: Nightly Release
+        name: Nightly Client Release
         body: |
           Requires at least Windows 7 and DirectX 11 compatible GPU to run.
           

@@ -14,6 +14,11 @@
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\SharedConstants.h"
 #include "Settings.h"
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+#include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\Access\Access.h"
+#include "..\Minecraft.World\Socket.h"
+#endif
 // #ifdef __PS3__
 // #include "PS3\Network\NetworkPlayerSony.h"
 // #endif
@@ -22,6 +27,24 @@ Random *PendingConnection::random = new Random();
 
 #ifdef _WINDOWS64
 bool g_bRejectDuplicateNames = true;
+#endif
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+namespace
+{
+	static unsigned char GetPendingConnectionSmallId(Connection *connection)
+	{
+		if (connection != nullptr)
+		{
+			Socket *socket = connection->getSocket();
+			if (socket != nullptr)
+			{
+				return socket->getSmallId();
+			}
+		}
+		return 0;
+	}
+}
 #endif
 
 PendingConnection::PendingConnection(MinecraftServer *server, Socket *socket, const wstring& id)
@@ -180,16 +203,55 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		duplicateXuid = true;
 	}
 
+	bool bannedXuid = false;
+	if (loginXuid != INVALID_XUID)
+	{
+		bannedXuid = server->getPlayers()->isXuidBanned(loginXuid);
+	}
+	if (!bannedXuid && packet->m_onlineXuid != INVALID_XUID && packet->m_onlineXuid != loginXuid)
+	{
+		bannedXuid = server->getPlayers()->isXuidBanned(packet->m_onlineXuid);
+	}
+
+	bool whitelistSatisfied = true;
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (ServerRuntime::Access::IsWhitelistEnabled())
+	{
+		whitelistSatisfied = false;
+		if (loginXuid != INVALID_XUID)
+		{
+			whitelistSatisfied = ServerRuntime::Access::IsPlayerWhitelisted(loginXuid);
+		}
+		if (!whitelistSatisfied && packet->m_onlineXuid != INVALID_XUID && packet->m_onlineXuid != loginXuid)
+		{
+			whitelistSatisfied = ServerRuntime::Access::IsPlayerWhitelisted(packet->m_onlineXuid);
+		}
+	}
+#endif
+
 	if( sentDisconnect )
 	{
 		// Do nothing
 	}
-	else if( server->getPlayers()->isXuidBanned( packet->m_onlineXuid ) )
+	else if (bannedXuid)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_BannedXuid);
+#endif
+		disconnect(DisconnectPacket::eDisconnect_Banned);
+	}
+	else if (!whitelistSatisfied)
+	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_NotWhitelisted);
+#endif
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
 	else if (duplicateXuid)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_DuplicateXuid);
+#endif
 		// Reject the incoming connection — a player with this UID is already
 		// on the server.  Allowing duplicates causes invisible players and
 		// other undefined behaviour.
@@ -211,6 +273,9 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		}
 		if (nameTaken)
 		{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+			ServerRuntime::ServerLogManager::OnRejectedPlayerLogin(GetPendingConnectionSmallId(connection), name, ServerRuntime::ServerLogManager::eLoginRejectReason_DuplicateName);
+#endif
 			app.DebugPrintf("Rejecting duplicate name: %ls\n", name.c_str());
 			disconnect(DisconnectPacket::eDisconnect_Banned);
 		}
@@ -268,6 +333,9 @@ void PendingConnection::handleAcceptedLogin(shared_ptr<LoginPacket> packet)
 	shared_ptr<ServerPlayer> playerEntity = server->getPlayers()->getPlayerForLogin(this, name, playerXuid,packet->m_onlineXuid);
 	if (playerEntity != nullptr)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		ServerRuntime::ServerLogManager::OnAcceptedPlayerLogin(GetPendingConnectionSmallId(connection), name);
+#endif
 		server->getPlayers()->placeNewPlayer(connection, playerEntity, packet);
 		connection = nullptr;	// We've moved responsibility for this over to the new PlayerConnection, nullptr so we don't delete our reference to it here in our dtor
 	}

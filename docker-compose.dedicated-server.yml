@@ -1,0 +1,31 @@
+services:
+  minecraft-lce-dedicated-server:
+    build:
+      context: .
+      dockerfile: docker/dedicated-server/Dockerfile
+      args:
+        MC_RUNTIME_DIR: ${MC_RUNTIME_DIR:-x64/Minecraft.Server/Release}
+    container_name: minecraft-lce-dedicated-server
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    environment:
+      TZ: ${TZ:-Asia/Tokyo}
+      WINEARCH: win64
+      WINEPREFIX: /var/opt/wineprefix64
+      WINEDEBUG: -all
+      # linux require use file stdin
+      SERVER_CLI_INPUT_MODE: ${SERVER_CLI_INPUT_MODE:-stream}
+      # minimum required virtual screen
+      XVFB_DISPLAY: ${XVFB_DISPLAY:-:99}
+      XVFB_SCREEN: ${XVFB_SCREEN:-64x64x16}
+    volumes:
+      # - wineprefix64:/var/opt/wineprefix64
+      - ./server-data:/srv/persist
+    ports:
+      - "25565:25565/tcp"
+      - "25565:25565/udp"
+    stop_grace_period: 30s
+
+# volumes:
+#   wineprefix64:

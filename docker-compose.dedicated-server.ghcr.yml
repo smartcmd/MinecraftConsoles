@@ -1,0 +1,27 @@
+services:
+  minecraft-lce-dedicated-server:
+    image: ghcr.io/kuwacom/minecraft-lce-dedicated-server:nightly
+    container_name: minecraft-lce-dedicated-server
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    environment:
+      TZ: ${TZ:-Asia/Tokyo}
+      WINEARCH: win64
+      WINEPREFIX: /var/opt/wineprefix64
+      WINEDEBUG: -all
+      # linux require use file stdin
+      SERVER_CLI_INPUT_MODE: ${SERVER_CLI_INPUT_MODE:-stream}
+      # minimum required virtual screen
+      XVFB_DISPLAY: ${XVFB_DISPLAY:-:99}
+      XVFB_SCREEN: ${XVFB_SCREEN:-720x1280x16}
+    volumes:
+      # - wineprefix64:/var/opt/wineprefix64
+      - ./server-data:/srv/persist
+    ports:
+      - "25565:25565/tcp"
+      - "25565:25565/udp"
+    stop_grace_period: 30s
+
+# volumes:
+#   wineprefix64:

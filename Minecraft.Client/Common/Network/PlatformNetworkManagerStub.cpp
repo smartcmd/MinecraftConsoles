@@ -240,7 +240,13 @@ void CPlatformNetworkManagerStub::DoWork()
 				qnetPlayer->m_resolvedXuid = INVALID_XUID;
 				qnetPlayer->m_gamertag[0] = 0;
 				qnetPlayer->SetCustomDataValue(0);
-				while (IQNet::s_playerCount > 1 && IQNet::m_player[IQNet::s_playerCount - 1].GetCustomDataValue() == 0)
+				// Recalculate s_playerCount as the highest active slot + 1.
+				// A blind decrement would hide players at higher-indexed slots when a
+				// lower-indexed player disconnects first: GetPlayerBySmallId scans
+				// [0, s_playerCount) so any slot at or above the decremented count
+				// becomes invisible, causing its disconnect to be missed (ghost player).
+				while (IQNet::s_playerCount > 1 &&
+					   IQNet::m_player[IQNet::s_playerCount - 1].GetCustomDataValue() == 0)
 					IQNet::s_playerCount--;
 			}
 			// NOTE: Do NOT call PushFreeSmallId here. The old PlayerConnection's
@@ -255,6 +261,25 @@ void CPlatformNetworkManagerStub::DoWork()
 			//
 			// Clear chunk visibility flags for this system so rejoin gets fresh chunk state.
 			SystemFlagRemoveBySmallId(disconnectedSmallId);
+		}
+	}
+
+	// Client-side host disconnect detection:
+	// if TCP is gone, propagate through normal network-disconnect flow so UI returns to menus.
+	// The processing from the Xbox version will be reused.
+	if (_iQNetStubState == QNET_STATE_GAME_PLAY && !m_pIQNet->IsHost() && !m_bLeavingGame)
+	{
+		if (!WinsockNetLayer::IsConnected())
+		{
+			if (!m_bLeaveGameOnTick)
+			{
+				m_bLeaveGameOnTick = true;
+				g_NetworkManager.HandleDisconnect(false);
+			}
+		}
+		else
+		{
+			m_bLeaveGameOnTick = false;
 		}
 	}
 #endif
@@ -356,6 +381,7 @@ bool CPlatformNetworkManagerStub::LeaveGame(bool bMigrateHost)
 	if( m_bLeavingGame ) return true;
 
 	m_bLeavingGame = true;
+	m_bLeaveGameOnTick = false;
 
 #ifdef _WINDOWS64
 	WinsockNetLayer::StopAdvertising();
@@ -404,6 +430,7 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 	localUsersMask |= GetLocalPlayerMask( g_NetworkManager.GetPrimaryPad() );
 
 	m_bLeavingGame = false;
+	m_bLeaveGameOnTick = false;
 
 	m_pIQNet->HostGame();
 
@@ -433,9 +460,23 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 
 	if (WinsockNetLayer::IsActive())
 	{
-		const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
-		unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
-		WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+		// For Dedicated Server, refer to `lan-advertise` in `server.properties`
+		bool enableLanAdvertising = true;
+		if (g_Win64DedicatedServer)
+		{
+			enableLanAdvertising = g_Win64DedicatedServerLanAdvertise;
+		}
+
+		if (enableLanAdvertising)
+		{
+			const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
+			unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
+			WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+		}
+		else
+		{
+			WinsockNetLayer::StopAdvertising();
+		}
 	}
 #endif
 //#endif
@@ -463,6 +504,7 @@ int CPlatformNetworkManagerStub::JoinGame(FriendSessionInfo* searchResult, int l
 		return CGameNetworkManager::JOINGAME_FAIL_GENERAL;
 
 	m_bLeavingGame = false;
+	m_bLeaveGameOnTick = false;
 	IQNet::s_isHosting = false;
 	m_pIQNet->ClientJoinGame();
 

@@ -8,6 +8,8 @@ include("${CMAKE_CURRENT_LIST_DIR}/cmake/sources/Xbox360.cmake")
 
 include("${CMAKE_SOURCE_DIR}/cmake/CommonSources.cmake")
 
+include("${CMAKE_SOURCE_DIR}/cmake/Utils.cmake")
+
 # Combine all source files into a single variable for the target
 # We cant use CMAKE_CONFIGURE_PRESET here as VS doesn't set it, so just rely on the folder
 set(MINECRAFT_CLIENT_SOURCES
@@ -43,7 +45,8 @@ set_source_files_properties(compat_shims.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS 
 configure_compiler_target(Minecraft.Client)
 
 set_target_properties(Minecraft.Client PROPERTIES
-  VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
+  OUTPUT_NAME "Minecraft.Client"
+  VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Minecraft.Client>"
 )
 
 target_link_libraries(Minecraft.Client PRIVATE
@@ -73,34 +76,21 @@ endforeach()
 # ---
 # Asset / redist copy
 # ---
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/AssetCopyTargets.cmake")
-setup_asset_copy_targets()
-
-# This is needed for VS to find the script, command line seems to work without it
-set(COPY_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyAssets.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/CopyAssets.cmake")
+set(ASSET_FOLDER_PAIRS
+  "${CMAKE_CURRENT_SOURCE_DIR}/music"                  "music"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Common/Media"           "Common/Media"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Common/res"             "Common/res"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Common/Trial"           "Common/Trial"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Common/Tutorial"        "Common/Tutorial"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PLATFORM_NAME}Media"  "${PLATFORM_NAME}Media"
+)
+setup_asset_folder_copy(Minecraft.Client "${ASSET_FOLDER_PAIRS}")
 
 # Copy redist files
-add_custom_target(CopyRedist ALL
-  COMMAND ${CMAKE_COMMAND}
-    "-DCOPY_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}/Windows64/Iggy/lib/redist64" # This will copy the windows redist regardless of platform
-    "-DCOPY_DEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
-    -P "${COPY_SCRIPT}"
-  COMMENT "Copying redist files..."
-  VERBATIM
-)
-
-add_dependencies(Minecraft.Client CopyRedist)
-set_property(TARGET CopyRedist PROPERTY FOLDER "Build")
+add_copyredist_target(Minecraft.Client)
 
 # Make sure GameHDD exists on Windows
 if(PLATFORM_NAME STREQUAL "Windows64")
-  add_custom_target(EnsureGameHDD ALL
-    COMMAND ${CMAKE_COMMAND}
-      -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Windows64/GameHDD"
-    COMMENT "Ensuring GameHDD directory exists..."
-    VERBATIM
-  )
-
-  add_dependencies(Minecraft.Client EnsureGameHDD)
-  set_property(TARGET EnsureGameHDD PROPERTY FOLDER "Build")
+  add_gamehdd_target(Minecraft.Client)
 endif()

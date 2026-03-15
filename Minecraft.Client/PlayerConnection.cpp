@@ -34,8 +34,25 @@
 // 4J Added
 #include "..\Minecraft.World\net.minecraft.world.item.crafting.h"
 #include "Options.h"
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+#include "..\Minecraft.Server\ServerLogManager.h"
+#endif
+
+namespace
+{
+	// Anti-cheat thresholds. Keep server-side checks authoritative even in host mode.
+	// Base max squared displacement allowed per move packet before speed flags trigger.
+	const double kMoveBaseAllowanceSq = 100.0;
+	// Extra squared displacement allowance derived from current server-side velocity.
+	const double kMoveVelocityAllowanceScale = 100.0;
+	// Max squared distance for interact/attack when the target is visible (normal reach).
+	const double kInteractReachSq = 6.0 * 6.0;
+	// Stricter max squared distance used when LOS is blocked to reduce wall-hit abuse.
+	const double kInteractBlockedReachSq = 3.0 * 3.0;
+}
 
 Random PlayerConnection::random;
+
 
 PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connection, shared_ptr<ServerPlayer> player)
 {
@@ -66,6 +83,13 @@ PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connecti
 	m_offlineXUID = INVALID_XUID;
 	m_onlineXUID = INVALID_XUID;
 	m_bHasClientTickedOnce = false;
+	m_logSmallId = 0;
+
+	// Cache the first valid transport smallId because disconnect teardown can clear it before the server logger runs.
+	if (this->connection != NULL && this->connection->getSocket() != NULL)
+	{
+		m_logSmallId = this->connection->getSocket()->getSmallId();
+	}
 
 	setShowOnMaps(app.GetGameHostOption(eGameHostOption_Gamertags)!=0?true:false);
 }
@@ -74,6 +98,17 @@ PlayerConnection::~PlayerConnection()
 {
 	delete connection;
 	DeleteCriticalSection(&done_cs);
+}
+
+unsigned char PlayerConnection::getLogSmallId()
+{
+	// Fall back to the live socket only while the cached value is still empty.
+	if (m_logSmallId == 0 && connection != NULL && connection->getSocket() != NULL)
+	{
+		m_logSmallId = connection->getSocket()->getSmallId();
+	}
+
+	return m_logSmallId;
 }
 
 void PlayerConnection::tick()
@@ -118,6 +153,13 @@ void PlayerConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 		return;
 	}
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	ServerRuntime::ServerLogManager::OnPlayerDisconnected(
+		getLogSmallId(),
+		(player != NULL) ? player->name : std::wstring(),
+		reason,
+		true);
+#endif
 	app.DebugPrintf("PlayerConnection disconect reason: %d\n", reason );
 	player->disconnect();
 
@@ -271,16 +313,19 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 		double dist = xDist * xDist + yDist * yDist + zDist * zDist;
 
-		// 4J-PB - removing this one for now
-		/*if (dist > 100.0f)
+		// Anti-cheat: reject movement packets that exceed server-authoritative bounds.
+		double velocitySq = player->xd * player->xd + player->yd * player->yd + player->zd * player->zd;
+		double maxAllowedSq = kMoveBaseAllowanceSq + (velocitySq * kMoveVelocityAllowanceScale);
+		if (player->isAllowedToFly() || player->gameMode->isCreative())
 		{
-		//            logger.warning(player->name + " moved too quickly!");
-		disconnect(DisconnectPacket::eDisconnect_MovedTooQuickly);
-		//                System.out.println("Moved too quickly at " + xt + ", " + yt + ", " + zt);
-		//                teleport(player->x, player->y, player->z, player->yRot, player->xRot);
-		return;
+			// Creative / flight-allowed players can move farther legitimately per tick.
+			maxAllowedSq *= 1.5;
 		}
-		*/
+		if (dist > maxAllowedSq)
+		{
+			disconnect(DisconnectPacket::eDisconnect_MovedTooQuickly);
+			return;
+		}
 
 		float r = 1 / 16.0f;
 		bool oldOk = level->getCubes(player, player->bb->copy()->shrink(r, r, r))->empty();
@@ -308,8 +353,8 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 		xDist = xt - player->x;
 		yDist = yt - player->y;
 
-		// 4J-PB - line below will always be true!
-		if (yDist > -0.5 || yDist < 0.5)
+		// Clamp tiny Y drift noise to reduce false positives.
+		if (yDist > -0.5 && yDist < 0.5)
 		{
 			yDist = 0;
 		}
@@ -430,7 +475,8 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 
 	if (packet->action == PlayerActionPacket::START_DESTROY_BLOCK)
 	{
-		if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
+		// Anti-cheat: validate spawn protection on the server for mining start.
+		if (!server->isUnderSpawnProtection(level, x, y, z, player)) player->gameMode->startDestroyBlock(x, y, z, packet->face);
 		else player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
 
 	}
@@ -458,8 +504,6 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 	int face = packet->getFace();
 	player->resetLastActionTime();
 
-	// 4J Stu - We don't have ops, so just use the levels setting
-	bool canEditSpawn = level->canEditSpawn; // = level->dimension->id != 0 || server->players->isOp(player->name);
 	if (packet->getFace() == 255)
 	{
 		if (item == nullptr) return;
@@ -469,7 +513,8 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 	{
 		if (synched && player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) < 8 * 8)
 		{
-			if (true)		// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from java 1.6.4) but putting back to old behaviour
+			// Anti-cheat: block placement/use must pass server-side spawn protection.
+			if (!server->isUnderSpawnProtection(level, x, y, z, player))
 			{
 				player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
 			}
@@ -538,7 +583,18 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 void PlayerConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, void *reasonObjects)
 {
 	EnterCriticalSection(&done_cs);
-	if( done ) return;
+	if( done )
+	{
+		LeaveCriticalSection(&done_cs);
+		return;
+	}
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	ServerRuntime::ServerLogManager::OnPlayerDisconnected(
+		getLogSmallId(),
+		(player != NULL) ? player->name : std::wstring(),
+		reason,
+		false);
+#endif
 	//    logger.info(player.name + " lost connection: " + reason);
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
 	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"�e" + player->name + L" left the game.") ) );
@@ -742,17 +798,16 @@ void PlayerConnection::handleInteract(shared_ptr<InteractPacket> packet)
 	// 4J Stu - If the client says that we hit something, then agree with it. The canSee can fail here as it checks
 	// a ray from head->head, but we may actually be looking at a different part of the entity that can be seen
 	// even though the ray is blocked.
-	if (target != nullptr) // && player->canSee(target) && player->distanceToSqr(target) < 6 * 6)
+	if (target != nullptr)
 	{
-		//boole canSee = player->canSee(target);
-		//double maxDist = 6 * 6;
-		//if (!canSee)
-		//{
-		//	maxDist = 3 * 3;
-		//}
+		// Anti-cheat: enforce reach and LOS on the server to reject forged hits.
+		bool canSeeTarget = player->canSee(target);
+		double maxDistSq = canSeeTarget ? kInteractReachSq : kInteractBlockedReachSq;
+		if (player->distanceToSqr(target) > maxDistSq)
+		{
+			return;
+		}
 
-		//if (player->distanceToSqr(target) < maxDist)
-		//{
 		if (packet->action == InteractPacket::INTERACT)
 		{
 			player->interact(target);
@@ -767,7 +822,6 @@ void PlayerConnection::handleInteract(shared_ptr<InteractPacket> packet)
 			}
 			player->attack(target);
 		}
-		//}
 	}
 
 }

@@ -170,5 +170,6 @@ extern char g_Win64MultiplayerIP[256];
 extern bool g_Win64DedicatedServer;
 extern int g_Win64DedicatedServerPort;
 extern char g_Win64DedicatedServerBindIP[256];
+extern bool g_Win64DedicatedServerLanAdvertise;
 
 #endif

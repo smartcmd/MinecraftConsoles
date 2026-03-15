@@ -37,6 +37,11 @@
 #include "Common\Network\Sony\NetworkPlayerSony.h"
 #endif
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+#include "..\Minecraft.Server\Access\Access.h"
+extern bool g_Win64DedicatedServer;
+#endif
+
 // 4J - this class is fairly substantially altered as there didn't seem any point in porting code for banning, whitelisting, ops etc.
 
 PlayerList::PlayerList(MinecraftServer *server)
@@ -1673,6 +1678,13 @@ bool PlayerList::isXuidBanned(PlayerUID xuid)
 			break;
 		}
 	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (!banned && g_Win64DedicatedServer)
+	{
+		banned = ServerRuntime::Access::IsPlayerBanned(xuid);
+	}
+#endif
 
 	return banned;
 }

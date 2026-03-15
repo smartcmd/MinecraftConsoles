@@ -379,11 +379,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
+!.vscode/*.example.json
 *.code-workspace
 
 # Local History for Visual Studio Code
@@ -413,11 +410,7 @@ Minecraft.Client/Windows64/GameHDD/
 # CMake build output
 build/
 
-# Existing build output files
-!x64/**/Effects.msscmp
-!x64/**/iggy_w64.dll
-!x64/**/mss64.dll
-!x64/**/redist64/
-
-# Local saves
-Minecraft.Client/Saves/
+# Server data
+tmp*/
+_server_asset_probe/
+server-data/
