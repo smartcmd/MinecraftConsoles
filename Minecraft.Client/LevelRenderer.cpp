@@ -3252,7 +3252,6 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 					level[playerIndex]->playStreamingMusic(L"", x, y, z);	// 4J - used to pass nullptr, but using empty string here now instead
 				}
 			}
-			mc->localplayers[playerIndex]->updateRichPresence();
 		}
 		break;
 		// 4J - new level event sounds brought forward from 1.2.3

@@ -47,10 +47,10 @@ extern "C" {
 #define CONTEXT_GAME_STATE_NETHER                   7
 #define CONTEXT_GAME_STATE_CD                       8
 #define CONTEXT_GAME_STATE_MAP                      9
-#define CONTEXT_GAME_STATE_ENCHANTING				5 //TODO 10
-#define CONTEXT_GAME_STATE_BREWING					5 //TODO 11
-#define CONTEXT_GAME_STATE_ANVIL					6 //TODO 12
-#define CONTEXT_GAME_STATE_TRADING					0 //TODO 13
+#define CONTEXT_GAME_STATE_ENCHANTING				10 //TODO 10, duplicated, old value = 5
+#define CONTEXT_GAME_STATE_BREWING					11 //TODO 11, duplicated, old value = 5
+#define CONTEXT_GAME_STATE_ANVIL					6  //TODO 12
+#define CONTEXT_GAME_STATE_TRADING					0  //TODO 13, duplicated
 
 // Values for X_CONTEXT_PRESENCE
 
