@@ -259,16 +259,6 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 
 	HumanoidModel *model;
 	Textures *t = Minecraft::GetInstance()->textures;
-<<<<<<< Updated upstream
-
-	if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 46 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 53)
-		model = static_cast<HumanoidModel *>(renderer->getModelSlim());
-	else if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 37 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 45)
-		model = static_cast<HumanoidModel *>(renderer->getModel());
-	else
-		model = static_cast<HumanoidModel *>(renderer->getModelCustom());
-=======
->>>>>>> Stashed changes
 
 	if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 45 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 53)
 		model = static_cast<HumanoidModel *>(renderer->getNewModelSlim());
@@ -277,7 +267,6 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 	else
 		model = static_cast<HumanoidModel *>(renderer->getModel());
 
-	app.DebugPrintf("5rh56h56yhg6 %ls;\n", model);
 	//getAttackAnim(mob, a);
 	//if (armor != nullptr) armor->attackTime = model->attackTime;
 	//model->riding = mob->isRiding();
@@ -372,7 +361,6 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 
 	MemSect(31);
 	bindTexture(m_customTextureUrl, m_backupTexture);
-
 	MemSect(0);
 	glEnable(GL_ALPHA_TEST);
 

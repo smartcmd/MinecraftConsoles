@@ -58,11 +58,7 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 	return pNewBox;
 }
 
-<<<<<<< Updated upstream
-void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, int skinType)
-=======
 void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror)
->>>>>>> Stashed changes
 {
 	this->texWidth = texWidth;
 	this->texHeight = texHeight;
@@ -99,31 +95,6 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
     body->addHumanoidBox(-4, 0, -2, 8, 12, 4, g); // Body
     body->setPos(0, 0 + yOffset, 0);
 
-<<<<<<< Updated upstream
-    arm0 = new ModelPart(this, 24 + 16, 16);
-    arm0->setPos(-5, 2 + yOffset, 0);
-
-    if (skinType == 2)
-    {
-        arm0->addHumanoidBox(-2, -2, -2, 3, 12, 4, g); // Arm0 Slim
-
-        arm1 = new ModelPart(this, 16 + 16, 16 * 3);
-        arm1->addHumanoidBox(-1, -2, -2, 3, 12, 4, g); // Arm1 Slim
-    }
-    else
-    {
-        arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g); // Arm0
-
-        if (skinType == 1)
-            arm1 = new ModelPart(this, 16 + 16, 16 * 3); // Arm1 Custom
-        else
-        {
-            arm1 = new ModelPart(this, 24 + 16, 16);
-            arm1->bMirror = true;
-        }
-        arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g); // Arm1
-    }
-=======
 	if (texWidth == 64 && texHeight == 64)
 	{
 		arm0 = new ModelPart(this, 24 + 16, 16);
@@ -164,7 +135,6 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
 	}
 
     arm0->setPos(-5, 2 + yOffset, 0);
->>>>>>> Stashed changes
     arm1->setPos(5, 2 + yOffset, 0);
 
 	if (mirror == true)
@@ -192,16 +162,6 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
     leg0->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg0
     leg0->setPos(-1.9, 12 + yOffset, 0);
 
-<<<<<<< Updated upstream
-    if (skinType >= 1)
-        leg1 = new ModelPart(this, 16, 16 * 3);
-    else
-    {
-        leg1 = new ModelPart(this, 0, 16);
-        leg1->bMirror = true;
-    }
-=======
->>>>>>> Stashed changes
     leg1->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg1
     leg1->setPos(1.9, 12 + yOffset, 0);
 
@@ -247,32 +207,16 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, b
 
 HumanoidModel::HumanoidModel() : Model()
 {
-<<<<<<< Updated upstream
-	_init(0, 0, 64, 32, 0);
-=======
 	_init(0, 0, 64, 32, false, true);
->>>>>>> Stashed changes
 }
 
 HumanoidModel::HumanoidModel(float g) : Model()
 {
-<<<<<<< Updated upstream
-	_init(g, 0, 64, 32, 0);
-=======
 	_init(g, 0, 64, 32, false, true);
->>>>>>> Stashed changes
 }
 
 HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight) : Model()
 {
-<<<<<<< Updated upstream
-	_init(g,yOffset,texWidth,texHeight,0);
-}
-
-HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, int skinType) : Model()
-{
-	_init(g,yOffset,texWidth,texHeight,skinType);
-=======
 	_init(g,yOffset,texWidth,texHeight, false, true);
 }
 
@@ -284,7 +228,6 @@ HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight
 HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror) : Model()
 {
 	_init(g,yOffset,texWidth,texHeight, slimHands, mirror);
->>>>>>> Stashed changes
 }
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)

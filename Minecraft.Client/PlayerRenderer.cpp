@@ -58,14 +58,9 @@ ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR
 PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0.5f, true, true )
 {
 	humanoidModel = static_cast<HumanoidModel *>(model);
-<<<<<<< Updated upstream
-	humanoidModelCustom = static_cast<HumanoidModel *>(modelCustom);
-	humanoidModelSlim = static_cast<HumanoidModel *>(modelSlim);
-=======
 	humanoidModelSlim = static_cast<HumanoidModel *>(modelSlim);
 	newHumanoidModel = static_cast<HumanoidModel *>(newModel);
 	newHumanoidModelSlim = static_cast<HumanoidModel *>(newModelSlim);
->>>>>>> Stashed changes
 
     armorParts1 = new HumanoidModel(1.0f);
     armorParts2 = new HumanoidModel(0.5f);
@@ -173,15 +168,9 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
-<<<<<<< Updated upstream
-	if (mob != nullptr && humanoidModel != nullptr && mob->getCustomSkin() >= 0 && mob->getCustomSkin() <= 9) resModel = humanoidModel;
-	else if (mob != nullptr && humanoidModelSlim != nullptr && mob->getCustomSkin() >= 10 && mob->getCustomSkin() <= 17) resModel = humanoidModelSlim;
-	else resModel = humanoidModelCustom;
-=======
 	if (mob != nullptr && newHumanoidModel != nullptr && mob->getCustomSkin() == 18) resModel = newHumanoidModel;
 	else if (mob != nullptr && newHumanoidModelSlim != nullptr && mob->getCustomSkin() >= 8 && mob->getCustomSkin() <= 17) resModel = newHumanoidModelSlim;
 	else resModel = humanoidModel;
->>>>>>> Stashed changes
 
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
 
@@ -286,15 +275,9 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 	HumanoidModel *resModel;
 
-<<<<<<< Updated upstream
-	if (mob != nullptr && humanoidModel != nullptr && mob->getCustomSkin() >= 0 && mob->getCustomSkin() <= 9) resModel = humanoidModel;
-	else if (mob != nullptr && humanoidModelSlim != nullptr && mob->getCustomSkin() >= 10 && mob->getCustomSkin() <= 17) resModel = humanoidModelSlim;
-	else resModel = humanoidModelCustom;
-=======
 	if (mob != nullptr && newHumanoidModel != nullptr && mob->getCustomSkin() == 18) resModel = newHumanoidModel;
 	else if (mob != nullptr && newHumanoidModelSlim != nullptr && mob->getCustomSkin() >= 8 && mob->getCustomSkin() <= 17) resModel = newHumanoidModelSlim;
 	else resModel = humanoidModel;
->>>>>>> Stashed changes
 
     shared_ptr<ItemInstance> headGear = mob->inventory->getArmor(3);
     if (headGear != nullptr)
@@ -541,15 +524,9 @@ void PlayerRenderer::renderHand()
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player);
 	HumanoidModel *resModel;
 
-<<<<<<< Updated upstream
-	if (player != nullptr && humanoidModel != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = humanoidModel;
-	else if (player != nullptr && humanoidModelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = humanoidModelSlim;
-	else resModel = humanoidModelCustom;
-=======
 	if (player != nullptr && newHumanoidModel != nullptr && player->getCustomSkin() == 18) resModel = newHumanoidModel;
 	else if (player != nullptr && newHumanoidModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newHumanoidModelSlim;
 	else resModel = humanoidModel;
->>>>>>> Stashed changes
 
 	float brightness = 1;
     glColor3f(brightness, brightness, brightness);

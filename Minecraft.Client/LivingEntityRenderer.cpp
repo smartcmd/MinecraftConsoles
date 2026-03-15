@@ -15,10 +15,6 @@ int LivingEntityRenderer::MAX_ARMOR_LAYERS = 4;
 LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow, bool slimHands, bool createNewVar)
 {
 	this->model = model;
-<<<<<<< Updated upstream
-	this->modelCustom = new HumanoidModel(0, 0, 64, 64, 1);
-	this->modelSlim = new HumanoidModel(0, 0, 64, 64, 2);
-=======
 
 	if (slimHands == true)
 		this->modelSlim = new HumanoidModel(0, 0, 64, 32, true);
@@ -30,7 +26,6 @@ LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow, bool slim
 		if (slimHands == true)
 			this->newModelSlim = new HumanoidModel(0, 0, 64, 64, true, false);
 	}
->>>>>>> Stashed changes
 
 	shadowRadius = shadow;
 	armor = nullptr;
@@ -70,15 +65,9 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-<<<<<<< Updated upstream
-	if (player != nullptr && model != nullptr &&  player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
-	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
-	else resModel = modelCustom;
-=======
 	if (player != nullptr && newModel != nullptr &&  player->getCustomSkin() == 18) resModel = newModel;
 	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
 	else resModel = model;
->>>>>>> Stashed changes
 
 	resModel->attackTime = getAttackAnim(mob, a);
 	if (armor != nullptr) armor->attackTime = resModel->attackTime;
@@ -273,15 +262,9 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
 	Model *resModel;
 
-<<<<<<< Updated upstream
-	if (player != nullptr && model != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
-	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
-	else resModel = modelCustom;
-=======
 	if (player != nullptr && newModel != nullptr && player->getCustomSkin() == 18) resModel = newModel;
 	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
 	else resModel = model;
->>>>>>> Stashed changes
 
 	bindTexture(mob);
 	if (!mob->isInvisible())
@@ -357,15 +340,9 @@ void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
 	Model *resModel;
 
-<<<<<<< Updated upstream
-	if (player != nullptr && model != nullptr && player->getCustomSkin() >= 0 && player->getCustomSkin() <= 9) resModel = model;
-	else if (player != nullptr && modelSlim != nullptr && player->getCustomSkin() >= 10 && player->getCustomSkin() <= 17) resModel = modelSlim;
-	else resModel = modelCustom;
-=======
 	if (player != nullptr && newModel != nullptr && player->getCustomSkin() == 18) resModel = newModel;
 	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
 	else resModel = model;
->>>>>>> Stashed changes
 
 	int arrowCount = mob->getArrowCount();
 

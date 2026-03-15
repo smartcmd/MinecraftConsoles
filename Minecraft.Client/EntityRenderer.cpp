@@ -19,14 +19,9 @@ ResourceLocation EntityRenderer::SHADOW_LOCATION = ResourceLocation(TN__CLAMP__M
 EntityRenderer::EntityRenderer()
 {
 	model = nullptr;
-<<<<<<< Updated upstream
-	modelCustom = nullptr;
-	modelSlim = nullptr;
-=======
 	modelSlim = nullptr;
 	newModel = nullptr;
 	newModelSlim = nullptr;
->>>>>>> Stashed changes
 	tileRenderer = new TileRenderer();
 	shadowRadius = 0;
 	shadowStrength = 1.0f;
