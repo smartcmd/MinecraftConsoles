@@ -2495,6 +2495,7 @@ void ClientConnection::handleAddMob(shared_ptr<AddMobPacket> packet)
 	float xRot = packet->xRot * 360 / 256.0f;
 
 	shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(EntityIO::newById(packet->type, level));
+	if (mob == nullptr) return;
 	mob->xp = packet->x;
 	mob->yp = packet->y;
 	mob->zp = packet->z;

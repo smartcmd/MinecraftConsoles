@@ -299,11 +299,7 @@ IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 		}
 		return nullptr;
 	}
-	// Split-screen pads 1-3: the player is at m_player[dwUserIndex] with isRemote=false
-	if (dwUserIndex < MINECRAFT_NET_MAX_PLAYERS &&
-		!m_player[dwUserIndex].m_isRemote &&
-		Win64_IsActivePlayer(&m_player[dwUserIndex], dwUserIndex))
-		return &m_player[dwUserIndex];
+	// Split-screen pads 1-3 only work in hosting mode
 	return nullptr;
 }
 static bool Win64_IsActivePlayer(IQNetPlayer * p, DWORD index)
