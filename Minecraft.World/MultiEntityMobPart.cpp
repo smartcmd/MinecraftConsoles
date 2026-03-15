@@ -33,7 +33,11 @@ bool MultiEntityMobPart::isPickable()
 
 bool MultiEntityMobPart::hurt(DamageSource *source, float damage)
 {
-	return parentMob.lock()->hurt( dynamic_pointer_cast<MultiEntityMobPart>( shared_from_this() ), source, damage);
+    if (auto parent = parentMob.lock()) {
+        return parent->hurt(dynamic_pointer_cast<MultiEntityMobPart>(shared_from_this()), source, damage);
+    }
+    // If the parent doesn't exist, safely ignore the damage to avoid the Crashing
+    return false; 
 }
 
 bool MultiEntityMobPart::is(shared_ptr<Entity> other)
