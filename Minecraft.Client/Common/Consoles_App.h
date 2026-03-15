@@ -237,6 +237,11 @@ public:
 #endif
 	virtual void	SetRichPresenceContext(int iPad, int contextId) = 0;
 
+	// jvnpr -- SettingFixer & related checks
+	void			SettingFixer(); 
+	static void		SetSettingsFileLoaded(bool loaded);
+	static bool		GetSettingsFileLoaded();
+	static bool		settingFileLoaded; 
 
 	void			SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucVal);
 	unsigned char	GetGameSettings(int iPad,eGameSetting eVal);
