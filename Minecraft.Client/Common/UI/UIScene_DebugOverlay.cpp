@@ -6,6 +6,7 @@
 #include "..\..\Minecraft.h"
 #include "..\..\MinecraftServer.h"
 #include "..\..\GameRenderer.h"
+#include "..\..\Options.h"
 #include "..\..\MultiPlayerLevel.h"
 #include "ClientConnection.h"
 #include "MultiPlayerLocalPlayer.h"
@@ -22,15 +23,14 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 	initialiseMovie();
 
 	const Minecraft *pMinecraft = Minecraft::GetInstance();
-	WCHAR tempString[256];
-	const int fovSliderVal = app.GetGameSettings(m_iPad, eGameSetting_FOV);
-	const int fovDeg = 70 + fovSliderVal * 40 / 100;
-	swprintf( tempString, 256, L"Set fov (%d)", fovDeg);
-	m_sliderFov.init(tempString,eControl_FOV,0,100,fovSliderVal);
+	WCHAR TempString[256];
+	const int displayFOV = 30 + app.GetGameSettings(m_iPad,eGameSetting_FOV);
+	swprintf(TempString, 256, L"Set fov (%d)", displayFOV);
+	m_sliderFov.init(TempString,eControl_FOV,0,80,app.GetGameSettings(m_iPad,eGameSetting_FOV));
 
 	const float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
-	swprintf( tempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
-	m_sliderTime.init(tempString,eControl_Time,0,240,currentTime/100);
+	swprintf(TempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
+	m_sliderTime.init(TempString,eControl_Time,0,240,currentTime/100);
 
 	m_buttonRain.init(L"Toggle Rain",eControl_Rain);
 	m_buttonThunder.init(L"Toggle Thunder",eControl_Thunder);
@@ -274,17 +274,17 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 		break;
 	case eControl_FOV:
 		{
-			Minecraft *pMinecraft = Minecraft::GetInstance();
 			int v = static_cast<int>(currentValue);
 			if (v < 0) v = 0;
-			if (v > 100) v = 100;
-			int fovDeg = 70 + v * 40 / 100;
-			pMinecraft->gameRenderer->SetFovVal(static_cast<float>(fovDeg));
-			app.SetGameSettings(m_iPad, eGameSetting_FOV, v);
+			if (v > 80) v = 80;
+			int displayFOV = v + 30; // convert 0-80 to 30-110
 
-			WCHAR tempString[256];
-			swprintf( tempString, 256, L"Set fov (%d)", fovDeg);
-			m_sliderFov.setLabel(tempString);
+			Minecraft* pMinecraft = Minecraft::GetInstance();
+			pMinecraft->options->fov = (v / 40.0f) - 1;
+
+			WCHAR TempString[256];
+			swprintf((WCHAR*)TempString, 256, L"FOV: %d", displayFOV);
+			m_sliderFov.setLabel(TempString);
 		}
 		break;
 	};

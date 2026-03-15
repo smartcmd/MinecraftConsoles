@@ -5,34 +5,6 @@
 #include "..\..\Options.h"
 #include "..\..\GameRenderer.h"
 
-namespace
-{
-    constexpr int FOV_MIN = 70;
-    constexpr int FOV_MAX = 110;
-    constexpr int FOV_SLIDER_MAX = 100;
-
-	int ClampFov(int value)
-	{
-		if (value < FOV_MIN) return FOV_MIN;
-		if (value > FOV_MAX) return FOV_MAX;
-		return value;
-	}
-
-    [[maybe_unused]]
-    int FovToSliderValue(float fov)
-	{
-		const int clampedFov = ClampFov(static_cast<int>(fov + 0.5f));
-		return ((clampedFov - FOV_MIN) * FOV_SLIDER_MAX) / (FOV_MAX - FOV_MIN);
-	}
-
-	int sliderValueToFov(int sliderValue)
-	{
-		if (sliderValue < 0) sliderValue = 0;
-		if (sliderValue > FOV_SLIDER_MAX) sliderValue = FOV_SLIDER_MAX;
-		return FOV_MIN + ((sliderValue * (FOV_MAX - FOV_MIN)) / FOV_SLIDER_MAX);
-	}
-}
-
 int UIScene_SettingsGraphicsMenu::LevelToDistance(int level)
 {
 	static const int table[6] = {2,4,8,16,32,64};
@@ -72,11 +44,11 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-    const int initialFovSlider = app.GetGameSettings(m_iPad, eGameSetting_FOV);
-	const int initialFovDeg = sliderValueToFov(initialFovSlider);
-	swprintf(TempString, 256, L"FOV: %d", initialFovDeg);
-	m_sliderFOV.init(TempString, eControl_FOV, 0, FOV_SLIDER_MAX, initialFovSlider);
-	
+	// if FOV = 70, display "Default" instead; otherwise display true value. 
+	if (static_cast<int>(30.0f + app.GetGameSettings(m_iPad, eGameSetting_FOV)) == 70) swprintf((WCHAR*)TempString, 256, L"FOV: Default");
+	else swprintf((WCHAR*)TempString, 256, L"FOV: %d", static_cast<int>(30.0f + app.GetGameSettings(m_iPad, eGameSetting_FOV)));
+	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, app.GetGameSettings(m_iPad, eGameSetting_FOV));
+
 	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 
@@ -217,14 +189,25 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 
 	case eControl_FOV:
 		{
-			m_sliderFOV.handleSliderMove(value);
-			const Minecraft* pMinecraft = Minecraft::GetInstance();
-			const int fovValue = sliderValueToFov(value);
-			pMinecraft->gameRenderer->SetFovVal(static_cast<float>(fovValue));
-			app.SetGameSettings(m_iPad, eGameSetting_FOV, value);
-			WCHAR tempString[256];
-			swprintf(tempString, 256, L"FOV: %d", fovValue);
-			m_sliderFOV.setLabel(tempString);
+			// jvnpr -- code in Consoles_App.cpp should reflect the same calculations as here so that controller and mouse inputs work the same.
+			int v = static_cast<int>(currentValue);
+			m_sliderFOV.handleSliderMove(v);
+
+			if (v < 0) v = 0;
+			if (v > 80) v = 80;
+			int displayFOV = v + 30;
+
+			Minecraft* pMinecraft = Minecraft::GetInstance();
+			pMinecraft->options->fov = (v / 40.0f) - 1; // use FOV option framework instead of modifying hardcoded gameRenderer value
+
+			WCHAR TempString[256];
+
+			if (displayFOV == 70) swprintf((WCHAR*)TempString, 256, L"FOV: Default");
+			else swprintf((WCHAR*)TempString, 256, L"FOV: %d", static_cast<int>(30.0f + app.GetGameSettings(m_iPad, eGameSetting_FOV)));
+			m_sliderFOV.setLabel(TempString);
+
+			app.SetGameSettings(m_iPad, eGameSetting_FOV, v);
+
 		}
 		break;
 

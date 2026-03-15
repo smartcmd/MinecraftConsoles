@@ -108,6 +108,8 @@ typedef struct
 			// was 192
 			//unsigned char ucUnused[192-TUTORIAL_PROFILE_STORAGE_BYTES-sizeof(DWORD)-sizeof(char)-sizeof(char)-sizeof(char)-sizeof(char)-sizeof(LONG)-sizeof(LONG)-sizeof(DWORD)];
 			// 4J-PB - don't need to define the padded space, the union with ucReservedSpace will make the sizeof GAME_SETTINGS correct
+
+			unsigned int uiSettingDataVersion;
 		};
 
 		unsigned char ucReservedSpace[192];

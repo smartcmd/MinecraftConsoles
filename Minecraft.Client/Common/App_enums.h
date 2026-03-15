@@ -178,6 +178,9 @@ enum eGameSetting
 	// PSVita
 	eGameSetting_PSVita_NetworkModeAdhoc,
 
+	// Add setting data version
+	eGameSetting_SettingDataVersion,
+
 
 };
 

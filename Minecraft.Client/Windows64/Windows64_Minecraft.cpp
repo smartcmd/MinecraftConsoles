@@ -1345,6 +1345,7 @@ static Minecraft* InitialiseMinecraftRuntime()
 		return nullptr;
 
 	app.InitGameSettings();
+	app.SettingFixer();
 	app.InitialiseTips();
 
 	return pMinecraft;
