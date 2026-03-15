@@ -586,10 +586,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_CHAR:
+	{
 		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
-		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
-			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
+		wchar_t ch = static_cast<wchar_t>(wParam);
+#ifdef _WINDOWS64
+		if (wParam >= 0x80 && wParam <= 0xFF)
+		{
+			char mb[2] = { static_cast<char>(wParam), 0 };
+			wchar_t wc;
+			if (MultiByteToWideChar(CP_ACP, 0, mb, 1, &wc, 1) == 1)
+				ch = wc;
+		}
+#endif
+		if (ch >= 0x20 || ch == 0x08 || ch == 0x0D) // printable chars + backspace + enter
+			g_KBMInput.OnChar(ch);
 		break;
+	}
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
