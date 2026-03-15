@@ -1029,7 +1029,7 @@ IUIScene_AbstractContainerMenu::ESceneSection IUIScene_CreativeMenu::GetSectionA
 bool IUIScene_CreativeMenu::handleValidKeyPress(int iPad, int buttonNum, BOOL quickKeyHeld)
 {
 	// 4J Added - Make pressing the X button clear the hotbar
-	if(buttonNum == 1)
+	if(buttonNum == 1 && !m_bPointerOutsideMenu) // Don't clear the hotbar if pointer outside the menu, so handleOutsideClicked can drop the item
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
