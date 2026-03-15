@@ -201,17 +201,16 @@ Minecraft.Server.exe -seed 123456789
 
 ## Build & Run
 
-1. Install [Visual Studio 2022](https://aka.ms/vs/17/release/vs_community.exe).
+1. Install [Visual Studio 2022](https://aka.ms/vs/17/release/vs_community.exe) or [newer](https://visualstudio.microsoft.com/downloads/).
 2. Clone the repository.
-3. Open the project by double-clicking `MinecraftConsoles.sln`.
-4. Make sure `Minecraft.Client` is set as the Startup Project.
-5. Set the build configuration to **Debug** (Release is also ok but missing some debug features) and the target platform to **Windows64**, then build and run.
+3. Open the project folder from Visual Studio.
+4. Set the build configuration to **Windows - Debug** (Release is also ok but missing some debug features), then build and run.
 
 ### CMake (Windows x64)
 
 ```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Debug --target MinecraftClient
+cmake --preset windows64
+cmake --build --preset windows64-debug --target Minecraft.Client
 ```
 
 For more information, see [COMPILE.md](COMPILE.md).

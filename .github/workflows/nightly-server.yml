@@ -1,4 +1,4 @@
-name: Nightly Release
+name: Nightly Server Release
 
 on:
   workflow_dispatch: 
@@ -9,7 +9,7 @@ on:
       - '.gitignore'
       - '*.md'
       - '.github/**'
-      - '!.github/workflows/nightly.yml'
+      - '!.github/workflows/nightly-server.yml'
 
 permissions:
   contents: write
@@ -42,20 +42,20 @@ jobs:
       with:
         configurePreset: ${{ env.PLATFORM }}
         buildPreset: ${{ env.PLATFORM }}-release
-        buildPresetAdditionalArgs: "['--target', 'Minecraft.Client']"
+        buildPresetAdditionalArgs: "['--target', 'Minecraft.Server']"
 
     - name: Zip Build
-      run: 7z a -r LCE${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/* -x!*.ipdb -x!*.iobj
+      run: 7z a -r LCEServer${{ matrix.platform }}.zip ./build/${{ env.PLATFORM }}/Minecraft.Server/Release/* -x!*.ipdb -x!*.iobj
 
     - name: Stage artifacts
       run: |
         New-Item -ItemType Directory -Force -Path staging
-        Copy-Item LCE${{ matrix.platform }}.zip staging/
+        Copy-Item LCEServer${{ matrix.platform }}.zip staging/
 
     - name: Stage exe and pdb
       if: matrix.platform == 'Windows64'
       run: |
-        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Client/Release/Minecraft.Client.exe staging/
+        Copy-Item ./build/${{ env.PLATFORM }}/Minecraft.Server/Release/Minecraft.Server.exe staging/
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v6
@@ -79,13 +79,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: nightly
-        name: Nightly Client Release
+        tag_name: nightly-dedicated-server
+        name: Nightly Dedicated Server Release
         body: |
-          Requires at least Windows 7 and DirectX 11 compatible GPU to run.
-          
-          # 🚨 First time here? 🚨
-          If you've never downloaded the game before, you need to download `LCEWindows64.zip` and extract it to the folder where you'd like to keep the game. The other files are included in this `.zip` file!
+          Dedicated Server runtime for Windows64.
+
+          Download `LCEServerWindows64.zip` and extract it to a folder where you'd like to keep the server runtime.
         files: |
           artifacts/*
 

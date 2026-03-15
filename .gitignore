@@ -407,39 +407,10 @@ enc_temp_folder/
 Minecraft.Client/Schematics/
 Minecraft.Client/Windows64/GameHDD/
 
-# Intermediate build files (per-project)
-Minecraft.Client/x64/
-Minecraft.Client/Debug/
-Minecraft.Client/x64_Debug/
-Minecraft.Client/Release/
-Minecraft.Client/x64_Release/
+# CMake build output
+build/
 
-Minecraft.World/x64/
-Minecraft.World/Debug/
-Minecraft.World/x64_Debug/
-Minecraft.World/Release/
-Minecraft.World/x64_Release/
-
-Minecraft.Server/x64/
-Minecraft.Server/Debug/
-Minecraft.Server/x64_Debug/
-Minecraft.Server/Release/
-Minecraft.Server/x64_Release/
-
-build/*
-
-# Existing build output files
-!x64/**/Effects.msscmp
-!x64/**/iggy_w64.dll
-!x64/**/mss64.dll
-!x64/**/redist64/
-
-# Local saves
-Minecraft.Client/Saves/
-
+# Server data
 tmp*/
 _server_asset_probe/
 server-data/
-# Visual Studio Per-User Config
-*.user
-/out

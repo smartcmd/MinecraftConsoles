@@ -1,0 +1,94 @@
+{
+  "version": 5,
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "hidden": true
+    },
+    {
+      "name": "windows64",
+      "displayName": "Windows64",
+      "inherits": "base",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_WINDOWS64",
+        "PLATFORM_NAME": "Windows64",
+        "IGGY_LIBS": "iggy_w64.lib;iggyperfmon_w64.lib;iggyexpruntime_w64.lib"
+      }
+    },
+    {
+      "name": "durango",
+      "displayName": "Durango",
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_DURANGO;_XBOX_ONE",
+        "PLATFORM_NAME": "Durango",
+        "IGGY_LIBS": "iggy_durango.lib;iggyperfmon_durango.lib"
+      }
+    },
+    {
+      "name": "orbis",
+      "displayName": "ORBIS",
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__ORBIS__",
+        "PLATFORM_NAME": "Orbis",
+        "IGGY_LIBS": "libiggy_orbis.a;libiggyperfmon_orbis.a"
+      }
+    },
+    {
+      "name": "ps3",
+      "displayName": "PS3",
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__PS3__",
+        "PLATFORM_NAME": "PS3",
+        "IGGY_LIBS": "libiggy_ps3.a;libiggyperfmon_ps3.a;libiggyexpruntime_ps3.a"
+      }
+    },
+    {
+      "name": "psvita",
+      "displayName": "PSVita",
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "__PSVITA__",
+        "PLATFORM_NAME": "PSVita",
+        "IGGY_LIBS": "libiggy_psp2.a;libiggyperfmon_psp2.a"
+      }
+    },
+    {
+      "name": "xbox360",
+      "displayName": "Xbox 360",
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake",
+      "cacheVariables": {
+        "PLATFORM_DEFINES": "_XBOX",
+        "PLATFORM_NAME": "Xbox"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows64-debug",   "displayName": "Windows64 - Debug",   "configurePreset": "windows64", "configuration": "Debug" },
+    { "name": "windows64-release", "displayName": "Windows64 - Release", "configurePreset": "windows64", "configuration": "Release" },
+
+    { "name": "durango-debug",     "displayName": "Durango - Debug",     "configurePreset": "durango",   "configuration": "Debug" },
+    { "name": "durango-release",   "displayName": "Durango - Release",   "configurePreset": "durango",   "configuration": "Release" },
+
+    { "name": "orbis-debug",       "displayName": "ORBIS - Debug",       "configurePreset": "orbis",     "configuration": "Debug" },
+    { "name": "orbis-release",     "displayName": "ORBIS - Release",     "configurePreset": "orbis",     "configuration": "Release" },
+
+    { "name": "ps3-debug",         "displayName": "PS3 - Debug",         "configurePreset": "ps3",       "configuration": "Debug" },
+    { "name": "ps3-release",       "displayName": "PS3 - Release",       "configurePreset": "ps3",       "configuration": "Release" },
+
+    { "name": "psvita-debug",      "displayName": "PSVita - Debug",      "configurePreset": "psvita",    "configuration": "Debug" },
+    { "name": "psvita-release",    "displayName": "PSVita - Release",    "configurePreset": "psvita",    "configuration": "Release" },
+
+    { "name": "xbox360-debug",     "displayName": "Xbox 360 - Debug",    "configurePreset": "xbox360",   "configuration": "Debug" },
+    { "name": "xbox360-release",   "displayName": "Xbox 360 - Release",  "configurePreset": "xbox360",   "configuration": "Release" }
+  ]
+}
