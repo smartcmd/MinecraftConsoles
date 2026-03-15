@@ -495,6 +495,8 @@ public:
 	void setPlayerGamePrivilege(EPlayerGamePrivileges privilege, unsigned int value);
 	static void setPlayerGamePrivilege(unsigned int &uiGamePrivileges, EPlayerGamePrivileges privilege, unsigned int value);
 
+	virtual bool isInvulnerable();
+
 	bool isAllowedToUse(Tile *tile);
 	bool isAllowedToUse(shared_ptr<ItemInstance> item);
 	bool isAllowedToInteract(shared_ptr<Entity> target);
