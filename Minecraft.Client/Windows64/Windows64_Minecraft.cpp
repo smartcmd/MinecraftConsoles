@@ -1806,23 +1806,16 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		InputManager.Tick();
 
 		// Detect KBM vs controller input mode
-		if (InputManager.IsPadConnected(0))
-		{
-			const bool controllerUsed = InputManager.ButtonPressed(0) ||
-				InputManager.GetJoypadStick_LX(0, false) != 0.0f ||
-				InputManager.GetJoypadStick_LY(0, false) != 0.0f ||
-				InputManager.GetJoypadStick_RX(0, false) != 0.0f ||
-				InputManager.GetJoypadStick_RY(0, false) != 0.0f;
+		const bool controllerUsed = InputManager.ButtonPressed(0) ||
+			InputManager.GetJoypadStick_LX(0, false) != 0.0f ||
+			InputManager.GetJoypadStick_LY(0, false) != 0.0f ||
+			InputManager.GetJoypadStick_RX(0, false) != 0.0f ||
+			InputManager.GetJoypadStick_RY(0, false) != 0.0f;
 
-			if (controllerUsed)
-				g_KBMInput.SetKBMActive(false);
-			else if (g_KBMInput.HasAnyInput())
-				g_KBMInput.SetKBMActive(true);
-		}
-		else
-		{
+		if (controllerUsed)
+			g_KBMInput.SetKBMActive(false);
+		else if (g_KBMInput.HasAnyInput())
 			g_KBMInput.SetKBMActive(true);
-		}
 
 		if (!g_KBMInput.IsMouseGrabbed())
 		{

@@ -61,9 +61,11 @@ public:
 	virtual bool GetIsPlayingStreamingGameMusic()			;
 	virtual void SetIsPlayingStreamingCDMusic(bool bVal)	;
 	virtual void SetIsPlayingStreamingGameMusic(bool bVal)	;
+	virtual bool GetIsPlayingMenuMusic();
 	virtual bool GetIsPlayingEndMusic()						;
 	virtual bool GetIsPlayingNetherMusic()					;
 	virtual void SetIsPlayingEndMusic(bool bVal)			;
+	virtual void SetIsPlayingMenuMusic(bool bVal);
 	virtual void SetIsPlayingNetherMusic(bool bVal)			;
 	static const WCHAR *wchSoundNames[eSoundType_MAX];
 	static const WCHAR *wchUISoundNames[eSFX_MAX];
@@ -94,6 +96,7 @@ private:
 
 	bool m_bIsPlayingStreamingCDMusic;
 	bool m_bIsPlayingStreamingGameMusic;
+	bool m_bIsPlayingMenuMusic;
 	bool m_bIsPlayingEndMusic;
 	bool m_bIsPlayingNetherMusic;
 };
