@@ -114,7 +114,9 @@ const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"hal4",
 	"nuance1",
 	"nuance2",
-
+	"piano1",
+	"piano2",
+	"piano3",
 #ifndef _XBOX
 	"creative1",
 	"creative2",
@@ -127,11 +129,6 @@ const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"menu3",
 	"menu4",
 #endif
-
-	"piano1",
-	"piano2",
-	"piano3",
-
 	// Nether
 	"nether1",
 	"nether2",
@@ -191,7 +188,7 @@ void SoundEngine::init(Options* pOptions)
     return;
 }
 
-void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1)
+void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1, int iCreativeMin, int iCreativeMax, int iMenuMin, int iMenuMax)
 {
 	m_iStream_Overworld_Min=iOverworldMin;
 	m_iStream_Overworld_Max=iOverWorldMax;
@@ -199,6 +196,10 @@ void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int i
 	m_iStream_Nether_Max=iNetherMax;
 	m_iStream_End_Min=iEndMin;
 	m_iStream_End_Max=iEndMax;
+	m_iStream_Creative_Min=iCreativeMin;
+	m_iStream_Creative_Max=iCreativeMax;
+	m_iStream_Menu_Min=iMenuMin;
+	m_iStream_Menu_Max=iMenuMax;
 	m_iStream_CD_1=iCD1;
 
 	// array to monitor recently played tracks
@@ -407,7 +408,7 @@ SoundEngine::SoundEngine()
 	SetStreamingSounds(eStream_Overworld_Calm1,eStream_Overworld_piano3,
 		eStream_Nether1,eStream_Nether4,
 		eStream_end_dragon,eStream_end_end,
-		eStream_CD_1);
+		eStream_CD_1, eStream_Overworld_Creative1, eStream_Overworld_Creative6, eStream_Overworld_Menu1, eStream_Overworld_Menu4);
 
 	m_musicID=getMusicID(LevelData::DIMENSION_OVERWORLD);
 
@@ -800,7 +801,16 @@ int SoundEngine::getMusicID(int iDomain)
 	if(pMinecraft==nullptr)
 	{
 		// any track from the overworld
-		return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
+		return GetRandomishTrack(m_iStream_Menu_Min,m_iStream_Menu_Max);
+	}
+
+	int localPlayerIdx = pMinecraft->getLocalPlayerIdx();
+	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[localPlayerIdx];
+
+	if (localPlayer == nullptr)
+	{
+		// any track from the overworld
+		return GetRandomishTrack(m_iStream_Menu_Min,m_iStream_Menu_Max);
 	}
 
 	if(pMinecraft->skins->isUsingDefaultSkin())
@@ -814,7 +824,13 @@ int SoundEngine::getMusicID(int iDomain)
 			return GetRandomishTrack(m_iStream_Nether_Min,m_iStream_Nether_Max);
 			//return m_iStream_Nether_Min + random->nextInt(m_iStream_Nether_Max-m_iStream_Nether_Min);
 		default: //overworld
+			GameType* gt = Player::getPlayerGamePrivilege(localPlayer->getAllPlayerGamePrivileges(), Player::ePlayerGamePrivilege_CreativeMode) ? GameType::CREATIVE : GameType::SURVIVAL;
 			//return m_iStream_Overworld_Min + random->nextInt(m_iStream_Overworld_Max-m_iStream_Overworld_Min);
+
+			if (gt == GameType::CREATIVE)
+			{
+				return GetRandomishTrack(m_iStream_Creative_Min,m_iStream_Creative_Max);
+			}
 			return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
 		}
 	}
@@ -829,7 +845,7 @@ int SoundEngine::getMusicID(int iDomain)
 			//return m_iStream_Nether_Min + random->nextInt(m_iStream_Nether_Max-m_iStream_Nether_Min);
 			return GetRandomishTrack(m_iStream_Nether_Min,m_iStream_Nether_Max);
 		default: //overworld
-			//return m_iStream_Overworld_Min + random->nextInt(m_iStream_Overworld_Max-m_iStream_Overworld_Min);
+			//Mash-ups don't have special ranges.
 			return GetRandomishTrack(m_iStream_Overworld_Min,m_iStream_Overworld_Max);
 		}
 	}

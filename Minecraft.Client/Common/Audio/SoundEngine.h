@@ -23,6 +23,10 @@ enum eMUSICFILES
 	eStream_Overworld_hal4,
 	eStream_Overworld_nuance1,
 	eStream_Overworld_nuance2,
+	//Moved these to separate
+	eStream_Overworld_piano1,
+	eStream_Overworld_piano2,
+	eStream_Overworld_piano3, // <-- make piano3 the last overworld one
 #ifndef _XBOX
 	// Add the new music tracks
 	eStream_Overworld_Creative1,
@@ -36,9 +40,7 @@ enum eMUSICFILES
 	eStream_Overworld_Menu3,
 	eStream_Overworld_Menu4,
 #endif
-	eStream_Overworld_piano1,
-	eStream_Overworld_piano2,
-	eStream_Overworld_piano3, // <-- make piano3 the last overworld one
+
 	// Nether
 	eStream_Nether1,
 	eStream_Nether2,
@@ -134,7 +136,7 @@ public:
 	bool isStreamingWavebankReady();		// 4J Added
 	int getMusicID(int iDomain);
 	int getMusicID(const wstring& name);
-	void SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1);
+	void SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1, int iCreativeMin, int iCreativeMax, int iMenuMin, int iMenuMax);
 	void updateMiniAudio();
 	void playMusicUpdate();
 
@@ -185,6 +187,8 @@ private:
 	int m_iStream_Nether_Min,m_iStream_Nether_Max;
 	int m_iStream_End_Min,m_iStream_End_Max;
 	int m_iStream_CD_1;
+	int m_iStream_Creative_Min,m_iStream_Creative_Max;
+	int m_iStream_Menu_Min,m_iStream_Menu_Max;
 	bool *m_bHeardTrackA;
 
 #ifdef __ORBIS__
