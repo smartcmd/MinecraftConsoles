@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Wordt niet gebruikt</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Terug</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Annuleren</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Ja</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Nee</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Beschadigde opgeslagen game</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Je opgeslagen gegevens zijn waarschijnlijk beschadigd. Een nieuwe opgeslagen game maken en de beschadigde overschrijven?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Geen vrije ruimte</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Je geselecteerde opslagapparaat heeft niet genoeg vrije ruimte om een opgeslagen game te maken.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Opnieuw selecteren</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Spelen zonder op te slaan</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Een nieuwe opgeslagen game maken</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Opgeslagen game overschrijven?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Je geselecteerde opslagapparaat bevat deze opgeslagen game al. Overschrijven?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Nee, niet overschrijven</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Overschrijven en opslaan</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Opslaan mislukt</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Probleem met opslagapparaat</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Je opslagapparaat is niet beschikbaar of bevat een fout</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Je opslagapparaat is niet beschikbaar of bevat een fout. Selecteer een nieuw opslagapparaat.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Selecteer nieuw opslagapparaat</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Geen opslagapparaat geselecteerd</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Als je geen opslagapparaat selecteert, worden opgeslagen games uitgeschakeld.</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Selecteer een opslagapparaat</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Doorgaan zonder op te slaan</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Je opslagapparaat is verwijderd. Selecteer een nieuwe.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Laden mislukt</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Opgeslagen game benoemen</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Voer een naam in voor je opgeslagen game</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Weet je zeker dat je de game wilt afsluiten?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Afgemeld</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Doorgaan met spelen</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Doorgaan met offline spelen</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Opslaan...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Content wordt opgeslagen. Schakel de console niet uit.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Volledige game ontgrendelen</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>This is the Minecraft trial game. If you had the full game, you would just have earned an achievement! 
+Unlock the full game to experience the joy of Minecraft and to play with your friends across the globe through Xbox Live.
+Would you like to unlock the full game?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Er is een netwerkfout opgetreden.</value>
+  </data>
+</root>

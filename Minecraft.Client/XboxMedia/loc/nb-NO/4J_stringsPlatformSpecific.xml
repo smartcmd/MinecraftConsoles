@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Den valgte lagringsenheten har ikke nok ledig plass til å lagre spillet.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Denne lagringen finnes allerede på den valgte lagringsenheten. Vil du overskrive den?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Feil med lagringsenhet</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Lagringsenheten er utilgjengelig eller har en feil</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Lagringsenheten er utilgjengelig eller har en feil. Velg en annen lagringsenhet.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Velg en annen lagringsenhet</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>Ingen lagringsenhet valgt</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>Hvis du ikke velger noen lagringsenhet, vil lagring være deaktivert</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Velg en lagringsenhet</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Lagringsenheten er fjernet. Velg en annen lagringsenhet.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Avslutt spillet</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>Du ble sendt tilbake til startskjermen fordi Xbox-profilen din ble logget av.</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>Denne kampen ble avbrutt fordi Xbox-profilen din ble logget av.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Xbox-profilen er ikke online</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>Dette spillet har noen funksjoner som krever en Xbox Live-aktivert Xbox-profil, men du er for øyeblikket ikke på nett.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>Denne funksjonen krever en Xbox-profil som er logget på Xbox Live.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Koble til Xbox Live</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Problem med tildeling av prestasjon</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> Ingen tilgang til Xbox-profilen din. Kunne ikke dele ut prestasjonen på det nåværende tidspunkt.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Problem med Xbox-profil</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Lagring av innstillingene for Xbox-profilen mislyktes.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Gjeste-Xbox-profil</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Gjeste-Xbox-profiler har ikke tilgang til denne funksjonen. Bruk en annen Xbox-profil.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      Dette er prøveutgaven av Minecraft. Hadde du hatt fullversjonen, ville du nettopp ha skaffet deg en prestasjon!
+      Lås opp fullversjonen for å oppleve gleden ved å spille Minecraft, og for å spille sammen med venner fra hele verden gjennom Xbox Live.
+      Vil du låse opp fullversjonen?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>Du blir sendt tilbake til hovedmenyen på grunn av et problem med å lese Xbox-profilen din.</value>
+  </data>
+</root>

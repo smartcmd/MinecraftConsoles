@@ -1,0 +1,397 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Als je deze game in HD speelt, kunnen maximaal vier spelers via een gesplitst scherm op dezelfde console spelen!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Sluit extra controllers aan op je console en druk op {*CONTROLLER_VK_START*} op de controllers om wanneer je wilt naar een game te gaan.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Het minecraftforum bevat een gedeelte dat helemaal is gewijd aan de Xbox One Edition.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Je ontvangt het laatste nieuws over deze game van 4J Studios en Kappische op Twitter!</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Kijk een Ender-man niet recht in de ogen!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>We vermoeden dat 4J Studios Herobrine uit de Xbox One-consolegame heeft verwijderd, maar we weten het niet echt zeker.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: Xbox One Edition heeft heel veel records gebroken!</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}SPELUITLEG: MULTIPLAYER{*ETW*}{*B*}{*B*}
+Minecraft op de Xbox One-console is standaard een multiplayergame. Als je in HD speelt, kunnen lokale spelers zich aansluiten bij je game door controllers aan te sluiten en op {*CONTROLLER_VK_START*} te drukken op een willekeurig moment tijdens de game.{*B*}{*B*}
+Als je een game online start of je erbij aansluit, is dat zichtbaar voor mensen in je vriendenlijst (tenzij je 'Alleen uitnodiging' hebt geselecteerd als host van de game). Als zij zich aansluiten bij de game, wordt die ook zichtbaar voor de mensen op hun vriendenlijsten (als je de optie 'Vrienden van vrienden toestaan' hebt geselecteerd).{*B*}
+Als je bezig bent met een game, kun je op {*CONTROLLER_VK_BACK*} drukken om een lijst met alle andere spelers in de game op te roepen. Je kunt hun gamerkaarten bekijken, spelers verwijderen uit de game en anderen uitnodigen.
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}SPELUITLEG: SCREENSHOTS DELEN{*ETW*}{*B*}{*B*}
+Je kunt een screenshot maken van je game via het pauzemenu. Druk vervolgens op {*CONTROLLER_VK_Y*} om de screenshot te delen op Facebook. Je krijgt een miniatuurafbeelding te zien van je screenshot en kunt de tekst bewerken van de plaatsing op Facebook.{*B*}{*B*}
+Er is een speciale camerastand om deze screenshots te maken, zodat de voorkant van je personage er ook op staat. Druk op {*CONTROLLER_ACTION_CAMERA*} tot je de voorkant ziet van je personage voordat je op {*CONTROLLER_VK_Y*} drukt om te delen.{*B*}{*B*}
+Gamertags worden niet weergegeven.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}SPELUITLEG: CREATIEF{*ETW*}{*B*}{*B*}
+In de creatieve stand zijn alle items uit de game aanwezig in je inventaris, je hoeft ze dus niet te delven of produceren.
+De items in je inventaris worden niet verwijderd als je ze in de wereld plaatst of gebruikt. Je kunt je zo concentreren op bouwen in plaats van hulpbronnen verzamelen.{*B*}
+Als je iets produceert, laadt of een wereld opslaat in Creatief, worden de achievements en klassementsupdates voor die wereld uitgeschakeld, zelfs als je de wereld vervolgens laadt in Survival.{*B*}
+Druk om te vliegen in Creatief twee keer snel op {*CONTROLLER_ACTION_JUMP*}. Herhaal dit om te stoppen met vliegen. Om sneller te vliegen, duw je {*CONTROLLER_ACTION_MOVE*} snel twee keer achter elkaar naar voren terwijl je vliegt. 
+Tijdens het vliegen kun je {*CONTROLLER_ACTION_JUMP*} ingedrukt houden om te stijgen en {*CONTROLLER_ACTION_SNEAK*} gebruiken om te dalen. Je kunt ook {*CONTROLLER_ACTION_DPAD_UP*} gebruiken om te stijgen en {*CONTROLLER_ACTION_DPAD_DOWN*} om te dalen.
+Gebruik {*CONTROLLER_ACTION_DPAD_LEFT*} om naar links te gaan en {*CONTROLLER_ACTION_DPAD_RIGHT*} om naar rechts te gaan.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Druk twee keer snel op {*CONTROLLER_ACTION_JUMP*} om te vliegen. Herhaal dit om te stoppen met vliegen. Om sneller te vliegen, duw je {*CONTROLLER_ACTION_MOVE*} snel twee keer achter elkaar naar voren terwijl je vliegt. 
+Tijdens het vliegen kun je {*CONTROLLER_ACTION_JUMP*} ingedrukt houden om te stijgen en {*CONTROLLER_ACTION_SNEAK*} om te dalen. Je kunt ook het navigatiepad gebruiken om te stijgen, dalen en naar links of rechts te gaan.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Opslagapparaat selecteren</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Ander opslagapparaat</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Gamerkaart weergeven</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Gamerkaart weergeven</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Uitnodiging Xbox Live-party</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Als je iets maakt, laadt of een wereld opslaat in Creatief, worden de achievements en klassementsupdates voor die wereld uitgeschakeld, zelfs als je de wereld vervolgens laadt in Survival. Weet je zeker dat je wilt doorgaan?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Deze wereld is eerder opgeslagen in Creatief. De achievements en klassementsupdates zijn uitgeschakeld. Weet je zeker dat je wilt doorgaan?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Deze wereld is eerder opgeslagen in Creatief. De achievements en klassementsupdates zijn uitgeschakeld.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Als je een wereld maakt, laadt of opslaat met geactiveerde hostprivileges, worden de achievements en klassementsupdates voor die wereld uitgeschakeld, zelfs als je de wereld vervolgens laadt met uitgeschakelde opties. Weet je zeker dat je wilt doorgaan?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>De verbinding met Xbox Live is verbroken. Terugkeren naar hoofdmenu.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>De verbinding met Xbox Live is verbroken.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hoera - je hebt een avataritem gekregen - een T-shirt van de Minecraft: Xbox One Edition!
+Ga naar het dashboard om je avatar het T-shirt te laten dragen.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hoera - je hebt een avataritem gekregen - een horloge van de Minecraft: Xbox One Edition!
+Ga naar het dashboard om je avatar het horloge te laten dragen.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hoera - je hebt een avataritem gekregen - een Creeper-honkbalpet!
+Ga naar het dashboard om je avatar de pet te laten dragen.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hoera - je hebt het thema gekregen van de Minecraft: Xbox One Edition!
+Ga naar het dashboard om dit thema te selecteren.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Dit is de Minecraft: Xbox One Edition-demo. Als je de volledige game had gehad, had je zojuist een achievement verdiend! 
+Ontgrendel de volledige game om van Minecraft: Xbox One Edition te kunnen genieten en met vrienden over de hele wereld te spelen via Xbox Live.
+Wil je de volledige game ontgrendelen?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Dit is de Minecraft: Xbox One Edition-demo. Als je de volledige game had gehad, had je zojuist een avatarbeloning verdiend! 
+Ontgrendel de volledige game om van Minecraft: Xbox One Edition te kunnen genieten en met vrienden over de hele wereld te spelen via Xbox Live.
+Wil je de volledige game ontgrendelen?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Dit is de Minecraft: Xbox One Edition-demo. Als je de volledige game had gehad, had je zojuist een gamerafbeelding verdiend! 
+Ontgrendel de volledige game om van Minecraft: Xbox One Edition te kunnen genieten en met vrienden over de hele wereld te spelen via Xbox Live.
+Wil je de volledige game ontgrendelen?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Dit is de Minecraft: Xbox One Edition-demo. Als je de volledige game had gehad, had je zojuist een thema verdiend! 
+Ontgrendel de volledige game om van Minecraft: Xbox One Edition te kunnen genieten en met vrienden over de hele wereld te spelen via Xbox Live.
+Wil je de volledige game ontgrendelen?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Dit is de Minecraft: Xbox One Edition-demo. Je hebt de volledige game nodig om deze uitnodiging te kunnen accepteren. 
+Wil je de volledige game ontgrendelen?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Gastspelers kunnen de volledige game niet ontgrendelen. Meld je aan met een Xbox Live-gebruikers-id.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Gamertag</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Brouwen</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Je bent teruggekeerd naar het titelscherm omdat je gamerprofiel is afgemeld.</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Je hebt de Minecraft: Xbox One Edition-demo gedurende de maximaal toegestane tijd gespeeld. Wil je om er nog meer van te genieten de volledige game ontgrendelen? </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Het laden van 'Minecraft: Xbox One Edition' is mislukt, kan niet verdergaan.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Aansluiten bij game is mislukt omdat een of meer spelers geen multiplayergames op Xbox Live mogen spelen.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Kon geen online game maken omdat een of meer spelers geen multiplayergames op Xbox Live mogen spelen. Verwijder het vinkje bij 'Online game' om een offline game te starten.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Je mag je niet aansluiten bij deze gamesessie omdat de privilege-instelling van je content te strak is ingesteld. Wijzig deze instellingen via de privacy- en online-instellingen van het Xbox-dashboard als je je wilt aansluiten bij deze sessie.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Je mag je niet aansluiten bij deze gamesessie omdat een van je lokale spelers de privilege-instelling van zijn of haar content te strak heeft ingesteld.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Je mag je niet aansluiten bij deze gamesessie omdat een speler in de sessie de privilege-instelling van zijn of haar content heeft ingesteld op 'Alleen vrienden' en jij niet op zijn of haar vriendenlijst staat.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Je mag deze gamesessie niet maken omdat een van de lokale spelers een te strak ingestelde privilege-instelling voor zijn of haar content heeft. Verwijder het vinkje bij 'Online game' om een offline game te starten of wijzig deze instelling in het gedeelte met privacy- en online-instellingen van het Xbox-dashboard.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Deze game bevat een functie om levels automatisch op te slaan. Als het symbool hierboven wordt weergegeven, slaat de game je gegevens op.
+Schakel je Xbox One-console niet uit terwijl dit symbool op het scherm wordt weergegeven.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Met deze optie kan de host via het in-game menu vliegen aan of uit zetten, uitputting uitschakelen en zichzelf onzichtbaar maken. Schakelt achievements en klassementsupdates uit.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Gamertags gesplitst scherm</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Achievements</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Gamertags:</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>In-game gamertags</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Kijk wat ik heb gemaakt in Minecraft: Xbox One Edition!</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Terug</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Met deze optie schakel je achievements en klassementsupdates voor deze wereld uit terwijl je speelt en na het opnieuw laden na het opslaan met deze optie geactiveerd.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Spelers die niet op dezelfde Xbox One-console spelen als de host worden met deze optie uit de game verwijderd, net als andere spelers op zijn of haar Xbox One-console. De speler kan zich pas opnieuw aansluiten bij de game als die opnieuw wordt opgestart.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Je gebruikt een demo van het texturepakket. Je hebt toegang tot de volledige inhoud van het texturepakket, maar je kunt je voortgang niet opslaan.
+Als je in de demo probeert op te slaan, krijg je de optie om de volledige versie te kopen.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Xbox Store</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Klein</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Middelgroot</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Groot</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Klassiek</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Spelopties</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Wereldgrootte</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Voer een seed in om hetzelfde terrein opnieuw te genereren. Laat deze optie leeg voor een willekeurige wereld.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Selecteer een wereldgrootte om meer of minder van de wereld te verkennen.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Automatisch opslaan uitschakelen</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Het doorlopend, automatisch opslaan van de wereld uitschakelen. Als je de wereld vervolgens opslaat, kan dat erg lang duren.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Help</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Weet je zeker dat je terug wilt naar het hoofdmenu?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Weet je zeker dat je je huidige game wilt verlaten en je aansluiten bij een nieuwe?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Weet je zeker dat je terug wilt naar het hoofdmenu en de verbinding met alle spelers in het spel wilt verbreken?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Gebruiker kiezen</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value> Xbox 360-opslagbestand ophalen</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value> Xbox 360-opslagbestand ophalen</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Bestandsinformatie ophalen</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Bestandsgevens downloaden (%.2fMB/%.2fMB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Gegevens converteren voor Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Opslaan</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Geen Xbox 360-opslagbestand gevonden</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Opslaan niet voltooid</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Minecraft: Xbox One Edition heeft onvoldoende vrije ruimte om gegevens op te slaan. Maak ruimte vrij door andere Minecraft: Xbox One Edition-werelden te verwijderen en druk op Opnieuw opslaan om door te gaan, of selecteer Opslaan uitschakelen om door te gaan zonder op te slaan.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Probeer opnieuw op te slaan door Opnieuw opslaan te selecteren, of selecteer Opslaan uitschakelen om door te gaan zonder op te slaan.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Opnieuw opslaan</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Opslaan uitschakelen</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Opslagbestanden verwijderen</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Demo spelen</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Automatisch opslaan inschakelen</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Wil je het doorlopend, automatisch opslaan van de wereld inschakelen?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Automatisch opslaan uitschakelen</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Automatisch opslaan uitschakelen</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Weet je zeker dat je het doorlopend, automatisch opslaan van de wereld wilt uitschakelen?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Deze wereld moet worden gesynchroniseerd voordat je erin kunt spelen. Dit kan even duren. Wil je beginnen met synchroniseren en spelen?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synchroniseren</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Downloaden en conversie naar Xbox One-indeling voltooid.</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Downloaden annuleren. Een ogenblik geduld...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Downloaden geannuleerd.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Je hebt het spel verlaten.
+</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>De gamesessie waaraan je wilt meedoen, is op dit moment vol. Je ontvangt een bericht zodra er een plek beschikbaar is in deze sessie.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Verborgen vanwege de privacy-instellingen van de speler.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Weet je zeker dat je deze opgeslagen game wilt kopiëren?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Opgeslagen game kopiëren</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Opgeslagen game kopiëren...</value>
+  </data>
+</root>

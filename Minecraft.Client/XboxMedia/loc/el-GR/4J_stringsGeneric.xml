@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Δεν χρησιμοποιείται</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Πίσω</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Άκυρο</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Ναι</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Όχι</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Κατεστραμμένη αποθήκευση</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Τα δεδομένα αποθήκευσης φαίνονται κατεστραμμένα. Να δημιουργηθεί νέα αποθήκευση και να αντικατασταθεί η κατεστραμμένη;</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Δεν υπάρχει ελεύθερος χώρος</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Η επιλεγμένη συσκευή αποθήκευσης δεν διαθέτει αρκετό ελεύθερο χώρο για δημιουργία αποθηκευμένου παιχνιδιού.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Eπίλεξε ξανά</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Παιχνίδι χωρίς αποθήκευση</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Δημιουργία νέας αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Να αντικατασταθεί η αποθήκευση;</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Η επιλεγμένη συσκευή αποθήκευσης περιλαμβάνει ήδη αυτήν την αποθήκευση. Είναι ΟΚ να αντικατασταθεί;</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Όχι - να μην αντικατασταθεί</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Αντικατάσταση και αποθήκευση</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Η αποθήκευση απέτυχε</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Πρόβλημα με συσκευή αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Η συσκευή αποθήκευσης δεν είναι διαθέσιμη ή παρουσιάζει σφάλμα</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Η συσκευή αποθήκευσης δεν είναι διαθέσιμη ή παρουσιάζει σφάλμα. Επιλέξτε νέα συσκευή αποθήκευσης.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Επίλεξε νέα συσκευή αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Δεν επελέγη συσκευή αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Εάν δεν επιλέξεις συσκευή αποθήκευσης, θα απενεργοποιηθεί η αποθήκευση παιχνιδιών</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Επιλογή συσκευής αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Συνέχεια χωρίς αποθήκευση</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Η συσκευή αποθήκευσης έχει αφαιρεθεί. Επίλεξε νέα.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Η φόρτωση απέτυχε</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Ονομασία αποθήκευσης</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Πληκτρολόγησε ένα όνομα για το αποθηκευμένο παιχνίδι</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Είσαι βέβαιος ότι επιθυμείς έξοδο από το παιχνίδι;</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Αποσυνδέθηκε</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Συνέχεια παιχνιδιού</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Συνέχεια παιχνιδ. εκτός σύνδεσης</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Αποθήκευση...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Αποθήκευση περιεχομένου. Μην απενεργοποιήσεις την κονσόλα σου.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Ξεκλείδωμα πλήρους παιχνιδιού</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Αυτή είναι η δοκιμαστική έκδοση (trial) του παιχνιδιού Minecraft. Αν είχες το πλήρες παιχνίδι, θα είχες μόλις κερδίσει ένα επίτευγμα! 
+Ξεκλείδωσε το πλήρες παιχνίδι για να απολαύσεις τη χαρά του Minecraft και να παίξεις με τους φίλους σου από όλον τον κόσμο μέσω του Xbox LIVE.
+Θα ήθελες να ξεκλειδώσεις το πλήρες παιχνίδι;</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Προέκυψε σφάλμα δικτύου.</value>
+  </data>
+</root>

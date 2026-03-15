@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Nepoužito</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>Ok</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Zpět</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Zrušit</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Ano</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Ne</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Poškozená data</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Data uložené hry jsou pravděpodobně poškozená. Přejete si vytvořit nový soubor s uloženou hrou, nebo přepsat poškozený?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Nedostatek místa</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Na vybraném paměťovém zařízení není k uložení hry dostatek místa.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Vybrat další</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Hrát bez uložení</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Vytvořit nový soubor</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Přepsat data?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Na vybraném paměťovém zařízení už se soubor s touto uloženou hrou nachází. Přejete si ho přepsat?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Ne, nepřepisovat</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Přepsat a uložit</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Chyba ukládání</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Problém s paměťovým zařízením</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Paměťové zařízení je nedostupné, nebo na něm došlo k chybě</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Paměťové zařízení je nedostupné, nebo na něm došlo k chybě. Vyberte prosím jiné.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Vyberte nové paměťové zařízení</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Není vybrané paměťové zařízení</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Pokud nevyberete paměťové zařízení, funkce ukládání her bude vypnuta</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Vyberte paměťové zařízení</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Pokračovat bez uložení</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Paměťové zařízení bylo odebráno. Vyberte prosím jiné.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Chyba načítání</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Název uložené hry</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Zadejte název souboru s uloženou hrou</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Opravdu si přejete hru ukončit?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Odhlášen</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Pokračovat ve hře</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Pokračovat ve stavu offline</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Ukládání...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Probíhá ukládání obsahu. Nevypínejte prosím konzoli.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Odemknout plnou hru</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Toto je zkušební verze hry Minecraft. Kdybyste měli plnou hru, započítal by se vám právě teď herní úspěch!
+Abyste si mohli hru Minecraft vychutnat naplno a hrát s přáteli z celého světa přes Xbox Live, odemkněte si plnou verzi hry.
+Přejete si odemknout plnou hru?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Došlo k chybě sítě.</value>
+  </data>
+</root>

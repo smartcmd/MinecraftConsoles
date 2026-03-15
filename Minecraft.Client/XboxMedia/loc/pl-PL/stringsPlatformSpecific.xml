@@ -1,0 +1,396 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Podczas gry w trybie HD możesz podzielić ekran pomiędzy nawet czterech graczy, używających jednej konsoli!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Podłącz do konsoli dodatkowe kontrolery i naciśnij na nich {*CONTROLLER_VK_START*}, aby dołączyć do gry w dowolnym momencie.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>W minecraftforum jest już osobna sekcja poświęcona edycji na Xbox One.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Najnowsze informacje na temat tej gry z 4J Studios i Kappische znajdziesz na Twitterze!</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Nie spoglądaj Endermanowi w oczy!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Wydaje nam się, że goście z 4J Studios usunęli Herobrine'a z konsolowej edycji na Xbox One, ale pewności nie mamy.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Edycja Minecraft: Xbox One pobiła masę rekordów!</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}OBSŁUGA GRY: TRYB DLA WIELU GRACZY{*ETW*}{*B*}{*B*}
+Minecraft w edycji na konsolę Xbox One jest domyślnie grą dla wielu graczy. Jeśli gra toczy się w trybie HD, można w dowolnym momencie gry dołączać graczy lokalnych: wystarczy w tym celu podłączyć kontroler i nacisnąć przycisk {*CONTROLLER_VK_START*}.{*B*}{*B*}
+Kiedy zaczynasz nową grę online lub do takiej się przyłączasz, będzie to natychmiast widoczne dla osób z listy znajomych (chyba że tworząc grę wybrano opcję Tylko zaproszenie). Jeśli nowa osoba dołączy do gry, będzie to również widoczne dla osób z jej listy znajomych (jeśli wybrano opcję Dopuszczaj znajomych znajomych).{*B*}
+Podczas gry możesz nacisnąć przycisk {*CONTROLLER_VK_BACK*}, aby wyświetlić listę wszystkich innych graczy w grze, przejrzeć ich karty gracza lub wyrzucić gracza z gry i zapraszać do gry innych.
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}OBSŁUGA GRY: ZRZUTY EKRANU{*ETW*}{*B*}{*B*}
+Aby wykonać zrzut ekranu, należy najpierw wyświetlić menu pauzy i nacisnąć przycisk {*CONTROLLER_VK_Y*}, aby zdjęcie umieścić na Facebooku. Przedstawiona zostanie miniaturowa wersja zdjęcia ekranu i miejsce na wpisanie komentarza. {*B*}{*B*}
+Do wykonywania zrzutów ekranu przewidziano specjalny tryb pracy aparatu, pozwalający zobaczyć przód fotografowanej postaci. Naciskaj {*CONTROLLER_ACTION_CAMERA*}, aż zobaczysz postać od przodu, a następnie {*CONTROLLER_VK_Y*}, aby udostępnić zdjęcie.{*B*}{*B*}
+Tagi gracza nie będą widoczne na zrzucie ekranu.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}OBSŁUGA GRY: TRYB KREATYWNY{*ETW*}{*B*}{*B*}
+Interfejs trybu kreatywnego pozwala przenieść do ekwipunku gracza dowolny przedmiot z gry, bez potrzeby wydobywania go, czy konstruowania.
+Przedmioty nie będą znikały z ekwipunku po ich użyciu lub umieszczeniu w świecie gry. Dzięki temu gracz może się skupić na budowaniu, nie martwiąc się o pozyskiwanie surowców.{*B*}
+Gdy stworzysz swój świat w trybie kreatywnym, lub gdy taki świat wczytasz albo zapiszesz, osiągnięcia i tabele wyników będą w nim trwale wyłączone, nawet jeśli zostanie wczytany w trybie przetrwania.{*B*}
+Aby latać w trybie kreatywnym, szybko naciśnij dwukrotnie {*CONTROLLER_ACTION_JUMP*}. Aby zakończyć latanie, powtórz tę samą czynność. Aby lecieć szybciej, w trakcie lotu szybko popchnij {*CONTROLLER_ACTION_MOVE*} dwukrotnie do przodu. 
+W trakcie lotu możesz wcisnąć {*CONTROLLER_ACTION_JUMP*}, aby się unosić lub {*CONTROLLER_ACTION_SNEAK*}, aby opadać, a także używać {*CONTROLLER_ACTION_DPAD_UP*}, by lecieć w górę, {*CONTROLLER_ACTION_DPAD_DOWN*}, by lecieć w dół, 
+{*CONTROLLER_ACTION_DPAD_LEFT*}, by skręcić w lewo i {*CONTROLLER_ACTION_DPAD_RIGHT*}, by skręcić w prawo.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Aby latać, szybko naciśnij dwukrotnie {*CONTROLLER_ACTION_JUMP*}. Aby zakończyć latanie, powtórz tę czynność. Aby lecieć szybciej, w trakcie lotu szybko popchnij {*CONTROLLER_ACTION_MOVE*} dwukrotnie do przodu. 
+W trakcie lotu możesz wcisnąć {*CONTROLLER_ACTION_JUMP*}, aby się unosić, albo{*CONTROLLER_ACTION_SNEAK*}, aby opadać, a także używać pada kierunkowego, by lecieć w górę, w dół, w prawo albo w lewo.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Wybierz nośnik pamięci</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Zmień nośnik pamięci</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Pokaż kartę gracza</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Pokaż kartę gracza</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Zaproś grupę Xbox Live</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Gdy stworzysz swój świat w trybie kreatywnym, lub gdy taki świat wczytasz albo zapiszesz, osiągnięcia i tabele wyników będą w nim trwale wyłączone, nawet jeśli zostanie wczytany w trybie przetrwania. Czy na pewno chcesz kontynuować?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Ten świat został uprzednio zapisany w trybie kreatywnym, dlatego osiągnięcia i tabele wyników będą w nim wyłączone. Czy na pewno chcesz kontynuować?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Ten świat został uprzednio zapisany w trybie kreatywnym, dlatego osiągnięcia i tabele wyników będą w nim wyłączone.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Gdy stworzysz, wczytasz lub zapiszesz świat z włączoną opcją uprawnień gospodarza, osiągnięcia i tabele wyników będą w nim trwale wyłączone, nawet jeśli zostanie wczytany po wyłączeniu tej opcji. Czy na pewno chcesz kontynuować?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>Utracono połączenie z usługą Xbox Live. Wychodzenie do menu głównego.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>Utracono połączenie z usługą Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hurra! Otrzymujesz przedmiot dla awatara: koszulkę z tematem Minecraft: edycja Xbox One!
+Przejdź do interfejsu głównego, aby awatar mógł założyć koszulkę.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hurra! Otrzymujesz przedmiot dla awatara: zegarek z tematem Minecraft: edycja Xbox One!
+Przejdź do panelu sterowania, aby awatar mógł założyć zegarek.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hurra! Otrzymujesz przedmiot dla awatara: czapkę z daszkiem z wizerunkiem Creepera!
+Przejdź do interfejsu głównego, aby awatar mógł założyć czapkę.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hurra! Otrzymujesz w nagrodę motyw Minecraft: edycja Xbox One!
+Przejdź do interfejsu głównego, aby wybrać motyw.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>To jest testowa wersja gry Minecraft: Edycja Xbox One. W pełnej wersji gry właśnie udałoby ci się zdobyć osiągnięcie! 
+Odblokuj pełną wersję gry, aby poznać całą radość Minecrafta w edycji Xbox One i grać ze znajomymi z całego świata przez Xbox Live.
+Czy chcesz odblokować pełną wersję gry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>To jest testowa wersja gry Minecraft: Edycja Xbox One. W pełnej wersji gry właśnie udałoby ci się zdobyć nagrodę dla awatara! 
+Odblokuj pełną wersję gry, aby poznać całą radość Minecrafta w edycji Xbox One i grać ze znajomymi z całego świata przez Xbox Live.
+Czy chcesz odblokować pełną wersję gry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>To jest testowa wersja gry Minecraft: Edycja Xbox One. W pełnej wersji gry właśnie udałoby ci się zdobyć obrazek gracza! 
+Odblokuj pełną wersję gry, aby poznać całą radość Minecrafta w edycji Xbox One i grać ze znajomymi z całego świata przez Xbox Live.
+Czy chcesz odblokować pełną wersję gry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>To jest testowa wersja gry Minecraft: Edycja Xbox One. W pełnej wersji gry właśnie udałoby ci się zdobyć motyw! 
+Odblokuj pełną wersję gry, aby poznać całą radość Minecrafta w edycji Xbox One i grać ze znajomymi z całego świata przez Xbox Live.
+Czy chcesz odblokować pełną wersję gry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>To jest testowa wersja gry Minecraft: Edycja Xbox One. Aby móc przyjąć to zaproszenie, potrzebujesz pełnej wersji gry. 
+Chcesz odblokować pełną wersję gry?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Grając jako gość, nie można odblokować pełnej wersji gry. Zaloguj się pod własnym identyfikatorem użytkownika Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Tag gracza</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Alchemia</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Nastąpił powrót do ekranu tytułowego, ponieważ wylogowano się z profilu gracza</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Wyczerpano już limit czasowy testowej wersji gry Minecraft: edycja Xbox One. Czy chcesz odblokować pełną wersję, aby móc grać dalej? </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Nie udało się załadować aplikacji „Minecraft: edycja Xbox One”. Aplikacja nie może kontyuować pracy.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Nie udało się dołączyć do gry, ponieważ przynajmniej jeden z graczy nie ma uprawnień do gier wieloosobowych w Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Nie udało się utworzyć gry online, ponieważ przynajmniej jeden z graczy nie ma uprawnień do gier wieloosobowych w Xbox Live. Wyłącz opcję „Gra online”, aby rozpocząć grę w trybie offline.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Nie możesz dołączyć do tej gry, ponieważ twoje ustawienie uprawnień wobec treści dostępnych dla członków są zbyt restrykcyjne. Jeśli chcesz dołączyć do tej gry, zmień tę opcję w ustawieniach prywatności w interfejsie głównym konsoli Xbox.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Nie możesz dołączyć do tej gry, ponieważ jeden z graczy dołączonych do twojej konsoli ma zbyt restrykcyjne ustawienie uprawnień wobec treści dostępnych dla członków.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Nie możesz dołączyć do tej gry, ponieważ ustawienie uprawnień wobec treści dostępnych dla członków jednego z graczy ma wartość Tylko znajomi, a ty nie jesteś jego znajomym.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Nie możesz utworzyć tej gry, ponieważ jeden z graczy podłączonych do twojej konsoli ma zbyt restrykcyjne ustawienie uprawnień wobec treści dostępnych dla członków. Wyłącz opcję „Gra online”, aby rozpocząć grę w trybie offline, lub zmień tę opcję w ustawieniach prywatności w interfejsie głównym konsoli Xbox</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Ta gra ma włączoną opcję autozapisu poziomu. Kiedy widzisz powyższą ikonę, trwa zapis danych twojej gry.
+Nie wyłączaj konsoli Xbox One w czasie, gdy ta ikona jest na ekranie.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Przy włączonej opcji gospodarz może w trakcie gry przełączać zdolność do latania, wyłączać wyczerpanie i uczynić się niewidzialnym. Opcja wyłącza osiągnięcia i tabele wyników.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Tagi gracza przy dzielonym ekranie</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Osiągnięcia</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Tagi gracza:</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Tagi gracza w trakcie gry</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Minecraft: edycja Xbox One i moje twory!</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Wstecz</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Ta opcja powoduje wyłączenie osiągnięć i aktualizacji tabeli wyników w tym świecie. Ograniczenie obowiązuje na czas tej gry i później, jeśli świat zostanie zapisany z tą opcją włączoną.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>W przypadku graczy korzystających z innej konsoli Xbox One niż gospodarz, to polecenie spowoduje wyrzucenie z gry tego gracza oraz wszystkich graczy używających tej samej konsoli Xbox One, co on. Gracz nie będzie mógł ponownie dołączyć do tej gry do czasu jej ponownego uruchomienia.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Używasz testowej wersji pakietu tekstur. Masz pełny dostęp do zawartości pakietu tekstur, ale bez możliwości zapisywania postępu gry.
+Przy próbie zapisania gry z wersją testową pojawi się propozycja zakupu pełnej wersji.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Sklep Xbox Games</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Mały</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Średni</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Duży</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Klasyczny</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Opcje gry</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Rozmiar świata</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Podaj ziarno losowości, aby wygenerować ponownie ten sam teren. Pozostaw pole puste, aby uzyskać losowy świat.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Wybierz rozmiar świata, aby określić, jak duży teren masz do zbadania.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Wyłącz autozapis</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Wyłącz ciągłe, automatyczne zapisywanie świata. Jeśli później zdecydujesz się go zapisać, operacja ta może zająć sporo czasu.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Pomoc</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Czy na pewno chcesz wyjść do menu głównego? Wszystkie niezapisane postępy w grze zostaną stracone.</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Czy na pewno chcesz opuścić bieżącą grę i dołączyć do nowej?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Czy na pewno chcesz wyjść do menu głównego i odłączyć wszystkich graczy od gry?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Wybierz użytkownika</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Odzyskaj zapis z Xbox 360</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Odzyskiwanie zapisu z Xbox 360</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Odczytywanie danych pliku</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Pobieranie danych pliku (%.2f MB/%.2f MB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Przekształcanie danych do formatu Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Zapisywanie</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Nie znaleziono zapisu z Xbox 360</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Zapis jest niekompletny</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Minecraft: edycja dla Xbox One nie ma już miejsca do zapisu danych. Aby znaleźć miejsce, usuń inne światy gry Minecraft: edycja dla Xbox One i spróbuj ponownie albo wyłącz zapisywanie, aby kontynuować bez zapisywania.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Wybierz przycisk Spróbuj ponownie, aby ponowić próbę zapisu albo wyłącz zapisywanie, aby kontynuować bez zapisywania.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Spróbuj zapisać ponownie</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Wyłącz zapisywanie</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Usuń zapisy</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Zagraj w wersję testową</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Włącz autozapis</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Czy chcesz włączyć ciągłe, automatyczne zapisywanie świata?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Wyłącz autozapis</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Wyłącz autozapis</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Czy na pewno chcesz wyłączyć ciągłe, automatyczne zapisywanie świata?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Ten świat wymaga synchronizacji przed rozpoczęciem gry, może to zająć chwilę. Chcesz wykonać synchronizację i zacząć grę?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synchronizuj</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Zakończono pobieranie i konwersję do formatu Xbox One!</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Anulowanie pobierania. Czekaj...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Anulowano pobieranie.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Nastąpiło wyjście z gry.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>Ta sesja gry jest obecnie zapełniona. Otrzymasz powiadomienie, gdy tylko w tej sesji zwolni się miejsce.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Ukryte z powodu ustawień prywatności gracza.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Czy na pewno chcesz skopiować ten zapis gry?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Kopiuj zapis</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Kopiowanie zapisu</value>
+  </data>
+</root>

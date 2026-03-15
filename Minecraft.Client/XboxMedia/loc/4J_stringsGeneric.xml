@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Not Used</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Back</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Cancel</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Yes</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>No</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Corrupt Save</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Your save data appears to be corrupt.  Create a new save and overwrite the corrupt one?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>No Free Space</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Your selected storage device doesn't have enough free space to create a game save.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Select again</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Play without saving</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Create a new save</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Overwrite save?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Your selected storage device already contains this save.  Is it OK to overwrite it?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>No - don't overwrite</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Overwrite and save</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Save failed</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Storage Device Problem</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Your storage device is unavailable or has an error</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Your storage device is unavailable or has an error. Please select a new storage device.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Select a new storage device</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>No storage device selected</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>If you do not select a storage device, game saves will be disabled</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Select a storage device</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Continue without saving</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Your storage device has been removed.  Please select a new one.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Loading failed</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Name the save</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Enter a name for your savegame</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Are you sure you want to exit the game?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Signed out</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Continue playing</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Continue playing offline</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Saving…</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Saving content. Please don't turn off your console.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Unlock Full Game</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>This is the Minecraft trial game. If you had the full game, you would just have earned an achievement! 
+Unlock the full game to experience the joy of Minecraft and to play with your friends across the globe through Xbox LIVE.
+Would you like to unlock the full game?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>A network error has occurred.</value>
+  </data>
+</root>

@@ -1,0 +1,392 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>在高清模式下，同一主机上最多可有四位玩家分屏进行该游戏！</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>请将其他控制器连接到您的主机上，然后按控制器上的“START”随时加入游戏。</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Minecraft 论坛上提供了 Xbox 360 Edition 专栏。</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>4J Studios 和 Kappische 会在 Twitter 上发布关于该游戏的最新消息！</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>通过游戏中的“暂停”菜单将您在 Minecraft 上的创造成果以屏幕截图形式发布到 Facebook 上，在好友中炫耀一番！</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>我们认为 4J Studios 已将 Herobrine 从 Xbox 360 主机游戏上移除，但是我们还不太确定。</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: Xbox One Edition 打破了很多记录！</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}游戏指南：多人游戏{*ETW*}{*B*}{*B*}
+Minecraft 在 Xbox One 主机上默认采用多人游戏。如果在高清模式下进行该游戏，您可以随时连接控制器并按{*CONTROLLER_VK_START*}让本地玩家随时加入游戏。{*B*}{*B*}
+当您开始或加入在线游戏时，您好友列表上的好友都能看到您（除非您选择了“仅在主持游戏时邀请”），而如果您的好友加入游戏，其好友列表中的玩家也能看见他们（如果您选择了“允许好友的好友加入”选项）。{*B*}
+进行游戏时，您可以按{*CONTROLLER_VK_BACK*}按钮唤出游戏中其他所有玩家的列表，查看他们的玩家卡，将玩家踢出游戏或者邀请其他玩家加入游戏。
+</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}游戏指南：分享屏幕截图{*ETW*}{*B*}{*B*}
+您可以通过唤出“暂停”菜单从游戏中抓取屏幕截图，然后按{*CONTROLLER_VK_Y*}将其分享到 Facebook。您会看到缩小的屏幕截图，并且可以编辑与 Facebook 帖子相关的文字。{*B*}{*B*}
+该游戏有相机模式，非常适合抓取屏幕截图。该模式下，您可以在截图里看见您游戏角色的正面：按{*CONTROLLER_ACTION_CAMERA*}直到能看见角色的正面，然后按{*CONTROLLER_VK_Y*}即可分享。{*B*}{*B*}
+玩家代号不会出现在截图里。
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}游戏指南：创意模式{*ETW*}{*B*}{*B*}
+在创意模式界面，玩家可以在不开采或合成物品的情况下将游戏里的任何物品移动到背包中。
+如果玩家将背包里的物品放于世界里或者在世界里使用它们，玩家就不能移除它们。这种情况下，玩家可以专注于建造而不是收集资源。{*B*}
+如果您在创意模式下创造、加载或者保存世界，那么即使在这个世界载入到生存模式时，成就及排行榜更新均会被禁止。{*B*}
+要在创意模式下飞行，请快按{*CONTROLLER_ACTION_JUMP*}两次。要退出飞行，请重复该动作。要更快地飞行，请在飞行时快速前推{*CONTROLLER_ACTION_MOVE*}两次。
+在飞行模式下，您可以按{*CONTROLLER_ACTION_JUMP*}上移、按{*CONTROLLER_ACTION_SNEAK*}下移；或者使用{*CONTROLLER_ACTION_DPAD_UP*}上移，使用{*CONTROLLER_ACTION_DPAD_DOWN*}下移，
+使用{*CONTROLLER_ACTION_DPAD_LEFT*}左移，使用{*CONTROLLER_ACTION_DPAD_RIGHT*}右移。</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>快速按两次{*CONTROLLER_ACTION_JUMP*}即可飞行。要退出飞行模式，请重复该动作。要飞得更快，请在飞行中向前快速连按两次{*CONTROLLER_ACTION_MOVE*}。
+在飞行模式下，您可以按{*CONTROLLER_ACTION_JUMP*}上移、按{*CONTROLLER_ACTION_SNEAK*}下移；或者使用方向健上下左右移动。</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>选择存储设备</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>更改存储设备</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>查看玩家卡</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>查看玩家卡</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>邀请 Xbox Live 群</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>如果您在创意模式下创造、加载或保存世界，那么即使是载入到生存模式，您的成就及排行榜更新均会被禁用。是否继续？</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>该世界已经在创意模式下保存，成就及排行榜更新均会被禁用。是否继续？</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>该世界已经在创意模式下保存，成就及排行榜更新均会被禁用。</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>如果您在启用“主控特权”的情况下创建、加载或保存世界，则这个世界的成就及排行榜更新会被禁用，即使在加载世界时禁用了这些选项。是否继续？</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>与 Xbox Live 的连接丢失，正在退出到主菜单。</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>与 Xbox Live 的连接丢失。</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>好哇！您已获得一个虚拟形象物品奖励：一件 Minecraft: Xbox 360 Edition T恤衫！
+请去操作面板为您的虚拟形象穿上这件T恤衫。</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>好哇！您已获得一个虚拟形象物品奖励：一块 Minecraft: Xbox 360 Edition 手表！
+请去操作面板为您的虚拟形象戴上这块手表。</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>好哇！您已获得一个虚拟形象物品奖励：一顶爬行者棒球帽！
+请去操作面板为您的虚拟形象戴上这顶帽子。</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>好哇！您已获得 Minecraft: Xbox 360 Edition 主题奖励！
+请去操作面板选择该主题。</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>您使用的是 Minecraft: Xbox 360 Edition 试玩版。如果拥有完整版游戏，您刚才就可获得一项成就！
+是否解锁完整版游戏？</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>您使用的是 Minecraft: Xbox 360 Edition 试玩版。如果拥有完整版游戏，您刚才就可获得一个虚拟形象奖励！
+是否解锁完整版游戏？</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>您使用的是 Minecraft: Xbox 360 Edition 试玩版。如果拥有完整版游戏，您刚才就可获得一张玩家图片！
+是否解锁完整版游戏？</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>您使用的是 Minecraft: Xbox 360 Edition 试玩版。如果拥有完整版游戏，您刚才就可获得一个主题！
+是否解锁完整版游戏？</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>您使用的是 Minecraft: Xbox 360 Edition 试玩版。您需要完整版游戏才能接受本次邀请。
+是否解锁完整版游戏？</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>访客玩家无法解锁完整版游戏。请用 Xbox Live 用户帐号登录。</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>玩家代号</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>配制</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>由于您的玩家档案已登出，游戏已返回标题画面</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>您进行 Minecraft: Xbox 360 Edition 试玩版游戏的最长时间已到！是否解锁完整版以继续游戏？ </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Minecraft: Xbox 360 Edition 加载失败，无法继续。</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>加入游戏失败，一个或多个玩家未被允许在 Xbox Live 上参加多人游戏。</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>创建在线游戏失败，一个或多个玩家未被允许在 Xbox Live 上参加多人游戏。请取消选中“在线游戏”框以开始离线游戏。</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>您未被允许加入本次游戏，因为您的“会员内容”特权设置中限制过多。如果您想加入本次游戏，请前往 Xbox 操作面板的“隐私及在线设置”部分更改该设置。</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>您未被允许加入本次游戏，因为某个本地玩家的“会员内容”特权设置中限制过多。</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>您未被允许加入本次游戏，因为某个玩家的“会员内容”特权设置为“仅好友”，而您不在其“好友列表”上。</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>您未被允许创建本次游戏，因为某个本地玩家的“会员内容”特权设置中限制过多。请取消选中“在线游戏”框以开始离线游戏，或者前往 Xbox 操作面板的“隐私和在线设置”部分更改该设置。</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>该游戏带有等级自动保存功能。如果出现上方所示的图标，说明游戏正在保存您的数据。
+屏幕上出现此图标时，请不要关闭您的 Xbox 360 主机。</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>启用该选项后，主控者可以切换飞行能力、禁用枯竭、让自己在游戏菜单中对其他玩家隐身。成就和排行榜更新均会被禁用。</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>分屏玩家代号</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>成就</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>玩家代号：</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>游戏内玩家代号</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>看我在 Minecraft: Xbox One Edition 上的杰作！</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>返回</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>该选项可在游戏过程中禁用该世界的成就和排行榜更新（即使在该选项打开的情况下存档，然后又重新载入）。</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>和主控玩家不在同一 Xbox One 主机上的玩家可以选择该选项，将某个玩家或 Xbox One 上的任一玩家踢出游戏。被踢出的玩家只有在游戏重新开始后才能再次加入游戏。</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>您正在使用试用版材质包。您可以获得该材质包中的全部内容，但无法保存进度。
+如果您在使用试用版时尝试保存，游戏会让您选择购买完整版。
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Xbox Store</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>小型</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>中型</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>大型</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>经典</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>游戏选项</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>世界大小</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>输入种子以再次生成相同地形。如选择随机生成世界，则留空。</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>选择世界大小以更改您可探索世界的规模。</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>禁用自动保存</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>关闭世界的定期自动保存功能。如果稍后选择保存，则保存时长会有所增加。</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>帮助</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>是否退出到主菜单？未保存的进度会丢失。</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>是否离开当前游戏并加入新游戏？未保存的进度会丢失。</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>是否退出到主菜单并让所有玩家断开游戏？</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>选择用户</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>检索 Xbox 360 存档</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>正在检索 Xbox 360 存档</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>正在获取文件详情</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>正在下载文件数据 (%.2fMB/%.2fMB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>正在为 Xbox One 转换数据</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>正在保存</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>未找到 Xbox 360 存档</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>未完成保存</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Minecraft: Xbox One Edition 无足够空间保存数据。如需腾出空间，请删除其他 Minecraft: Xbox One Edition 世界并按下重试以继续，或者选择禁用保存以在非存档模式下继续。</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>选择重试以重新尝试保存，或者选择禁用保存以在非存档模式下继续。</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>重试保存</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>禁用保存</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>删除存档</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>进行试玩版游戏</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>启用自动保存</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>是否启用世界的定期自动保存功能？</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>禁用自动保存</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>禁用自动保存</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>是否禁用世界的定期自动保存功能？</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>您在本世界中游戏前必须先花些时间完成同步。是否开始同步并进行游戏？</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>同步</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>下载并转换为 Xbox One 格式的操作完成！</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>正在取消下载，请稍候...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>下载已取消。</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>您已退出游戏。</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>您加入的游戏会话当前已满。当此会话的空间充足时，游戏会向您发出提醒。</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Hidden due to the player's privacy settings.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Are you sure you want to copy this save game?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Copy Save</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Copying Save</value>
+  </data>
+</root>

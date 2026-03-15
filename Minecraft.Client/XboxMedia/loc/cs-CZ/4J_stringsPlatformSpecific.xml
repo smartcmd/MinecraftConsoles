@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Na vybraném paměťovém zařízení není k uložení hry dostatek místa.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Na vybraném paměťovém zařízení už se soubor s touto uloženou hrou nachází. Přejete si ho přepsat?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Problém s paměťovým zařízením</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Paměťové zařízení je nedostupné, nebo na něm došlo k chybě</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Paměťové zařízení je nedostupné, nebo na něm došlo k chybě. Vyberte prosím jiné.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Vyberte nové paměťové zařízení</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>Není vybrané paměťové zařízení</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>Pokud nevyberete paměťové zařízení, funkce ukládání her bude vypnuta</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Vyberte paměťové zařízení</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Paměťové zařízení bylo odebráno. Vyberte prosím jiné.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Odejít ze hry</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>Došlo k odhlášení vašeho profilu Xbox. Nyní se vrátíte na úvodní obrazovku</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>Hra byla ukončena z důvodu odhlášení profilu Xbox</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Profil Xbox není online</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>Některé z funkcí této hry vyžadují profil Xbox s přístupem ke službě Xbox Live, ale vy jste momentálně offline.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>Tato funkce je dostupná jen pro profil Xbox přihlášený do služby Xbox Live.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Připojit k Xbox Live</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Problém s uznáním herního úspěchu</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> Při přístupu k vašemu profilu Xbox došlo k potížím. Herní úspěch vám nemohl být započítán.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Potíže s profilem Xbox</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Nezdařilo se uložit nastavení do profilu Xbox.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Profil Xbox hostujícího hráče</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Profil Xbox hostujícího hráče nemá k této funkci přístup. Použijte prosím jiný profil Xbox.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      Toto je zkušební verze hry Minecraft. Kdybyste měli plnou hru, započítal by se vám právě teď herní úspěch!
+Abyste si mohli hru Minecraft vychutnat naplno a hrát s přáteli z celého světa přes Xbox Live, odemkněte si plnou verzi hry.
+Přejete si odemknout plnou hru?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>Došlo k potížím s načítáním profilu Xbox. Nyní přejdete zpět do hlavní nabídky.</value>
+  </data>
+</root>

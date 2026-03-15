@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Не используется</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>ОК</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Назад</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Отмена</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Да</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Нет</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Файл сохранения поврежден</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Похоже, сохраненные данные повреждены. Создать новый файл и заменить им поврежденный?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Недостаточно места</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>На этом устройстве хранения данных мало места для создания файла сохранения.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Выбрать заново</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Играть без сохранения</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Создать новый файл сохранения</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Заменить файл сохранения?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>На этом устройстве хранения данных уже есть такой файл. Заменить его?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Нет, не заменять.</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Заменить и сохранить.</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Ошибка сохранения</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Устройство хранения данных: сбой</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Это устройство хранения данных недоступно или работает некорректно.</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Это устройство хранения данных недоступно или работает некорректно. Пожалуйста, выберите другое.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Выбрать другое устройство</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Нет устройства хранения данных</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Если вы не выберите устройство хранения данных, функция сохранения работать не будет.</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Выбрать устройство</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Продолжить без сохранения</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Устройство хранения данных извлечено. Пожалуйста, выберите другое.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Ошибка загрузки</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Назовите файл сохранения</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Введите имя файла сохранения.</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Выйти из игры?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Выполнен выход из системы</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Продолжить игру</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Играть в автономном режиме</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Сохранение…</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Идет сохранение. Не выключайте консоль.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Полная версия</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Это пробная версия игры Minecraft. Если бы у вас была полная версия, вы бы сейчас заработали "достижение"t! 
+Перейдите на полную версию Minecraft и наслаждайтесь всеми возможностями игры, в том числе игрой с друзьями из других стран через Xbox Live.
+Хотите разблокировать полную версию?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Произошла ошибка сети</value>
+  </data>
+</root>

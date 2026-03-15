@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Your selected storage device doesn't have enough free space to create a game save.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Your selected storage device already contains this save.  Is it OK to overwrite it?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Storage Device Problem</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Your storage device is unavailable or has an error</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Your storage device is unavailable or has an error. Please select a new storage device.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Select a new storage device</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>No storage device selected</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>If you do not select a storage device, game saves will be disabled</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Select a storage device</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Your storage device has been removed.  Please select a new one.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Exit Game</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>You have been returned to the title screen because your Xbox profile was signed out</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>The match has ended because an Xbox profile was signed out</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Xbox profile not online</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>This game has some features which require an Xbox Live enabled Xbox profile, but you are currently offline.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>This feature requires an Xbox profile which is signed into Xbox Live.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Connect to Xbox Live</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Achievement Award Problem</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> There was a problem accessing your Xbox profile. Your achievement could not be awarded at this time.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Xbox profile problem</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Saving of settings to Xbox profile has failed.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Guest Xbox Profile</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Guest Xbox profile cannot access this feature. Please use a different Xbox profile.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      This is the Minecraft trial game. If you had the full game, you would just have earned an achievement!
+      Unlock the full game to experience the joy of Minecraft and to play with your friends across the globe through Xbox Live.
+      Would you like to unlock the full game?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>You are being returned to the main menu because of a problem reading your Xbox profile.</value>
+  </data>
+</root>

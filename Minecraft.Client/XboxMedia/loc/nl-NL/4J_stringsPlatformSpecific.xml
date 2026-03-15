@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Je geselecteerde opslagapparaat heeft niet genoeg vrije ruimte om een opgeslagen game te maken.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Je geselecteerde opslagapparaat bevat deze opgeslagen game al. Overschrijven?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Probleem met opslagapparaat</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Je opslagapparaat is niet beschikbaar of bevat een fout</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Je opslagapparaat is niet beschikbaar of bevat een fout. Selecteer een nieuw opslagapparaat.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Selecteer nieuw opslagapparaat</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>Geen opslagapparaat geselecteerd</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>Als je geen opslagapparaat selecteert, worden opgeslagen games uitgeschakeld.</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Selecteer een opslagapparaat</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Je opslagapparaat is verwijderd. Selecteer een nieuwe.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Game afsluiten</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>Je bent teruggekeerd naar het titelscherm omdat je gamerprofiel is afgemeld.</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>De match is beëindigd omdat een gamerprofiel is afgemeld</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Gamerprofiel niet online</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>Deze game bevat een aantal functies waarvoor je een in Xbox Live geactiveerd gamerprofiel nodig hebt, maar jij bent momenteel offline.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>Voor deze funtie heb je een gamerprofiel nodig dat is aangemeld bij Xbox Live.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Maak verbinding met Xbox Live</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Probleem met toekenning van achievement</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> Je profiel was niet toegankelijk. Je achievement kon niet worden toegekend.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Probleem met gamerprofiel</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Het opslaan van de instellingen van het gamerprofiel is mislukt.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Gamerprofiel voor gast</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Een gamerprofiel voor een gast heeft geen toegang tot deze functie. Gebruik een ander gamerprofiel.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      Dit is de Minecraft-demo. Als je de volledige game had gehad, had je zojuist een achievement verdiend!
+      Ontgrendel de volledige game om van Minecraft te kunnen genieten en met vrienden over de hele wereld te spelen via Xbox Live.
+      Wil je de volledige game ontgrendelen?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>Je keert terug naar het hoofdmenu omdat je profiel niet kon worden ingelezen.</value>
+  </data>
+</root>

@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Nicht verwendet</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Zurück</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Abbrechen</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Ja</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Nein</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Beschädigte Speicherdatei</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Deine Speicherdatei ist beschädigt. Beschädigte Speicherdatei überschreiben und neue erstellen?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Kein freier Speicherplatz</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Auf dem ausgewählten Speichergerät steht nicht genug freier Speicherplatz zur Verfügung, um eine Speicherdatei für das Spiel zu erstellen.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Erneut auswählen</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Ohne Speichern spielen</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Neue Speicherdatei erstellen</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Speicherdatei überschreiben?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Diese Speicherdatei existiert bereits auf deinem ausgewählten Speichergerät. Möchtest du sie überschreiben?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Nein, nicht überschreiben</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Überschreiben und speichern</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Fehler beim Speichern</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Problem mit dem Speichergerät</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Dein Speichergerät ist nicht verfügbar oder hat einen Fehler verursacht.</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Dein Speichergerät ist nicht verfügbar oder hat einen Fehler verursacht. Wähl ein neues Speichergerät aus.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Neues Speichergerät auswählen</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Kein Speichergerät ausgewählt</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Wenn du kein Speichergerät auswählst, wird die Speicherfunktion deaktiviert.</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Speichergerät auswählen</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Ohne Speichern fortsetzen</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Dein Speichergerät wurde entfernt. Wähl ein neues aus.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Fehler beim Laden</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Speicherdatei benennen</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Gib einen Namen für deine Speicherdatei ein.</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Bist du sicher, dass du das Spiel verlassen möchtest?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Abgemeldet</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Weiterspielen</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Offline weiterspielen</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Speichern ...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Inhalt wird gespeichert. Bitte schalten Sie Ihre Konsole nicht aus.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Vollständiges Spiel freischalten</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>Dies ist die Testversion von Minecraft. Würdest du das vollständige Spiel besitzen, hättest du dir gerade einen Erfolg verdient! 
+Schalte das vollständige Spiel frei, um den ganzen Spaß von Minecraft zu erleben und zusammen mit deinen Freunden auf der ganzen Welt über Xbox Live zu spielen.
+Jetzt das vollständige Spiel freischalten?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Ein Netzwerkfehler ist aufgetreten.</value>
+  </data>
+</root>
