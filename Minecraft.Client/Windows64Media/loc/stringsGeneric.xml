@@ -6662,6 +6662,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 		<value>When disabled, players will not regenerate health naturally.</value>
 	</data>	
 
+	<data name="IDS_GAMEOPTION_NO_MOB_CAP">
+		<value>When enabled, there will be no limit on spawn egg use or breeding, and spawning limit will be modified by the amount of loaded chunks.</value>
+	</data>	
+
 	<data name="IDS_GAMEOPTION_DAYLIGHT_CYCLE">
 		<value>When disabled, the time of day will not change.</value>
 	</data>	
@@ -7279,6 +7283,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_NATURAL_REGEN">
 		<value>Natural Regeneration</value>
+	</data>	
+
+	<data name="IDS_NO_MOB_CAP">
+		<value>No Mob Cap</value>
 	</data>	
 
 	<data name="IDS_DAYLIGHT_CYCLE">

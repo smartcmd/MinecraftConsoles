@@ -487,6 +487,7 @@ void UIScene_LoadMenu::tick()
 			m_MoreOptionsParams.bDoTileDrops = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoTileDrops);
 			m_MoreOptionsParams.bNaturalRegeneration = app.GetGameHostOption(uiHostOptions, eGameHostOption_NaturalRegeneration);
 			m_MoreOptionsParams.bDoDaylightCycle = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoDaylightCycle);
+			m_MoreOptionsParams.bNoMobCap = app.GetGameHostOption(uiHostOptions,eGameHostOption_NoMobCap);
 
 			bool cheatsOn = m_MoreOptionsParams.bHostPrivileges;
 			if (!cheatsOn)
@@ -1612,10 +1613,12 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 	app.SetGameHostOption(eGameHostOption_DoTileDrops, pClass->m_MoreOptionsParams.bDoTileDrops);
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, pClass->m_MoreOptionsParams.bNaturalRegeneration);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, pClass->m_MoreOptionsParams.bDoDaylightCycle);
+	app.SetGameHostOption(eGameHostOption_NoMobCap, pClass->m_MoreOptionsParams.bNoMobCap);
 
 #ifdef _LARGE_WORLDS
 	app.SetGameHostOption(eGameHostOption_WorldSize, pClass->m_MoreOptionsParams.worldSize+1 );  // 0 is GAME_HOST_OPTION_WORLDSIZE_UNKNOWN
 #endif
+
 // 	app.SetGameNewWorldSize(64, true );
 //	app.SetGameNewWorldSize(0, false );
 

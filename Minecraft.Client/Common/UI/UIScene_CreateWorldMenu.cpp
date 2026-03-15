@@ -1205,6 +1205,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	app.SetGameHostOption(eGameHostOption_DoTileDrops, pClass->m_MoreOptionsParams.bDoTileDrops);
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, pClass->m_MoreOptionsParams.bNaturalRegeneration);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, pClass->m_MoreOptionsParams.bDoDaylightCycle);
+	app.SetGameHostOption(eGameHostOption_NoMobCap, pClass->m_MoreOptionsParams.bNoMobCap);
 
 	app.SetGameHostOption(eGameHostOption_WasntSaveOwner, false);
 #ifdef _LARGE_WORLDS

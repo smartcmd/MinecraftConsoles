@@ -648,6 +648,7 @@ enum eGameHostOption
 	eGameHostOption_DoTileDrops,
 	eGameHostOption_NaturalRegeneration,
 	eGameHostOption_DoDaylightCycle,
+	eGameHostOption_NoMobCap,
 };
 
 // 4J-PB - If any new DLC items are added to the TMSFiles, this array needs updated

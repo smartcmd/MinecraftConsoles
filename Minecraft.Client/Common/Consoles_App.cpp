@@ -8080,9 +8080,20 @@ void CMinecraftApp::SetGameHostOption(unsigned int &uiHostSettings, eGameHostOpt
 		}
 		break;
 	case eGameHostOption_WorldSize:
-		// clear the difficulty first
+		// Clear the original value first
 		uiHostSettings&=~GAME_HOST_OPTION_BITMASK_WORLDSIZE;
 		uiHostSettings|=(GAME_HOST_OPTION_BITMASK_WORLDSIZE & (uiVal<<GAME_HOST_OPTION_BITMASK_WORLDSIZE_BITSHIFT));
+		break;
+	case eGameHostOption_NoMobCap:
+		if(uiVal!=0)
+		{
+			uiHostSettings |= GAME_HOST_OPTION_BITMASK_NOMOBCAP;
+		}
+		else
+		{
+			// off
+			uiHostSettings &= ~GAME_HOST_OPTION_BITMASK_NOMOBCAP;
+		}
 		break;
 	case eGameHostOption_All:
 		uiHostSettings=uiVal;
@@ -8170,6 +8181,8 @@ unsigned int CMinecraftApp::GetGameHostOption(unsigned int uiHostSettings, eGame
 		return (uiHostSettings&GAME_HOST_OPTION_BITMASK_NOTOWNER);
 	case eGameHostOption_WorldSize:
 		return (uiHostSettings&GAME_HOST_OPTION_BITMASK_WORLDSIZE) >> GAME_HOST_OPTION_BITMASK_WORLDSIZE_BITSHIFT;
+	case eGameHostOption_NoMobCap:
+		return (uiHostSettings&GAME_HOST_OPTION_BITMASK_NOMOBCAP);
 	case eGameHostOption_MobGriefing:
 		return !(uiHostSettings&GAME_HOST_OPTION_BITMASK_MOBGRIEFING);
 	case eGameHostOption_KeepInventory:

@@ -32,6 +32,7 @@ private:
 		eLaunchCheckbox_TileDrops,
 		eLaunchCheckbox_NaturalRegeneration,
 		eLaunchCheckbox_DayLightCycle,
+		eLaunchCheckbox_NoMobCap,
 
 		eLaunchCheckboxes_Count,
 
@@ -85,6 +86,7 @@ private:
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_MobLoot], "CheckboxMobLoot")
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_TileDrops], "CheckboxTileDrops")
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_NaturalRegeneration], "CheckboxNaturalRegeneration")
+			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_NoMobCap], "CheckboxNoMobCap")
 		UI_END_MAP_CHILD_ELEMENTS()
 			
 		UI_MAP_ELEMENT(m_worldOptions, "WorldOptions")

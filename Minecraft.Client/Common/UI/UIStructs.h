@@ -350,6 +350,7 @@ typedef struct _LaunchMoreOptionsMenuInitData
 	bool bDoTileDrops;
 	bool bNaturalRegeneration;
 	bool bDoDaylightCycle;
+	bool bNoMobCap;
 
 	bool bOnlineSettingChangedBySystem;
 
@@ -387,6 +388,7 @@ typedef struct _LaunchMoreOptionsMenuInitData
 		bDoTileDrops = true;
 		bNaturalRegeneration = true;
 		bDoDaylightCycle = true;
+		bNoMobCap=false;
 	}
 } 
 LaunchMoreOptionsMenuInitData;

@@ -209,10 +209,20 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 			}
 		}
 
+		// Use variable to not repeat checks
+		int maxInstances = mobCategory->getMaxInstancesPerChunk(); // Merged in values from getMaxInstancesPerLevel(), so changed to use getMaxInstancesPerChunk()
+		// Check for if the mob cap is "off" (works as Java does, scaled by chunk count)
+		bool usesChunkLimit = app.GetGameHostOption(eGameHostOption_NoMobCap);
+		if (usesChunkLimit)
+		{
+			// Use Java logic for the max count instead, accounting for chunks polled and the magic number.
+			maxInstances = mobCategory->getMaxInstancesPerChunk() * chunksToPoll.size() / MAGIC_NUMBER;
+		}
+
 		// 4J - this is now quite different to the java version. We just have global max counts for the level whereas the original has a max per chunk that
 		// scales with the number of chunks to be polled.
 		int categoryCount = level->countInstanceOf( mobCategory->getEnumBaseClass(), mobCategory->isSingleType());
-		if( categoryCount >= mobCategory->getMaxInstancesPerLevel())
+		if(categoryCount >= maxInstances)
 		{
 			continue;
 		}
@@ -314,6 +324,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 							// was added initially to stop flat lands being totally populated with slimes but seems like a generally good rule.
 						   eINSTANCEOF mobType = mob->GetType();
 
+						   // Keep this check the same despite it not existing in Java as it would otherwise be a much more significant change to behavior.
 						   if( ( mobType & eTYPE_ANIMALS_SPAWN_LIMIT_CHECK ) || ( mobType & eTYPE_MONSTER ) )
 						   {
 							   // even more special rule for ghasts, because filling up the nether with 25 of them is a bit unpleasant. In the java version they are
@@ -321,25 +332,25 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 							   // aren't actually even counted properly themselves
 							   if( mobType == eTYPE_GHAST )
 							   {
-								   if( level->countInstanceOf(mobType, true) >= 4 ) continue;
+									if( level->countInstanceOf(mobType, true) >= 4 ) continue;
 							   }
 							   else if( mobType == eTYPE_ENDERMAN && level->dimension->id == 1 )
 							   {
 								   // Special rule for the end, as we only have Endermen (plus the dragon). Increase the spawnable counts based on level difficulty
-								   int maxEndermen = mobCategory->getMaxInstancesPerLevel();
+								   int maxEndermen = maxInstances;
 
 								   if( level->difficulty == Difficulty::NORMAL )
 								   {
-									   maxEndermen -= mobCategory->getMaxInstancesPerLevel()/4;
+									   maxEndermen -= maxInstances/4;
 								   }
 								   else if( level->difficulty <= Difficulty::EASY)
 								   {
-									   maxEndermen -= mobCategory->getMaxInstancesPerLevel()/2;
+									   maxEndermen -= maxInstances/2;
 								   }
 
 								   if( level->countInstanceOf(mobType, true) >= maxEndermen ) continue;
 							   }
-							   else if( level->countInstanceOf(mobType, true) >= ( mobCategory->getMaxInstancesPerLevel() / 2 ) ) continue;
+							   else if( level->countInstanceOf(mobType, true) >= ( maxInstances / 2 ) ) continue;
 						   }
 
 						   mob->moveTo(xx, yy, zz, level->random->nextFloat() * 360, 0);
@@ -359,7 +370,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 								   // 4J - change here so that we can't ever make more than the desired amount of entities in each priority. In the original java version
 								   // depending on the random spawn positions being considered the only limit as to the number of entities created per category is the number
 								   // of chunks to poll.
-								   if (categoryCount >= mobCategory->getMaxInstancesPerLevel() ) goto categoryLoop;
+								   if (categoryCount >= maxInstances ) goto categoryLoop;
 								   if (clusterSize >= mob->getMaxSpawnClusterSize()) goto chunkLoop;
 							   }
 						   }
@@ -425,7 +436,7 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 		int tt = level->getTile(x, y - 1, z);
 		return tt != Tile::unbreakable_Id && !level->isSolidBlockingTile(x, y, z) && !level->getMaterial(x, y, z)->isLiquid() && !level->isSolidBlockingTile(x, y + 1, z);
 	}
-				}
+}
 
 void MobSpawner::postProcessSpawnMobs(Level *level, Biome *biome, int xo, int zo, int cellWidth, int cellHeight, Random *random)
 {
