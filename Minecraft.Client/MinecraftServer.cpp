@@ -657,7 +657,7 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	setFlightAllowed(GetDedicatedServerBool(settings, L"allow-flight", true));
 
 	// 4J Stu - Enabling flight to stop it kicking us when we use it
-#ifdef _DEBUG_MENUS_ENABLED
+#if (defined _DEBUG_MENUS_ENABLED && defined _DEBUG)
 	setFlightAllowed(true);
 #endif
 
