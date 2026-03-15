@@ -146,7 +146,8 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFou
 	if( ( *removedFound ) == false )
 	{
 		*removedFound = true;
-		memset(flags, 0, 2048/32);
+		// before this left 192 bytes uninitialized!!!!!
+        memset(flags, 0, (2048 / 32) * sizeof(unsigned int));
 	}
 
 	for(int index : entitiesToRemove)
@@ -376,6 +377,9 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 //						connection->done);
 //				}
 
+#ifdef MINECRAFT_SERVER_BUILD
+				if (dontDelayChunks || (canSendToPlayer && !connection->done))
+#else
 				if( dontDelayChunks ||
 					(canSendToPlayer &&
 #ifdef _XBOX_ONE
@@ -390,21 +394,22 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 #endif
 					//(tickCount - lastBrupSendTickCount) > (connection->getNetworkPlayer()->GetCurrentRtt()>>4) &&
 					!connection->done) )
-				{
-					lastBrupSendTickCount = tickCount;
-					okToSend = true;
-					MinecraftServer::chunkPacketManagement_DidSendTo(connection->getNetworkPlayer());
+#endif
+                {
+                    lastBrupSendTickCount = tickCount;
+                    okToSend = true;
+                    MinecraftServer::chunkPacketManagement_DidSendTo(connection->getNetworkPlayer());
 
-//					static unordered_map<wstring,int64_t> mapLastTime;
-//					int64_t thisTime = System::currentTimeMillis();
-//					int64_t lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
-//					app.DebugPrintf(" - OK to send (%d ms since last)\n", thisTime - lastTime);
-//					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()] = thisTime;
-				}
-				else
-				{
-					//					app.DebugPrintf(" - <NOT OK>\n");
-				}
+                    //					static unordered_map<wstring,int64_t> mapLastTime;
+                    //					int64_t thisTime = System::currentTimeMillis();
+                    //					int64_t lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
+                    //					app.DebugPrintf(" - OK to send (%d ms since last)\n", thisTime - lastTime);
+                    //					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()] = thisTime;
+                }
+                else
+                {
+                    //					app.DebugPrintf(" - <NOT OK>\n");
+                }
 			}
 
 			if (okToSend)

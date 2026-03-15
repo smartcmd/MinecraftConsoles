@@ -16,7 +16,12 @@ using namespace std;
 
 // 4J Stu - This value should be big enough that we don't get any crashes causes by memory overwrites,
 // however it does seem way too large for what is actually needed. Needs further investigation
+#ifdef MINECRAFT_SERVER_BUILD
+// fixes a crash when 8+ players are present
+#define LEVEL_CHUNKS_TO_UPDATE_MAX (32*32*8)
+#else
 #define LEVEL_CHUNKS_TO_UPDATE_MAX (19*19*8)
+#endif
 
 class Vec3;
 class ChunkSource;

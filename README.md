@@ -39,6 +39,114 @@ If you're looking for Dedicated Server software, download its [Nightly Build her
 - In-game server management (Add Server button, etc)
 
 
+## Dedicated Server in Docker (Wine)
+
+This repository includes a lightweight Docker setup for running the Windows dedicated server under Wine.
+### Quick Start (No Build, Recommended)
+
+No local build is required. The container image is pulled from GHCR.
+
+```bash
+./start-dedicated-server.sh
+```
+
+`start-dedicated-server.sh` does the following:
+- uses `docker-compose.dedicated-server.ghcr.yml`
+- pulls latest image, then starts the container
+
+If you want to skip pulling and just start:
+
+```bash
+./start-dedicated-server.sh --no-pull
+```
+
+Equivalent manual command:
+
+```bash
+docker compose -f docker-compose.dedicated-server.ghcr.yml up -d
+```
+
+### Local Build Mode (Optional)
+
+Use this only when you want to run your own locally built `Minecraft.Server` binary in Docker.
+**A local build of `Minecraft.Server` is required for this mode.**
+
+```bash
+docker compose -f docker-compose.dedicated-server.yml up -d --build
+```
+
+Useful environment variables:
+- `XVFB_DISPLAY` (default: `:99`)
+- `XVFB_SCREEN` (default: `64x64x16`, tiny virtual display used by Wine)
+
+Fixed server runtime behavior in container:
+- executable path: `/srv/mc/Minecraft.Server.exe`
+- bind IP: `0.0.0.0`
+- server port: `25565`
+
+Persistent files are bind-mounted to host:
+- `./server-data/server.properties` -> `/srv/mc/server.properties`
+- `./server-data/GameHDD` -> `/srv/mc/Windows64/GameHDD`
+
+### About `server.properties`
+
+`Minecraft.Server` reads `server.properties` from the executable working directory (Docker image: `/srv/mc/server.properties`).
+If the file is missing or contains invalid values, defaults are auto-generated/normalized on startup.
+
+Important keys:
+
+| Key | Values / Range | Default | Notes |
+|-----|-----------------|---------|-------|
+| `server-port` | `1-65535` | `25565` | Listen TCP port |
+| `server-ip` | string | `0.0.0.0` | Bind address |
+| `server-name` | string (max 16 chars) | `DedicatedServer` | Host display name |
+| `max-players` | `1-8` | `8` | Public player slots |
+| `level-name` | string | `world` | Display world name |
+| `level-id` | safe ID string | derived from `level-name` | Save folder ID; normalized automatically |
+| `level-seed` | int64 or empty | empty | Empty = random seed |
+| `world-size` | `classic\|small\|medium\|large` | `classic` | World size preset for new worlds and expansion target for existing worlds |
+| `log-level` | `debug\|info\|warn\|error` | `info` | Server log verbosity |
+| `autosave-interval` | `5-3600` | `60` | Seconds between autosaves |
+| `white-list` | `true/false` | `false` | Enable access list checks |
+| `lan-advertise` | `true/false` | `false` | LAN session advertisement |
+
+Minimal example:
+
+```properties
+server-name=DedicatedServer
+server-port=25565
+max-players=8
+level-name=world
+level-seed=
+world-size=classic
+log-level=info
+white-list=false
+lan-advertise=false
+autosave-interval=60
+```
+
+### Dedicated Server launch arguments
+
+The server loads base settings from `server.properties`, then CLI arguments override those values.
+
+| Argument | Description |
+|----------|-------------|
+| `-port <1-65535>` | Override `server-port` |
+| `-ip <addr>` | Override `server-ip` |
+| `-bind <addr>` | Alias of `-ip` |
+| `-name <name>` | Override `server-name` (max 16 chars) |
+| `-maxplayers <1-8>` | Override `max-players` |
+| `-seed <int64>` | Override `level-seed` |
+| `-loglevel <level>` | Override `log-level` (`debug`, `info`, `warn`, `error`) |
+| `-help` / `--help` / `-h` | Print usage and exit |
+
+Examples:
+
+```powershell
+Minecraft.Server.exe -name MyServer -port 25565 -ip 0.0.0.0 -maxplayers 8 -loglevel info
+Minecraft.Server.exe -seed 123456789
+```
+
 ## Controls (Keyboard & Mouse)
 
 - **Movement**: `W` `A` `S` `D`
