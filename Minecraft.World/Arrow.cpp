@@ -21,7 +21,7 @@
 
 
 // base damage, multiplied with velocity
-const double Arrow::ARROW_BASE_DAMAGE = 2.0f;
+const double Arrow::ARROW_BASE_DAMAGE = 200.0f;
 
 // 4J - added common ctor code.
 void Arrow::_init()

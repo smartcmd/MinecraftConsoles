@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Cow.h"
+#include "Entity.h"
 
 class MushroomCow : public Cow
 {
 public:
 	eINSTANCEOF GetType() { return eTYPE_MUSHROOMCOW; }
-	static Entity *create(Level *level) { return new MushroomCow(level); }
+	static Entity *create(Level *level) { return new LightningBolt(level); }
 
 public:
 	MushroomCow(Level *level);
