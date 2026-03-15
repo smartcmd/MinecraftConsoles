@@ -55,6 +55,7 @@ If you're looking for Dedicated Server software, download its [Nightly Build her
 - **Attack / Destroy**: `Left Click`
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
+- **Pick Block**: `Middle Click`
 - **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
 - **Game Info (Player list and Host Options)**: `TAB`
 - **Toggle HUD**: `F1`
