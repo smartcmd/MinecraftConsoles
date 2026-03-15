@@ -202,6 +202,10 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 
 	if (action == L"stop")
 	{
+		server->info(L"Saving before stopping...");
+		if (playerList != NULL)
+			playerList->saveAll(NULL, false);
+		server->saveWorldToDisk();
 		server->info(L"Stopping server...");
 		MinecraftServer::HaltServer();
 		return true;
@@ -238,6 +242,7 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 		{
 			playerList->saveAll(nullptr, false);
 		}
+		server->saveWorldToDisk();
 		server->info(L"World saved.");
 		return true;
 	}
@@ -542,6 +547,16 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 	return false;
 }
 
+void MinecraftServer::saveWorldToDisk()
+{
+	saveAllChunks();
+	saveGameRules();
+	if (levels[0] != NULL)
+	{
+		levels[0]->saveToDisc(Minecraft::GetInstance()->progressRenderer, false);
+	}
+}
+
 MinecraftServer::MinecraftServer()
 {
 	// 4J - added initialisers
@@ -739,6 +754,12 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 #else
 		seed = BiomeSource::findSeed(pLevelType);
 #endif
+		// only save seed when creating a new world; when loading existing save, level.dat has the correct seed
+		if (seed != 0 && initData->saveData == nullptr)
+		{
+			settings->setStringAndSave(L"seed", std::to_wstring(seed));
+			printf("Saved generated seed to server.properties: %lld\n", (long long)seed);
+		}
 	}
 
 	setMaxBuildHeight(GetDedicatedServerInt(settings, L"max-build-height", Level::maxBuildHeight));

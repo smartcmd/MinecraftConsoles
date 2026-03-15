@@ -2109,6 +2109,12 @@ bool Tutorial::isInputAllowed(int mapping)
 	// If the player is under water then allow all keypresses so they can jump out
 	if( Minecraft::GetInstance()->localplayers[m_iPad]->isUnderLiquid(Material::water) ) return true;
 
+	// If we're in a riding state but the player has dismounted, allow all input (covers race where
+	// ride(nullptr) hasn't fired changeTutorialState yet, or alternate dismount paths).
+	if( (m_CurrentState == e_Tutorial_State_Riding_Minecart || m_CurrentState == e_Tutorial_State_Riding_Boat) &&
+		Minecraft::GetInstance()->localplayers[m_iPad]->riding == nullptr )
+		return true;
+
 	bool allowed = true;
 	for(auto& constraint : constraints[m_CurrentState])
 	{

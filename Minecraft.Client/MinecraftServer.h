@@ -181,7 +181,7 @@ public:
 	static int64_t getCurrentTimeMillis();
 	int getPlayerIdleTimeout();
 	void setPlayerIdleTimeout(int playerIdleTimeout);
-
+	void saveWorldToDisk();
 public:
 	void halt();
     void run(int64_t seed, void *lpParameter);

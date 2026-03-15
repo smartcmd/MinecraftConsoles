@@ -334,8 +334,8 @@ void Wolf::tame(const wstring &wsOwnerUUID, bool bDisplayTamingParticles, bool b
 
 	setOwnerUUID(wsOwnerUUID);
 
-	// We'll not show the taming particles if this is a baby wolf
-	spawnTamingParticles(bDisplayTamingParticles);
+	// Don't spawn particles here - TAMING_SUCCEEDED/FAILED broadcast triggers handleEntityEvent which spawns them.
+	// That avoids double-spawning. Baby wolf taming (bDisplayTamingParticles=false) has no broadcast, so no particles - correct.
 }
 
 bool Wolf::mobInteract(shared_ptr<Player> player) 
@@ -381,7 +381,8 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 				}
 			}
 		}
-		if (equalsIgnoreCase(player->getUUID(), getOwnerUUID()))
+		// Windows64: owner may be stored as name (legacy) or xuid string; check both for compatibility
+		if (equalsIgnoreCase(player->getUUID(), getOwnerUUID()) || equalsIgnoreCase(player->getName(), getOwnerUUID()))
 		{
 			if (!level->isClientSide && !isFood(item))
 			{
@@ -421,7 +422,7 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 				} 
 				else 
 				{
-					spawnTamingParticles(false);
+					// broadcastEntityEvent triggers handleEntityEvent which spawns smoke
 					level->broadcastEntityEvent(shared_from_this(), EntityEvent::TAMING_FAILED);
 				}
 			}

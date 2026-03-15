@@ -189,7 +189,8 @@ bool Ocelot::mobInteract(shared_ptr<Player> player)
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 	if (isTame())
 	{
-		if (equalsIgnoreCase(player->getUUID(), getOwnerUUID()))
+		// Windows64: owner may be stored as name (legacy) or xuid string; check both for compatibility
+		if (equalsIgnoreCase(player->getUUID(), getOwnerUUID()) || equalsIgnoreCase(player->getName(), getOwnerUUID()))
 		{
 			if (!level->isClientSide && !isFood(item))
 			{
@@ -219,13 +220,12 @@ bool Ocelot::mobInteract(shared_ptr<Player> player)
 
 					setCatType(1 + level->random->nextInt(3));
 					setOwnerUUID(player->getUUID());
-					spawnTamingParticles(true);
 					sitGoal->wantToSit(true);
+					// broadcast triggers handleEntityEvent which spawns particles
 					level->broadcastEntityEvent(shared_from_this(), EntityEvent::TAMING_SUCCEEDED);
 				}
 				else
 				{
-					spawnTamingParticles(false);
 					level->broadcastEntityEvent(shared_from_this(), EntityEvent::TAMING_FAILED);
 				}
 			}

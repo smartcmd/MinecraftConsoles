@@ -18,4 +18,5 @@ public:
     int getInt(const wstring& key, int defaultValue);
     bool getBoolean(const wstring& key, bool defaultValue);
     void setBooleanAndSave(const wstring& key, bool value);
+    void setStringAndSave(const wstring& key, const wstring& value);
 };

@@ -322,7 +322,8 @@ void ClientConnection::handleLogin(shared_ptr<LoginPacket> packet)
 
 	if( m_userIndex == ProfileManager.GetPrimaryPad() )
 	{
-		if( app.GetTutorialMode() )
+		// Clients joining a server should never use tutorial mode - it blocks jump and other input
+		if( app.GetTutorialMode() && g_NetworkManager.IsLocalGame() )
 		{
 			minecraft->gameMode = new FullTutorialMode(ProfileManager.GetPrimaryPad(), minecraft, this);
 		}

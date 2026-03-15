@@ -767,6 +767,11 @@ void Player::setXuid(PlayerUID xuid)
 	// This should just be a string version of the xuid
 
 	setUUID( xuid.toString() );
+#elif defined _WINDOWS64
+	// Windows64: PlayerUID is ULONGLONG - convert to hex string for wolf/ocelot ownership
+	wchar_t buf[24];
+	swprintf_s(buf, 24, L"%016llX", (unsigned long long)xuid);
+	setUUID(wstring(buf));
 #endif
 }
 
