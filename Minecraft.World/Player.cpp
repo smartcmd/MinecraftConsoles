@@ -1001,9 +1001,15 @@ void Player::aiStep()
 {
 	if (jumpTriggerTime > 0) jumpTriggerTime--;
 
-	if (level->difficulty == Difficulty::PEACEFUL && getHealth() < getMaxHealth() && level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION))
-	{
-		if (tickCount % 20 * 12 == 0) heal(1);
+	if (level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION)) {
+		bool health_OK = getHealth() < getMaxHealth();
+		if ((tickCount % 12 == 0) && health_OK) {
+			FoodData* fd = getFoodData();
+			if ((level->difficulty == Difficulty::PEACEFUL)) {
+				heal(1);
+			}
+
+		};
 	}
 	inventory->tick();
 	oBob = bob;

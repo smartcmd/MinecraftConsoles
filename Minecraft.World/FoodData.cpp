@@ -65,16 +65,28 @@ void FoodData::tick(shared_ptr<Player> player)
 			}
 		}
 	}
-	else if (player->level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION) && foodLevel >= FoodConstants::HEAL_LEVEL && player->isHurt())
+	else if (player->level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION) && foodLevel >= FoodConstants::MAX_FOOD && player->isHurt())
 	{
 		tickTimer++;
-		if (tickTimer >= FoodConstants::HEALTH_TICK_COUNT)
-		{
-			player->heal(1);
-			addExhaustion(FoodConstants::EXHAUSTION_HEAL);
-			tickTimer = 0;
+
+		if (tickTimer >= FoodConstants::QUICK_HEALTH_TICK_COUNT) {
+			float spent = min(getSaturationLevel(), 6.0f);
+				player->heal(spent / 6.0f);
+				addExhaustion(spent);
+				tickTimer = 0;
 		}
+
+		
 	}
+	else if (player->level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION) && foodLevel >= FoodConstants::HEAL_LEVEL && player->isHurt()) {
+	if (tickTimer >= FoodConstants::HEALTH_TICK_COUNT)
+			{
+				player->heal(1);
+				addExhaustion(FoodConstants::EXHAUSTION_HEAL);
+				tickTimer = 0;
+			}
+	}
+
 	else if (foodLevel <= FoodConstants::STARVE_LEVEL)
 	{
 		tickTimer++;

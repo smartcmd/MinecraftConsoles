@@ -13,7 +13,7 @@ public:
 
 	// number of game ticks to change health because of food
 	static const int HEALTH_TICK_COUNT;
-
+	static const int QUICK_HEALTH_TICK_COUNT;
 	static const int HEAL_LEVEL;
 	static const int STARVE_LEVEL;
 
