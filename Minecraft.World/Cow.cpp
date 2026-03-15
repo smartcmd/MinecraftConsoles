@@ -72,7 +72,7 @@ void Cow::playStepSound(int xt, int yt, int zt, int t)
 
 float Cow::getSoundVolume() 
 {
-	return 0.4f;
+	return 1.f;
 }
 
 int Cow::getDeathLoot() 

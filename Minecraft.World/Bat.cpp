@@ -30,7 +30,7 @@ void Bat::defineSynchedData()
 
 float Bat::getSoundVolume()
 {
-	return 0.1f;
+	return 0.8f;
 }
 
 float Bat::getVoicePitch()
