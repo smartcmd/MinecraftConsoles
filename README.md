@@ -5,9 +5,9 @@
 
 This project is based on source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) with some fixes and improvements applied. 
 
-The current goal of MinecraftConsoles is to be a multi-platform base for further development, such as modding, backports, and anything else LCE. On top of that, we're working to make this a quality experience on Desktop with or without a controller while (long-term) retaining console support. 
+The current goal of MinecraftConsoles is to provide a multi-platform base for further development. This includes modding, backports, and other improvements for LCE. We are also working to deliver a quality experience on Desktop with or without a controller while retaining console support in the long term.
 
-See our our [Contributor's Guide](./CONTRIBUTING.md) for more information on the goals of this project.
+See our [Contributor's Guide](./CONTRIBUTING.md) for more information on the goals of this project.
 
 ## Download
 Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
@@ -86,7 +86,7 @@ LAN multiplayer is available on the Windows build
 - Rename yourself without losing data by keeping your `uid.dat`
 - Split-screen players can join in, even in Multiplayer
 
-Parts of this feature are based on code from [LCEMP](https://github.com/LCEMP/LCEMP) (thanks!)
+Parts of the LAN multiplayer feature are based on code from [LCEMP](https://github.com/LCEMP/LCEMP). Thank you to the LCEMP team for their contributions!
 
 # Dedicated Server Software
 
