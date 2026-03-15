@@ -543,6 +543,93 @@ static bool g_bInSizeMove = false;     // true while the user is dragging the wi
 static int  g_pendingResizeW = 0;      // deferred resize dimensions
 static int  g_pendingResizeH = 0;
 
+wchar_t CP1251ConvertationTable[] =
+{
+	0x0402, // Ђ
+	0x0403, // Ѓ
+	0x201A, // ‚
+	0x0453, // ѓ
+	0x201E, // „
+	0x2026, // …
+	0x2020, // †
+	0x2021, // ‡
+	0x20AC, // €
+	0x2030, // ‰
+	0x0409, // Љ
+	0x2039, // ‹
+	0x040A, // Њ
+	0x040C, // Ќ
+	0x040B, // Ћ
+	0x040F, // Џ
+
+	0x0452, // ђ
+	0x2018, // ‘
+	0x2019, // ’
+	0x201C, // “
+	0x201D, // ”
+	0x2022, // •
+	0x2013, // –
+	0x2014, // —
+	0x0,    // empty (0x98)
+	0x2122, // ™
+	0x0459, // љ
+	0x203A, // ›
+	0x045A, // њ
+	0x045C, // ќ
+	0x045B, // ћ
+	0x045F, // џ
+
+	0x00A0, //  
+	0x040E, // Ў
+	0x045E, // ў
+	0x0408, // Ј
+	0x00A4, // ¤
+	0x0490, // Ґ
+	0x00A6, // ¦
+	0x00A7, // §
+	0x0401, // Ё
+	0x00A9, // ©
+	0x0404, // Є
+	0x00AB, // «
+	0x00AC, // ¬
+	0x00AD, // 
+	0x00AE, // ®
+	0x0407, // Ї
+
+	0x00B0, // °
+	0x00B1, // ±
+	0x0406, // І
+	0x0456, // і
+	0x0491, // ґ
+	0x00B5, // µ
+	0x00B6, // ¶
+	0x00B7, // ·
+	0x0451, // ё
+	0x2116, // №
+	0x0454, // є
+	0x00BB, // »
+	0x0458, // ј
+	0x0405, // Ѕ
+	0x0455, // ѕ
+	0x0457, // ї
+};
+
+wchar_t TranslateSymbolUsingCP1251(char Symbol)
+{
+    unsigned char RawSymbol = *(unsigned char *)&Symbol;
+
+    if (RawSymbol < 0x80)
+    {
+        return wchar_t(RawSymbol);
+    }
+
+    if (RawSymbol < 0xc0)
+    {
+        return CP1251ConvertationTable[RawSymbol - 0x80];
+    }
+
+    return wchar_t(RawSymbol - 0xc0) + 0x410;
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -587,8 +674,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_CHAR:
 		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
-		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
-			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
+        if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
+        {
+            wchar_t curCharWide = static_cast<wchar_t>(wParam);
+            char layout[9];
+			if (GetKeyboardLayoutNameA(layout))
+			{
+				if (!strcmp(layout, "00000419"))
+				{
+                    curCharWide = TranslateSymbolUsingCP1251((char)wParam);
+                }
+			}
+            g_KBMInput.OnChar(curCharWide);
+        }
 		break;
 
 	case WM_KEYDOWN:
