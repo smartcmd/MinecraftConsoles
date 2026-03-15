@@ -84,7 +84,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		guiScale=app.GetGameSettings(iPad,eGameSetting_UISizeSplitscreen) + 2;
 	}
 
-
+	app.DebugPrintf("STARTS HERE STARTS HERE STARTS HERE");
 	ScreenSizeCalculator ssc(minecraft->options, minecraft->width, minecraft->height, guiScale );
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();
@@ -903,9 +903,44 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_ALPHA_TEST);
 
-#if 0 // defined(_WINDOWS64) // Temporarily disable this chat in favor of iggy chat until we have better visual parity
+#if defined(_WINDOWS64)
+	int uiSetting = app.GetGameSettings(iPad, eGameSetting_UISize); 
+	
+    float scaleFactor = 1.0f;
+	float textScale = 0.65f;
+	int bgfirsty = 1;
+	int bgsecondy = 8;
+
+	ScreenSizeCalculator sscchat(minecraft->options, minecraft->width, minecraft->height, 3 );
+	int screenWidthchat = sscchat.getWidth();
+	int screenHeightchat = sscchat.getHeight();
+
+	int iSafezoneXHalfChat = screenWidthchat/20;
+	int iSafezoneYHalfChat = screenHeightchat/20;
+	int iTooltipsYOffsetChat = 40;
+	float fScaleFactorWidthChat = 1.0f; 
+
+	//if (uiSetting == 0)
+    //{
+    //    textScale = textScale * 1.5; //20pixels wrong (correct is 21)
+	//	bgfirsty = 5; //15pixels correct
+	//	bgsecondy = 9; //15pixels wrong (correct is 14)
+    //}
+    //else if (uiSetting == 1)
+    //{
+    //    textScale = textScale * 1; //20 pixels wrong (correct is 21)
+	//	bgfirsty = 2; //9pixels wrong (correct is 15)
+	//	bgsecondy = 9; //20pixels wrong (correct is 14)
+    //}
+    //else if (uiSetting == 2)
+    //{
+    //    textScale = textScale * 0.75; //20 pixels wrong (correct is 21)
+	//	bgfirsty = 2; //12pixels wrong (correct is 15)
+	//	bgsecondy = 9; //34pixels wrong (correct is 14)
+    //}
+
     glPushMatrix();
-    glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
+    glTranslatef(0.0f, static_cast<float>(screenHeightchat - iSafezoneYHalfChat - iTooltipsYOffsetChat - 16 - 3 + 22) - 24.0f, 0.0f);
 
 	if(bDisplayGui)
 	{
@@ -925,17 +960,24 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 				if (alpha > 0)
 				{
-					int x = iSafezoneXHalf+2;
-					int y = -(static_cast<int>(i)) * 9;
+					int x = iSafezoneXHalfChat+2;
+					int y = -(static_cast<int>(i)) * 13 - 19;
 					if(bTwoPlayerSplitscreen)
 					{
-						y+= iHeightOffset;
+						y+= iHeightOffset;	
 					}
 
 					wstring msg = guiMessages[iPad][i].string;
-					this->fill(0, y - 1, screenWidth/fScaleFactorWidth, y + 8, (alpha / 2) << 24);
+					int bgColor = ((alpha / 2) << 24) | (0x404040);
+					this->fill(0, y - bgfirsty, screenWidthchat/fScaleFactorWidthChat, y + bgsecondy, bgColor);
 					glEnable(GL_BLEND);
-					font->drawShadow(msg, iSafezoneXHalf+4, y, 0xffffff + (alpha << 24));
+
+					glPushMatrix();
+					glTranslatef((float)(iSafezoneXHalf+4), (float)(y), 0);
+					glScalef(textScale, textScale, scaleFactor);
+					font->drawShadowFloat(msg, 0, 0, 0.5, 0.5, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
+					//font->drawShadowLiteralCustom(msg, 0, 0, 1, 1, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
+					glPopMatrix();
 				}
 			}
 		}

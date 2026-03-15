@@ -251,6 +251,31 @@ void Font::drawShadowLiteral(const wstring& str, int x, int y, int color)
 	drawLiteral(str, x, y, color);
 }
 
+void Font::drawShadowLiteralCustom(const wstring& str, int x, int y, int xplus, int yplus, int color, int shadowColor)
+{
+    drawLiteral(str, x + xplus, y + yplus, shadowColor);
+    drawLiteral(str, x, y, color);
+}
+
+void Font::drawShadowFloat(const wstring& str, float x, float y, float xplus, float yplus, int color, int shadowColor)
+{
+    drawLiteralFloat(str, x + xplus, y + yplus, shadowColor);
+    drawLiteralFloat(str, x, y, color);
+}
+
+void Font::drawLiteralFloat(const wstring& str, float x, float y, int color)
+{
+	if (str.empty()) return;
+	if ((color & 0xFC000000) == 0) color |= 0xFF000000;
+	textures->bindTexture(m_textureLocation);
+	glColor4f((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
+	xPos = static_cast<float>(x);
+	yPos = static_cast<float>(y);
+	wstring cleanStr = sanitize(str);
+	for (size_t i = 0; i < cleanStr.length(); ++i)
+		renderCharacter(cleanStr.at(i));
+}
+
 void Font::drawLiteral(const wstring& str, int x, int y, int color)
 {
 	if (str.empty()) return;

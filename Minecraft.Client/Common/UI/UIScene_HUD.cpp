@@ -65,7 +65,7 @@ void UIScene_HUD::updateSafeZone()
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		safeTop = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-
+		safeRight = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		// safeTop mirrors SPLIT_TOP so both players have the same vertical inset
@@ -77,14 +77,14 @@ void UIScene_HUD::updateSafeZone()
 
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+		safeLeft = getSafeZoneHalfWidth();
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
-		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+		safeRight = getSafeZoneHalfWidth();
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
-
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		safeTop = getSafeZoneHalfHeight();
@@ -92,22 +92,22 @@ void UIScene_HUD::updateSafeZone()
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		safeTop = getSafeZoneHalfHeight();
-
+		safeRight = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-		safeTop = getSafeZoneHalfHeight();
+		safeBottom = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-		safeTop = getSafeZoneHalfHeight();
-
+		safeBottom = getSafeZoneHalfHeight();
+		safeRight = getSafeZoneHalfWidth();
 		break;
 	case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
 	default:
 		safeTop = getSafeZoneHalfHeight();
 		safeBottom = getSafeZoneHalfHeight();
 		safeLeft = getSafeZoneHalfWidth();
-
+		safeRight = getSafeZoneHalfWidth();
 		break;
 	}
 	setSafeZone(safeTop, safeBottom, safeLeft, safeRight);
@@ -736,9 +736,9 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 				scale = scaleH;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+		IggyPlayerSetDisplaySize( getMovie(), static_cast<S32>(m_movieWidth * scale), static_cast<S32>(m_movieHeight * scale) );
 
-		repositionHud(tileWidth, tileHeight, scale, needsYTile);
+		repositionHud(tileWidth, tileHeight, scale);
 
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
@@ -772,7 +772,7 @@ void UIScene_HUD::handleTimerComplete(int id)
 			float opacity = pGui->getOpacity(m_iPad, i);
 			if( opacity > 0 )
 			{
-#if 0 // def _WINDOWS64 // Use Iggy chat until Gui::render has visual parity
+#ifdef _WINDOWS64
 				// Chat drawn by Gui::render with color codes. Hides Iggy chat to avoid double chats.
 				m_controlLabelBackground[i].setOpacity(0);
 				m_labelChatText[i].setOpacity(0);
@@ -809,7 +809,7 @@ void UIScene_HUD::handleTimerComplete(int id)
 	//setVisible(anyVisible);
 }
 
-void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale, bool needsYTile)
+void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale)
 {
 	if(!m_bSplitscreen) return;
 
