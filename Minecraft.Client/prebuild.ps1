@@ -27,7 +27,7 @@ if (git status --porcelain) {
     $suffix = "-dev"
 }
 
-@"
+$newContent = @"
 #pragma once
 
 #define VER_PRODUCTBUILD $build
@@ -35,4 +35,11 @@ if (git status --porcelain) {
 #define VER_FILEVERSION_STR_W VER_PRODUCTVERSION_STR_W
 #define VER_BRANCHVERSION_STR_W L"$ref"
 #define VER_NETWORK VER_PRODUCTBUILD
-"@ | Set-Content "Common/BuildVer.h"
+"@
+
+$path = "Common/BuildVer.h"
+$existing = if (Test-Path $path) { Get-Content $path -Raw } else { "" }
+
+if ($existing.Trim() -ne $newContent.Trim()) {
+    $newContent | Set-Content $path
+}
