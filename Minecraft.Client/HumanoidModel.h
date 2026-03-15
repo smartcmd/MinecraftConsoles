@@ -60,6 +60,7 @@ public:
     void renderEars(float scale, bool usecompiled);
     void renderCloak(float scale, bool usecompiled); 
     void render(HumanoidModel *model, float scale, bool usecompiled);
+	static bool bitmaskEnabled(unsigned int uiBitmask, animbits bit);
 
 // Add new bits to models
 	ModelPart * AddOrRetrievePart(SKIN_BOX *pBox);

@@ -26,7 +26,7 @@ void Boat::_init()
 	lxd = lyd = lzd = 0.0;
 
 	blocksBuilding = true;
-	setSize(1.5f, 0.6f);
+	setSize(1.5f, 0.6f); 
 	heightOffset = (bbHeight / 2.0f) + 0.2f;
 
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
@@ -87,7 +87,7 @@ Boat::Boat(Level *level, double x, double y, double z) : Entity( level )
 
 double Boat::getRideHeight()
 {
-	return heightOffset;
+	return heightOffset - 0.5;
 }
 
 bool Boat::hurt(DamageSource *source, float hurtDamage)

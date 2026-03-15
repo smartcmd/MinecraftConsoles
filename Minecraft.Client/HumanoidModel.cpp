@@ -140,6 +140,10 @@ HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight
 	_init(g,yOffset,texWidth,texHeight);
 }
 
+bool HumanoidModel::bitmaskEnabled(unsigned int uiBitmask, animbits bit)
+{
+	return (uiBitmask&(1<<bit))>0;
+}
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {	
 	if(entity != nullptr)
@@ -185,6 +189,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 	//bool bIsAttacking = (attackTime > -9990.0f);
 	
 	{
+
 		head->yRot = yRot / (float) (180.0f / PI);
 		head->xRot = xRot / (float) (180.0f / PI);
 		hair->yRot = head->yRot;
@@ -193,7 +198,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 
 		// Does the skin have an override for anim?
 
-		if(uiBitmaskOverrideAnim&(1<<eAnim_ArmsDown))
+		if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_ArmsDown))
 		{
 			arm0->xRot=0.0f;
 			arm1->xRot=0.0f;
@@ -201,14 +206,14 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			arm1->zRot = 0.0f;
 
 		}
-		else if(uiBitmaskOverrideAnim&(1<<eAnim_ArmsOutFront))
+		else if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_ArmsOutFront))
 		{
 			arm0->xRot=-HALF_PI;
 			arm1->xRot=-HALF_PI;
 			arm0->zRot = 0.0f;
 			arm1->zRot = 0.0f;
 		}
-		else if(uiBitmaskOverrideAnim&(1<<eAnim_SingleArms))
+		else if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_SingleArms))
 		{
 			arm0->xRot = (Mth::cos(time * 0.6662f + PI) * 2.0f) * r * 0.5f;
 			arm1->xRot = (Mth::cos(time * 0.6662f + PI) * 2.0f) * r * 0.5f;
@@ -216,7 +221,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			arm1->zRot = 0.0f;
 		}
 		// 4J-PB - Weeping Angel - does't look good holding something in the arm that's up
-		else if((uiBitmaskOverrideAnim&(1<<eAnim_StatueOfLiberty)) && (holdingRightHand==0) && (attackTime==0.0f))
+		else if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_StatueOfLiberty) && (holdingRightHand==0) && (attackTime==0.0f))
 		{
 			arm0->xRot = -PI;
 			arm0->zRot = -0.3f;
@@ -241,21 +246,24 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 
 		if (riding)
 		{
-			if(uiBitmaskOverrideAnim&(1<<eAnim_SmallModel) == 0)
+			//Fix this later
+			if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_SmallModel) || bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_SingleLegs))
 			{
+				arm0->xRot += -HALF_PI * 0.4f;
+				arm1->xRot += -HALF_PI * 0.4f;
+				leg0->xRot = -HALF_PI * 0.8f;
+				leg1->xRot = -HALF_PI * 0.8f;
+			}
+			else
+			{
+				//New
 				arm0->xRot += -HALF_PI * 0.4f;
 				arm1->xRot += -HALF_PI * 0.4f;
 				leg0->xRot = -HALF_PI * 0.8f;
 				leg1->xRot = -HALF_PI * 0.8f;
 				leg0->yRot = HALF_PI * 0.2f;
 				leg1->yRot = -HALF_PI * 0.2f;
-			}
-			else
-			{
-				arm0->xRot += -HALF_PI * 0.4f;
-				arm1->xRot += -HALF_PI * 0.4f;
-				leg0->xRot = -HALF_PI * 0.4f;
-				leg1->xRot = -HALF_PI * 0.4f;
+
 			}
 		}
 		else if(idle && !sneaking )
@@ -265,7 +273,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			leg0->yRot = HALF_PI * 0.2f;
 			leg1->yRot = -HALF_PI * 0.2f;
 		}		
-		else if(uiBitmaskOverrideAnim&(1<<eAnim_NoLegAnim))
+		else if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_NoLegAnim))
 		{
 			leg0->xRot=0.0f;
 			leg0->zRot=0.0f;
@@ -274,7 +282,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			leg0->yRot = 0.0f;
 			leg1->yRot = 0.0f;		
 		}
-		else if(uiBitmaskOverrideAnim&(1<<eAnim_SingleLegs))
+		else if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_SingleLegs))
 		{
 			leg0->xRot = ( Mth::cos(time * 0.6662f) * 1.4f) * r;
 			leg1->xRot = ( Mth::cos(time * 0.6662f) * 1.4f) * r;
@@ -318,7 +326,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			arm0->xRot -= aa * 1.2f + bb;	// 4J - changed 1.2 -> 1.2f
 			arm0->yRot += body->yRot * 2.0f;         
 
-			if((uiBitmaskOverrideAnim&(1<<eAnim_StatueOfLiberty))&& (holdingRightHand==0) && (attackTime==0.0f))
+			if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_StatueOfLiberty) && (holdingRightHand==0) && (attackTime==0.0f))
 			{
 				arm0->zRot -= Mth::sin(attackTime * PI) * -0.4f;
 			}
@@ -345,7 +353,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 
 		if (sneaking)
 		{
-			if(uiBitmaskOverrideAnim&(1<<eAnim_SmallModel))
+			if(bitmaskEnabled(uiBitmaskOverrideAnim, eAnim_SmallModel))
 			{
 				body->xRot = -0.5f;
 				leg0->xRot -= 0.0f;

@@ -199,11 +199,24 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
     armorParts1->sneaking = armorParts2->sneaking = humanoidModel->sneaking = mob->isSneaking();
 
     double yp = y - mob->heightOffset;
-    if (mob->isSneaking() && !mob->instanceof(eTYPE_LOCALPLAYER))
+    if (mob->isSneaking())
 	{
-        yp -= 2 / 16.0f;
+		yp -= 2 / 16.0f; //Added more
     }
+	//For some reason the bitmask is zero here
+	unsigned int uiBitmaskOverrideAnim = mob->getSkinAnimOverrideBitmask(mob->getCustomSkin());
 
+	if (HumanoidModel::bitmaskEnabled(uiBitmaskOverrideAnim, HumanoidModel::eAnim_SmallModel)) {
+		if (mob->isRiding()) {
+			std::shared_ptr<Entity> ridingEntity = mob->riding;
+			if (ridingEntity != nullptr) //Safety check;
+			{
+				if (ridingEntity->instanceof(eTYPE_BOAT)) {
+					yp += 0.25f; //reverts the change in Boat.cpp for smaller models.
+				}
+			}
+		}
+	}
 	// Check if an idle animation is needed
 	if(mob->getAnimOverrideBitmask()&(1<<HumanoidModel::eAnim_HasIdle))
 	{
@@ -515,7 +528,7 @@ void PlayerRenderer::renderHand()
     humanoidModel->attackTime = 0;
     humanoidModel->setupAnim(0, 0, 0, 0, 0, 1 / 16.0f, Minecraft::GetInstance()->player);
 	// 4J-PB - does this skin have its arm0 disabled? (Dalek, etc)
-	if((humanoidModel->m_uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DisableRenderArm0))==0)
+	if(HumanoidModel::bitmaskEnabled(humanoidModel->m_uiAnimOverrideBitmask, HumanoidModel::eAnim_DisableRenderArm0)==0)
 	{
 		humanoidModel->arm0->render(1 / 16.0f,true);
 	}
