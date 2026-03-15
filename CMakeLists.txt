@@ -184,6 +184,7 @@ if(CMAKE_HOST_WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release"
             "${CMAKE_CURRENT_BINARY_DIR}"
             /S /MT /R:0 /W:0 /NP
+            /XF "*.msscmp"
   )
   message(STATUS "Starting asset copy...")
   execute_process(
@@ -191,45 +192,72 @@ if(CMAKE_HOST_WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
             "${CMAKE_CURRENT_BINARY_DIR}"
             /S /MT /R:0 /W:0 /NP
-            /XF "*.cpp" "*.c" "*.h" "*.hpp" "*.asm"
-                "*.xml" "*.lang" "*.vcxproj" "*.vcxproj.*" "*.sln"
-                "*.docx" "*.xls"
-                "*.bat" "*.cmd" "*.ps1" "*.py"
-                "*Test*"
-            /XD "Durango*" "Orbis*" "PS*" "Xbox"
+            /XF
+                "*.c" "*.cpp" "*.h" "*.hpp" "*.xui" "*.inl" "*.asm"  # Source code.
+                "*.vcxproj" "*.vcxproj.*" "*.sln" "*.cd"             # Project files.
+                "*.xml" "*.lang" "*.resx" "*.loc"                    # Language files.
+                "*.docx" "*.xls"                                     # Office documents.
+                "*.bat" "*.cmd" "*.ps1" "*.py"                       # Scripts.
+                "*.lib" "*.lib.*"                                    # Static lib.
+                "*.swf" "*.msscmp" "*.wav"                           # Uncompiled/unused res.
+                "*Test*"                                             # Test files. (who could have guessed)
+                "MediaPS*" "MediaOrbis.arc" "MediaDurango.arc"       # Console media.
+                "ReadMe.txt" "Network Implementation Notes.txt"      # Extra.
+            /XD
+                "Durango*" "Orbis*" "PS*" "Xbox"                     # Console data.
+                "sce_sys" "TROPDIR"                                  # PlayStation data.
+                "Graphics" "DummyTexturePack" "GameConfig"           # Extra.
   )
-  message(STATUS "Patching Windows64Media...")
-  execute_process(
-    COMMAND robocopy.exe
-            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia"
-            "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media"
-            /S /MT /R:0 /W:0 /NP
-            /XF "*.h" "*.xml" "*.lang" "*.bat"
-  )
+  file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Windows64/GameHDD")
 elseif(CMAKE_HOST_UNIX)
   message(STATUS "Starting redist copy...")
   execute_process(
-    COMMAND rsync -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
+    COMMAND cp -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
   )
   message(STATUS "Starting asset copy...")
   execute_process(
-    COMMAND rsync -av
-            "--exclude=*.cpp" "--exclude=*.c" "--exclude=*.h" "--exclude=*.hpp" "--exclude=*.asm"
-            "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.vcxproj" "--exclude=*.vcxproj.*" "--exclude=*.sln"
-            "--exclude=*.docx" "--exclude=*.xls"
-            "--exclude=*.bat" "--exclude=*.cmd" "--exclude=*.ps1" "--exclude=*.py"
-            "--exclude=*Test*"
-            "--exclude=Durango*" "--exclude=Orbis*" "--exclude=PS*" "--exclude=Xbox"
-            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" "${CMAKE_CURRENT_BINARY_DIR}/"
+    COMMAND tar
+            "--exclude=*.c" "--exclude=*.cpp" "--exclude=*.h" "--exclude=*.hpp" # Source code.
+            "--exclude=*.xui" "--exclude=*.inl" "--exclude=*.asm"
+
+            "--exclude=*.vcxproj" "--exclude=*.vcxproj.*"                       # Project files.
+            "--exclude=*.sln" "--exclude=*.cd"
+
+            "--exclude=*.xml" "--exclude=*.lang"                                # Language files.
+            "--exclude=*.resx" "--exclude=*.loc"
+
+            "--exclude=*.docx" "--exclude=*.xls"                                # Office documents.
+
+            "--exclude=*.bat" "--exclude=*.cmd"                                 # Scripts.
+            "--exclude=*.ps1" "--exclude=*.py"
+
+            "--exclude=*.lib" "--exclude=*.lib.*"                               # Static lib.
+
+            "--exclude=*.swf" "--exclude=*.msscmp" "--exclude=*.wav"            # Uncompiled/unused res.
+
+            "--exclude=*Test*"                                                  # Test files. (who could have guessed)
+
+            "--exclude=MediaPS*" "--exclude=MediaOrbis.arc"                     # Console media.
+            "--exclude=MediaDurango.arc"
+
+            "--exclude=ReadMe.txt" "--exclude=Network Implementation Notes.txt" # Extra.
+
+
+
+            "--exclude=Durango*" "--exclude=Orbis*"                             # Console data.
+            "--exclude=PS*" "--exclude=Xbox"
+
+            "--exclude=sce_sys" "--exclude=TROPDIR"                             # PlayStation data.
+
+            "--exclude=Graphics" "--exclude=DummyTexturePack"                   # Extra.
+            "--exclude=GameConfig"
+
+            -cf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" .
+    COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/"
   )
-  message(STATUS "Patching Windows64Media...")
-  execute_process(
-    COMMAND rsync -av
-            "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
-            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
-  )
+  file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Windows64/GameHDD/")
 else()
-  message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (rsync).")
+  message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (cp, tar).")
 endif()
 
 add_custom_command(TARGET MinecraftServer POST_BUILD
