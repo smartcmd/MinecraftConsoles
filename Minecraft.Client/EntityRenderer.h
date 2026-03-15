@@ -30,8 +30,14 @@ private:
 
 protected:
 	Model *model;			// TODO 4J: Check why exactly this is here, it seems to get shadowed by classes inheriting from this by their own
+<<<<<<< Updated upstream
 	Model *modelCustom;
 	Model *modelSlim;
+=======
+	Model *modelSlim;
+	Model *newModel;
+	Model *newModelSlim;
+>>>>>>> Stashed changes
 
 protected:
     TileRenderer *tileRenderer;	// 4J - changed to protected so derived classes can use instead of shadowing their own
@@ -70,7 +76,13 @@ public:
 public:
 	// 4J Added
 	virtual Model *getModel() { return model; }
+<<<<<<< Updated upstream
 	virtual Model *getModelCustom() { return modelCustom; }
 	virtual Model *getModelSlim() { return modelSlim; }
+=======
+	virtual Model *getModelSlim() { return modelSlim; }
+	virtual Model *getNewModel() { return newModel; }
+	virtual Model *getNewModelSlim() { return newModelSlim; }
+>>>>>>> Stashed changes
 	virtual void SetItemFrame(bool bSet) {}
 };

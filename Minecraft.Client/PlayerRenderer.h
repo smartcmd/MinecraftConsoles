@@ -14,11 +14,21 @@ public:
 
 private:
 	HumanoidModel *humanoidModel;
+<<<<<<< Updated upstream
 	HumanoidModel *humanoidModelCustom;
 	HumanoidModel *humanoidModelSlim;
     HumanoidModel *armorParts1;
     HumanoidModel *armorParts2;
 	int defaultSkinType;
+=======
+	HumanoidModel *humanoidModelSlim;
+	HumanoidModel *newHumanoidModel;
+	HumanoidModel *newHumanoidModelSlim;
+
+    HumanoidModel *armorParts1;
+    HumanoidModel *armorParts2;
+	bool defaultSlimHands;
+>>>>>>> Stashed changes
 
 public:
 	PlayerRenderer();
