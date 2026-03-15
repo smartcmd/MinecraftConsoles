@@ -55,12 +55,92 @@ static unsigned int nametagColorForIndex(int index)
 
 ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR);
 
-PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0.5f )
-{
-    humanoidModel = static_cast<HumanoidModel *>(model);
+static const unsigned int ANIM_64x64_CLASSIC_SKIN = 0x00040000;
+static const unsigned int ANIM_64x64_ALEX_SLIM_SKIN = 0x00080000;
 
-    armorParts1 = new HumanoidModel(1.0f);
-    armorParts2 = new HumanoidModel(0.5f);
+struct PlayerSkinModelInfo
+{
+	int modelType;
+	int texWidth;
+	int texHeight;
+};
+
+static PlayerSkinModelInfo GetPlayerSkinModelInfoFromAnimFlags(unsigned int uiAnimFlags)
+{
+	PlayerSkinModelInfo info;
+	info.modelType = HumanoidModel::ePlayerModel_Steve;
+	info.texWidth = 64;
+	info.texHeight = 32;
+
+	if ((uiAnimFlags & ANIM_64x64_ALEX_SLIM_SKIN) != 0)
+	{
+		info.modelType = HumanoidModel::ePlayerModel_Alex;
+		info.texWidth = 64;
+		info.texHeight = 64;
+	}
+	else if ((uiAnimFlags & ANIM_64x64_CLASSIC_SKIN) != 0)
+	{
+		info.modelType = HumanoidModel::ePlayerModel_Steve;
+		info.texWidth = 64;
+		info.texHeight = 64;
+	}
+
+	return info;
+}
+
+PlayerRenderer::PlayerRenderer() : LivingEntityRenderer(new HumanoidModel(0.0f, 0.0f, 64, 32, false), 0.5f)
+{
+	humanoidModel = (HumanoidModel*)model;
+	armorParts1 = NULL;
+	armorParts2 = NULL;
+	m_iCurrentPlayerModelType = HumanoidModel::ePlayerModel_Steve;
+	m_iCurrentPlayerTexWidth = 64;
+	m_iCurrentPlayerTexHeight = 32;
+	createArmorParts(false); // Steve por padrao
+}
+
+void PlayerRenderer::createArmorParts(bool slimArms)
+{
+	if (armorParts1 != NULL)
+	{
+		delete armorParts1;
+		armorParts1 = NULL;
+	}
+
+	if (armorParts2 != NULL)
+	{
+		delete armorParts2;
+		armorParts2 = NULL;
+	}
+
+	// Armour textures remain the legacy 64x32 sheets; only arm width changes for slim skins.
+	armorParts1 = new HumanoidModel(1.0f, 0.0f, 64, 32, slimArms);
+	armorParts2 = new HumanoidModel(0.5f, 0.0f, 64, 32, slimArms);
+}
+
+void PlayerRenderer::setPlayerModelType(int type)
+{
+	setPlayerSkinModel(type, m_iCurrentPlayerTexWidth, m_iCurrentPlayerTexHeight);
+}
+
+void PlayerRenderer::setPlayerSkinModel(int type, int texWidth, int texHeight)
+{
+	bool slimArms = (type == HumanoidModel::ePlayerModel_Alex);
+
+	m_iCurrentPlayerModelType = type;
+	m_iCurrentPlayerTexWidth = texWidth;
+	m_iCurrentPlayerTexHeight = texHeight;
+
+	if (humanoidModel != NULL)
+	{
+		delete humanoidModel;
+		humanoidModel = NULL;
+	}
+
+	humanoidModel = new HumanoidModel(0.0f, 0.0f, texWidth, texHeight, slimArms);
+	model = humanoidModel;
+
+	createArmorParts(slimArms);
 }
 
 unsigned int PlayerRenderer::getNametagColour(int index)
@@ -72,10 +152,8 @@ unsigned int PlayerRenderer::getNametagColour(int index)
 
 int PlayerRenderer::prepareArmor(shared_ptr<LivingEntity> _player, int layer, float a)
 {
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(_player);
 
-	// 4J-PB - need to disable rendering armour for some special skins (Daleks)
 	unsigned int uiAnimOverrideBitmask=player->getAnimOverrideBitmask();
 	if(uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DontRenderArmour))
 	{
@@ -83,7 +161,7 @@ int PlayerRenderer::prepareArmor(shared_ptr<LivingEntity> _player, int layer, fl
 	}
 
     shared_ptr<ItemInstance> itemInstance = player->inventory->getArmor(3 - layer);
-    if (itemInstance != nullptr)
+    if (itemInstance != NULL)
 	{
         Item *item = itemInstance->getItem();
         if (dynamic_cast<ArmorItem *>(item))
@@ -102,17 +180,17 @@ int PlayerRenderer::prepareArmor(shared_ptr<LivingEntity> _player, int layer, fl
             armor->leg1->visible = layer == 2 || layer == 3;
 
             setArmor(armor);
-			if (armor != nullptr) armor->attackTime = model->attackTime;
-			if (armor != nullptr) armor->riding = model->riding;
-			if (armor != nullptr) armor->young = model->young;
+			if (armor != NULL) armor->attackTime = model->attackTime;
+			if (armor != NULL) armor->riding = model->riding;
+			if (armor != NULL) armor->young = model->young;
 
 			float brightness = SharedConstants::TEXTURE_LIGHTING ? 1 : player->getBrightness(a);
 			if (armorItem->getMaterial() == ArmorItem::ArmorMaterial::CLOTH)
 			{
 				int color = armorItem->getColor(itemInstance);
-				float red = static_cast<float>((color >> 16) & 0xFF) / 0xFF;
-				float green = static_cast<float>((color >> 8) & 0xFF) / 0xFF;
-				float blue = static_cast<float>(color & 0xFF) / 0xFF;
+				float red = (float) ((color >> 16) & 0xFF) / 0xFF;
+				float green = (float) ((color >> 8) & 0xFF) / 0xFF;
+				float blue = (float) (color & 0xFF) / 0xFF;
 				glColor3f(brightness * red, brightness * green, brightness * blue);
 
 				if (itemInstance->isEnchanted()) return 0x1f;
@@ -129,21 +207,19 @@ int PlayerRenderer::prepareArmor(shared_ptr<LivingEntity> _player, int layer, fl
         }
     }
     return -1;
-
 }
 
 void PlayerRenderer::prepareSecondPassArmor(shared_ptr<LivingEntity> _player, int layer, float a)
 {
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(_player);
 	shared_ptr<ItemInstance> itemInstance = player->inventory->getArmor(3 - layer);
-	if (itemInstance != nullptr)
+	if (itemInstance != NULL)
 	{
 		Item *item = itemInstance->getItem();
 		if (dynamic_cast<ArmorItem *>(item))
 		{
             ArmorItem *armorItem = dynamic_cast<ArmorItem *>(item);
-			bindTexture(HumanoidMobRenderer::getArmorLocation(static_cast<ArmorItem *>(item), layer, true));
+			bindTexture(HumanoidMobRenderer::getArmorLocation((ArmorItem *)item, layer, true));
 
 			float brightness = SharedConstants::TEXTURE_LIGHTING ? 1 : player->getBrightness(a);
 			glColor3f(brightness, brightness, brightness);
@@ -153,20 +229,23 @@ void PlayerRenderer::prepareSecondPassArmor(shared_ptr<LivingEntity> _player, in
 
 void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
-	if (_mob == nullptr)
-	{
-		return;
-	}
-
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 
-	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
+	unsigned int uiSkinAnimFlags = Player::getSkinAnimOverrideBitmask(mob->getCustomSkin());
+	PlayerSkinModelInfo modelInfo = GetPlayerSkinModelInfoFromAnimFlags(uiSkinAnimFlags);
+	if (humanoidModel != NULL &&
+		(m_iCurrentPlayerModelType != modelInfo.modelType ||
+		 m_iCurrentPlayerTexWidth != modelInfo.texWidth ||
+		 m_iCurrentPlayerTexHeight != modelInfo.texHeight))
+	{
+		setPlayerSkinModel(modelInfo.modelType, modelInfo.texWidth, modelInfo.texHeight);
+	}
+
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
-    armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = item != nullptr ? 1 : 0;
-	if (item != nullptr)
+    armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = item != NULL ? 1 : 0;
+	if (item != NULL)
 	{
 		if (mob->getUseItemDuration() > 0)
 		{
@@ -181,10 +260,8 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 			}
 		}
 	}
-	// 4J added, for 3rd person view of eating
-	if( item != nullptr && mob->getUseItemDuration() > 0 && item->getUseAnimation() == UseAnim_eat )
+	if( item != NULL && mob->getUseItemDuration() > 0 && item->getUseAnimation() == UseAnim_eat )
 	{
-		// These factors are largely lifted from ItemInHandRenderer to try and keep the 3rd person eating animation as similar as possible
         float t = (mob->getUseItemDuration() - a + 1);
         float swing = 1 - (t / item->getUseDuration());
 		armorParts1->eating = armorParts2->eating = humanoidModel->eating = true;
@@ -204,7 +281,6 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
         yp -= 2 / 16.0f;
     }
 
-	// Check if an idle animation is needed
 	if(mob->getAnimOverrideBitmask()&(1<<HumanoidModel::eAnim_HasIdle))
 	{
 		if(mob->isIdle())
@@ -227,9 +303,7 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 		armorParts2->idle=false;
 	}
 
-	// 4J-PB - any additional parts to turn on for this player (skin dependent)
 	vector<ModelPart *> *pAdditionalModelParts=mob->GetAdditionalModelParts();
-	//turn them on
 	if(pAdditionalModelParts!=nullptr)
 	{
 		for(ModelPart *pModelPart : *pAdditionalModelParts)
@@ -240,7 +314,6 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 
     LivingEntityRenderer::render(mob, x, yp, z, rot, a);
 
-	// turn them off again
 	if(pAdditionalModelParts && pAdditionalModelParts->size()!=0)
 	{
 		for(ModelPart *pModelPart : *pAdditionalModelParts)
@@ -251,7 +324,6 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	armorParts1->bowAndArrow = armorParts2->bowAndArrow = humanoidModel->bowAndArrow = false;
     armorParts1->sneaking = armorParts2->sneaking = humanoidModel->sneaking = false;
     armorParts1->holdingRightHand = armorParts2->holdingRightHand = humanoidModel->holdingRightHand = 0;
-
 }
 
 void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
@@ -262,13 +334,11 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 	LivingEntityRenderer::additionalRendering(_mob,a);
 	LivingEntityRenderer::renderArrows(_mob, a);
 
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 
     shared_ptr<ItemInstance> headGear = mob->inventory->getArmor(3);
-    if (headGear != nullptr)
+    if (headGear != NULL)
 	{
-		// don't render the pumpkin for the skins
 		unsigned int uiAnimOverrideBitmask = mob->getSkinAnimOverrideBitmask( mob->getCustomSkin());
 
 		if((uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DontRenderArmour))==0)
@@ -305,8 +375,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 		}
     }
 
-	// need to add a custom texture for deadmau5
-	if (mob != nullptr && app.isXuidDeadmau5( mob->getXuid() ) && bindTexture(mob->customTextureUrl, L"" ))
+	if (mob != NULL && app.isXuidDeadmau5( mob->getXuid() ) && bindTexture(mob->customTextureUrl, L"" ))
 	{
         for (int i = 0; i < 2; i++)
 		{
@@ -327,10 +396,6 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
         }
     }
 
-	// 4J: removed
-	/*boolean loaded = mob->getCloakTexture()->isLoaded();
-    boolean b1 = !mob->isInvisible();
-    boolean b2 = !mob->isCapeHidden();*/
 	if (bindTexture(mob->customTextureUrl2, L"") && !mob->isInvisible())
 	{
         glPushMatrix();
@@ -345,11 +410,11 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
         double xa = Mth::sin(yr * PI / 180);
         double za = -Mth::cos(yr * PI / 180);
 
-        float flap = static_cast<float>(yd) * 10;
+        float flap = (float) yd * 10;
         if (flap < -6) flap = -6;
         if (flap > 32) flap = 32;
-        float lean = static_cast<float>(xd * xa + zd * za) * 100;
-        float lean2 = static_cast<float>(xd * za - zd * xa) * 100;
+        float lean = (float) (xd * xa + zd * za) * 100;
+        float lean2 = (float) (xd * za - zd * xa) * 100;
         if (lean < 0) lean = 0;
 
         float pow = mob->oBob + (mob->bob - mob->oBob) * a;
@@ -360,7 +425,6 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
             flap += 25;
         }
 
-		// 4J Stu - Fix for sprint-flying causing the cape to rotate up by 180 degrees or more
 		float xRot = 6.0f + lean / 2 + flap;
 		if(xRot > 64.0f) xRot = 64.0f;
 
@@ -374,18 +438,18 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
 
-    if (item != nullptr)
+    if (item != NULL)
 	{
         glPushMatrix();
         humanoidModel->arm0->translateTo(1 / 16.0f);
         glTranslatef(-1 / 16.0f, 7 / 16.0f, 1 / 16.0f);
 
-        if (mob->fishing != nullptr)
+        if (mob->fishing != NULL)
 		{
-            item = std::make_shared<ItemInstance>(Item::stick);
+            item = shared_ptr<ItemInstance>( new ItemInstance(Item::stick) );
         }
 
-		UseAnim anim = UseAnim_none;//null;
+		UseAnim anim = UseAnim_none;
 		if (mob->getUseItemDuration() > 0)
 		{
 			anim = item->getUseAnimation();
@@ -472,30 +536,6 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 
 void PlayerRenderer::renderNameTags(shared_ptr<LivingEntity> player, double x, double y, double z, wstring msg, float scale, double dist)
 {
-#if 0
-    if (dist < 10 * 10)
-	{
-        Scoreboard *scoreboard = player->getScoreboard();
-        Objective *objective = scoreboard->getDisplayObjective(Scoreboard::DISPLAY_SLOT_BELOW_NAME);
-
-        if (objective != nullptr)
-		{
-            Score *score = scoreboard->getPlayerScore(player->getAName(), objective);
-
-            if (player->isSleeping())
-			{
-                renderNameTag(player, score->getScore() + " " + objective->getDisplayName(), x, y - 1.5f, z, 64);
-            }
-			else
-			{
-                renderNameTag(player, score->getScore() + " " + objective->getDisplayName(), x, y, z, 64);
-            }
-
-            y += getFont()->lineHeight * 1.15f * scale;
-        }
-    }
-#endif
-
     LivingEntityRenderer::renderNameTags(player, x, y, z, msg, scale, dist);
 }
 
@@ -510,11 +550,23 @@ void PlayerRenderer::renderHand()
 	float brightness = 1;
     glColor3f(brightness, brightness, brightness);
 
-	humanoidModel->m_uiAnimOverrideBitmask = Minecraft::GetInstance()->player->getAnimOverrideBitmask();
+	shared_ptr<Player> localPlayer = Minecraft::GetInstance()->player;
+	unsigned int uiSkinAnimFlags = localPlayer != NULL ? Player::getSkinAnimOverrideBitmask(localPlayer->getCustomSkin()) : 0;
+	PlayerSkinModelInfo modelInfo = GetPlayerSkinModelInfoFromAnimFlags(uiSkinAnimFlags);
+	if (humanoidModel != NULL &&
+		(m_iCurrentPlayerModelType != modelInfo.modelType ||
+		 m_iCurrentPlayerTexWidth != modelInfo.texWidth ||
+		 m_iCurrentPlayerTexHeight != modelInfo.texHeight))
+	{
+		setPlayerSkinModel(modelInfo.modelType, modelInfo.texWidth, modelInfo.texHeight);
+	}
+
+	unsigned int uiAnimFlags = localPlayer != NULL ? localPlayer->getAnimOverrideBitmask() : 0;
+
+	humanoidModel->m_uiAnimOverrideBitmask = uiAnimFlags;
 	armorParts1->eating = armorParts2->eating = humanoidModel->eating = humanoidModel->idle = false;
     humanoidModel->attackTime = 0;
     humanoidModel->setupAnim(0, 0, 0, 0, 0, 1 / 16.0f, Minecraft::GetInstance()->player);
-	// 4J-PB - does this skin have its arm0 disabled? (Dalek, etc)
 	if((humanoidModel->m_uiAnimOverrideBitmask&(1<<HumanoidModel::eAnim_DisableRenderArm0))==0)
 	{
 		humanoidModel->arm0->render(1 / 16.0f,true);
@@ -523,13 +575,11 @@ void PlayerRenderer::renderHand()
 
 void PlayerRenderer::setupPosition(shared_ptr<LivingEntity> _mob, double x, double y, double z)
 {
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 
     if (mob->isAlive() && mob->isSleeping())
 	{
         LivingEntityRenderer::setupPosition(mob, x + mob->bedOffsetX, y + mob->bedOffsetY, z + mob->bedOffsetZ);
-
     }
 	else
 	{
@@ -543,7 +593,6 @@ void PlayerRenderer::setupPosition(shared_ptr<LivingEntity> _mob, double x, doub
 
 void PlayerRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a)
 {
-	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 
     if (mob->isAlive() && mob->isSleeping())
@@ -558,18 +607,16 @@ void PlayerRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, fl
     }
 }
 
-// 4J Added override to stop rendering shadow if player is invisible
 void PlayerRenderer::renderShadow(shared_ptr<Entity> e, double x, double y, double z, float pow, float a)
 {
 	if(app.GetGameHostOption(eGameHostOption_HostCanBeInvisible) > 0)
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(e);
-		if(player != nullptr && player->hasInvisiblePrivilege()) return;
+		if(player != NULL && player->hasInvisiblePrivilege()) return;
 	}
 	EntityRenderer::renderShadow(e,x,y,z,pow,a);
 }
 
-// 4J Added override
 void PlayerRenderer::bindTexture(shared_ptr<Entity> entity)
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
@@ -579,5 +626,5 @@ void PlayerRenderer::bindTexture(shared_ptr<Entity> entity)
 ResourceLocation *PlayerRenderer::getTextureLocation(shared_ptr<Entity> entity)
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
-	return new ResourceLocation(static_cast<_TEXTURE_NAME>(player->getTexture()));
+	return new ResourceLocation((_TEXTURE_NAME)player->getTexture());
 }

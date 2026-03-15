@@ -4,32 +4,40 @@
 class HumanoidModel : public Model
 {
 public:
-	ModelPart *head, *hair, *body, *arm0, *arm1, *leg0, *leg1, *ear, *cloak;
-	//ModelPart *hat; 
+	enum ePlayerModelType
+	{
+		ePlayerModel_Steve = 0,
+		ePlayerModel_Alex
+	};
+
+	ModelPart *head, *hair, *body, *arm0, *arm1, *leg0, *leg1, *ear, *cloak, *bodyWear, *arm0Wear, *arm1Wear, *leg0Wear, *leg1Wear;
+
+	bool hasLayer2;
+	bool isSlimArms;
+	int m_ePlayerModelType;
 
 	int holdingLeftHand;
     int holdingRightHand;
 	bool idle;
 	bool sneaking;
 	bool bowAndArrow;
-	bool eating;		// 4J added
-	float eating_t;			// 4J added
-	float eating_swing;	// 4J added
-	unsigned int m_uiAnimOverrideBitmask; // 4J added
-	float m_fYOffset; // 4J added
+	bool eating;
+	float eating_t;
+	float eating_swing;
+	unsigned int m_uiAnimOverrideBitmask;
+	float m_fYOffset;
 	enum animbits
 	{
 		eAnim_ArmsDown =0,
 		eAnim_ArmsOutFront,
 		eAnim_NoLegAnim,
 		eAnim_HasIdle,
-		eAnim_ForceAnim, // Claptrap looks bad if the user turns off custom skin anim
-		// 4J-PB - DaveK wants Fish characters to move both legs in the same way
+		eAnim_ForceAnim,
 		eAnim_SingleLegs,
 		eAnim_SingleArms,
-		eAnim_StatueOfLiberty, // Dr Who Weeping Angel
-		eAnim_DontRenderArmour, // Dr Who Daleks
-		eAnim_NoBobbing, // Dr Who Daleks
+		eAnim_StatueOfLiberty,
+		eAnim_DontRenderArmour,
+		eAnim_NoBobbing,
 		eAnim_DisableRenderHead,
 		eAnim_DisableRenderArm0,
 		eAnim_DisableRenderArm1,
@@ -37,8 +45,7 @@ public:
 		eAnim_DisableRenderLeg0,
 		eAnim_DisableRenderLeg1,
 		eAnim_DisableRenderHair,
-		eAnim_SmallModel // Maggie Simpson for riding horse, etc
-
+		eAnim_SmallModel
 	};
 
 	static const unsigned int m_staticBitmaskIgnorePlayerCustomAnimSetting= (1<<HumanoidModel::eAnim_ForceAnim) |
@@ -49,11 +56,12 @@ public:
 		(1<<HumanoidModel::eAnim_DisableRenderLeg1) |
 		(1<<HumanoidModel::eAnim_DisableRenderHair);
 
-
-	void _init(float g, float yOffset, int texWidth, int texHeight);	// 4J added
+	void _init(float g, float yOffset, int texWidth, int texHeight, bool slimArms);
     HumanoidModel();
     HumanoidModel(float g);
     HumanoidModel(float g, float yOffset, int texWidth, int texHeight);
+	HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimArms);
+	void setPlayerModelType(int type);
 	virtual void render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled);
     virtual void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim = 0);
     void renderHair(float scale, bool usecompiled);
@@ -61,6 +69,5 @@ public:
     void renderCloak(float scale, bool usecompiled); 
     void render(HumanoidModel *model, float scale, bool usecompiled);
 
-// Add new bits to models
 	ModelPart * AddOrRetrievePart(SKIN_BOX *pBox);
 };

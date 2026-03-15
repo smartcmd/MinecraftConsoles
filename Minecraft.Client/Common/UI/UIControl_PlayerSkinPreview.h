@@ -5,6 +5,7 @@
 
 class ModelPart;
 class EntityRenderer;
+class HumanoidModel;
 
 class UIControl_PlayerSkinPreview : public UIControl
 {
@@ -51,8 +52,12 @@ private:
 	float m_swingTime;
 
 	ESkinPreviewAnimations m_currentAnimation;
-	//vector<Model::SKIN_BOX *> *m_pvAdditionalBoxes;
 	vector<ModelPart *> *m_pvAdditionalModelParts;
+
+	HumanoidModel *m_pPreviewModel;
+	int m_iPreviewModelType;
+	int m_iPreviewTexWidth;
+	int m_iPreviewTexHeight;
 public:
 	enum ESkinPreviewFacing
 	{
@@ -62,6 +67,7 @@ public:
 	};
 
 	UIControl_PlayerSkinPreview();
+	virtual ~UIControl_PlayerSkinPreview();
 
 	virtual void tick();
 
@@ -87,4 +93,6 @@ private:
 	void render(EntityRenderer *renderer, double x, double y, double z, float rot, float a);
 	bool bindTexture(const wstring& urlTexture, int backupTexture);
 	bool bindTexture(const wstring& urlTexture, const wstring& backupTexture);
+	void RebuildPreviewModel();
+	void DestroyPreviewModel();
 };

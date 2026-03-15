@@ -18,18 +18,11 @@ Windows users can download our [Nightly Build](https://github.com/smartcmd/Minec
 
 ## Features
 
-- Fixed compilation and execution in both Debug and Release mode on Windows using Visual Studio 2022
-- Added support for keyboard and mouse input
-- Added fullscreen mode support (toggle using F11)
-- (WIP) Disabled V-Sync for better performance
-- Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
-- Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
-- LAN Multiplayer & Discovery
-- Added persistent username system via "username.txt"
+- Skin with flag: Steve → Steve model + 64x64 UV
 
-## Multiplayer
+- Skin with flag: Alex → Alex model + 64x64 UV
 
-Basic LAN multiplayer is available on the Windows build
+- Skin without flag → Classic Steve model + 64x32 UV
 
 - Hosting a multiplayer world automatically advertises it on the local network
 - Other players on the same LAN can discover the session from the in-game Join Game menu
@@ -206,7 +199,3 @@ For more information, see [COMPILE.md](COMPILE.md).
 
 ## Contributors
 Would you like to contribute to this project? Please read our [Contributor's Guide](CONTRIBUTING.md) before doing so! This document includes our current goals, standards for inclusions, rules, and more.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=smartcmd/MinecraftConsoles&type=date&legend=top-left)](https://www.star-history.com/?spm=a2c6h.12873639.article-detail.7.7b9d7fabjNxTRk#smartcmd/MinecraftConsoles&type=date&legend=top-left)

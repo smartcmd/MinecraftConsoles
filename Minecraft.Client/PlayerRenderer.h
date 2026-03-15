@@ -16,11 +16,17 @@ private:
 	HumanoidModel *humanoidModel;
     HumanoidModel *armorParts1;
     HumanoidModel *armorParts2;
+	int m_iCurrentPlayerModelType;
+	int m_iCurrentPlayerTexWidth;
+	int m_iCurrentPlayerTexHeight;
 
 public:
 	PlayerRenderer();
 
 	static unsigned int getNametagColour(int index);
+	void createArmorParts(bool slimArms);
+	void setPlayerModelType(int type);
+	void setPlayerSkinModel(int type, int texWidth, int texHeight);
 
 private:
 	static const wstring MATERIAL_NAMES[5];
