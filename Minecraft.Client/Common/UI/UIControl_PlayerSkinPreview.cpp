@@ -257,7 +257,15 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-	HumanoidModel *model = static_cast<HumanoidModel *>(renderer->getModel());
+	HumanoidModel *model;
+	Textures *t = Minecraft::GetInstance()->textures;
+
+	if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) >= 45 && t->loadMemTexture(m_customTextureUrl, m_backupTexture) <= 53)
+		model = static_cast<HumanoidModel *>(renderer->getNewModelSlim());
+	else if (t->loadMemTexture(m_customTextureUrl, m_backupTexture) == 54)
+		model = static_cast<HumanoidModel *>(renderer->getNewModel());
+	else
+		model = static_cast<HumanoidModel *>(renderer->getModel());
 
 	//getAttackAnim(mob, a);
 	//if (armor != nullptr) armor->attackTime = model->attackTime;

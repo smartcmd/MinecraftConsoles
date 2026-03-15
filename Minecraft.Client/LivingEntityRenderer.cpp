@@ -9,13 +9,24 @@
 #include "..\Minecraft.World\Mth.h"
 #include "..\Minecraft.World\Player.h"
 
-
 ResourceLocation LivingEntityRenderer::ENCHANT_GLINT_LOCATION = ResourceLocation(TN__BLUR__MISC_GLINT);
 int LivingEntityRenderer::MAX_ARMOR_LAYERS = 4;
 
-LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow)
+LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow, bool slimHands, bool createNewVar)
 {
 	this->model = model;
+
+	if (slimHands == true)
+		this->modelSlim = new HumanoidModel(0, 0, 64, 32, true);
+
+	if (createNewVar)
+	{
+		this->newModel = new HumanoidModel(0, 0, 64, 64, false, false);
+
+		if (slimHands == true)
+			this->newModelSlim = new HumanoidModel(0, 0, 64, 64, true, false);
+	}
+
 	shadowRadius = shadow;
 	armor = nullptr;
 }
@@ -43,6 +54,8 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 	}
 
 	shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(_mob);
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(_mob);
+	Model *resModel;
 
 	if (mob == nullptr)
 	{
@@ -52,12 +65,16 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
-	model->attackTime = getAttackAnim(mob, a);
-	if (armor != nullptr) armor->attackTime = model->attackTime;
-	model->riding = mob->isRiding();
-	if (armor != nullptr) armor->riding = model->riding;
-	model->young = mob->isBaby();
-	if (armor != nullptr) armor->young = model->young;
+	if (player != nullptr && newModel != nullptr &&  player->getCustomSkin() == 18) resModel = newModel;
+	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
+	else resModel = model;
+
+	resModel->attackTime = getAttackAnim(mob, a);
+	if (armor != nullptr) armor->attackTime = resModel->attackTime;
+	resModel->riding = mob->isRiding();
+	if (armor != nullptr) armor->riding = resModel->riding;
+	resModel->young = mob->isBaby();
+	if (armor != nullptr) armor->young = resModel->young;
 
 	/*try*/
 	{
@@ -103,7 +120,7 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 		if (ws > 1) ws = 1;
 
 		glEnable(GL_ALPHA_TEST);
-		model->prepareMobModel(mob, wp, ws, a);
+		resModel->prepareMobModel(mob, wp, ws, a);
 		renderModel(mob, wp, ws, bob, headRot - bodyRot, headRotx, fScale);
 
 		for (int i = 0; i < MAX_ARMOR_LAYERS; i++)
@@ -187,7 +204,7 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 			if (mob->hurtTime > 0 || mob->deathTime > 0)
 			{
 				glColor4f(br, 0, 0, 0.4f);
-				model->render(mob, wp, ws, bob, headRot - bodyRot, headRotx, fScale, false);
+				resModel->render(mob, wp, ws, bob, headRot - bodyRot, headRotx, fScale, false);
 				for (int i = 0; i < MAX_ARMOR_LAYERS; i++)
 				{
 					if (prepareArmorOverlay(mob, i, a) >= 0)
@@ -205,7 +222,7 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 				float b = ((overlayColor) & 0xff) / 255.0f;
 				float aa = ((overlayColor >> 24) & 0xff) / 255.0f;
 				glColor4f(r, g, b, aa);
-				model->render(mob, wp, ws, bob, headRot - bodyRot, headRotx, fScale, false);
+				resModel->render(mob, wp, ws, bob, headRot - bodyRot, headRotx, fScale, false);
 				for (int i = 0; i < MAX_ARMOR_LAYERS; i++)
 				{
 					if (prepareArmorOverlay(mob, i, a) >= 0)
@@ -242,10 +259,17 @@ void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, d
 
 void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, float ws, float bob, float headRotMinusBodyRot, float headRotx, float scale)
 {
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
+	Model *resModel;
+
+	if (player != nullptr && newModel != nullptr && player->getCustomSkin() == 18) resModel = newModel;
+	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
+	else resModel = model;
+
 	bindTexture(mob);
 	if (!mob->isInvisible())
 	{
-		model->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
+		resModel->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
 	}
 	else if(!mob->isInvisibleTo(dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player)))
 	{
@@ -255,7 +279,7 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glAlphaFunc(GL_GREATER, 1.0f / 255.0f);
-		model->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
+		resModel->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
 		glDisable(GL_BLEND);
 		glAlphaFunc(GL_GREATER, .1f);
 		glPopMatrix();
@@ -263,7 +287,7 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 	}
 	else 
 	{
-		model->setupAnim(wp, ws, bob, headRotMinusBodyRot, headRotx, scale, mob);
+		resModel->setupAnim(wp, ws, bob, headRotMinusBodyRot, headRotx, scale, mob);
 	}
 }
 
@@ -313,7 +337,15 @@ void LivingEntityRenderer::additionalRendering(shared_ptr<LivingEntity> mob, flo
 
 void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 {
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
+	Model *resModel;
+
+	if (player != nullptr && newModel != nullptr && player->getCustomSkin() == 18) resModel = newModel;
+	else if (player != nullptr && newModelSlim != nullptr && player->getCustomSkin() >= 8 && player->getCustomSkin() <= 17) resModel = newModelSlim;
+	else resModel = model;
+
 	int arrowCount = mob->getArrowCount();
+
 	if (arrowCount > 0)
 	{
 		shared_ptr<Entity> arrow = std::make_shared<Arrow>(mob->level, mob->x, mob->y, mob->z);
@@ -322,7 +354,10 @@ void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 		for (int i = 0; i < arrowCount; i++)
 		{
 			glPushMatrix();
-			ModelPart *modelPart = model->getRandomModelPart(random);
+
+			ModelPart *modelPart;
+			modelPart = resModel->getRandomModelPart(random);
+
 			Cube *cube = modelPart->cubes[random.nextInt(modelPart->cubes.size())];
 			modelPart->translateTo(1 / 16.0f);
 			float xd = random.nextFloat();

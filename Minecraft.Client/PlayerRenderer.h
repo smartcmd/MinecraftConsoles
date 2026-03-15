@@ -14,8 +14,13 @@ public:
 
 private:
 	HumanoidModel *humanoidModel;
+	HumanoidModel *humanoidModelSlim;
+	HumanoidModel *newHumanoidModel;
+	HumanoidModel *newHumanoidModelSlim;
+
     HumanoidModel *armorParts1;
     HumanoidModel *armorParts2;
+	bool defaultSlimHands;
 
 public:
 	PlayerRenderer();

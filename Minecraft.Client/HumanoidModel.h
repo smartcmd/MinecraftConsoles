@@ -4,7 +4,7 @@
 class HumanoidModel : public Model
 {
 public:
-	ModelPart *head, *hair, *body, *arm0, *arm1, *leg0, *leg1, *ear, *cloak;
+	ModelPart *head, *hair, *body, *body_layer, *arm0, *arm0_layer, *arm1, *arm1_layer, *leg0, *leg0_layer, *leg1, *leg1_layer, *ear, *cloak;
 	//ModelPart *hat; 
 
 	int holdingLeftHand;
@@ -50,10 +50,12 @@ public:
 		(1<<HumanoidModel::eAnim_DisableRenderHair);
 
 
-	void _init(float g, float yOffset, int texWidth, int texHeight);	// 4J added
+	void _init(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror);	// 4J added
     HumanoidModel();
     HumanoidModel(float g);
-    HumanoidModel(float g, float yOffset, int texWidth, int texHeight);
+	HumanoidModel(float g, float yOffset, int texWidth, int texHeight);
+	HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands);
+	HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror);
 	virtual void render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled);
     virtual void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim = 0);
     void renderHair(float scale, bool usecompiled);

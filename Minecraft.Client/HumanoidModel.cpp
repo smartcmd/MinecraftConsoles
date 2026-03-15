@@ -58,10 +58,16 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 	return pNewBox;
 }
 
-void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
+void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror)
 {
 	this->texWidth = texWidth;
 	this->texHeight = texHeight;
+
+	body_layer = nullptr;
+	arm0_layer = nullptr;
+	arm1_layer = nullptr;
+	leg0_layer = nullptr;
+	leg1_layer = nullptr;
 
 	m_fYOffset=yOffset;
     cloak = new ModelPart(this, 0, 0);
@@ -78,27 +84,89 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
     hair->addHumanoidBox(-4, -8, -4, 8, 8, 8, g + 0.5f); // Head
     hair->setPos(0, 0 + yOffset, 0);
 
+	if (texWidth == 64 && texHeight == 64)
+	{
+		body_layer = new ModelPart(this, 16, 32);
+		body_layer->addHumanoidBox(-4, 0, -2, 8, 12, 4, g + 0.5);
+		body_layer->setPos(0, 0 + yOffset, 0);
+	}
+
     body = new ModelPart(this, 16, 16);
     body->addHumanoidBox(-4, 0, -2, 8, 12, 4, g); // Body
     body->setPos(0, 0 + yOffset, 0);
 
-    arm0 = new ModelPart(this, 24 + 16, 16);
-    arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g); // Arm0
-    arm0->setPos(-5, 2 + yOffset, 0);
+	if (texWidth == 64 && texHeight == 64)
+	{
+		arm0 = new ModelPart(this, 24 + 16, 16);
+		arm1 = new ModelPart(this, 16 + 16, 48);
 
-    arm1 = new ModelPart(this, 24 + 16, 16);
-    arm1->bMirror = true;
-    arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g); // Arm1
+		arm0_layer = new ModelPart(this, 24 + 16, 32);
+		arm1_layer = new ModelPart(this, 32 + 16, 48);
+
+		if (slimHands == false)
+		{
+			arm0_layer->addHumanoidBox(-3, -2, -2, 4, 12, 4, g + 0.5);
+			arm1_layer->addHumanoidBox(-1, -2, -2, 4, 12, 4, g + 0.5);
+		}
+		else if (slimHands == true)
+		{
+			arm0_layer->addHumanoidBox(-2, -2, -2, 3, 12, 4, g + 0.5);
+			arm1_layer->addHumanoidBox(-1, -2, -2, 3, 12, 4, g + 0.5);
+		}
+
+		arm0_layer->setPos(-5, 2 + yOffset, 0);
+		arm1_layer->setPos(5, 2 + yOffset, 0);
+	}
+	else if (texWidth == 64 && texHeight == 32)
+	{
+		arm0 = new ModelPart(this, 24 + 16, 16);
+		arm1 = new ModelPart(this, 24 + 16, 16);
+	}
+
+	if (slimHands == false)
+	{
+		arm0->addHumanoidBox(-3, -2, -2, 4, 12, 4, g);
+		arm1->addHumanoidBox(-1, -2, -2, 4, 12, 4, g);
+	}
+	else if (slimHands == true)
+	{
+		arm0->addHumanoidBox(-2, -2, -2, 3, 12, 4, g);
+		arm1->addHumanoidBox(-1, -2, -2, 3, 12, 4, g);
+	}
+
+    arm0->setPos(-5, 2 + yOffset, 0);
     arm1->setPos(5, 2 + yOffset, 0);
 
-    leg0 = new ModelPart(this, 0, 16);
+	if (mirror == true)
+		arm1->bMirror = true;
+
+	if (texWidth == 64 && texHeight == 64)
+	{
+		leg0 = new ModelPart(this, 0, 16);
+		leg1 = new ModelPart(this, 16, 48);
+
+		leg0_layer = new ModelPart(this, 0, 32);
+		leg0_layer->addHumanoidBox(-2, 0, -2, 4, 12, 4, g + 0.5);
+		leg0_layer->setPos(-1.9, 12 + yOffset, 0);
+
+		leg1_layer = new ModelPart(this, 0, 48);
+		leg1_layer->addHumanoidBox(-2, 0, -2, 4, 12, 4, g + 0.5);
+		leg1_layer->setPos(1.9, 12 + yOffset, 0);
+	}
+	else if (texWidth == 64 && texHeight == 32)
+	{
+		leg0 = new ModelPart(this, 0, 16);
+		leg1 = new ModelPart(this, 0, 16);
+	}
+
     leg0->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg0
     leg0->setPos(-1.9, 12 + yOffset, 0);
 
-    leg1 = new ModelPart(this, 0, 16);
-    leg1->bMirror = true;
     leg1->addHumanoidBox(-2, 0, -2, 4, 12, 4, g); // Leg1
     leg1->setPos(1.9, 12 + yOffset, 0);
+
+	if (mirror == true)
+		leg1->bMirror = true;
 
 	// 4J added - compile now to avoid random performance hit first time cubes are rendered
 	// 4J Stu - Not just performance, but alpha+depth tests don't work right unless we compile here
@@ -111,6 +179,17 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
 	leg0->compile(1.0f/16.0f);
 	leg1->compile(1.0f/16.0f);
 	hair->compile(1.0f/16.0f);
+
+	if (body_layer != 0)
+		body_layer->compile(1.0f/16.0f);
+	if (arm0_layer != 0)
+		arm0_layer->compile(1.0f/16.0f);
+	if (arm1_layer != 0)
+		arm1_layer->compile(1.0f/16.0f);
+	if (leg0_layer != 0)
+		leg0_layer->compile(1.0f/16.0f);
+	if (leg1_layer != 0)
+		leg1_layer->compile(1.0f/16.0f);
 
 	holdingLeftHand=0;
 	holdingRightHand=0;
@@ -125,19 +204,30 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
 	m_uiAnimOverrideBitmask = 0L;
 }
 
+
 HumanoidModel::HumanoidModel() : Model()
 {
-	_init(0, 0, 64, 32);
+	_init(0, 0, 64, 32, false, true);
 }
 
 HumanoidModel::HumanoidModel(float g) : Model()
 {
-	_init(g, 0, 64, 32);
+	_init(g, 0, 64, 32, false, true);
 }
 
 HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight) : Model()
 {
-	_init(g,yOffset,texWidth,texHeight);
+	_init(g,yOffset,texWidth,texHeight, false, true);
+}
+
+HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands) : Model()
+{
+	_init(g,yOffset,texWidth,texHeight, slimHands, true);
+}
+
+HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight, bool slimHands, bool mirror) : Model()
+{
+	_init(g,yOffset,texWidth,texHeight, slimHands, mirror);
 }
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
