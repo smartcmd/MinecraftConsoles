@@ -35,7 +35,7 @@
 #include "TerrainParticle.h"
 #include "SpellParticle.h"
 #include "DripParticle.h"
-#include "EchantmentTableParticle.h"
+#include "EnchantmentTableParticle.h"
 #include "DragonBreathParticle.h"
 #include "FireworksParticles.h"
 #include "Lighting.h"
@@ -2865,7 +2865,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		particle = std::make_shared<EnderParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_enchantmenttable:
-		particle = std::make_shared<EchantmentTableParticle>(lev, x, y, z, xa, ya, za);
+		particle = std::make_shared<EnchantmentTableParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_explode:
 		particle = std::make_shared<ExplodeParticle>(lev, x, y, z, xa, ya, za);

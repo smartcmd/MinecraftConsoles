@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "..\Minecraft.World\JavaMath.h"
-#include "EchantmentTableParticle.h"
+#include "EnchantmentTableParticle.h"
 
-EchantmentTableParticle::EchantmentTableParticle(Level *level, double x, double y, double z, double xd, double yd, double zd) : Particle(level, x, y, z, xd, yd, zd)
+EnchantmentTableParticle::EnchantmentTableParticle(Level *level, double x, double y, double z, double xd, double yd, double zd) : Particle(level, x, y, z, xd, yd, zd)
 {
 	this->xd = xd;
 	this->yd = yd;
@@ -26,7 +26,7 @@ EchantmentTableParticle::EchantmentTableParticle(Level *level, double x, double 
 	setMiscTex( static_cast<int>(Math::random() * 26 + 1 + 14 * 16) );
 }
 
-int EchantmentTableParticle::getLightColor(float a)
+int EnchantmentTableParticle::getLightColor(float a)
 {
 	int br = Particle::getLightColor(a);
 
@@ -41,7 +41,7 @@ int EchantmentTableParticle::getLightColor(float a)
 	return br1 | br2 << 16;
 }
 
-float EchantmentTableParticle::getBrightness(float a)
+float EnchantmentTableParticle::getBrightness(float a)
 {
 	float br = Particle::getBrightness(a);
 	float pos = age / static_cast<float>(lifetime);
@@ -50,7 +50,7 @@ float EchantmentTableParticle::getBrightness(float a)
 	return br * (1 - pos) + pos;
 }
 
-void EchantmentTableParticle::tick()
+void EnchantmentTableParticle::tick()
 {
 	xo = x;
 	yo = y;

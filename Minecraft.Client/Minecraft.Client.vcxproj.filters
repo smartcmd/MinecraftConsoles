@@ -1840,7 +1840,7 @@
     <ClInclude Include="DripParticle.h">
       <Filter>net\minecraft\client\particle</Filter>
     </ClInclude>
-    <ClInclude Include="EchantmentTableParticle.h">
+    <ClInclude Include="EnchantmentTableParticle.h">
       <Filter>net\minecraft\client\particle</Filter>
     </ClInclude>
     <ClInclude Include="ModelPart.h">
@@ -4587,7 +4587,7 @@
     <ClCompile Include="DripParticle.cpp">
       <Filter>net\minecraft\client\particle</Filter>
     </ClCompile>
-    <ClCompile Include="EchantmentTableParticle.cpp">
+    <ClCompile Include="EnchantmentTableParticle.cpp">
       <Filter>net\minecraft\client\particle</Filter>
     </ClCompile>
     <ClCompile Include="SpellParticle.cpp">

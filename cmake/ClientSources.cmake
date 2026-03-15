@@ -275,7 +275,7 @@ set(MINECRAFT_CLIENT_SOURCES
   "DragonBreathParticle.cpp"
   "DragonModel.cpp"
   "DripParticle.cpp"
-  "EchantmentTableParticle.cpp"
+  "EnchantmentTableParticle.cpp"
   "EditBox.cpp"
   "EnchantTableRenderer.cpp"
   "EnderChestRenderer.cpp"
