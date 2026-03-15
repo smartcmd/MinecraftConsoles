@@ -16,8 +16,6 @@
 
 #ifdef _WINDOWS64
 #include "..\..\Windows64\KeyboardMouseInput.h"
-
-SavedInventoryCursorPos g_savedInventoryCursorPos = { 0.0f, 0.0f, false };
 #endif
 
 IUIScene_AbstractContainerMenu::IUIScene_AbstractContainerMenu()

@@ -41,10 +41,6 @@ void UIScene_AbstractContainerMenu::handleDestroy()
 	app.DebugPrintf("UIScene_AbstractContainerMenu::handleDestroy\n");
 
 #ifdef _WINDOWS64
-	g_savedInventoryCursorPos.x = m_pointerPos.x;
-	g_savedInventoryCursorPos.y = m_pointerPos.y;
-	g_savedInventoryCursorPos.hasSavedPos = true;
-
 	g_KBMInput.SetScreenCursorHidden(false);
 	g_KBMInput.SetCursorHiddenForUI(false);
 #endif
@@ -173,16 +169,16 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	m_pointerPos = vPointerPos;
 
 #ifdef _WINDOWS64
-	if (g_savedInventoryCursorPos.hasSavedPos)
+	if ((iPad == 0) && g_KBMInput.IsKBMActive())
 	{
-		m_pointerPos.x = g_savedInventoryCursorPos.x;
-		m_pointerPos.y = g_savedInventoryCursorPos.y;
-
-		if (m_pointerPos.x < m_fPointerMinX) m_pointerPos.x = m_fPointerMinX;
-		if (m_pointerPos.x > m_fPointerMaxX) m_pointerPos.x = m_fPointerMaxX;
-		if (m_pointerPos.y < m_fPointerMinY) m_pointerPos.y = m_fPointerMinY;
-		if (m_pointerPos.y > m_fPointerMaxY) m_pointerPos.y = m_fPointerMaxY;
+		m_pointerPos.x = ((m_fPanelMinX + m_fPanelMaxX) * 0.5f) - m_fPointerImageOffsetX;
+		m_pointerPos.y = ((m_fPanelMinY + m_fPanelMaxY) * 0.5f) - m_fPointerImageOffsetY;
 	}
+
+	if (m_pointerPos.x < m_fPointerMinX) m_pointerPos.x = m_fPointerMinX;
+	if (m_pointerPos.x > m_fPointerMaxX) m_pointerPos.x = m_fPointerMaxX;
+	if (m_pointerPos.y < m_fPointerMinY) m_pointerPos.y = m_fPointerMinY;
+	if (m_pointerPos.y > m_fPointerMaxY) m_pointerPos.y = m_fPointerMaxY;
 #endif
 
 	IggyEvent mouseEvent;
