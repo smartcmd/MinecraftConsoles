@@ -34,7 +34,7 @@ public:
 
 protected:
     virtual void additionalRendering(shared_ptr<LivingEntity> _mob, float a);
-	void renderNameTags(shared_ptr<LivingEntity> player, double x, double y, double z, wstring msg, float scale, double dist);
+	virtual void renderNameTags(shared_ptr<LivingEntity> player, double x, double y, double z, const wstring& msg, float scale, double dist) override;
 
     virtual void scale(shared_ptr<LivingEntity> _player, float a);
 public:

@@ -80,6 +80,8 @@ public:
 	float yHeadRot, yHeadRotO;
 	float flyingSpeed;
 
+	int nametagColor;
+
 protected:
 	shared_ptr<Player> lastHurtByPlayer;
 	int lastHurtByPlayerTime;

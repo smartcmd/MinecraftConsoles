@@ -465,11 +465,11 @@ void LivingEntityRenderer::renderNameTags(shared_ptr<LivingEntity> mob, double x
 {
 	if (mob->isSleeping())
 	{
-		renderNameTag(mob, msg, x, y - 1.5f, z, 64);
+		renderNameTag(mob, msg, x, y - 1.5f, z, 64, mob->nametagColor);
 	}
 	else
 	{
-		renderNameTag(mob, msg, x, y, z, 64);
+		renderNameTag(mob, msg, x, y, z, 64, mob->nametagColor);
 	}
 }
 
