@@ -146,7 +146,8 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFou
 	if( ( *removedFound ) == false )
 	{
 		*removedFound = true;
-		memset(flags, 0, 2048/32);
+		// before this left 192 bytes uninitialized!!!!!
+        memset(flags, 0, (2048 / 32) * sizeof(unsigned int));
 	}
 
 	for(int index : entitiesToRemove)

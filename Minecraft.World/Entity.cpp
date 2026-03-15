@@ -96,9 +96,20 @@ int Entity::getSmallId()
 		puiUsedFlags++;
 	}
 
+#ifdef MINECRAFT_SERVER_BUILD
+	// in mc server dedi, a server with 8+ playerrs can cause this to go wack
+    int fallbackId = Entity::entityCounter++;
+
+    if (entityCounter == 0x7ffffff)
+    {
+        entityCounter = 2048;
+    }
+    return fallbackId;
+#else
 	app.DebugPrintf("Out of small entity Ids... possible leak?\n");
 	__debugbreak();
 	return -1;
+#endif
 }
 
 void Entity::countFlagsForPIX()
