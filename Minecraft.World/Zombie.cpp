@@ -58,7 +58,7 @@ void Zombie::registerAttributes()
 	// 4J Stu - Don't make it so far!
 	getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(40);
 
-	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.23f);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(10.f);
 	getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(3);
 
 	getAttributes()->registerAttribute(SPAWN_REINFORCEMENTS_CHANCE)->setBaseValue(random->nextDouble() * 0.10f);

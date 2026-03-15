@@ -37,7 +37,7 @@ class Player : public LivingEntity, public CommandSender, public ScoreHolder
 {
 public:
 	static const int MAX_NAME_LENGTH = 16 + 4;
-	static const int MAX_HEALTH = 20;
+	static const int MAX_HEALTH = 200;
 	static const int SLEEP_DURATION = 100;
 	static const int WAKE_UP_DURATION = 10;
 

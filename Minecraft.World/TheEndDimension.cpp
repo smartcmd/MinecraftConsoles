@@ -82,7 +82,7 @@ Pos *TheEndDimension::getSpawnPos()
 
 bool TheEndDimension::isFoggyAt(int x, int z)
 {
-	return true;
+	return false;
 }
 
 int TheEndDimension::getSpawnYPosition()

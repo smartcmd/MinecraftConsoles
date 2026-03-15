@@ -1,0 +1,7 @@
+CompileFlags:
+  Add: [-IMinecraft.World]
+
+
+
+Diagnostics:
+  UnusedIncludes: None
