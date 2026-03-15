@@ -35,11 +35,7 @@ void SonyRemoteStorage_PS3::npauthhandler(int event, int result, void *arg)
 	{
 		psnTicketSize = result;
 		psnTicket = malloc(psnTicketSize);
-<<<<<<< HEAD
 		if (psnTicket == nullptr) 
-=======
-		if (psnTicket == NULL)
->>>>>>> origin/main
 		{
 			app.DebugPrintf("Failed to allocate for ticket\n");
 		}

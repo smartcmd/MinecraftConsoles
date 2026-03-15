@@ -188,13 +188,8 @@ LevelData::LevelData(CompoundTag *tag)
 	dimension = loadedPlayerTag->getInt(L"Dimension");
 	}
 	else
-<<<<<<< HEAD
 	{		
 	this->loadedPlayerTag = nullptr;
-=======
-	{
-	this->loadedPlayerTag = NULL;
->>>>>>> origin/main
 	}
 	*/
 	dimension = 0;

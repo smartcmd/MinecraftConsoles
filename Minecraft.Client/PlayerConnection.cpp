@@ -36,6 +36,9 @@
 #include "Options.h"
 #if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
 #include "..\Minecraft.Server\ServerLogManager.h"
+#include "..\Minecraft.Server\ServerLogger.h"
+#include "..\Minecraft.Server\FourKitNative.h"
+#include "..\Minecraft.Server\Common\StringUtils.h"
 #endif
 
 namespace
@@ -63,6 +66,7 @@ PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connecti
 	xLastOk = yLastOk = zLastOk = 0;
 	synched = true;
 	didTick = false;
+    hasDoneFirstTick = false;
 	lastKeepAliveId = 0;
 	lastKeepAliveTime = 0;
 	lastKeepAliveTick = 0;
@@ -113,6 +117,13 @@ unsigned char PlayerConnection::getLogSmallId()
 
 void PlayerConnection::tick()
 {
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+    if (!hasDoneFirstTick)
+    {
+        hasDoneFirstTick = true;
+        FourKit::CreateAndBindManagedPlayer(player.get(), this);
+    }
+#endif
 	if( done ) return;
 
 	if( m_bCloseOnTick )
@@ -159,6 +170,8 @@ void PlayerConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 		(player != NULL) ? player->name : std::wstring(),
 		reason,
 		true);
+	
+	FourKit::EmitPlayerLeaveEvent(player.get());
 #endif
 	app.DebugPrintf("PlayerConnection disconect reason: %d\n", reason );
 	player->disconnect();
@@ -208,6 +221,20 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 	if (synched)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		double currentX = player->x;
+		double currentY = player->y;
+		double currentZ = player->z;
+		double toX = packet->hasPos ? packet->x : currentX;
+		double toY = packet->hasPos ? packet->y : currentY;
+		double toZ = packet->hasPos ? packet->z : currentZ;
+		bool moveCancelled = false;
+
+		if (currentX != toX || currentY != toY || currentZ != toZ)
+		{
+			moveCancelled = FourKit::EmitPlayerMoveEvent(player.get(), currentX, currentY, currentZ, toX, toY, toZ);
+		}
+#endif
 		if (player->riding != nullptr)
 		{
 
@@ -336,6 +363,14 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 			player->causeFoodExhaustion(FoodConstants::EXHAUSTION_JUMP);
 		}
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		if (moveCancelled)
+		{
+			teleport(xLastOk, yLastOk, zLastOk, yRotT, xRotT);
+			return;
+		}
+#endif
+
 		player->move(xDist, yDist, zDist);
 
 		// 4J Stu - It is possible that we are no longer synched (eg By moving into an End Portal), so we should stop any further movement based on this packet
@@ -433,11 +468,67 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 
 	if (packet->action == PlayerActionPacket::DROP_ITEM)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+		if (selectedItem != NULL && selectedItem->id > 0)
+		{
+			int outItemId = selectedItem->id;
+			int outItemCount = 1;
+			int outItemData = selectedItem->getAuxValue();
+			int outPickupDelay = 40;
+			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, 1, selectedItem->getAuxValue(),
+				outItemId, outItemCount, outItemData, outPickupDelay))
+			{
+				return;
+			}
+			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
+			{
+				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
+				shared_ptr<ItemEntity> droppedEntity = player->drop(replacedItem);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+				player->inventory->removeResource(selectedItem->id, selectedItem->getAuxValue());
+				return;
+			}
+			{
+				shared_ptr<ItemEntity> droppedEntity = player->drop(false);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+			}
+			return;
+		}
+#endif
 		player->drop(false);
 		return;
 	}
 	else if (packet->action == PlayerActionPacket::DROP_ALL_ITEMS)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+		if (selectedItem != NULL && selectedItem->id > 0)
+		{
+			int outItemId = selectedItem->id;
+			int outItemCount = selectedItem->count;
+			int outItemData = selectedItem->getAuxValue();
+			int outPickupDelay = 40;
+			if (FourKit::EmitPlayerDropItemEvent(player.get(), selectedItem->id, selectedItem->count, selectedItem->getAuxValue(),
+				outItemId, outItemCount, outItemData, outPickupDelay))
+			{
+				return;
+			}
+			if (outItemId != selectedItem->id || outItemData != selectedItem->getAuxValue())
+			{
+				shared_ptr<ItemInstance> replacedItem = std::make_shared<ItemInstance>(outItemId, outItemCount, outItemData);
+				shared_ptr<ItemEntity> droppedEntity = player->drop(replacedItem);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+				player->inventory->removeItem(player->inventory->selected, selectedItem->count);
+				return;
+			}
+			{
+				shared_ptr<ItemEntity> droppedEntity = player->drop(true);
+				if (droppedEntity != nullptr) droppedEntity->throwTime = outPickupDelay;
+			}
+			return;
+		}
+#endif
 		player->drop(true);
 		return;
 	}
@@ -475,6 +566,62 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 
 	if (packet->action == PlayerActionPacket::START_DESTROY_BLOCK)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		int blockId = level->getTile(x, y, z);
+		int blockData = level->getData(x, y, z);
+		bool useInteractedBlock = true;
+
+        shared_ptr<ItemInstance> selectedItem = player->inventory->getSelected();
+        bool hasItem = (selectedItem != NULL && selectedItem->id > 0);
+
+		if (FourKit::EmitPlayerInteractEvent(
+			player.get(),
+			FourKit::eInteract_LeftClickBlock,
+			packet->face,
+            true,
+			x, y, z,
+			player->dimension,
+			blockId,
+			blockData,
+			hasItem))
+		{
+			player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+			return;
+		}
+#endif
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		bool shouldEmitBreakEvent = player->gameMode->isCreative();
+
+		if (!shouldEmitBreakEvent)
+		{
+			int t = level->getTile(x, y, z);
+			if (t != 0)
+			{
+				Tile* tile = Tile::tiles[t];
+				if (tile != NULL)
+				{
+					float progress = tile->getDestroyProgress(player, player->level, x, y, z);
+					if (progress >= 1.0f)
+					{
+						shouldEmitBreakEvent = true;
+					}
+				}
+			}
+		}
+
+		if (shouldEmitBreakEvent)
+		{
+			int blockId = level->getTile(x, y, z);
+			int blockData = level->getData(x, y, z);
+			if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+			{
+				player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+				return;
+			}
+		}
+#endif
+
+		//if (true) player->gameMode->startDestroyBlock(x, y, z, packet->face);									// 4J - condition was !server->isUnderSpawnProtection(level, x, y, z, player) (from Java 1.6.4) but putting back to old behaviour
 		// Anti-cheat: validate spawn protection on the server for mining start.
 		if (!server->isUnderSpawnProtection(level, x, y, z, player)) player->gameMode->startDestroyBlock(x, y, z, packet->face);
 		else player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
@@ -482,6 +629,22 @@ void PlayerConnection::handlePlayerAction(shared_ptr<PlayerActionPacket> packet)
 	}
 	else if (packet->action == PlayerActionPacket::STOP_DESTROY_BLOCK)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		if (!player->gameMode->isCreative())
+		{
+			int blockId = level->getTile(x, y, z);
+			if (blockId != 0)
+			{
+				int blockData = level->getData(x, y, z);
+				if (FourKit::EmitBlockBreakEvent(player.get(), x, y, z, blockId, blockData))
+				{
+					player->connection->send(shared_ptr<TileUpdatePacket>(new TileUpdatePacket(x, y, z, level)));
+					return;
+				}
+			}
+		}
+#endif
+
 		player->gameMode->stopDestroyBlock(x, y, z);
 		server->getPlayers()->prioritiseTileChanges(x, y, z, level->dimension->id);	// 4J added - make sure that the update packets for this get prioritised over other general world updates
 		if (level->getTile(x, y, z) != 0) player->connection->send(std::make_shared<TileUpdatePacket>(x, y, z, level));
@@ -504,6 +667,32 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 	int face = packet->getFace();
 	player->resetLastActionTime();
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	// this fires twice sometimes. it fires twice with an arrow thats about all ive tested
+	// also does bukkit stop player from placing block if playerinteractevent is cancelled? need to test soon
+
+	bool allowUseItemInHand = (item != NULL);
+    bool hasItem = (item != NULL && item->id > 0);
+
+    int clickedBlockId = level->getTile(x, y, z);
+    int clickedBlockData = level->getData(x, y, z);
+    if (FourKit::EmitPlayerInteractEvent(
+            player.get(),
+            FourKit::eInteract_RightClickBlock,
+            face,
+            true,
+            x, y, z,
+            player->dimension,
+            clickedBlockId,
+            clickedBlockData,
+            hasItem))
+    {
+        informClient = true;
+    }
+#endif
+
+	// 4J Stu - We don't have ops, so just use the levels setting
+	bool canEditSpawn = level->canEditSpawn; // = level->dimension->id != 0 || server->players->isOp(player->name);
 	if (packet->getFace() == 255)
 	{
 		if (item == nullptr) return;
@@ -516,7 +705,72 @@ void PlayerConnection::handleUseItem(shared_ptr<UseItemPacket> packet)
 			// Anti-cheat: block placement/use must pass server-side spawn protection.
 			if (!server->isUnderSpawnProtection(level, x, y, z, player))
 			{
-				player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+				if (!informClient)
+#endif
+				{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+					bool blockPlaceCancelled = false;
+					bool shouldEmitBlockPlaceEvent = false;
+					int placeX = x;
+					int placeY = y;
+					int placeZ = z;
+					bool validFace = true;
+					
+					if (face == 0)
+					{
+						placeY--;
+					}
+					else if (face == 1)
+					{
+						placeY++;
+					}
+					else if (face == 2)
+					{
+						placeZ--;
+					}
+					else if (face == 3)
+					{
+						placeZ++;
+					}
+					else if (face == 4)
+					{
+						placeX--;
+					}
+					else if (face == 5)
+					{
+						placeX++;
+					}
+					else
+					{
+						validFace = false;
+					}
+
+					if (item != NULL && validFace)
+					{
+						// Test if block placement would actually occur
+						shouldEmitBlockPlaceEvent = player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ(), true);
+						
+						if (shouldEmitBlockPlaceEvent)
+						{
+							int blockId = item->id;
+							int blockData = item->getAuxValue();
+							blockPlaceCancelled = FourKit::EmitBlockPlaceEvent(player.get(), placeX, placeY, placeZ, blockId, blockData);
+						}
+					}
+
+					if (!blockPlaceCancelled)
+					{
+#endif
+						player->gameMode->useItemOn(player, level, item, x, y, z, face, packet->getClickX(), packet->getClickY(), packet->getClickZ());
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+					}
+					else
+					{
+						informClient = true;
+					}
+#endif
+				}
 			}
 		}
 
@@ -594,6 +848,8 @@ void PlayerConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, 
 		(player != NULL) ? player->name : std::wstring(),
 		reason,
 		false);
+	
+	FourKit::EmitPlayerLeaveEvent(player.get());
 #endif
 	//    logger.info(player.name + " lost connection: " + reason);
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
@@ -678,6 +934,14 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 		handleCommand(message);
 		return;
 	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (FourKit::EmitPlayerChatEvent(player.get(), message))
+	{
+		return;
+	}
+#endif
+
 	wstring formatted = L"<" + player->name + L"> " + message;
 	server->getPlayers()->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(formatted)));
 	chatSpamTickCount += SharedConstants::TICKS_PER_SECOND;
@@ -689,6 +953,19 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 void PlayerConnection::handleCommand(const wstring& message)
 {
+	wstring commandLine = message;
+	if (!commandLine.empty() && commandLine[0] == L'/')
+	{
+		commandLine = commandLine.substr(1);
+	}
+
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	if (FourKit::DispatchPlayerCommand(player.get(), commandLine))
+	{
+		return;
+	}
+#endif
+
 	// 4J - TODO
 #if 0
 	server.getCommandDispatcher().performCommand(player, message);
@@ -700,6 +977,9 @@ void PlayerConnection::handleAnimate(shared_ptr<AnimatePacket> packet)
 	player->resetLastActionTime();
 	if (packet->action == AnimatePacket::SWING)
 	{
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+		// todo: this fires at the same time as left click block..... dont fire left click air if left click block. will have 2 add check 4 dat
+#endif
 		player->swing();
 	}
 }
@@ -1327,13 +1607,13 @@ void PlayerConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 
 void PlayerConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 {
-	player->resetLastActionTime();
-	app.DebugPrintf("PlayerConnection::handleSignUpdate\n");
+    player->resetLastActionTime();
+    app.DebugPrintf("PlayerConnection::handleSignUpdate\n");
 
-	ServerLevel *level = server->getLevel(player->dimension);
-	if (level->hasChunkAt(packet->x, packet->y, packet->z))
-	{
-		shared_ptr<TileEntity> te = level->getTileEntity(packet->x, packet->y, packet->z);
+    ServerLevel *level = server->getLevel(player->dimension);
+    if (level->hasChunkAt(packet->x, packet->y, packet->z))
+    {
+        shared_ptr<TileEntity> te = level->getTileEntity(packet->x, packet->y, packet->z);
 
 		if (dynamic_pointer_cast<SignTileEntity>(te) != nullptr)
 		{
@@ -1360,9 +1640,35 @@ void PlayerConnection::handleSignUpdate(shared_ptr<SignUpdatePacket> packet)
 			ste->SetVerified(false);
 			ste->setChanged();
 			level->sendTileUpdated(x, y, z);
-		}
-	}
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+            std::wstring updatedLines[4];
+            for (int i = 0; i < 4; i++)
+            {
+                updatedLines[i] = packet->lines[i].substr(0, 15);
+            }
+
+            if (FourKit::EmitSignChangeEvent(player.get(), x, y, z, player->dimension, updatedLines))
+            {
+                return;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                ste->SetMessage(i, updatedLines[i].substr(0, 15));
+            }
+#else
+            for (int i = 0; i < 4; i++)
+            {
+                wstring lineText = packet->lines[i].substr(0, 15);
+                ste->SetMessage(i, lineText);
+            }
+#endif
+            ste->SetVerified(false);
+            ste->setChanged();
+            level->sendTileUpdated(x, y, z);
+        }
+    }
 }
 
 void PlayerConnection::handleKeepAlive(shared_ptr<KeepAlivePacket> packet)
@@ -1554,7 +1860,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 			{
 				app.DebugPrintf("Command blocks not enabled");
 				//player->sendMessage(ChatMessageComponent.forTranslation("advMode.notEnabled"));
-			}
+				}
 			else if (player->hasPermission(eGameCommand_Effect) && player->abilities.instabuild)
 			{
 				ByteArrayInputStream bais(customPayloadPacket->data);
@@ -1616,7 +1922,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 					if (name.length() <= 30)
 					{
 						menu->setItemName(name);
-					}
+	}
 				}
 			}
 		}
@@ -1633,7 +1939,7 @@ void PlayerConnection::handleDebugOptions(shared_ptr<DebugOptionsPacket> packet)
 {
 	//Player player = dynamic_pointer_cast<Player>( player->shared_from_this() );
 	player->SetDebugOptions(packet->m_uiVal);
-}
+	}
 
 void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 {

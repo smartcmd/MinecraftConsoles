@@ -96,9 +96,12 @@ int Entity::getSmallId()
 		puiUsedFlags++;
 	}
 
-	app.DebugPrintf("Out of small entity Ids... possible leak?\n");
-	__debugbreak();
-	return -1;
+	// this needs more testing
+	app.DebugPrintf("Out of small entity Ids... falling back to large id\n");
+
+	int fallbackId = Entity::entityCounter++;
+	if(entityCounter == 0x7ffffff) entityCounter = 2048;
+	return fallbackId;
 }
 
 void Entity::countFlagsForPIX()
@@ -138,7 +141,7 @@ void Entity::resetSmallId()
 void Entity::freeSmallId(int index)
 {
 	if( ( (size_t)TlsGetValue(tlsIdx) ) == 0 ) return;		// Don't do anything with small ids if this isn't the server thread
-	if( index >= 2048 ) return;							// Don't do anything if this isn't a short id
+	if( index < 0 || index >= 2048 ) return;				// Don't do anything if this isn't a valid short id
 
 	unsigned int i = index / 32;
 	unsigned int j = index % 32;

@@ -60,6 +60,13 @@ struct Win64RemoteConnection
 	volatile bool active;
 };
 
+struct Win64RemoteEndpoint
+{
+	char ip[64];
+	int port;
+	bool valid;
+};
+
 class WinsockNetLayer
 {
 public:
@@ -104,6 +111,9 @@ public:
 	static std::vector<Win64LANSession> GetDiscoveredSessions();
 
 	static int GetHostPort() { return s_hostGamePort; }
+
+	static void ClearSocketForSmallId(BYTE smallId);
+    static bool GetRemoteEndpointForSmallId(BYTE smallId, char *outIp, int outIpSize, int *outPort);
 
 private:
 	static DWORD WINAPI AcceptThreadProc(LPVOID param);
@@ -153,14 +163,12 @@ private:
 	// O(1) smallId -> socket lookup so we don't scan s_connections (which never shrinks) on every send
 	static SOCKET s_smallIdToSocket[256];
 	static CRITICAL_SECTION s_smallIdToSocketLock;
-
+	static Win64RemoteEndpoint s_smallIdToEndpoint[256];
+	static CRITICAL_SECTION s_smallIdToEndpointLock;
 	// Per-pad split-screen TCP connections (client-side, non-host only)
 	static SOCKET s_splitScreenSocket[XUSER_MAX_COUNT];
 	static BYTE s_splitScreenSmallId[XUSER_MAX_COUNT];
 	static HANDLE s_splitScreenRecvThread[XUSER_MAX_COUNT];
-
-public:
-	static void ClearSocketForSmallId(BYTE smallId);
 };
 
 extern bool g_Win64MultiplayerHost;

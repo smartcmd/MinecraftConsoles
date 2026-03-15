@@ -19,6 +19,9 @@
     <Filter Include="Server\Vendor">
       <UniqueIdentifier>{3E4D5A41-CAB8-4A10-82B5-8B2AE2E25CB2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Server\FourKit">
+      <UniqueIdentifier>{05d2e3ca-ea8e-4041-8640-5b81f455953d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerLogger.cpp">
@@ -615,6 +618,15 @@
     <ClCompile Include="Console\commands\whitelist\CliCommandWhitelist.cpp">
       <Filter>Server\Console\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="FourKitNativeWorldCallbacks.cpp">
+      <Filter>Server\FourKit</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitNativeEvents.cpp">
+      <Filter>Server\FourKit</Filter>
+    </ClCompile>
+    <ClCompile Include="FourKitNativePlayerCallbacks.cpp">
+      <Filter>Server\FourKit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\ServerCli.h">
@@ -725,6 +737,18 @@
     </ClInclude>
     <ClInclude Include="Console\commands\IServerCliCommand.h">
       <Filter>Server\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitNative.h">
+      <Filter>Server\FourKit</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitNativeCallbacks.h">
+      <Filter>Server\FourKit</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitImports.h">
+      <Filter>Server\FourKit</Filter>
+    </ClInclude>
+    <ClInclude Include="FourKitNativeInternal.h">
+      <Filter>Server\FourKit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

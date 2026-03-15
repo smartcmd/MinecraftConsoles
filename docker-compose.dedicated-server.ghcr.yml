@@ -1,6 +1,6 @@
 services:
   minecraft-lce-dedicated-server:
-    image: ghcr.io/kuwacom/minecraft-lce-dedicated-server:nightly
+    image: ghcr.io/kuwacom/minecraft-lce-dedicated-server:nightly-test
     container_name: minecraft-lce-dedicated-server
     restart: unless-stopped
     tty: true

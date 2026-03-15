@@ -91,6 +91,15 @@ public:
 	bool wonGame;
 	bool m_enteredEndExitPortal; // 4J Added
 
+#if defined(_WINDOWS64) && defined(MINECRAFT_SERVER_BUILD)
+	bool m_deathEventOverrideApplied;
+	bool m_deathEventKeepInventory;
+	bool m_deathEventKeepLevel;
+	int m_deathEventNewExp;
+	int m_deathEventNewLevel;
+	int m_deathEventNewTotalExp;
+#endif
+
 private:
 	void nextContainerCounter();
 

@@ -44,7 +44,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\obj\MinecraftServer\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>Minecraft.Server</TargetName>
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>-port 25565 -bind 0.0.0.0 -name DedicatedServer</LocalDebuggerCommandArguments>
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\obj\MinecraftServer\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>Minecraft.Server</TargetName>
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>-port 25565 -bind 0.0.0.0 -name DedicatedServer</LocalDebuggerCommandArguments>
@@ -83,7 +83,7 @@
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Debug\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.FourKit.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Debug\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage_d.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)Windows64\postbuild_server.ps1" -OutDir "$(OutDir)." -ProjectRoot "$(ProjectDir).." -Configuration "$(Configuration)"</Command>
@@ -117,7 +117,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Release\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\Minecraft.Server\$(Configuration)\Minecraft.Server.FourKit.lib;d3d11.lib;XInput9_1_0.lib;wsock32.lib;legacy_stdio_definitions.lib;..\Minecraft.World\x64_Release\Minecraft.World.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggy_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyperfmon_w64.lib;..\Minecraft.Client\Windows64\Iggy\lib\iggyexpruntime_w64.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Input.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Storage.lib;..\Minecraft.Client\Windows64\4JLibs\libs\4J_Render_PC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)Windows64\postbuild_server.ps1" -OutDir "$(OutDir)." -ProjectRoot "$(ProjectDir).." -Configuration "$(Configuration)"</Command>
@@ -127,6 +127,9 @@
     <ClCompile Include="Access\Access.cpp" />
     <ClCompile Include="Access\BanManager.cpp" />
     <ClCompile Include="Access\WhitelistManager.cpp" />
+    <ClCompile Include="FourKitNativeEvents.cpp" />
+    <ClCompile Include="FourKitNativePlayerCallbacks.cpp" />
+    <ClCompile Include="FourKitNativeWorldCallbacks.cpp" />
     <ClCompile Include="ServerLogManager.cpp" />
     <ClCompile Include="..\Minecraft.Client\AbstractTexturePack.cpp" />
     <ClCompile Include="..\Minecraft.Client\AchievementPopup.cpp" />
@@ -723,6 +726,10 @@
     <ClInclude Include="Common\AccessStorageUtils.h" />
     <ClInclude Include="Common\NetworkUtils.h" />
     <ClInclude Include="Common\StringUtils.h" />
+    <ClInclude Include="FourKitNative.h" />
+    <ClInclude Include="FourKitNativeCallbacks.h" />
+    <ClInclude Include="FourKitImports.h" />
+    <ClInclude Include="FourKitNativeInternal.h" />
     <ClInclude Include="ServerLogger.h" />
     <ClInclude Include="ServerLogManager.h" />
     <ClInclude Include="ServerProperties.h" />
@@ -736,6 +743,9 @@
     <ResourceCompile Include="..\Minecraft.Client\Xbox\MinecraftWindows.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Minecraft.Server.FourKit\Minecraft.Server.FourKit.vcxproj">
+      <Project>{5a36ab02-6c2e-4272-86f8-3dcab976564c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Minecraft.World\Minecraft.World.vcxproj">
       <Project>{F046C3CE-9749-4823-B32B-D9CC10B1A2C8}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -746,4 +756,3 @@
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
-
