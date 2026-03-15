@@ -5,26 +5,9 @@
 class FireworksRecipe : public Recipy
 {
 private:
-	//shared_ptr<ItemInstance> resultItem;
-
-		// 4J added so we can have separate contexts and rleBuf for different threads
-	class ThreadStorage
-	{
-	public:
-		shared_ptr<ItemInstance> resultItem;
-		ThreadStorage();
-	};
-	static DWORD tlsIdx;
-	static ThreadStorage *tlsDefault;
+	shared_ptr<ItemInstance> resultItem;
 
 	void setResultItem(shared_ptr<ItemInstance> item);
-public:
-	// Each new thread that needs to use Compression will need to call one of the following 2 functions, to either create its own
-	// local storage, or share the default storage already allocated by the main thread
-	static void CreateNewThreadStorage();
-	static void UseDefaultThreadStorage();
-	static void ReleaseThreadStorage();
-
 public:
 	FireworksRecipe();
 
