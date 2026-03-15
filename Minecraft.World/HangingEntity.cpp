@@ -59,7 +59,15 @@ void HangingEntity::setDir(int dir)
 	float y = yTile + 0.5f;
 	float z = zTile + 0.5f;
 
+	float originalX = x;
+	float originalZ = z;
+
 	float fOffs = 0.5f + 1.0f / 16.0f;
+
+	if (this->GetType() == eTYPE_PAINTING)
+	{
+		fOffs = 0.5f + 1.0f / 32.0f; //dividing by 16.0f introduce a small gap between the block and the painting. See https://github.com/smartcmd/MinecraftConsoles/issues/661
+	}
 
 	if (dir == Direction::NORTH) z -= fOffs;
 	if (dir == Direction::WEST) x -= fOffs;
@@ -75,6 +83,26 @@ void HangingEntity::setDir(int dir)
 	setPos(x, y, z);
 
 	float ss = -(0.5f / 16.0f);
+
+	//dividing the fOffs by 32 breaks the BB and allow paintings to be placed on a block when they shouldn't
+	//so we need to modify the x and z to set their value as if the fOffs was divided by 16 and not 32
+	if (this->GetType() == eTYPE_PAINTING)
+	{
+		fOffs = 0.5f + 1.0f / 16.0f;
+		if (dir == Direction::NORTH) originalZ -= fOffs;
+		if (dir == Direction::WEST) originalX -= fOffs;
+		if (dir == Direction::SOUTH) originalZ += fOffs;
+		if (dir == Direction::EAST) originalX += fOffs;
+
+		if (dir == Direction::NORTH) originalX -= offs(getWidth());
+		if (dir == Direction::WEST) originalZ += offs(getWidth());
+		if (dir == Direction::SOUTH) originalX += offs(getWidth());
+		if (dir == Direction::EAST) originalZ -= offs(getWidth());
+
+		x = originalX;
+		z = originalZ;
+	}
+
 
 	// 4J Stu - Due to rotations the bb couold be set with a lower bound x/z being higher than the higher bound
 	float x0 = x - w - ss;
