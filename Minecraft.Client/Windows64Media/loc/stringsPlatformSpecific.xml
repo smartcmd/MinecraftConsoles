@@ -261,6 +261,9 @@ If you try to save while using the trial version, you will be given the option t
   <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
     <value>Classic</value>
   </data>
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
   <data name="IDS_GAME_OPTIONS">
     <value>Game Options</value>
   </data>

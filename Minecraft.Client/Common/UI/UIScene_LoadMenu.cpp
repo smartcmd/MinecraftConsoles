@@ -912,6 +912,10 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 		newWorldSize = LEVEL_WIDTH_LARGE;	
 		newHellScale = HELL_LEVEL_SCALE_LARGE;
 		break;
+    case e_worldSize_Infinite:
+        newWorldSize = LEVEL_WIDTH_INFINITE;
+        newHellScale = HELL_LEVEL_SCALE_INFINITE;
+        break;
 	default:
 		assert(0);
 		break;

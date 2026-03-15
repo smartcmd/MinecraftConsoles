@@ -25,7 +25,7 @@ protected:
 	virtual void renderModel(shared_ptr<LivingEntity> _mob, float wp, float ws, float bob, float headRotMinusBodyRot, float headRotx, float scale);
 
 public:
-	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 
 protected:

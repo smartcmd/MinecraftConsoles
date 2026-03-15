@@ -11,7 +11,7 @@ private:
 public:
 	ItemSpriteRenderer(Item *sourceItem, int sourceItemAuxValue = 0);
 	//ItemSpriteRenderer(Item *icon);
-    virtual void render(shared_ptr<Entity> e, double x, double y, double z, float rot, float a);
+    virtual void render(const shared_ptr<Entity> e, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 
 private:

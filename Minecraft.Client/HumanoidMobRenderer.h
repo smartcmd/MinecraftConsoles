@@ -30,7 +30,7 @@ public:
 protected:
 	virtual void createArmorParts();
 	virtual int prepareArmor(shared_ptr<LivingEntity> _mob, int layer, float a);
-	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 	virtual void prepareCarriedItem(shared_ptr<Entity> mob, shared_ptr<ItemInstance> item);
 	virtual void additionalRendering(shared_ptr<LivingEntity> mob, float a);

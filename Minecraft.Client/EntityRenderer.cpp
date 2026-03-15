@@ -202,18 +202,26 @@ void EntityRenderer::renderShadow(shared_ptr<Entity> e, double x, double y, doub
 	double xo = x - ex;
 	double yo = y - ey;
 	double zo = z - ez;
-
+    auto &cache = entityRenderDispatcher->shadowTileCache;
 	Tesselator *tt = Tesselator::getInstance();
 	tt->begin();
 	for (int xt = x0; xt <= x1; xt++)
 		for (int yt = y0; yt <= y1; yt++)
 			for (int zt = z0; zt <= z1; zt++)
-			{				
-				int t = level->getTile(xt, yt - 1, zt);
-				if (t > 0 && level->getRawBrightness(xt, yt, zt) > 3)
+			{
+				EntityRenderDispatcher::ShadowTileKey key = { xt, yt, zt };
+				auto it = cache.find(key);
+				if (it == cache.end())
 				{
-					renderTileShadow(Tile::tiles[t], x, y + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, z, xt, yt , zt, pow, r, xo, yo + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, zo);
-				}			
+					EntityRenderDispatcher::ShadowTileValue val;
+					val.tileid    = level->getTile(xt, yt - 1, zt);
+					val.brightness = (val.tileid > 0) ? level->getRawBrightness(xt, yt, zt) : 0;
+					it = cache.emplace(key, val).first;
+				}
+				if (it->second.tileid > 0 && it->second.brightness > 3)
+				{
+					renderTileShadow(Tile::tiles[it->second.tileid], x, y + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, z, xt, yt, zt, pow, r, xo, yo + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, zo);
+				}
 			}
 	tt->end();
 

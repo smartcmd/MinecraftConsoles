@@ -9,6 +9,6 @@ private:
 public:
 	FallingTileRenderer();
 
-    virtual void render(shared_ptr<Entity> _tile, double x, double y, double z, float rot, float a);
+    virtual void render(const shared_ptr<Entity> _tile, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

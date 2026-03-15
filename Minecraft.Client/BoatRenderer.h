@@ -11,6 +11,6 @@ protected:
 public:
 	BoatRenderer();
 
-    virtual void render(shared_ptr<Entity> boat, double x, double y, double z, float rot, float a);
+    virtual void render(const shared_ptr<Entity> boat, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

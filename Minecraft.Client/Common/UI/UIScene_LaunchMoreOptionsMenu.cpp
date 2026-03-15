@@ -6,12 +6,13 @@
 #define GAME_CREATE_ONLINE_TIMER_TIME 100
 
 #ifdef _LARGE_WORLDS
-int m_iWorldSizeTitleA[4] = 
+int m_iWorldSizeTitleA[5] = 
 {
 	IDS_WORLD_SIZE_TITLE_CLASSIC,
 	IDS_WORLD_SIZE_TITLE_SMALL,
 	IDS_WORLD_SIZE_TITLE_MEDIUM,
 	IDS_WORLD_SIZE_TITLE_LARGE,
+    IDS_WORLD_SIZE_TITLE_INFINITE,
 };
 #endif
 
@@ -34,7 +35,8 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	value[1].boolval = false;
 	if(m_params->currentWorldSize == e_worldSize_Classic ||
 		m_params->currentWorldSize == e_worldSize_Small ||
-		m_params->currentWorldSize == e_worldSize_Medium )
+        m_params->currentWorldSize == e_worldSize_Medium ||
+        m_params->currentWorldSize == e_worldSize_Large )
 	{
 		// don't show the increase world size stuff if we're already large, or the size is unknown.
 		value[1].boolval = true;
@@ -109,7 +111,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 
 #ifdef _LARGE_WORLDS
 	m_labelWorldSize.init(app.GetString(IDS_WORLD_SIZE));
-	m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,3,m_params->worldSize);
+	m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,4,m_params->worldSize);
 
 	m_checkboxes[eLaunchCheckbox_DisableSaving].init( app.GetString(IDS_DISABLE_SAVING), eLaunchCheckbox_DisableSaving, m_params->bDisableSaving );
 	
@@ -117,7 +119,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	{
 		m_labelWorldResize.init(app.GetString(IDS_INCREASE_WORLD_SIZE));
 		int min= static_cast<int>(m_params->currentWorldSize)-1;
-		int max=3;
+		int max=4;
 		int curr = static_cast<int>(m_params->newWorldSize)-1;
 		m_sliderWorldResize.init(app.GetString(m_iWorldSizeTitleA[curr]),eControl_WorldResize,min,max,curr);
 		m_checkboxes[eLaunchCheckbox_WorldResizeType].init(app.GetString(IDS_INCREASE_WORLD_SIZE_OVERWRITE_EDGES),eLaunchCheckbox_WorldResizeType,m_params->newWorldSizeOverwriteEdges);

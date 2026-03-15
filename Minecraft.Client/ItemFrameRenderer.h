@@ -9,7 +9,7 @@ private:
 
 public:
 	void registerTerrainTextures(IconRegister *iconRegister);
-	virtual void render(shared_ptr<Entity> _itemframe, double x, double y, double z, float rot, float a); 
+	virtual void render(const shared_ptr<Entity> _itemframe, double x, double y, double z, float rot, float a); 
 
 private:
  	void drawFrame(shared_ptr<ItemFrame> itemFrame);

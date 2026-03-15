@@ -30,7 +30,7 @@ protected:
 	virtual void prepareSecondPassArmor(shared_ptr<LivingEntity> mob, int layer, float a);
 
 public:
-	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 
 protected:
     virtual void additionalRendering(shared_ptr<LivingEntity> _mob, float a);
