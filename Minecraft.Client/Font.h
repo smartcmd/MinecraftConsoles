@@ -38,7 +38,7 @@ private:
 	std::map<int, int> m_charMap;
 
 public:
-    Font(Options *options, const wstring& name, Textures* textures, bool enforceUnicode, ResourceLocation *textureLocation, int cols, int rows, int charWidth, int charHeight, unsigned short charMap[] = nullptr);
+	Font(Options *options, const wstring& name, Textures* textures, bool enforceUnicode, ResourceLocation *textureLocation, int cols, int rows, int charWidth, int charHeight, unsigned short charMap[] = nullptr);
 #ifndef _XBOX
 	// 4J Stu - This dtor clashes with one in xui! We never delete these anyway so take it out for now. Can go back when we have got rid of XUI
 	~Font();
@@ -48,6 +48,8 @@ public:
 private:
 	void renderCharacter(wchar_t c); // 4J added
 	void addCharacterQuad(wchar_t c);
+	void addSolidQuad(float x0, float y0, float x1, float y1);
+	void emitCharacterGeometry(wchar_t c);
 	void renderStyleLine(float x0, float y0, float x1, float y1); // solid line for underline/strikethrough
 
 public:
@@ -65,7 +67,7 @@ public:
 private:
 	wstring reorderBidi(const wstring &str);
 
-	void draw(const wstring &str, bool dropShadow);
+	void draw(const wstring &str, bool dropShadow, int baseColor);
     void draw(const wstring& str, int x, int y, int color, bool dropShadow);
 	void drawLiteral(const wstring& str, int x, int y, int color); // no § parsing
 	int MapCharacter(wchar_t c); // 4J added
