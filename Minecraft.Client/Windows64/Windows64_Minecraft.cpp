@@ -56,6 +56,13 @@ extern Renderer InternalRenderManager;
 
 #include "Xbox/resource.h"
 
+// request use of dedicated GPU from AMD and Nvidia drivers
+extern "C"
+{
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+}
+
 #ifdef _MSC_VER
 #pragma comment(lib, "legacy_stdio_definitions.lib")
 #endif
